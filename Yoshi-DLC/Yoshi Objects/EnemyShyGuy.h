@@ -9,12 +9,24 @@
 #include "../app/animation/AnimationResContainer.h"
 #include "../app/game/GOCAnimationScript.h"
 #include "../app/game/GOCVisualModel.h"
+#include "../app/game/GOCGravity.h"
 #include "../LWVariables.h"
 
 bool IsShyGuyShadowOn;
 
 namespace app
 {
+	struct EnemyShyGuyData
+	{
+		float Speed;
+		float MaxMoveDistance;
+		char IsEventDriven;
+		char Direction;
+		char field_0A;
+		char field_0B;
+		float DepthOffset;
+	};
+
 	class EnemyShyGuyInfo
 	{
 	public:
@@ -87,16 +99,27 @@ namespace app
 
 		void AddCallback(GameDocument* gameDocument)
 		{
+			Vector3 position;
+			Quaternion rotation;
 			fnd::GOCVisualModel::Description visualDescriptor;
 			game::ShadowSphereShapeCInfo shadowInfo;
 
+			fnd::GOComponent::Create((GameObject*)this, GOCGravity);
 			fnd::GOComponent::Create((GameObject*)this, GOCVisualModel);
 			fnd::GOComponent::Create((GameObject*)this, GOCAnimationScript);
 
 			if (IsShyGuyShadowOn)
 				fnd::GOComponent::Create((GameObject*)this, GOCShadowSimple);
 
+			fnd::GOComponent::Create((GameObject*)this, GOCEffect);
+			fnd::GOComponent::Create((GameObject*)this, GOCSound);
+			fnd::GOComponent::Create((GameObject*)this, GOCCollider);
+			fnd::GOComponent::Create((GameObject*)this, GOCEnemyHsm);
+			fnd::GOComponent::Create((GameObject*)this, GOCMovementComplex);
+
+
 			EnemyShyGuyInfo* info = (EnemyShyGuyInfo*)ObjUtil::GetObjectInfo(gameDocument, "EnemyShyGuyInfo");
+			EnemyShyGuyData* data = (EnemyShyGuyData*)CSetAdapter::GetData(*(int**)(this + 0x324));
 
 			fnd::GOComponent::BeginSetup((GameObject*)this);
 			int* gocVisual = GameObject::GetGOC((GameObject*)this, GOCVisual);
@@ -128,6 +151,16 @@ namespace app
 				game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
 			}
 
+			game::GOCGravity::SimpleSetup((GameObject*)this, 1);
+			int* gocMovement = GameObject::GetGOC((GameObject*)this, GOCMovementString);
+			if (gocMovement)
+			{
+				app::CSetAdapter::GetPosition(*(int**)(this + 0x324), &position);
+				app::CSetAdapter::GetRotation(*(int**)(this + 0x324), &rotation);
+			}
+
+			game::GOCEffect::SimpleSetup((GameObject*)this);
+			game::GOCSound::SimpleSetup((GameObject*)this, 0, 0);
 			fnd::GOComponent::EndSetup((GameObject*)this);
 		}
 	};
