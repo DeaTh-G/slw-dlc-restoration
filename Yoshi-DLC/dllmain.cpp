@@ -258,7 +258,7 @@ extern "C"
 		IsYoshiSpecialFlowerShadowOn = reader->GetBoolean("Shadows", "isYoshiSpecialFlowerShadowOn", false);
 		IsYoshiCoinShadowOn = reader->GetBoolean("Shadows", "isYoshiCoinShadowOn", false);
 		//IsPiranhaPlantShadowOn = reader->GetBoolean("Shadows", "isPiranhaPlantShadowOn", true);
-		//IsShyGuyShadowOn = reader->GetBoolean("Shadows", "isShyGuyShadowOn", false);
+		IsShyGuyShadowOn = reader->GetBoolean("Shadows", "isShyGuyShadowOn", false);
 
 		//PlayPipeOutTransition = reader->GetBoolean("Misc", "playPipeOutTransition", true);
 		//ScoreToUnlockLevel = reader->GetInteger("Misc", "scoreToUnlockLevel", 1000000);

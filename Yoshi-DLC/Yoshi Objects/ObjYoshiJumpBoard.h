@@ -165,8 +165,8 @@ namespace app
 				shadowInfo.field_04 = 6;
 				shadowInfo.field_11 = 0;
 
-				game::ShadowSphereShapeCInfo* test = &shadowInfo;
-				game::GOCShadowSimple::Setup(gocShadow, (int**)&test);
+				game::ShadowSphereShapeCInfo* ppShadowInfo = &shadowInfo;
+				game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
 			}
 
 			int* gocTransform = GameObject::GetGOC((GameObject*)this, GOCTransformString);

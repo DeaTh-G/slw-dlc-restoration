@@ -11,6 +11,8 @@
 #include "../app/game/GOCVisualModel.h"
 #include "../LWVariables.h"
 
+bool IsShyGuyShadowOn;
+
 namespace app
 {
 	class EnemyShyGuyInfo
@@ -86,9 +88,13 @@ namespace app
 		void AddCallback(GameDocument* gameDocument)
 		{
 			fnd::GOCVisualModel::Description visualDescriptor;
+			game::ShadowSphereShapeCInfo shadowInfo;
 
 			fnd::GOComponent::Create((GameObject*)this, GOCVisualModel);
 			fnd::GOComponent::Create((GameObject*)this, GOCAnimationScript);
+
+			if (IsShyGuyShadowOn)
+				fnd::GOComponent::Create((GameObject*)this, GOCShadowSimple);
 
 			EnemyShyGuyInfo* info = (EnemyShyGuyInfo*)ObjUtil::GetObjectInfo(gameDocument, "EnemyShyGuyInfo");
 
@@ -111,6 +117,15 @@ namespace app
 					fnd::GOCVisualModel::AttachAnimation(gocVisual, gocAnimation);
 					game::GOCAnimationScript::SetAnimation(gocAnimation, "WALK_R");
 				}
+			}
+			
+			int* gocShadow = GameObject::GetGOC((GameObject*)this, GOCShadowString);
+			if (gocShadow)
+			{
+				game::ShadowSphereShapeCInfo::__ct(&shadowInfo, 4);
+
+				game::ShadowSphereShapeCInfo* ppShadowInfo = &shadowInfo;
+				game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
 			}
 
 			fnd::GOComponent::EndSetup((GameObject*)this);

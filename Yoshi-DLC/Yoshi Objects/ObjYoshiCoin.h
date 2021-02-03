@@ -133,8 +133,8 @@ namespace app
 				game::ShadowHemisphereShapeCInfo::__ct(&shadowInfo, 2);
 				shadowInfo.field_04 = 6;
 
-				game::ShadowHemisphereShapeCInfo* test = &shadowInfo;
-				game::GOCShadowSimple::Setup(gocShadow, (int**)&test);
+				game::ShadowHemisphereShapeCInfo* ppShadowInfo = &shadowInfo;
+				game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
 				app::game::GOCShadowSimple::SetLocalOffsetPosition(gocShadow, position);
 			}
 
