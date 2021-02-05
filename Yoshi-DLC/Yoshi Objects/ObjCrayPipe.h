@@ -1,34 +1,7 @@
 #pragma once
-#include "../app/GameObject.h"
-#include "../app/CSetObjectListener.h"
-#include "../app/CSetAdapter.h"
-#include "../app/GameDocument.h"
-#include "../app/fnd/GOComponent.h"
-#include "../LWVariables.h"
-#include "../app/ObjUtil.h"
-#include "../app/game/GOCSound.h"
-#include "../app/game/GOCCollider.h"
-#include "../app/xgame/MsgExtendPlayer.h"
-#include "../app/xgame/MsgCatchPlayer.h"
-#include "../app/xgame/MsgCatchEndPlayer.h"
-#include "../app/xgame/MsgPLGetInputButton.h"
-#include "../app/xgame/MsgPLVisibleItemEffect.h"
-#include "../app/xgame/MsgNotifyObjectEvent.h"
-#include "../app/xgame/MsgWarpNewArea.h"
-#include "../app/xgame/MsgStopGameTimer.h"
-#include "../app/xgame/MsgSetPosition.h"
-#include "../app/xgame/MsgGetExternalMovePosition.h"
-#include "../app/fnd/Message.h"
-#include "../app/fnd/MessageManager.h"
-#include "../app/Player/CPhysics.h"
-#include "../app/fnd/GOCTransform.h"
-#include "../app/CGOCCollectionImpl.h"
 
 namespace app
 {
-	/* TODO - CHECK IF THIS INTRODUCES ANY CRASHES */
-	float deviceTag = 0;
-
 	struct ObjCrayPipeData
 	{
 		float CollisionRadius;
@@ -160,7 +133,9 @@ namespace app
 								int* gocSound = GameObject::GetGOC((GameObject*)(this - 8), GOCSoundString);
 								if (gocSound)
 								{
-									app::game::GOCSound::Play3D(gocSound, &deviceTag, "obj_yossypipe_in_out", 0);
+									int deviceTag[3]{};
+
+									app::game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossypipe_in_out", 0);
 									*((bool*)(this + 0x3F0)) = false;
 								}
 
@@ -255,9 +230,9 @@ namespace app
 			fnd::Message::__ct(&stopGameTimerMessage.Base, fnd::PROC_MSG_STOP_GAME_TIMER);
 			if (ObjUtil::SendMessageImmToGameActor((GameObject*)(this - 8), (int*)&stopGameTimerMessage))
 			{
-				void* eggManager = EggManager::GetService(*Document);
+				/*void* eggManager = EggManager::GetService(*Document);
 				if (eggManager)
-					EggManager::SetForceSpaceShrink(eggManager, true);
+					EggManager::SetForceSpaceShrink(eggManager, true);*/
 
 				xgame::MsgExtendPlayer::__dt((int*)&stopGameTimerMessage);
 			}

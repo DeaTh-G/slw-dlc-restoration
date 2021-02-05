@@ -1,12 +1,10 @@
 #pragma once
-#include "..\framework.h"
-#include "../app/fnd/Message.h"
 
 namespace app
 {
 	namespace xgame
 	{
-		__declspec(align(4)) struct MsgStayTrigger
+		__declspec(align(16)) struct MsgStayTrigger
 		{
 		public:
 			fnd::Message Base;

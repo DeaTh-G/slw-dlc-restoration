@@ -1,5 +1,4 @@
 #pragma once
-#include "framework.h"
 
 struct MessageTakeObject // 0x28
 {

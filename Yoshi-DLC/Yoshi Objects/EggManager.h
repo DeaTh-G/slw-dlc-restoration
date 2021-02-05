@@ -1,9 +1,4 @@
 #pragma once
-#include "../app/GameDocument.h"
-#include "../csl/fnd.h"
-#include "../app/fnd/ReferencedObject.h"
-#include "../app/fnd/GameService.h"
-#include "../app/fnd/GameServiceClass.h"
 
 csl::fnd::IAllocator* LocusDataAllocator = 0;
 
@@ -46,7 +41,7 @@ namespace app
 	private:
 		static void* staticClass()
 		{
-			return (void*)ASLR(0x00FEE764); sizeof(EggManager);
+			return (void*)ASLR(0x00FEE764);
 		}
 
 	public:

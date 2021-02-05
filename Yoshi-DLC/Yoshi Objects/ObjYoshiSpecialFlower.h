@@ -1,14 +1,4 @@
 #pragma once
-#include "../LWVariables.h"
-#include "../app/GameObject.h"
-#include "../app/fnd/GOComponent.h"
-#include "../app/CSetObjectListener.h"
-#include "../app/CSetAdapter.h"
-#include "../app/ObjUtil.h"
-#include "../hh/ut/Packfile.h"
-#include "../app/game/GOCAnimationSimple.h"
-#include "EggManager.h"
-#include "../app/fnd/Message.h"
 
 bool IsYoshiSpecialFlowerShadowOn;
 

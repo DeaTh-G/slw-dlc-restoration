@@ -1,6 +1,4 @@
 #pragma once
-#include "../app/GameObject.h"
-#include "ObjYoshiJumpBoard.h"
 
 namespace app
 {

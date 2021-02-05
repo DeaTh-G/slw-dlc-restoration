@@ -1,13 +1,10 @@
 #pragma once
-#include "..\framework.h"
-#include "../app/fnd/Message.h"
-#include "../../LWTypes.h"
 
 namespace app
 {
 	namespace xgame
 	{
-		struct MsgSpringImpulse
+		__declspec(align(16)) struct MsgSpringImpulse
 		{
 		public:
 			fnd::Message Base;

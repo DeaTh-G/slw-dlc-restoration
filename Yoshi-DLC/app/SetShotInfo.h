@@ -1,7 +1,4 @@
 #pragma once
-#include "../framework.h"
-#include "../LWTypes.h"
-#include "game/GOCLauncher.h"
 
 namespace app
 {

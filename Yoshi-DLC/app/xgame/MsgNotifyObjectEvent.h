@@ -1,12 +1,10 @@
 #pragma once
-#include "..\framework.h"
-#include "../app/fnd/Message.h"
 
 namespace app
 {
 	namespace xgame
 	{
-		__declspec(align(4)) struct MsgNotifyObjectEvent
+		__declspec(align(16)) struct MsgNotifyObjectEvent
 		{
 		public:
 			fnd::Message Base;

@@ -1,12 +1,10 @@
 #pragma once
-#include "..\framework.h"
-#include "../app/fnd/Message.h"
 
 namespace app
 {
 	namespace xgame
 	{
-		struct alignas(4) MsgPLGetInputButton
+		struct alignas(16) MsgPLGetInputButton
 		{
 		public:
 			fnd::Message Base;

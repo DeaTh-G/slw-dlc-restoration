@@ -1,6 +1,4 @@
 #pragma once
-#include "framework.h"
-#include "CollisionObjCinfo.h"
 
 namespace app
 {

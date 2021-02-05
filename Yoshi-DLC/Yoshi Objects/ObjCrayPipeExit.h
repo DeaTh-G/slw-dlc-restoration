@@ -1,17 +1,4 @@
 #pragma once
-#include "../app/GameObject.h"
-#include "../app/CSetObjectListener.h"
-#include "../app/CSetAdapter.h"
-#include "../app/GameDocument.h"
-#include "../app/fnd/GOComponent.h"
-#include "../LWVariables.h"
-#include "../app/ObjUtil.h"
-#include "../app/game/GOCSound.h"
-#include "../app/game/GOCCollider.h"
-#include "../app/fnd/Message.h"
-#include "../app/xgame/MsgCatchEndPlayer.h"
-#include "../app/xgame/MsgCatchPlayer.h"
-#include "../app/xgame/MsgResumeGameTimer.h"
 
 namespace app
 {
@@ -51,13 +38,13 @@ namespace app
 			int unit = 1;
 
 			fnd::GOComponent::Create((GameObject*)this, GOCCollider);
-			fnd::GOComponent::Create((GameObject*)this, GOCSound);
+			//fnd::GOComponent::Create((GameObject*)this, GOCSound);
 
 			fnd::GOComponent::BeginSetup((GameObject*)this);
 			ObjCrayPipeExitData* data = (ObjCrayPipeExitData*)CSetAdapter::GetData(*(int**)(this + 0x324));
 			*((int*)(this + 0x3A4)) = data->Direction;
 
-			game::GOCSound::SimpleSetup((GameObject*)this, 0, 0);
+			//game::GOCSound::SimpleSetup((GameObject*)this, 0, 0);
 
 			/* Collider */
 			int* gocCollider = app::GameObject::GetGOC((GameObject*)this, GOCColliderString);
@@ -269,7 +256,9 @@ namespace app
 				int* gocSound = GameObject::GetGOC((GameObject*)(this - 8), GOCSoundString);
 				if (gocSound)
 				{
-					app::game::GOCSound::Play3D(gocSound, &deviceTag, "obj_yossypipe_in_out", 0);
+					int deviceTag[3]{};
+
+					app::game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossypipe_in_out", 0);
 					*((bool*)(this + 0x3A4)) = false;
 				}
 			}

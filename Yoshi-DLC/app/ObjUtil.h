@@ -1,9 +1,4 @@
 #pragma once
-#include "framework.h"
-#include "GameDocument.h"
-#include "GameObject.h"
-#include "..\app\game\CollisionObjCInfo.h"
-#include "..\app\fnd\Message.h"
 
 namespace app
 {

@@ -1,6 +1,4 @@
 #pragma once
-#include "LWTypes.h"
-#include "CollisionShapeType.h"
 
 namespace app
 {

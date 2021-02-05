@@ -1,6 +1,4 @@
 #pragma once
-#include "..\framework.h"
-#include "../app/fnd/Message.h"
 
 namespace app
 {

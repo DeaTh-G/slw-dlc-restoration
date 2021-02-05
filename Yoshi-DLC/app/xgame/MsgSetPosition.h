@@ -1,7 +1,4 @@
 #pragma once
-#include "..\framework.h"
-#include "../app/fnd/Message.h"
-#include "../../LWTypes.h"
 
 namespace app
 {

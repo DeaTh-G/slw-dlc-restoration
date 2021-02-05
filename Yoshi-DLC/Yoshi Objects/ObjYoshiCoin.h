@@ -1,21 +1,4 @@
 #pragma once
-#include "../LWVariables.h"
-#include "../app/GameObject.h"
-#include "../app/fnd/GOComponent.h"
-#include "../app/game/GOCEffect.h"
-#include "../app/game/GOCSound.h"
-#include "../app/game/GOCCollider.h"
-#include "../app/game/GOCShadowSimple.h"
-#include "../app/game/ShadowShapeCInfo.h"
-#include "../app/game/GOCVisualModel.h"
-#include "../app/Gimmick/CRingManager.h"
-#include "../app/CSetAdapter.h"
-#include "../app/ObjUtil.h"
-#include "../app/GameDocument.h"
-#include "../app/xgame/MsgTakeObject.h"
-#include "../app/fnd/CActor.h"
-#include "../app/CSetObjectListener.h"
-#include "../app/fnd/Message.h"
 
 bool IsYoshiCoinShadowOn;
 
@@ -89,6 +72,7 @@ namespace app
 			ObjYoshiCoinInfo* info = (ObjYoshiCoinInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjYoshiCoinInfo");
 
 			// Rotate Manager
+			auto* temp = &MODULE_HANDLE;
 			void* ringManager = Gimmick::CRingManager::GetService(gameDocument, (void*)ASLR(0x00FECC20));
 			Gimmick::CRingManager::RegisterRotateRing(ringManager, (GameObject*)this);
 

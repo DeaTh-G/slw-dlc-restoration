@@ -1,7 +1,4 @@
 #pragma once
-#include "framework.h"
-#include "../app/GameObject.h"
-#include "../app/GameDocument.h"
 
 namespace app
 {

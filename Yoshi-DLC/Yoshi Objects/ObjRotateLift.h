@@ -1,14 +1,4 @@
 #pragma once
-#include "../app/fnd/HFrame.h"
-#include "../hh/base.h"
-#include "../app/fnd/GOCVisualContainer.h"
-#include "../app/fnd/GOComponent.h"
-#include "../app/ObjUtil.h"
-#include "../app/CSetAdapter.h"
-#include "../app/GameDocument.h"
-#include "../app/fnd/Message.h"
-#include "../app/game/GOCVisualModel.h"
-#include "../app/game/GOCMotorRotate.h"
 
 namespace app
 {
@@ -174,7 +164,8 @@ namespace app
 
 			fnd::GOComponent::EndSetup((GameObject*)this);
 
-			game::GOCSound::Play3D(gocSound, &rotation->X, "obj_yossyrollinglift_rotate", 0);
+			int deviceTag[3]{};
+			game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossyrollinglift_rotate", 0);
 
 		}
 

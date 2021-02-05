@@ -1,22 +1,10 @@
 #pragma once
-#include "../app/CObjInfo.h"
-#include "../app/CSetObjectListener.h"
-#include "../app/EnemyBase.h"
-#include "../app/EnemyInfo.h"
-#include "../app/GameDocument.h"
-#include "../app/ObjUtil.h"
-#include "../app/fnd/GOComponent.h"
-#include "../app/animation/AnimationResContainer.h"
-#include "../app/game/GOCAnimationScript.h"
-#include "../app/game/GOCVisualModel.h"
-#include "../app/game/GOCGravity.h"
-#include "../LWVariables.h"
 
 bool IsShyGuyShadowOn;
 
 namespace app
 {
-	struct EnemyShyGuyData
+	/*struct EnemyShyGuyData
 	{
 		float Speed;
 		float MaxMoveDistance;
@@ -25,7 +13,7 @@ namespace app
 		char field_0A;
 		char field_0B;
 		float DepthOffset;
-	};
+	};*/
 
 	class EnemyShyGuyInfo
 	{
@@ -99,8 +87,8 @@ namespace app
 
 		void AddCallback(GameDocument* gameDocument)
 		{
-			Vector3 position;
-			Quaternion rotation;
+			/*Vector3 position;
+			Quaternion rotation;*/
 			fnd::GOCVisualModel::Description visualDescriptor;
 			game::ShadowSphereShapeCInfo shadowInfo;
 
@@ -113,13 +101,13 @@ namespace app
 
 			fnd::GOComponent::Create((GameObject*)this, GOCEffect);
 			fnd::GOComponent::Create((GameObject*)this, GOCSound);
-			fnd::GOComponent::Create((GameObject*)this, GOCCollider);
+			/*fnd::GOComponent::Create((GameObject*)this, GOCCollider);
 			fnd::GOComponent::Create((GameObject*)this, GOCEnemyHsm);
-			fnd::GOComponent::Create((GameObject*)this, GOCMovementComplex);
+			fnd::GOComponent::Create((GameObject*)this, GOCMovementComplex);*/
 
 
 			EnemyShyGuyInfo* info = (EnemyShyGuyInfo*)ObjUtil::GetObjectInfo(gameDocument, "EnemyShyGuyInfo");
-			EnemyShyGuyData* data = (EnemyShyGuyData*)CSetAdapter::GetData(*(int**)(this + 0x324));
+			//EnemyShyGuyData* data = (EnemyShyGuyData*)CSetAdapter::GetData(*(int**)(this + 0x324));
 
 			fnd::GOComponent::BeginSetup((GameObject*)this);
 			int* gocVisual = GameObject::GetGOC((GameObject*)this, GOCVisual);
@@ -151,12 +139,15 @@ namespace app
 				game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
 			}
 
-			game::GOCGravity::SimpleSetup((GameObject*)this, 1);
+			//game::GOCGravity::SimpleSetup((GameObject*)this, 1);
 			int* gocMovement = GameObject::GetGOC((GameObject*)this, GOCMovementString);
 			if (gocMovement)
 			{
-				app::CSetAdapter::GetPosition(*(int**)(this + 0x324), &position);
-				app::CSetAdapter::GetRotation(*(int**)(this + 0x324), &rotation);
+				//app::CSetAdapter::GetPosition(*(int**)(this + 0x324), &position);
+				//app::CSetAdapter::GetRotation(*(int**)(this + 0x324), &rotation);
+
+				//void* moveStraight = ((csl::fnd::IAllocator*)(((int**)gocMovement)[2]))->Alloc(240, 16);
+				//app::game::MoveStraight::__ct(moveStraight);
 			}
 
 			game::GOCEffect::SimpleSetup((GameObject*)this);

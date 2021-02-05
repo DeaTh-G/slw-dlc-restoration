@@ -1,15 +1,4 @@
 #pragma once
-#include "../LWVariables.h"
-#include "../app/GameDocument.h"
-#include "../app/GameObject.h"
-#include "../app/fnd/GOComponent.h"
-#include "../app/CSetObjectListener.h"
-#include "../app/ObjUtil.h"
-#include "../app/animation/AnimationResContainer.h"
-#include "../app/game/GOCAnimationScript.h"
-#include "../app/game/GOCLauncher.h"
-#include "../app/SetShotInfo.h"
-#include "../app/xgame/MsgSpringImpulse.h"
 
 bool IsJumpBoardShadowOn;
 
@@ -173,7 +162,6 @@ namespace app
 			if (gocTransform)
 			{
 				game::GOCLauncher::ShotInfo shotInfo;
-				printf("%d", sizeof(game::GOCLauncher::ShotInfo));
 
 				SetShotInfo(data->FirstSpeed, data->KeepVelocityDistance, data->OutOfControl,
 					(Matrix34*)(gocTransform + 0xC), *(int*)(this + 0x3A4), &shotInfo);
@@ -199,9 +187,6 @@ namespace app
 				*((fnd::MessageType*)(this + 0x3A4)) = message->field_04;
 				*((int*)(this + 0x39C)) = ((int*)message)[8];
 			}
-
-			printf("%X\n", message->field_04);
-
 
 			switch (message->field_04)
 			{
