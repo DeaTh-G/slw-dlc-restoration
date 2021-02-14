@@ -91,6 +91,8 @@ namespace app
 			Quaternion rotation;
 			fnd::GOCVisualModel::VisualDescription visualDescriptor;
 			game::ShadowSphereShapeCInfo shadowInfo;
+			app::game::CollisionObjCInfo collisionInfo;
+			int unit = 1;
 
 			fnd::GOComponent::Create((GameObject*)this, GOCGravity);
 			fnd::GOComponent::Create((GameObject*)this, GOCVisualModel);
@@ -143,6 +145,20 @@ namespace app
 				game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
 			}
 
+			int* gocCollider = GameObject::GetGOC((GameObject*)this, GOCColliderString);
+			if (gocCollider)
+			{
+				game::GOCCollider::Setup(gocCollider, &unit);
+				game::CollisionObjCInfo::__ct(&collisionInfo);
+				collisionInfo.Data[0] = 0x00020000;
+				collisionInfo.CollisionSize.X = 4;
+				ObjUtil::SetupCollisionFilter(9, &collisionInfo);
+				collisionInfo.ShapeType = 0x20000;
+				collisionInfo.CollisionType |= 1;
+				collisionInfo.HFramePointer = EnemyBase::GetCenterPositionFrame((GameObject*)this);
+				game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
+			}
+
 			game::GOCGravity::SimpleSetup((GameObject*)this, 1);
 			int* gocMovement = GameObject::GetGOC((GameObject*)this, GOCMovementString);
 			if (gocMovement)
@@ -177,6 +193,17 @@ namespace app
 			game::GOCEffect::SimpleSetup((GameObject*)this);
 			game::GOCSound::SimpleSetup((GameObject*)this, 0, 0);
 			fnd::GOComponent::EndSetup((GameObject*)this);
+		}
+
+		bool ProcessMessage(fnd::Message* message)
+		{
+			printf("%X\n", message->field_04);
+			switch (message->field_04)
+			{
+			default:
+				EnemyBase::ProcessMessage((int*)this, message);
+				return true;
+			}
 		}
 	};
 

@@ -180,6 +180,7 @@ void Initialize()
 	auto create_EnemyShyGuy = &app::create_EnemyShyGuy;
 	auto create_EnemyShyGuyInfo = &app::create_EnemyShyGuy_EnemyShyGuyInfo;
 	auto EnemyShyGuy__AddCallback = &app::EnemyShyGuy::AddCallback;
+	auto EnemyShyGuy__ProcessMessage = &app::EnemyShyGuy::ProcessMessage;
 
 	/*WRITE_FUNCTION(ASLR(0x00D2C2D4), *(void**)&Create_Big_ObjYoshiJumpBoard);
 	WRITE_FUNCTION(ASLR(0x00D2C324), *(void**)&Create_Small_bjYoshiJumpBoard);
@@ -219,10 +220,10 @@ void Initialize()
 	WRITE_FUNCTION(ASLR(0x00D93A4C), *(void**)&EnemyShyGuyInfo__Initialize);
 	WRITE_FUNCTION(ASLR(0x00D93A54), *(void**)&EnemyShyGuyInfo__GetInfoName);
 	WRITE_FUNCTION(ASLR(0x00D93A18), *(void**)&EnemyShyGuy__AddCallback);
+	WRITE_FUNCTION(ASLR(0x00D93A04), *(void**)&EnemyShyGuy__ProcessMessage);
 	WRITE_FUNCTION(ASLR(0x00D2A64F), *(void**)&create_EnemyShyGuyInfo);
 	WRITE_FUNCTION(ASLR(0x00D2A654), *(void**)&create_EnemyShyGuy);
 	WRITE_FUNCTION(ASLR(0x00D93A48), ASLR(0x00671D90));
-	WRITE_FUNCTION(ASLR(0x00D93A04), ASLR(0x006724B0));
 
 	INSTALL_HOOK(IsDLCStagePurchase);
 	INSTALL_HOOK(CHudGameMainDisplayCtor);
