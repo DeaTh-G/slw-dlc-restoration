@@ -222,6 +222,7 @@ void Initialize()
 	WRITE_FUNCTION(ASLR(0x00D2A64F), *(void**)&create_EnemyShyGuyInfo);
 	WRITE_FUNCTION(ASLR(0x00D2A654), *(void**)&create_EnemyShyGuy);
 	WRITE_FUNCTION(ASLR(0x00D93A48), ASLR(0x00671D90));
+	WRITE_FUNCTION(ASLR(0x00D93A04), ASLR(0x006724B0));
 
 	INSTALL_HOOK(IsDLCStagePurchase);
 	INSTALL_HOOK(CHudGameMainDisplayCtor);

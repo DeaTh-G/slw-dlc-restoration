@@ -61,7 +61,7 @@ namespace app
 			if (IsYoshiCoinShadowOn)
 				fnd::GOComponent::Create((GameObject*)this, GOCShadowSimple);
 		
-			fnd::GOCVisualModel::Description visualDescriptor;
+			fnd::GOCVisualModel::VisualDescription visualDescriptor;
 			game::CollisionObjCInfo collisionInfo;
 			game::ShadowHemisphereShapeCInfo shadowInfo;
 			
@@ -80,7 +80,7 @@ namespace app
 			int* gocVisual = GameObject::GetGOC((GameObject*)this, GOCVisual);
 			if (gocVisual)
 			{
-				fnd::GOCVisualModel::Description::__ct(&visualDescriptor);
+				fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
 				visualDescriptor.Model = *(int*)(info + 0x10);
 				fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
 				fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, position);

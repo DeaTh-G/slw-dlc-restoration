@@ -4,7 +4,7 @@ bool IsShyGuyShadowOn;
 
 namespace app
 {
-	/*struct EnemyShyGuyData
+	struct EnemyShyGuyData
 	{
 		float Speed;
 		float MaxMoveDistance;
@@ -13,7 +13,7 @@ namespace app
 		char field_0A;
 		char field_0B;
 		float DepthOffset;
-	};*/
+	};
 
 	class EnemyShyGuyInfo
 	{
@@ -80,16 +80,16 @@ namespace app
 			*((int*)this + 2) = ASLR(0x00D939F8);
 
 			*(int*)(this + 0x4C0) = 0;
-			//ObjUtil::SetPropertyLockonTarget();
+			ObjUtil::SetPropertyLockonTarget((GameObject*)this);
 
 			return (CSetObjectListener*)this;
 		}
 
 		void AddCallback(GameDocument* gameDocument)
 		{
-			/*Vector3 position;
-			Quaternion rotation;*/
-			fnd::GOCVisualModel::Description visualDescriptor;
+			Vector3 position;
+			Quaternion rotation;
+			fnd::GOCVisualModel::VisualDescription visualDescriptor;
 			game::ShadowSphereShapeCInfo shadowInfo;
 
 			fnd::GOComponent::Create((GameObject*)this, GOCGravity);
@@ -101,22 +101,26 @@ namespace app
 
 			fnd::GOComponent::Create((GameObject*)this, GOCEffect);
 			fnd::GOComponent::Create((GameObject*)this, GOCSound);
-			/*fnd::GOComponent::Create((GameObject*)this, GOCCollider);
+			fnd::GOComponent::Create((GameObject*)this, GOCCollider);
 			fnd::GOComponent::Create((GameObject*)this, GOCEnemyHsm);
-			fnd::GOComponent::Create((GameObject*)this, GOCMovementComplex);*/
-
+			fnd::GOComponent::Create((GameObject*)this, GOCMovementComplex);
 
 			EnemyShyGuyInfo* info = (EnemyShyGuyInfo*)ObjUtil::GetObjectInfo(gameDocument, "EnemyShyGuyInfo");
-			//EnemyShyGuyData* data = (EnemyShyGuyData*)CSetAdapter::GetData(*(int**)(this + 0x324));
+			EnemyShyGuyData* data = (EnemyShyGuyData*)CSetAdapter::GetData(*(int**)(this + 0x324));
+			if (data->IsEventDriven)
+				*(int*)(this + 0x4C0) |= 1;
+			if (data->Direction)
+				*(int*)(this + 0x4C0) |= 4;
 
 			fnd::GOComponent::BeginSetup((GameObject*)this);
 			int* gocVisual = GameObject::GetGOC((GameObject*)this, GOCVisual);
 			if (gocVisual)
 			{
-				fnd::GOCVisualModel::Description::__ct(&visualDescriptor);
+				fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
 				visualDescriptor.Model = info->Model;
 				visualDescriptor.Skeleton = info->Skeleton;
 				visualDescriptor.Animation |= 0x400000;
+				visualDescriptor.ZIndex = data->DepthOffset;
 				fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
 
 				int* gocAnimation = GameObject::GetGOC((GameObject*)this, GOCAnimationString);
@@ -139,15 +143,35 @@ namespace app
 				game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
 			}
 
-			//game::GOCGravity::SimpleSetup((GameObject*)this, 1);
+			game::GOCGravity::SimpleSetup((GameObject*)this, 1);
 			int* gocMovement = GameObject::GetGOC((GameObject*)this, GOCMovementString);
 			if (gocMovement)
 			{
-				//app::CSetAdapter::GetPosition(*(int**)(this + 0x324), &position);
-				//app::CSetAdapter::GetRotation(*(int**)(this + 0x324), &rotation);
+				game::MoveStraight::MoveParameter moveParameter{};
 
-				//void* moveStraight = ((csl::fnd::IAllocator*)(((int**)gocMovement)[2]))->Alloc(240, 16);
-				//app::game::MoveStraight::__ct(moveStraight);
+				CSetAdapter::GetPosition(*(int**)(this + 0x324), &moveParameter.Position);
+				CSetAdapter::GetRotation(*(int**)(this + 0x324), &moveParameter.Rotation);
+				moveParameter.field_20 = 100;
+				moveParameter.field_24 = 4;
+				moveParameter.field_28 = 0x101;
+				moveParameter.field_2A = 0;
+				moveParameter.field_30.Y = 5;
+				moveParameter.field_30.Z = 6;
+				moveParameter.field_40.Z = 10;
+				moveParameter.field_50.Z = 3;
+				moveParameter.field_60 = 10;
+
+				void* moveStraight = ((csl::fnd::IAllocator*)(((int**)gocMovement)[2]))->Alloc(240, 16);
+				int* ms = game::MoveStraight::__ct(moveStraight);
+				game::GOCMovement::SetupController(gocMovement, moveStraight);
+				game::MoveStraight::SetupParamater(moveStraight, &moveParameter);
+				game::MoveStraight::SetMoveDistance(moveStraight, data->MaxMoveDistance, 0.0);
+				int* contextParam = game::GOCMovement::GetContextParam(gocMovement);
+				*((float*)(contextParam + 8)) = data->Speed * -1;
+				if ((*(int*)(this + 0x4C0) & 4) == 4)
+				{
+					*((float*)(contextParam + 8)) = data->Speed;
+				}
 			}
 
 			game::GOCEffect::SimpleSetup((GameObject*)this);

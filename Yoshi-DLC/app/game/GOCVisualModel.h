@@ -7,7 +7,7 @@ namespace app
 		class GOCVisualModel
 		{
 		public:
-			class Description
+			class VisualDescription
 			{
 			public:
 				int Model;
@@ -16,7 +16,7 @@ namespace app
 				int Animation;
 				int field_10;
 				int* HFramePointer;
-				float field_18;
+				float ZIndex;
 				int field_1C;
 				int field_20;
 				int field_24;
@@ -26,10 +26,10 @@ namespace app
 				int field_34;
 				int field_38;
 			
-				inline static FUNCTION_PTR(Description*, __thiscall, __ct, ASLR(0x00495480), Description* This);
+				inline static FUNCTION_PTR(VisualDescription*, __thiscall, __ct, ASLR(0x00495480), VisualDescription* This);
 			};
 
-			inline static FUNCTION_PTR(void, __thiscall, Setup, ASLR(0x00495850), int* This, Description* visualDescriptor);
+			inline static FUNCTION_PTR(void, __thiscall, Setup, ASLR(0x00495850), int* This, VisualDescription* visualDescriptor);
 			inline static FUNCTION_PTR(void, __thiscall, AttachAnimation, ASLR(0x004951B0), int* This, int* gocAnimation);
 		};
 

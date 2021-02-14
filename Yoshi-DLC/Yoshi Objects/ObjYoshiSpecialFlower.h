@@ -62,7 +62,7 @@ namespace app
 
 		void AddCallback(GameDocument* gameDocument)
 		{
-			app::fnd::GOCVisualModel::Description visualDescriptor;
+			app::fnd::GOCVisualModel::VisualDescription visualDescriptor;
 			app::game::CollisionObjCInfo collisionInfo;
 			game::ShadowHemisphereShapeCInfo shadowInfo;
 			int unit = 1;
@@ -87,7 +87,7 @@ namespace app
 			int* gocVisual = app::GameObject::GetGOC((GameObject*)this, GOCVisual);
 			if (gocVisual)
 			{
-				app::fnd::GOCVisualModel::Description::__ct(&visualDescriptor);
+				app::fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
 				visualDescriptor.Model = *(int*)(info + 0x10);
 				visualDescriptor.Skeleton = *(int*)(info + 0x14);
 				app::fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);

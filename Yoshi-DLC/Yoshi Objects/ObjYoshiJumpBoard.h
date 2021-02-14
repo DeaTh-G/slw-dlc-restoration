@@ -83,7 +83,7 @@ namespace app
 			Vector3* position = new (loc)Vector3(0, 7.375f, 0);
 
 			game::ShadowSphereShapeCInfo shadowInfo;
-			fnd::GOCVisualModel::Description visualDescriptor;
+			fnd::GOCVisualModel::VisualDescription visualDescriptor;
 			game::CollisionObjCInfo collisionInfo;
 			float jumpBoardScale = *(int*)(this + 0x3A4) ? 0.75f : 1.25f;
 			float shadowSize = *(int*)(this + 0x3A4) ? 3.75f : 6.25f;
@@ -107,7 +107,7 @@ namespace app
 			int* gocVisual = GameObject::GetGOC((GameObject*)this, GOCVisual);
 			if (gocVisual)
 			{
-				fnd::GOCVisualModel::Description::__ct(&visualDescriptor);
+				fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
 				visualDescriptor.Model = *(int*)(info + 0x10);
 				visualDescriptor.Skeleton = *(int*)(info + 0x14);
 				visualDescriptor.Animation |= 0x400000;

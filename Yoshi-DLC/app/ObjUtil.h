@@ -21,6 +21,6 @@ namespace app
 		inline static FUNCTION_PTR(int, __cdecl, SendMessageImmToSetObject, ASLR(0x0073DC90), GameObject* gameObject, int* objectID, int* message, int a4);
 		inline static FUNCTION_PTR(int, __cdecl, SendMessageImmToPlayer, ASLR(0x0073DF60), GameObject* gameObject, int* message);
 		inline static FUNCTION_PTR(int, __cdecl, GetPlayerActorID, ASLR(0x0073DDF0), GameDocument* gameDocument, int playerNo);
-		inline static FUNCTION_PTR(int, __cdecl, SetPropertyLockonTarget, ASLR(0x73D280));
+		inline static FUNCTION_PTR(int, __cdecl, SetPropertyLockonTarget, ASLR(0x0073D280), GameObject* This);
 	};
 }

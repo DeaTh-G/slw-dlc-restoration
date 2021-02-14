@@ -76,7 +76,7 @@ namespace app
 
 			// Variables
 			int unit = 1;
-			fnd::GOCVisualModel::Description visualDescriptor;
+			fnd::GOCVisualModel::VisualDescription visualDescriptor;
 			game::CollisionObjCInfo collisionInfo;
 			Quaternion setRotation;
 
@@ -115,7 +115,7 @@ namespace app
 			{
 				int* gocVisual = fnd::GOComponent::CreateSingle((GameObject*)this, GOCVisualModel);
 				fnd::GOCVisualContainer::Add(visualContainer, gocVisual);
-				fnd::GOCVisualModel::Description::__ct(&visualDescriptor);
+				fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
 				
 				if (i < 4)
 				{
