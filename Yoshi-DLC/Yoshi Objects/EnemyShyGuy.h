@@ -204,6 +204,7 @@ namespace app
 			switch (message->field_04)
 			{
 			case fnd::PROC_MSG_DAMAGE:
+				ProcMsgDamage(message);
 				break;
 			case fnd::PROC_MSG_KICK:
 				ProcMsgKick(message);
@@ -221,6 +222,23 @@ namespace app
 			}
 		}
 	private:
+		void ProcMsgDamage(fnd::Message* message)
+		{
+			int* gocTransform = GameObject::GetGOC((GameObject*)(this - 8), GOCTransformString);
+			if (gocTransform)
+			{
+				Vector3 translation{};
+				math::CalculatedTransform::GetTranslation((Matrix34*)(gocTransform + 0x44), &translation);
+				xgame::MsgDamage::SetReply(message, &translation, 1);
+				ObjUtil::AddScore((GameObject*)(this - 8), "SHYGUY", message);
+
+				// TODO - EFFECT
+				EnemyBase::ProcMission((GameObject*)(this - 8), message);
+				CSetObjectListener::SetStatusRetire((GameObject*)(this - 8));
+				GameObject::Kill((GameObject*)(this - 8));
+			}
+		}
+
 		void ProcMsgKick(fnd::Message* message)
 		{
 			EnemyBlowOffObjectCInfo blowOffInfo;

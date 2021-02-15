@@ -56,10 +56,13 @@
 
 #include "app/HUD/SRUtility.h"
 
+#include "app/math/CalculatedTransform.h"
+
 #include "app/Player/CPhysics.h"
 
 #include "app/xgame/MsgCatchEndPlayer.h"
 #include "app/xgame/MsgCatchPlayer.h"
+#include "app/xgame/MsgDamage.h"
 #include "app/xgame/MsgExtendPlayer.h"
 #include "app/xgame/MsgGetExternalMovePosition.h"
 #include "app/xgame/MsgKick.h"
