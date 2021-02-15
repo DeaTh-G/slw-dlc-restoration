@@ -203,6 +203,15 @@ namespace app
 			printf("%X\n", message->field_04);
 			switch (message->field_04)
 			{
+			case fnd::PROC_MSG_DAMAGE:
+				break;
+			case fnd::PROC_MSG_KICK:
+				break;
+			case fnd::PROC_MSG_NOTIFY_OBJECT_EVENT:
+				break;
+			case fnd::PROC_MSG_HIT_EVENT_COLLISION:
+				EnemyBase::SendTouchDamage((int*)this - 2, message);
+				break;
 			default:
 				EnemyBase::ProcessMessage((int*)this, message);
 				return true;
