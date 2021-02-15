@@ -89,6 +89,8 @@ namespace app
 		{
 			Vector3 position;
 			Quaternion rotation;
+			Vector3 reticlePosition{};
+			reticlePosition.Y = 5;
 			fnd::GOCVisualModel::VisualDescription visualDescriptor;
 			game::ShadowSphereShapeCInfo shadowInfo;
 			app::game::CollisionObjCInfo collisionInfo;
@@ -106,6 +108,7 @@ namespace app
 			fnd::GOComponent::Create((GameObject*)this, GOCCollider);
 			fnd::GOComponent::Create((GameObject*)this, GOCEnemyHsm);
 			fnd::GOComponent::Create((GameObject*)this, GOCMovementComplex);
+			fnd::GOComponent::BeginSetup((GameObject*)this);
 
 			EnemyShyGuyInfo* info = (EnemyShyGuyInfo*)ObjUtil::GetObjectInfo(gameDocument, "EnemyShyGuyInfo");
 			EnemyShyGuyData* data = (EnemyShyGuyData*)CSetAdapter::GetData(*(int**)(this + 0x324));
@@ -114,7 +117,7 @@ namespace app
 			if (data->Direction)
 				*(int*)(this + 0x4C0) |= 4;
 
-			fnd::GOComponent::BeginSetup((GameObject*)this);
+			EnemyBase::CreateCenterPositionFrame((GameObject*)this, &reticlePosition);
 			int* gocVisual = GameObject::GetGOC((GameObject*)this, GOCVisual);
 			if (gocVisual)
 			{
