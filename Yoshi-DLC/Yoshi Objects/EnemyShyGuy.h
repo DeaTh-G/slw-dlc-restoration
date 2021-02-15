@@ -206,16 +206,47 @@ namespace app
 			case fnd::PROC_MSG_DAMAGE:
 				break;
 			case fnd::PROC_MSG_KICK:
+				ProcMsgKick(message);
+				return true;
 				break;
 			case fnd::PROC_MSG_NOTIFY_OBJECT_EVENT:
 				break;
 			case fnd::PROC_MSG_HIT_EVENT_COLLISION:
-				EnemyBase::SendTouchDamage((int*)this - 2, message);
+				ProcMsgHitEventCollision(message);
+				return true;
 				break;
 			default:
 				EnemyBase::ProcessMessage((int*)this, message);
 				return true;
 			}
+		}
+	private:
+		void ProcMsgKick(fnd::Message* message)
+		{
+			EnemyBlowOffObjectCInfo blowOffInfo;
+			EnemyShyGuyInfo* info = (EnemyShyGuyInfo*)ObjUtil::GetObjectInfo(*Document, "EnemyShyGuyInfo");
+			int* gocTransform = GameObject::GetGOC((GameObject*)(this - 8), GOCTransformString);
+			if (gocTransform)
+			{
+				EnemyBlowOffObjectCInfo::__ct(&blowOffInfo);
+				EnemyBlowOffObjectCInfo::SetParamByMessage(&blowOffInfo, message);
+				blowOffInfo.Model = info->Model;
+				blowOffInfo.Skeleton = info->Skeleton;
+				blowOffInfo.Animation = info->AnimationLeft;
+				blowOffInfo.field_10 = *(Matrix34*)(gocTransform + 0x44);
+				blowOffInfo.field_50.Y = 5;
+				blowOffInfo.field_60.X = 4;
+				EnemyBase::CreateEnemyBlowOffObject((GameObject*)(this - 8), &blowOffInfo);
+				xgame::MsgKick::SetReplyForSucceed(message);
+				ObjUtil::AddScore((GameObject*)(this - 8), "SHYGUY", message);
+				CSetObjectListener::SetStatusRetire((GameObject*)(this - 8));
+				GameObject::Kill((GameObject*)(this - 8));
+			}
+		}
+
+		void ProcMsgHitEventCollision(fnd::Message* message)
+		{
+			EnemyBase::SendTouchDamage((int*)this - 2, message);
 		}
 	};
 
