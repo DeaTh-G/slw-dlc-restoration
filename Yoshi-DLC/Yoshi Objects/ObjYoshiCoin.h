@@ -72,7 +72,6 @@ namespace app
 			ObjYoshiCoinInfo* info = (ObjYoshiCoinInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjYoshiCoinInfo");
 
 			// Rotate Manager
-			auto* temp = &MODULE_HANDLE;
 			void* ringManager = Gimmick::CRingManager::GetService(gameDocument, (void*)ASLR(0x00FECC20));
 			Gimmick::CRingManager::RegisterRotateRing(ringManager, (GameObject*)this);
 

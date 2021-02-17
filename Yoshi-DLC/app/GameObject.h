@@ -21,19 +21,10 @@ namespace app
 			return NewGameObject(size);
 		}
 	};
-}
 
-//FUNCTION_PTR(int*, __thiscall, GameObjectHandleBaseCtor, ASLR(0x0049D490),void* This, GameObject* obj);
-
-struct GameObjectHandleBase
-{
-	int* Unknown;
-	int* Unknown2;
-
-	GameObjectHandleBase(app::GameObject* obj)
+	class GameObjectHandleBase
 	{
-		Unknown = nullptr;
-		Unknown2 = nullptr;
-		//GameObjectHandleBaseCtor(this, obj);
-	}
-};
+	public:
+		inline static FUNCTION_PTR(GameObject*, __cdecl, __ct, ASLR(0x0049D490), void* This, GameObject* a1);
+	};
+}

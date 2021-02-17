@@ -54,12 +54,15 @@
 
 #include "app/Gimmick/CRingManager.h"
 
+#include "app/enemy/DeadEffectCInfo.h"
+
 #include "app/HUD/SRUtility.h"
 
 #include "app/math/CalculatedTransform.h"
 
 #include "app/Player/CPhysics.h"
 
+#include "app/xgame.h"
 #include "app/xgame/MsgCatchEndPlayer.h"
 #include "app/xgame/MsgCatchPlayer.h"
 #include "app/xgame/MsgDamage.h"
@@ -97,3 +100,7 @@
 #include "Yoshi Objects/ObjYoshiJumpBoardBig.h"
 #include "Yoshi Objects/ObjYoshiJumpBoardSmall.h"
 #include "Yoshi Objects/ObjYoshiSpecialFlower.h"
+
+#include "app/Objects/CSharedObjInfo.h"
+
+#include "app/HUD/CHudGameMainDisplay.h"
