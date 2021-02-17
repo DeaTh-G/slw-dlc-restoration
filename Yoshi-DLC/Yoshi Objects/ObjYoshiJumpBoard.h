@@ -17,8 +17,15 @@ namespace app
 
 	class ObjYoshiJumpBoardInfo
 	{
-
 	public:
+		int field_00;
+		int field_04;
+		int field_08;
+		int field_0C;
+		int Model;
+		int Skeleton;
+		animation::AnimationResContainer AnimationContainer;
+
 		void Initialize(GameDocument* gameDocument)
 		{
 			int model = 0;
@@ -27,18 +34,12 @@ namespace app
 
 			int packFile;
 			ObjUtil::GetPackFile(&packFile, ObjUtil::GetStagePackName(gameDocument));
-			ObjUtil::GetModelResource(&model, "zdlc02_obj_jumpboard", &packFile);
-			ObjUtil::GetSkeletonResource(&skeleton, "zdlc02_obj_jumpboard", packFile);
+			ObjUtil::GetModelResource(&this->Model, "zdlc02_obj_jumpboard", &packFile);
+			ObjUtil::GetSkeletonResource(&this->Skeleton, "zdlc02_obj_jumpboard", packFile);
 			ObjUtil::GetAnimationScriptResource(&animationScript, "zdlc02_obj_jumpboard", packFile);
 
-			if (model)
-				*(int*)(this + 0x10) = model;
-			
-			if (skeleton)
-				*(int*)(this + 0x14) = skeleton;
-
 			if (animationScript)
-				animation::AnimationResContainer::LoadFromBuffer((int*)(this + 0x18), &animationScript, packFile);
+				animation::AnimationResContainer::LoadFromBuffer((int*)&(this->AnimationContainer), &animationScript, packFile);
 		}
 
 		const char* GetInfoName()
@@ -108,8 +109,8 @@ namespace app
 			if (gocVisual)
 			{
 				fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
-				visualDescriptor.Model = *(int*)(info + 0x10);
-				visualDescriptor.Skeleton = *(int*)(info + 0x14);
+				visualDescriptor.Model = info->Model;
+				visualDescriptor.Skeleton = info->Skeleton;
 				visualDescriptor.Animation |= 0x400000;
 				fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
 
@@ -121,9 +122,9 @@ namespace app
 				int* gocAnimation = GameObject::GetGOC((GameObject*)this, GOCAnimationString);
 				if (gocAnimation)
 				{
-					int animation = (int)(info + 0x18);
+					animation::AnimationResContainer* animation = &(info->AnimationContainer);
 
-					game::GOCAnimationScript::Setup(gocAnimation, &animation);
+					game::GOCAnimationScript::Setup(gocAnimation, (int*)&animation);
 					fnd::GOCVisualModel::AttachAnimation(gocVisual, gocAnimation);
 				}
 			}

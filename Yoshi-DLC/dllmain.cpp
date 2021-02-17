@@ -76,13 +76,13 @@ void Initialize()
 	auto EnemyShyGuy__AddCallback = &app::EnemyShyGuy::AddCallback;
 	auto EnemyShyGuy__ProcessMessage = &app::EnemyShyGuy::ProcessMessage;
 
-	/*WRITE_FUNCTION(ASLR(0x00D2C2D4), *(void**)&Create_Big_ObjYoshiJumpBoard);
+	WRITE_FUNCTION(ASLR(0x00D2C2D4), *(void**)&Create_Big_ObjYoshiJumpBoard);
 	WRITE_FUNCTION(ASLR(0x00D2C324), *(void**)&Create_Small_bjYoshiJumpBoard);
 	WRITE_FUNCTION(ASLR(0x00DE1390), *(void**)&ObjYoshiJumpBoard_AddCallback);
 	WRITE_FUNCTION(ASLR(0x00DE137C), *(void**)&ObjYoshiJumpBoard_ProcessMessage);
 	WRITE_FUNCTION(ASLR(0x00DE1380), *(void**)&ObjYoshiJumpBoard_Update);
 	WRITE_FUNCTION(ASLR(0x00D95040), *(void**)&ObjYoshiJumpBoardInfo_Initialize);
-	WRITE_FUNCTION(ASLR(0x00D95048), *(void**)&ObjYoshiJumpBoardInfo_GetInfoName);*/
+	WRITE_FUNCTION(ASLR(0x00D95048), *(void**)&ObjYoshiJumpBoardInfo_GetInfoName);
 
 	WRITE_FUNCTION(ASLR(0x00D94EDC), *(void**)&ObjYoshiCoin__ProcessMessage);
 	WRITE_FUNCTION(ASLR(0x00D94EF0), *(void**)&ObjYoshiCoin__AddCallback);
