@@ -124,6 +124,7 @@ void Initialize()
 	app::HUD::CHudGameMainDisplay::__ct();
 	app::HUD::CHudGameMainDisplay::SpecialRingUpdate();
 	app::CSharedObjInfo::Initialize();
+	app::CObjDroppedRing::ProcMsgHitEventCollision();
 }
 
 extern "C"
@@ -165,4 +166,3 @@ BOOL WINAPI DllMain(_In_ HINSTANCE instance, _In_ DWORD reason, _In_ LPVOID rese
     }
     return TRUE;
 }
-

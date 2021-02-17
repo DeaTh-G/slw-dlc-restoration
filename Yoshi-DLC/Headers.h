@@ -102,5 +102,6 @@
 #include "Yoshi Objects/ObjYoshiSpecialFlower.h"
 
 #include "app/Objects/CSharedObjInfo.h"
+#include "app/Objects/CObjDroppedRing.h"
 
 #include "app/HUD/CHudGameMainDisplay.h"
