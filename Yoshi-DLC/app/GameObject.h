@@ -25,6 +25,6 @@ namespace app
 	class GameObjectHandleBase
 	{
 	public:
-		inline static FUNCTION_PTR(GameObject*, __cdecl, __ct, ASLR(0x0049D490), void* This, GameObject* a1);
+		inline static FUNCTION_PTR(GameObject*, __thiscall, __ct, ASLR(0x0049D490), void* This, GameObject* a1);
 	};
 }

@@ -135,7 +135,9 @@ namespace app
 
 					game::GOCAnimationScript::Setup(gocAnimation, (int*)&animation);
 					fnd::GOCVisualModel::AttachAnimation(gocVisual, gocAnimation);
-					game::GOCAnimationScript::SetAnimation(gocAnimation, "WALK_R");
+					game::GOCAnimationScript::SetAnimation(gocAnimation, "WALK_L");
+					if ((*(int*)(this + 0x4C0) & 4) == 4)
+						game::GOCAnimationScript::SetAnimation(gocAnimation, "WALK_R");
 				}
 			}
 			
@@ -188,9 +190,7 @@ namespace app
 				int* contextParam = game::GOCMovement::GetContextParam(gocMovement);
 				*((float*)(contextParam + 8)) = data->Speed * -1;
 				if ((*(int*)(this + 0x4C0) & 4) == 4)
-				{
 					*((float*)(contextParam + 8)) = data->Speed;
-				}
 			}
 
 			game::GOCEffect::SimpleSetup((GameObject*)this);
@@ -228,11 +228,31 @@ namespace app
 			if (gocTransform)
 			{
 				Vector3 translation{};
+				enemy::DeadEffectCInfo effectInfo;
+
 				math::CalculatedTransform::GetTranslation((Matrix34*)(gocTransform + 0x44), &translation);
 				xgame::MsgDamage::SetReply(message, &translation, 1);
 				ObjUtil::AddScore((GameObject*)(this - 8), "SHYGUY", message);
 
 				// TODO - EFFECT
+				enemy::DeadEffectCInfo::__ct(&effectInfo);
+				GameObjectHandleBase::__ct(&effectInfo, (GameObject*)(this - 8));
+				enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, message);
+				enemy::DeadEffectCInfo::SetYoshiIsland(&effectInfo);
+
+				Matrix34 transform{};
+				int* gocVisual = GameObject::GetGOC((GameObject*)(this - 8), GOCVisual);
+				if (gocVisual)
+				{
+					fnd::GOCVisualModel::GetNodeTransform(gocVisual, 0, "Spine", &transform);
+					effectInfo.field_20.data[3][0] = transform.data[0][0];
+					effectInfo.field_20.data[3][1] = transform.data[0][1];
+					effectInfo.field_20.data[3][2] = transform.data[0][2];
+					effectInfo.field_62 |= 1;
+				}
+
+				void* enemyManager = EnemyManager::GetService(*(GameDocument**)(this + 0x20));
+				EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
 				EnemyBase::ProcMission((GameObject*)(this - 8), message);
 				CSetObjectListener::SetStatusRetire((GameObject*)(this - 8));
 				GameObject::Kill((GameObject*)(this - 8));
@@ -251,6 +271,8 @@ namespace app
 				blowOffInfo.Model = info->Model;
 				blowOffInfo.Skeleton = info->Skeleton;
 				blowOffInfo.Animation = info->AnimationLeft;
+				if ((*(int*)(this + 0x4C0) & 4) == 4)
+					blowOffInfo.Animation = info->AnimationRight;
 				blowOffInfo.field_10 = *(Matrix34*)(gocTransform + 0x44);
 				blowOffInfo.field_50.Y = 5;
 				blowOffInfo.field_60.X = 4;

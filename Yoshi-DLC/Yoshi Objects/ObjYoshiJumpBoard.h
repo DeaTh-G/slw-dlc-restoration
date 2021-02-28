@@ -32,12 +32,13 @@ namespace app
 			int skeleton = 0;
 			int animationScript = 0;
 
-			int packFile;
+			int packFile = 0;
 			ObjUtil::GetPackFile(&packFile, ObjUtil::GetStagePackName(gameDocument));
 			ObjUtil::GetModelResource(&this->Model, "zdlc02_obj_jumpboard", &packFile);
 			ObjUtil::GetSkeletonResource(&this->Skeleton, "zdlc02_obj_jumpboard", packFile);
 			ObjUtil::GetAnimationScriptResource(&animationScript, "zdlc02_obj_jumpboard", packFile);
 
+			/* Crashed in 2P */
 			if (animationScript)
 				animation::AnimationResContainer::LoadFromBuffer((int*)&(this->AnimationContainer), &animationScript, packFile);
 		}

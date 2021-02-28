@@ -18,10 +18,12 @@
 #include "app/CObjInfo.h"
 #include "app/CSetAdapter.h"
 #include "app/CSetObjectListener.h"
+#include "app/enemy/DeadEffectCInfo.h"
 #include "app/EnemyBlowOffObjectCInfo.h"
 #include "app/EnemyBase.h"
 #include "app/EnemyInfo.h"
 #include "app/GameDocument.h"
+#include "app/EnemyManager.h"
 #include "app/game/CollisionObjCInfo.h"
 #include "app/ObjUtil.h"
 #include "app/game/GOCLauncher.h"
@@ -53,8 +55,6 @@
 #include "app/game/ShadowShapeCInfo.h"
 
 #include "app/Gimmick/CRingManager.h"
-
-#include "app/enemy/DeadEffectCInfo.h"
 
 #include "app/HUD/SRUtility.h"
 

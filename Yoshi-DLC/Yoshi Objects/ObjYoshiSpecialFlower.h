@@ -144,6 +144,7 @@ namespace app
 			{
 			case fnd::PROC_MSG_HIT_EVENT_COLLISION:
 			{
+				/* Crashed in 2P */
 				ProcMsgHitEventCollision((int*)message);
 				return true;
 			}

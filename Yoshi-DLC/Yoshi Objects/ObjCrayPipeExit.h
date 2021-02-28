@@ -38,13 +38,13 @@ namespace app
 			int unit = 1;
 
 			fnd::GOComponent::Create((GameObject*)this, GOCCollider);
-			//fnd::GOComponent::Create((GameObject*)this, GOCSound);
+			fnd::GOComponent::Create((GameObject*)this, GOCSound);
 
 			fnd::GOComponent::BeginSetup((GameObject*)this);
 			ObjCrayPipeExitData* data = (ObjCrayPipeExitData*)CSetAdapter::GetData(*(int**)(this + 0x324));
 			*((int*)(this + 0x3A4)) = data->Direction;
 
-			//game::GOCSound::SimpleSetup((GameObject*)this, 0, 0);
+			game::GOCSound::SimpleSetup((GameObject*)this, 0, 0);
 
 			/* Collider */
 			int* gocCollider = app::GameObject::GetGOC((GameObject*)this, GOCColliderString);
@@ -114,6 +114,8 @@ namespace app
 
 		void StatePipeOut(xgame::MsgGetExternalMovePosition* message)
 		{
+			/* The player that didn't enter isn't released in 2P */
+
 			int* gocTransform = GameObject::GetGOC((GameObject*)(this - 8), GOCTransformString);
 			if (gocTransform)
 			{
