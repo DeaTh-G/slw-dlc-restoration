@@ -125,6 +125,7 @@ void Initialize()
 	app::HUD::CHudGameMainDisplay::SpecialRingUpdate();
 	app::CSharedObjInfo::Initialize();
 	app::CObjDroppedRing::ProcMsgHitEventCollision();
+	app::EnemyBlowOffObject::OnDead();
 }
 
 extern "C"

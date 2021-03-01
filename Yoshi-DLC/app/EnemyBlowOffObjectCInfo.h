@@ -11,7 +11,10 @@ namespace app
 		int field_0C;
 		Matrix34 field_10;
 		Vector3 field_50;
-		Vector3 field_60;
+		float field_60;
+		float field_64;
+		float field_68;
+		int field_6C;
 		Vector3 field_70;
 		int field_80;
 		int field_84;

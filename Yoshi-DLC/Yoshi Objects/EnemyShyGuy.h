@@ -234,7 +234,6 @@ namespace app
 				xgame::MsgDamage::SetReply(message, &translation, 1);
 				ObjUtil::AddScore((GameObject*)(this - 8), "SHYGUY", message);
 
-				// TODO - EFFECT
 				enemy::DeadEffectCInfo::__ct(&effectInfo);
 				GameObjectHandleBase::__ct(&effectInfo, (GameObject*)(this - 8));
 				enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, message);
@@ -275,7 +274,8 @@ namespace app
 					blowOffInfo.Animation = info->AnimationRight;
 				blowOffInfo.field_10 = *(Matrix34*)(gocTransform + 0x44);
 				blowOffInfo.field_50.Y = 5;
-				blowOffInfo.field_60.X = 4;
+				blowOffInfo.field_60 = 4;
+				blowOffInfo.field_6C = 3;
 				EnemyBase::CreateEnemyBlowOffObject((GameObject*)(this - 8), &blowOffInfo);
 				xgame::MsgKick::SetReplyForSucceed(message);
 				ObjUtil::AddScore((GameObject*)(this - 8), "SHYGUY", message);
