@@ -241,7 +241,7 @@ namespace app
 		void StateWarp(fnd::Message* parentMessage)
 		{
 			Vector3 targetPosition;
-			Quaternion targetRotation;
+			csl::math::Quaternion targetRotation;
 			xgame::MsgNotifyObjectEvent notifyObjevtEventMessage;
 			xgame::MsgWarpNewArea warpNewAreaMessage;
 

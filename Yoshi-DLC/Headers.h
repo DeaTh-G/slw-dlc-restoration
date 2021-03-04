@@ -7,10 +7,14 @@
 
 // csl
 #include "csl/fnd.h"
+#include "csl/math/Quaternion.h"
 
 // app
+#include "app/ut/internal/StateImpl.h"
 #include "app/animation/AnimationResContainer.h"
 
+#include "app/ut/StateBase.h"
+#include "app/EnemyState.h"
 #include "app/GameObject.h"
 #include "app/fnd/Message.h"
 #include "app/CGOCCollectionImpl.h"
@@ -53,12 +57,14 @@
 #include "app/game/GOCMovement.h"
 #include "app/game/MoveStraight.h"
 #include "app/game/ShadowShapeCInfo.h"
+#include "app/GOCEnemyHsm.h"
 
 #include "app/Gimmick/CRingManager.h"
 
 #include "app/HUD/SRUtility.h"
 
 #include "app/math/CalculatedTransform.h"
+#include "app/math/Transform.h"
 
 #include "app/Player/CPhysics.h"
 

@@ -6,7 +6,7 @@ namespace app
 	{
 		__declspec(align(16)) struct MotorInfo
 		{
-			Quaternion someVector;
+			csl::math::Quaternion someVector;
 			float Speed;
 			int Padding[3];
 		};

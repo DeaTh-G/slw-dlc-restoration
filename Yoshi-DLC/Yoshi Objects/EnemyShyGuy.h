@@ -73,6 +73,290 @@ namespace app
 	class EnemyShyGuy
 	{
 	public:
+		class State
+		{
+		public:
+			class Move
+			{
+				char field_00[20];
+			public:
+				virtual ~Move() {};
+				virtual int Trigger(EnemyShyGuy* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
+				virtual int Init(EnemyShyGuy* obj) { return 0; };
+				virtual int Enter(EnemyShyGuy* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
+				virtual int Leave(EnemyShyGuy* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
+				virtual int Update(EnemyShyGuy* obj, float a2) { return EnemyState::Update(this, obj, a2); };
+				virtual int ProcessMessage(EnemyShyGuy* obj, int a2) { return 0; };
+				
+				virtual int OnEnter(EnemyShyGuy* obj, int a2)
+				{
+					int* gocAnimation = GameObject::GetGOC((GameObject*)obj, GOCAnimationString);
+					if (gocAnimation)
+					{
+						game::GOCAnimationScript::ChangeAnimation(gocAnimation, "WALK_L");
+						if ((*(int*)(obj + 0x4C0) & 4) == 4)
+							game::GOCAnimationScript::ChangeAnimation(gocAnimation, "WALK_R");
+					}
+					return 1;
+				};
+				
+				virtual int OnLeave(EnemyShyGuy* obj, int a2) { return 0; };
+				
+				virtual int Step(EnemyShyGuy* obj, float a2)
+				{
+					if ((*(int*)(obj + 0x4C0) & 2) == 2)
+					{
+						int* gocEnemyHsm = GameObject::GetGOC((GameObject*)obj, GOCEnemyHsmString);
+						if (gocEnemyHsm)
+							GOCEnemyHsm::ChangeState(gocEnemyHsm, 1);
+					}
+					return 0;
+				};
+			};
+
+			class Stop
+			{
+				char field_00[20];
+			private:
+				int ProcMsgNotifyObjectEvent(EnemyShyGuy* obj, int stateID)
+				{
+					int* gocEnemyHsm = GameObject::GetGOC((GameObject*)obj, GOCEnemyHsmString);
+					if (gocEnemyHsm)
+						GOCEnemyHsm::ChangeState(gocEnemyHsm, stateID);
+
+					return 1;
+				}
+
+			public:
+				virtual ~Stop() {};
+				virtual int Trigger(EnemyShyGuy* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
+				virtual int Init(EnemyShyGuy* obj) { return 0; };
+				virtual int Enter(EnemyShyGuy* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
+				virtual int Leave(EnemyShyGuy* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
+				virtual int Update(EnemyShyGuy* obj, float a2) { return EnemyState::Update(this, obj, a2); };
+				
+				virtual int ProcessMessage(EnemyShyGuy* obj, fnd::Message* message)
+				{
+					if (message->field_04 == fnd::PROC_MSG_NOTIFY_OBJECT_EVENT)
+						return ProcMsgNotifyObjectEvent(obj, 0);
+					else
+						return 0;
+				};
+				
+				virtual int OnEnter(EnemyShyGuy* obj, int a2)
+				{
+					int* gocAnimation = GameObject::GetGOC((GameObject*)obj, GOCAnimationString);
+					if (gocAnimation)
+					{
+						game::GOCAnimationScript::ChangeAnimation(gocAnimation, "IDLE_L");
+						if ((*(int*)(obj + 0x4C0) & 4) == 4)
+							game::GOCAnimationScript::ChangeAnimation(gocAnimation, "IDLE_R");
+					}
+
+					int* gocMovement = GameObject::GetGOC((GameObject*)obj, GOCMovementString);
+					if (gocMovement)
+						game::GOCMovement::DisableMovementFlag(gocMovement, true);
+
+					int* gocEnemyHsm = GameObject::GetGOC((GameObject*)obj, GOCEnemyHsmString);
+					if (gocEnemyHsm)
+						GOCEnemyHsm::ChangeState(gocEnemyHsm, 0);
+					return 0;
+				};
+				
+				virtual int OnLeave(EnemyShyGuy* obj, int a2)
+				{
+					int* gocMovement = GameObject::GetGOC((GameObject*)obj, GOCMovementString);
+					if (gocMovement)
+						game::GOCMovement::EnableMovementFlag(gocMovement, false);
+					return 0;
+				};
+				
+				virtual int Step(EnemyShyGuy* obj, float a2) { return 0; };
+			};
+
+			class Turnaround
+			{
+				char field_00[20];
+				int SubStateID;
+				float field_18;
+				int field_1C;
+				csl::math::Quaternion Rotation;
+				int field_30;
+				int field_34;
+				int field_38;
+				int field_3C;
+			private:
+				void ChangeSubState(int stateID)
+				{
+					this->SubStateID = stateID;
+					this->field_18 = 0;
+				}
+
+			public:
+				virtual ~Turnaround() {};
+				virtual int Trigger(EnemyShyGuy* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
+				virtual int Init(EnemyShyGuy* obj) { return 0; };
+				virtual int Enter(EnemyShyGuy* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
+				virtual int Leave(EnemyShyGuy* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
+				virtual int Update(EnemyShyGuy* obj, float a2) { return EnemyState::Update(this, obj, a2); };
+				virtual int ProcessMessage(EnemyShyGuy* obj, int a2) { return 0; };
+				
+				virtual int OnEnter(EnemyShyGuy* obj, int a2)
+				{
+					ChangeSubState(0);
+					this->field_1C = 0;
+					this->field_30 = 1;
+					*(int*)(obj + 0x4C0) &= ~(1 << 1);
+
+					int* gocTransform = GameObject::GetGOC((GameObject*)obj, GOCTransformString);
+					if (gocTransform)
+						this->Rotation = *(csl::math::Quaternion*)(gocTransform + 0x1C);
+
+					int* gocAnimation = GameObject::GetGOC((GameObject*)obj, GOCAnimationString);
+					if (gocAnimation)
+					{
+						game::GOCAnimationScript::ChangeAnimation(gocAnimation, "IDLE_L");
+						if ((*(int*)(obj + 0x4C0) & 4) == 4)
+							game::GOCAnimationScript::ChangeAnimation(gocAnimation, "IDLE_R");
+					}
+					return 0;
+				};
+
+				virtual int OnLeave(EnemyShyGuy* obj, int a2)
+				{
+					EnemyShyGuyData* data = (EnemyShyGuyData*)CSetAdapter::GetData(*(int**)(obj + 0x324));
+
+					int* gocMovement = GameObject::GetGOC((GameObject*)obj, GOCMovementString);
+					if (gocMovement)
+					{
+						*(int*)(obj + 0x4C0) ^= 4;
+
+						int* contextParam = game::GOCMovement::GetContextParam(gocMovement);
+						*((float*)(contextParam + 8)) = data->Speed * -1;
+						if ((*(int*)(obj + 0x4C0) & 4) == 4)
+							*((float*)(contextParam + 8)) = data->Speed;
+
+
+						game::GOCMovement::EnableMovementFlag(gocMovement, false);
+					}
+
+					return 0;
+				};
+
+				virtual int Step(EnemyShyGuy* obj, float a2)
+				{
+					this->field_18 += a2;
+					switch (this->SubStateID)
+					{
+					case 0:
+					{
+						if (0.3 <= this->field_18)
+						{
+							this->field_30 = 0;
+							ChangeSubState(1);
+						}
+						break;
+					}
+					case 1:
+					{
+						int* gocTransform = GameObject::GetGOC((GameObject*)obj, GOCTransformString);
+
+						if (!this->field_30)
+						{
+							this->field_30 = 1;
+							int* gocAnimation = GameObject::GetGOC((GameObject*)obj, GOCAnimationString);
+							if (gocAnimation)
+							{
+								game::GOCAnimationScript::ChangeAnimation(gocAnimation, "LOOKAROUND_R");
+								if ((*(int*)(obj + 0x4C0) & 4) == 4)
+									game::GOCAnimationScript::ChangeAnimation(gocAnimation, "LOOKAROUND_L");
+							}
+						}
+
+						if (gocTransform)
+						{
+							if (this->field_18 > 0.1)
+							{
+								csl::math::Quaternion multiplier { 0, 1, 0, 0 };
+								csl::math::Quaternion::QuaternionMultiply(&this->Rotation, &this->Rotation, &multiplier);
+								fnd::GOCTransform::SetLocalRotation(gocTransform, &this->Rotation);
+								ChangeSubState(2);
+							}
+							else
+							{
+								if (this->field_18 / 0.1 < 0.0f)
+									this->field_18 = 0;
+								else if (this->field_18 / 0.1 > 1.0f)
+									this->field_18 = 1;
+
+								/*csl::math::Quaternion multiplier{ 0, (float)(this->field_18 / 0.1), 0, 0 };
+								csl::math::Quaternion::QuaternionMultiply(&this->Rotation, &this->Rotation, &multiplier);
+								fnd::GOCTransform::SetLocalRotation(gocTransform, &this->Rotation);*/
+							}
+						}
+						break;
+					}
+
+					case 2:
+					{
+						this->field_1C += 1;
+						if (this->field_1C >=3)
+						{
+							int* gocAnimation = GameObject::GetGOC((GameObject*)obj, GOCAnimationString);
+							if (gocAnimation)
+							{
+								game::GOCAnimationScript::ChangeAnimation(gocAnimation, "LOOKAROUND_R");
+								if ((*(int*)(obj + 0x4C0) & 4) == 4)
+									game::GOCAnimationScript::ChangeAnimation(gocAnimation, "LOOKAROUND_L");
+								
+								int* gocEnemyHsm = GameObject::GetGOC((GameObject*)obj, GOCEnemyHsmString);
+								if (gocEnemyHsm)
+									GOCEnemyHsm::ChangeState(gocEnemyHsm, 0);
+							}
+						}
+						else
+						{
+							this->field_30 = 0;
+							ChangeSubState(1);
+						}
+
+						break;
+					}
+					}
+					return 0;
+				};
+			};
+		};
+
+		inline static void* Move_Initialize(csl::fnd::IAllocator* pAllocator)
+		{
+			return new EnemyShyGuy::State::Move();
+		}
+
+		inline static void* Stop_Initialize(csl::fnd::IAllocator* pAllocator)
+		{
+			return new EnemyShyGuy::State::Stop();
+		}
+
+		inline static void* Turnaround_Initialize(csl::fnd::IAllocator* pAllocator)
+		{
+			return new EnemyShyGuy::State::Turnaround();
+		}
+
+		inline static ut::internal::StateDescImpl States[] =
+		{
+			{ "Move",& Move_Initialize, -1 },
+			{ "Turnaround", &Turnaround_Initialize, -1 },
+			{ "Stop",& Stop_Initialize, -1 }
+		};
+		
+		inline static app::GOCEnemyHsm::StateDesc StateDescriptors[] =
+		{
+			{0, &States[0]},
+			{1, &States[1]},
+			{2, &States[2]},
+		};
+
 		CSetObjectListener* __ct()
 		{
 			EnemyBase::__ct((GameObject*)this);
@@ -85,10 +369,15 @@ namespace app
 			return (CSetObjectListener*)this;
 		}
 
+		void NotifyMovementStopCallback()
+		{
+			*(int*)(this + 0x4C0) |= 2;
+		}
+
 		void AddCallback(GameDocument* gameDocument)
 		{
 			Vector3 position;
-			Quaternion rotation;
+			csl::math::Quaternion rotation;
 			Vector3 reticlePosition{};
 			reticlePosition.Y = 5;
 			fnd::GOCVisualModel::VisualDescription visualDescriptor;
@@ -106,12 +395,13 @@ namespace app
 			fnd::GOComponent::Create((GameObject*)this, GOCEffect);
 			fnd::GOComponent::Create((GameObject*)this, GOCSound);
 			fnd::GOComponent::Create((GameObject*)this, GOCCollider);
-			fnd::GOComponent::Create((GameObject*)this, GOCEnemyHsm);
+			fnd::GOComponent::Create((GameObject*)this, GOCEnemyHSM);
 			fnd::GOComponent::Create((GameObject*)this, GOCMovementComplex);
 			fnd::GOComponent::BeginSetup((GameObject*)this);
 
 			EnemyShyGuyInfo* info = (EnemyShyGuyInfo*)ObjUtil::GetObjectInfo(gameDocument, "EnemyShyGuyInfo");
 			EnemyShyGuyData* data = (EnemyShyGuyData*)CSetAdapter::GetData(*(int**)(this + 0x324));
+
 			if (data->IsEventDriven)
 				*(int*)(this + 0x4C0) |= 1;
 			if (data->Direction)
@@ -135,9 +425,8 @@ namespace app
 
 					game::GOCAnimationScript::Setup(gocAnimation, (int*)&animation);
 					fnd::GOCVisualModel::AttachAnimation(gocVisual, gocAnimation);
+
 					game::GOCAnimationScript::SetAnimation(gocAnimation, "WALK_L");
-					if ((*(int*)(this + 0x4C0) & 4) == 4)
-						game::GOCAnimationScript::SetAnimation(gocAnimation, "WALK_R");
 				}
 			}
 			
@@ -187,6 +476,12 @@ namespace app
 				game::GOCMovement::SetupController(gocMovement, moveStraight);
 				game::MoveStraight::SetupParamater(moveStraight, &moveParameter);
 				game::MoveStraight::SetMoveDistance(moveStraight, data->MaxMoveDistance, 0.0);
+
+				auto funcPtr = &EnemyShyGuy::NotifyMovementStopCallback;
+				game::MoveStraight::FunctionPair functions { (void*)ASLR(0x0070F590), reinterpret_cast<void*&>(funcPtr) };
+				game::MoveStraight::unkStruct unknown { 0, data->MaxMoveDistance };
+				game::MoveStraight::SetNotifyStopCallback(moveStraight, functions, unknown, 0);
+
 				int* contextParam = game::GOCMovement::GetContextParam(gocMovement);
 				*((float*)(contextParam + 8)) = data->Speed * -1;
 				if ((*(int*)(this + 0x4C0) & 4) == 4)
@@ -195,12 +490,24 @@ namespace app
 
 			game::GOCEffect::SimpleSetup((GameObject*)this);
 			game::GOCSound::SimpleSetup((GameObject*)this, 0, 0);
+
+			int* gocEnemyHsm = GameObject::GetGOC((GameObject*)this, GOCEnemyHsmString);
+			if (gocEnemyHsm)
+			{
+				GOCEnemyHsm::Description hsmDescription{ StateDescriptors, 3, -1 };
+				if ((*(int*)(this + 0x4C0) & 1))
+					hsmDescription.field_08 = 2;
+				else
+					hsmDescription.field_08 = 0;
+
+				GOCEnemyHsm::Setup(gocEnemyHsm, &hsmDescription);
+			}
+
 			fnd::GOComponent::EndSetup((GameObject*)this);
 		}
 
 		bool ProcessMessage(fnd::Message* message)
 		{
-			printf("%X\n", message->field_04);
 			switch (message->field_04)
 			{
 			case fnd::PROC_MSG_DAMAGE:
@@ -211,6 +518,8 @@ namespace app
 				return true;
 				break;
 			case fnd::PROC_MSG_NOTIFY_OBJECT_EVENT:
+				ProcMsgNotifyObjectEvent(message);
+				return true;
 				break;
 			case fnd::PROC_MSG_HIT_EVENT_COLLISION:
 				ProcMsgHitEventCollision(message);
@@ -281,6 +590,16 @@ namespace app
 				ObjUtil::AddScore((GameObject*)(this - 8), "SHYGUY", message);
 				CSetObjectListener::SetStatusRetire((GameObject*)(this - 8));
 				GameObject::Kill((GameObject*)(this - 8));
+			}
+		}
+
+		void ProcMsgNotifyObjectEvent(fnd::Message* message)
+		{
+			if ((*(int*)(this + 0x4B8) & 1))
+			{
+				int* gocEnemyHsm = GameObject::GetGOC((GameObject*)(this - 8), GOCEnemyHsmString);
+				if (gocEnemyHsm)
+					GOCEnemyHsm::Dispatch(gocEnemyHsm, message);
 			}
 		}
 

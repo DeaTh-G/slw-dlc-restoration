@@ -102,13 +102,6 @@ namespace app
 			return This;
 		}
 
-		HOOK(void, __fastcall, CHudGameMainDisplayPointPlayPointGetHook, ASLR(0x00504E40), int* This, void* edx, int a2, int a3)
-		{
-			const char* packFileName = app::ObjUtil::GetStagePackName((app::GameDocument*) * app::Document);
-			if (strncmp(packFileName, "zdlc02", 6) != 0)
-				originalCHudGameMainDisplayPointPlayPointGetHook(This, edx, a2, a3);
-		}
-
 		class CHudGameMainDisplay
 		{
 		public:
@@ -120,15 +113,6 @@ namespace app
 			static void SpecialRingUpdate()
 			{
 				INSTALL_HOOK(SpecialRingUpdateHook);
-			}
-		};
-
-		class CHudGameMainDisplay_Point
-		{
-		public:
-			static void PlayPointGet()
-			{
-				INSTALL_HOOK(CHudGameMainDisplayPointPlayPointGetHook);
 			}
 		};
 	}

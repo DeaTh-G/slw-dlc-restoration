@@ -123,7 +123,6 @@ void Initialize()
 	app::xgame::IsDLCStagePurchase();
 	app::HUD::CHudGameMainDisplay::__ct();
 	app::HUD::CHudGameMainDisplay::SpecialRingUpdate();
-	app::HUD::CHudGameMainDisplay_Point::PlayPointGet();
 	app::CSharedObjInfo::Initialize();
 	app::CObjDroppedRing::ProcMsgHitEventCollision();
 	app::EnemyBlowOffObject::OnDead();

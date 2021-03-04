@@ -72,13 +72,13 @@ namespace app
 			Vector3* collisionSize = new (locColSize)Vector3(10, 10, 10);
 
 			void* locRot = _aligned_malloc(16, 16);
-			Quaternion* rotation = new (locRot)Quaternion(0, 0.707, 0, 0.707);
+			csl::math::Quaternion* rotation = new (locRot)csl::math::Quaternion(0, 0.707, 0, 0.707);
 
 			// Variables
 			int unit = 1;
 			fnd::GOCVisualModel::VisualDescription visualDescriptor;
 			game::CollisionObjCInfo collisionInfo;
-			Quaternion setRotation;
+			csl::math::Quaternion setRotation;
 
 			// Create Game Object Components
 			int* visualContainer = fnd::GOComponent::Create((GameObject*)this, GOCVisualContainer);
