@@ -306,6 +306,7 @@ namespace app
 							this->field_1C += 1;
 							if (this->field_1C >= 3)
 							{
+								app::animation::AnimCallbackBridge<EnemyShyGuy>;
 								int* gocAnimation = GameObject::GetGOC((GameObject*)obj, GOCAnimationString);
 								if (gocAnimation)
 								{
@@ -348,6 +349,11 @@ namespace app
 			return new EnemyShyGuy::State::Turnaround();
 		}
 
+		inline static void* AnimCallbackBridge_Initialize(csl::fnd::IAllocator* pAllocator)
+		{
+			return new animation::AnimCallbackBridge<EnemyShyGuy>();
+		}
+
 		inline static ut::internal::StateDescImpl States[] =
 		{
 			{ "Move",& Move_Initialize, -1 },
@@ -377,6 +383,28 @@ namespace app
 		void NotifyMovementStopCallback()
 		{
 			*(int*)(this + 0x4C0) |= 2;
+		}
+
+		void SoundCallback(int a1, int a2, int a3)
+		{
+			int* gocSound = GameObject::GetGOC((GameObject*)(this + 1), GOCSoundString);
+			int deviceTag[3]{};
+			if (gocSound)
+			{
+				if (!a2)
+				{
+					if (a3 == 1)
+					{
+						game::GOCSound::Play3D(gocSound, deviceTag, "enm_heyho_foot", 0);
+						game::GOCSound::Play3D(gocSound, deviceTag, "enm_heyho_voice_hey", 0);
+					}
+					else
+					{
+						game::GOCSound::Play3D(gocSound, deviceTag, "enm_heyho_foot", 0);
+						game::GOCSound::Play3D(gocSound, deviceTag, "enm_heyho_voice_hey", 0);
+					}
+				}
+			}
 		}
 
 		void AddCallback(GameDocument* gameDocument)
@@ -430,6 +458,15 @@ namespace app
 
 					game::GOCAnimationScript::Setup(gocAnimation, (int*)&animation);
 					fnd::GOCVisualModel::AttachAnimation(gocVisual, gocAnimation);
+
+					csl::fnd::IAllocator* allocator{};
+					auto funcPtr = &EnemyShyGuy::SoundCallback;
+					animation::AnimCallbackBridge<EnemyShyGuy>* callback = (animation::AnimCallbackBridge<EnemyShyGuy>*)AnimCallbackBridge_Initialize(allocator);
+					callback->GameObject = this;
+					callback->field_10 = reinterpret_cast<void*&>(funcPtr);
+					callback->field_14 = -1;
+
+					game::GOCAnimationScript::RegisterCallback(gocAnimation, 1, callback);
 
 					game::GOCAnimationScript::SetAnimation(gocAnimation, "WALK_L");
 				}

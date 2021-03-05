@@ -12,6 +12,7 @@ namespace app
 		inline static FUNCTION_PTR(void, __thiscall, SetStatusRetire, ASLR(0x00844790), GameObject* This);
 		inline static FUNCTION_PTR(int*, __cdecl, NewGameObject, ASLR(0x0049CAD0), size_t size);
 		inline static FUNCTION_PTR(bool, __thiscall, IsKilled, ASLR(0x0079A150), GameObject* size);
+		inline static FUNCTION_PTR(csl::fnd::IAllocator*, __cdecl, GetAllocator, ASLR(0x0049CC90));
 	
 		OBJECT_FUNCTION(void, Sleep, ASLR(0x0049CCB0));
 

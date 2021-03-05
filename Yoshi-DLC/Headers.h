@@ -12,6 +12,7 @@
 // app
 #include "app/ut/internal/StateImpl.h"
 #include "app/animation/AnimationResContainer.h"
+#include "app/animation/AnimCallbackBridge.h"
 
 #include "app/ut/StateBase.h"
 #include "app/EnemyState.h"

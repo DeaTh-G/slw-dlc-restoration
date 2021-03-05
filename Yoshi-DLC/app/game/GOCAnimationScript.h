@@ -11,6 +11,7 @@ namespace app
 			inline static FUNCTION_PTR(float, __thiscall, GetFrame, ASLR(0x004B3360), int* This);
 			inline static FUNCTION_PTR(int, __thiscall, SetAnimation, ASLR(0x004B36E0), int* This, const char* animationName);
 			inline static FUNCTION_PTR(float, __thiscall, ChangeAnimation, ASLR(0x004B36F0), int* This, const char* animationName);
+			inline static FUNCTION_PTR(int*, __thiscall, RegisterCallback, ASLR(0x004B3400), int* This, int a2, void* a3);
 		};
 	}
 }
