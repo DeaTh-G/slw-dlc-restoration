@@ -110,7 +110,7 @@ namespace app
 						if (gocEnemyHsm)
 							GOCEnemyHsm::ChangeState(gocEnemyHsm, 1);
 					}
-					return 0;
+					return 1;
 				};
 			};
 
@@ -155,12 +155,13 @@ namespace app
 
 					int* gocMovement = GameObject::GetGOC((GameObject*)obj, GOCMovementString);
 					if (gocMovement)
-						game::GOCMovement::DisableMovementFlag(gocMovement, true);
+						game::GOCMovement::DisableMovementFlag(gocMovement, false);
 
 					int* gocEnemyHsm = GameObject::GetGOC((GameObject*)obj, GOCEnemyHsmString);
 					if (gocEnemyHsm)
 						GOCEnemyHsm::ChangeState(gocEnemyHsm, 0);
-					return 0;
+					
+					return 1;
 				};
 				
 				virtual int OnLeave(EnemyShyGuy* obj, int a2)
@@ -168,7 +169,8 @@ namespace app
 					int* gocMovement = GameObject::GetGOC((GameObject*)obj, GOCMovementString);
 					if (gocMovement)
 						game::GOCMovement::EnableMovementFlag(gocMovement, false);
-					return 0;
+					
+					return 1;
 				};
 				
 				virtual int Step(EnemyShyGuy* obj, float a2) { return 0; };
@@ -219,7 +221,8 @@ namespace app
 						if ((*(int*)(obj + 0x4C0) & 4) == 4)
 							game::GOCAnimationScript::ChangeAnimation(gocAnimation, "IDLE_R");
 					}
-					return 0;
+
+					return 1;
 				};
 
 				virtual int OnLeave(EnemyShyGuy* obj, int a2)
@@ -229,18 +232,15 @@ namespace app
 					int* gocMovement = GameObject::GetGOC((GameObject*)obj, GOCMovementString);
 					if (gocMovement)
 					{
-						*(int*)(obj + 0x4C0) ^= 4;
-
 						int* contextParam = game::GOCMovement::GetContextParam(gocMovement);
 						*((float*)(contextParam + 8)) = data->Speed * -1;
 						if ((*(int*)(obj + 0x4C0) & 4) == 4)
 							*((float*)(contextParam + 8)) = data->Speed;
 
-
 						game::GOCMovement::EnableMovementFlag(gocMovement, false);
 					}
 
-					return 0;
+					return 1;
 				};
 
 				virtual int Step(EnemyShyGuy* obj, float a2)
@@ -275,23 +275,25 @@ namespace app
 
 						if (gocTransform)
 						{
-							if (this->field_18 > 0.1)
+							if (this->field_18 > 0.11)
 							{
-								csl::math::Quaternion multiplier { 0, 1, 0, 0 };
-								csl::math::Quaternion::QuaternionMultiply(&this->Rotation, &this->Rotation, &multiplier);
-								fnd::GOCTransform::SetLocalRotation(gocTransform, &this->Rotation);
+								*(int*)(obj + 0x4C0) ^= 4;
 								ChangeSubState(2);
 							}
 							else
 							{
-								if (this->field_18 / 0.1 < 0.0f)
-									this->field_18 = 0;
-								else if (this->field_18 / 0.1 > 1.0f)
+								if (this->field_18 > 1)
 									this->field_18 = 1;
+								else if (this->field_18 < 0)
+									this->field_18 = 0;
 
-								/*csl::math::Quaternion multiplier{ 0, (float)(this->field_18 / 0.1), 0, 0 };
+								csl::math::Quaternion multiplier{ 0, 0.259, 0, 0.966 };
+								if ((*(int*)(obj + 0x4C0) & 4) == 4)
+									multiplier.Y = -0.259;
+
+								csl::math::Quaternion rotation;
 								csl::math::Quaternion::QuaternionMultiply(&this->Rotation, &this->Rotation, &multiplier);
-								fnd::GOCTransform::SetLocalRotation(gocTransform, &this->Rotation);*/
+								fnd::GOCTransform::SetLocalRotation(gocTransform, &this->Rotation);
 							}
 						}
 						break;
@@ -299,31 +301,34 @@ namespace app
 
 					case 2:
 					{
-						this->field_1C += 1;
-						if (this->field_1C >=3)
+						if (0.3 <= this->field_18)
 						{
-							int* gocAnimation = GameObject::GetGOC((GameObject*)obj, GOCAnimationString);
-							if (gocAnimation)
+							this->field_1C += 1;
+							if (this->field_1C >= 3)
 							{
-								game::GOCAnimationScript::ChangeAnimation(gocAnimation, "LOOKAROUND_R");
-								if ((*(int*)(obj + 0x4C0) & 4) == 4)
-									game::GOCAnimationScript::ChangeAnimation(gocAnimation, "LOOKAROUND_L");
-								
-								int* gocEnemyHsm = GameObject::GetGOC((GameObject*)obj, GOCEnemyHsmString);
-								if (gocEnemyHsm)
-									GOCEnemyHsm::ChangeState(gocEnemyHsm, 0);
+								int* gocAnimation = GameObject::GetGOC((GameObject*)obj, GOCAnimationString);
+								if (gocAnimation)
+								{
+									game::GOCAnimationScript::ChangeAnimation(gocAnimation, "LOOKAROUND_R");
+									if ((*(int*)(obj + 0x4C0) & 4) == 4)
+										game::GOCAnimationScript::ChangeAnimation(gocAnimation, "LOOKAROUND_L");
+
+									int* gocEnemyHsm = GameObject::GetGOC((GameObject*)obj, GOCEnemyHsmString);
+									if (gocEnemyHsm)
+										GOCEnemyHsm::ChangeState(gocEnemyHsm, 0);
+								}
 							}
-						}
-						else
-						{
-							this->field_30 = 0;
-							ChangeSubState(1);
+							else
+							{
+								this->field_30 = 0;
+								ChangeSubState(1);
+							}
 						}
 
 						break;
 					}
 					}
-					return 0;
+					return 1;
 				};
 			};
 		};
