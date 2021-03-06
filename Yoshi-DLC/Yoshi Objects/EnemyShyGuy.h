@@ -415,7 +415,7 @@ namespace app
 			reticlePosition.Y = 5;
 			fnd::GOCVisualModel::VisualDescription visualDescriptor;
 			game::ShadowSphereShapeCInfo shadowInfo;
-			app::game::CollisionObjCInfo collisionInfo;
+			app::game::ColliSphereShapeCInfo collisionInfo;
 			int unit = 1;
 
 			fnd::GOComponent::Create((GameObject*)this, GOCGravity);
@@ -486,12 +486,16 @@ namespace app
 			{
 				game::GOCCollider::Setup(gocCollider, &unit);
 				game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.Data[0] = 0x00020000;
-				collisionInfo.CollisionSize.X = 4;
+				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_SPHERE;
+				collisionInfo.MotionType = 2;
+				collisionInfo.field_48 = 0;
+				collisionInfo.field_44 = 0;
+				collisionInfo.Radius = 4;
 				ObjUtil::SetupCollisionFilter(9, &collisionInfo);
-				collisionInfo.ShapeType = 0x20000;
-				collisionInfo.CollisionType |= 1;
-				collisionInfo.HFramePointer = EnemyBase::GetCenterPositionFrame((GameObject*)this);
+				collisionInfo.field_08 = 0x20000;
+				collisionInfo.field_04 |= 1;
+				collisionInfo.Parent = EnemyBase::GetCenterPositionFrame((GameObject*)this);
+
 				game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 			}
 

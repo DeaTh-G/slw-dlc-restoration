@@ -35,7 +35,7 @@ namespace app
 
 		void AddCallback(GameDocument* gameDocument)
 		{
-			app::game::CollisionObjCInfo collisionInfo;
+			app::game::ColliSphereShapeCInfo collisionInfo;
 			int unit = 1;
 
 			fnd::GOComponent::Create((GameObject*)this, GOCCollider);
@@ -53,12 +53,15 @@ namespace app
 			{
 				app::game::GOCCollider::Setup(gocCollider, &unit);
 				app::game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.CollisionType |= 4;
-
-				/* Collision Radius */
-				collisionInfo.CollisionSize.X = data->CollisionRadius;
-
+				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_SPHERE;
+				collisionInfo.MotionType = 2;
+				collisionInfo.Radius = data->CollisionRadius;
+				collisionInfo.field_54 = 0;
+				collisionInfo.field_44 = 0;
+				collisionInfo.field_48 = 0;
 				app::ObjUtil::SetupCollisionFilter(7, &collisionInfo);
+				collisionInfo.field_04 |= 4;
+
 				app::game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 			}
 

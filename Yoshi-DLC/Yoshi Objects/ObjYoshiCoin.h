@@ -48,8 +48,7 @@ namespace app
 		void AddCallback(GameDocument* gameDocument)
 		{
 			// Visual Offset
-			void* loc = _aligned_malloc(16, 16);
-			Vector3* position = new (loc)Vector3(0, 5.0f, 0);
+			Vector3 position { 0, 5.0f, 0 };
 
 			// Variables
 			int unit = 1;
@@ -62,7 +61,7 @@ namespace app
 				fnd::GOComponent::Create((GameObject*)this, GOCShadowSimple);
 		
 			fnd::GOCVisualModel::VisualDescription visualDescriptor;
-			game::CollisionObjCInfo collisionInfo;
+			game::ColliSphereShapeCInfo collisionInfo;
 			game::ShadowHemisphereShapeCInfo shadowInfo;
 			
 			// Game Object Setup
@@ -82,7 +81,7 @@ namespace app
 				fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
 				visualDescriptor.Model = *(int*)(info + 0x10);
 				fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
-				fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, position);
+				fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, &position);
 			}
 
 			// Collider
@@ -91,18 +90,16 @@ namespace app
 			{
 				game::GOCCollider::Setup(gocCollider, &unit);
 				game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.field_00 = 0x9C01;
-				collisionInfo.field_02 = 0x0002;
-				collisionInfo.CollisionType = 0x0001;
-				collisionInfo.field_06 = 0xBF11;
-				collisionInfo.field_3C = 1.0f;
-				collisionInfo.Data[0] = 0x200;
-				collisionInfo.Data[3] = -1;
-
-				// Collision Radius
-				collisionInfo.CollisionSize.X = 3.5f;
+				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_SPHERE;
+				collisionInfo.MotionType = 2;
+				collisionInfo.Radius = 3.5f;
+				collisionInfo.field_54 = 0;
+				collisionInfo.field_44 = 0;
+				collisionInfo.field_48 = 0;
 				ObjUtil::SetupCollisionFilter(12, &collisionInfo);
-				game::CollisionObjCInfo::SetLocalPosition(&collisionInfo, position);
+				collisionInfo.field_04 = 1;
+				game::CollisionObjCInfo::SetLocalPosition(&collisionInfo, &position);
+
 				game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 			}
 
@@ -118,7 +115,7 @@ namespace app
 
 				game::ShadowHemisphereShapeCInfo* ppShadowInfo = &shadowInfo;
 				game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
-				app::game::GOCShadowSimple::SetLocalOffsetPosition(gocShadow, position);
+				app::game::GOCShadowSimple::SetLocalOffsetPosition(gocShadow, &position);
 			}
 
 			fnd::GOComponent::EndSetup((GameObject*)this);

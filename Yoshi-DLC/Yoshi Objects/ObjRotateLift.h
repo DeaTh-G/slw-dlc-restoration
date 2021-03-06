@@ -73,7 +73,7 @@ namespace app
 			// Variables
 			int unit = 1;
 			fnd::GOCVisualModel::VisualDescription visualDescriptor{};
-			game::CollisionObjCInfo collisionInfo{};
+			game::ColliBoxShapeCInfo collisionInfo{};
 			csl::math::Quaternion setRotation{};
 
 			// Create Game Object Components
@@ -135,14 +135,15 @@ namespace app
 
 					game::GOCCollider::Setup(gocCollider, &unit);
 					game::CollisionObjCInfo::__ct(&collisionInfo);
-					collisionInfo.field_02 = 0xE;
-					collisionInfo.CollisionType = 0x0100;		
-					collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::Invisible | 0x4003;
-					collisionInfo.HFramePointer = currentHFrameAddress;
-					collisionInfo.Data[0] = 0x3F7F0201;
-
-					// Collision Radius
-					collisionInfo.CollisionSize = Vector3(1, 2.5f, 8);
+					collisionInfo.ShapeType = game::CollisionShapeType::TYPE_BOX;
+					collisionInfo.MotionType = 2;
+					collisionInfo.field_44 = 0;
+					collisionInfo.field_48 = 0;
+					collisionInfo.Size = Vector3(1, 2.5f, 8);
+					collisionInfo.field_08 = 0x4003;
+					collisionInfo.field_04 |= 0x100;
+					collisionInfo.field_02 = 14;
+					collisionInfo.Parent = currentHFrameAddress;
 					game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 				}
 			}

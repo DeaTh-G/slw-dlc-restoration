@@ -28,8 +28,6 @@ namespace app
 
 		void Initialize(GameDocument* gameDocument)
 		{
-			int model = 0;
-			int skeleton = 0;
 			int animationScript = 0;
 
 			int packFile = 0;
@@ -81,12 +79,11 @@ namespace app
 		void AddCallback(GameDocument* gameDocument)
 		{
 			// Collision Offset
-			void* loc = _aligned_malloc(16, 16);
-			Vector3* position = new (loc)Vector3(0, 7.375f, 0);
+			Vector3 position { 0, 7.375f, 0 };
 
 			game::ShadowSphereShapeCInfo shadowInfo;
 			fnd::GOCVisualModel::VisualDescription visualDescriptor;
-			game::CollisionObjCInfo collisionInfo;
+			game::ColliCapsuleShapeCInfo collisionInfo;
 			float jumpBoardScale = *(int*)(this + 0x3A4) ? 0.75f : 1.25f;
 			float shadowSize = *(int*)(this + 0x3A4) ? 3.75f : 6.25f;
 			int collisionUnit = 1;
@@ -135,17 +132,17 @@ namespace app
 			{
 				game::GOCCollider::Setup(gocCollider, &collisionUnit);
 				game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.field_0C = 0;
-				collisionInfo.CollisionType |= 1;
-				collisionInfo.Data[0] = 2;
-				collisionInfo.Data[1] = 2;
-				collisionInfo.CollisionSize.X = *(int*)(this + 0x3A4) ? 2.5f : 5;
-				collisionInfo.CollisionSize.Y = *(int*)(this + 0x3A4) ? 3.7f : 4.75f;
-				collisionInfo.CollisionSize.Z = 0;
-
-				game::CollisionObjCInfo::SetLocalPosition(&collisionInfo, position);
+				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_CYLINDER;
+				collisionInfo.MotionType = 2;
+				collisionInfo.Radius = *(int*)(this + 0x3A4) ? 2.5f : 5;
+				collisionInfo.Height = *(int*)(this + 0x3A4) ? 3.7f : 4.75f;
+				collisionInfo.field_44 = *(int*)(this + 0x3A4) ? 2.5f : 5;
+				collisionInfo.field_48 = *(int*)(this + 0x3A4) ? 3.7f : 4.75f;
+				game::CollisionObjCInfo::SetLocalPosition(&collisionInfo, &position);
 				ObjUtil::SetupCollisionFilter(0, &collisionInfo);
-				
+				collisionInfo.field_0C = 0;
+				collisionInfo.field_04 |= 1;
+
 				game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 			}
 

@@ -63,7 +63,7 @@ namespace app
 		void AddCallback(GameDocument* gameDocument)
 		{
 			app::fnd::GOCVisualModel::VisualDescription visualDescriptor;
-			app::game::CollisionObjCInfo collisionInfo;
+			app::game::ColliSphereShapeCInfo collisionInfo;
 			game::ShadowHemisphereShapeCInfo shadowInfo;
 			int unit = 1;
 
@@ -108,17 +108,15 @@ namespace app
 			{
 				app::game::GOCCollider::Setup(gocCollider, &unit);
 				app::game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.field_00 = 0x9C01;
-				collisionInfo.field_02 = 0x0002;
-				collisionInfo.CollisionType = 0x0001;
-				collisionInfo.field_06 = 0xBF11;
-				collisionInfo.field_3C = 1.0f;
-				collisionInfo.Data[0] = 0x200;
-				collisionInfo.Data[3] = -1;
-
-				/* Collision Radius */
-				collisionInfo.CollisionSize.X = 5;
+				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_SPHERE;
+				collisionInfo.MotionType = 2;
+				collisionInfo.Radius = 5;
+				collisionInfo.field_54 = 0;
+				collisionInfo.field_44 = 0;
+				collisionInfo.field_48 = 0;
 				app::ObjUtil::SetupCollisionFilter(6, &collisionInfo);
+				collisionInfo.field_04 |= 1;
+
 				app::game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 			}
 

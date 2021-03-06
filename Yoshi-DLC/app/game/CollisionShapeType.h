@@ -4,7 +4,7 @@ namespace app
 {
 	namespace game
 	{
-		class CollisionShapeType
+		class ColliderShapeType
 		{
 		public:
 			enum ShapeType

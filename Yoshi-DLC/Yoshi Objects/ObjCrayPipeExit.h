@@ -34,7 +34,7 @@ namespace app
 		}
 		void AddCallback(GameDocument* gameDocument)
 		{
-			game::CollisionObjCInfo collisionInfo;
+			game::ColliSphereShapeCInfo collisionInfo;
 			int unit = 1;
 
 			fnd::GOComponent::Create((GameObject*)this, GOCCollider);
@@ -52,13 +52,16 @@ namespace app
 			{
 				game::GOCCollider::Setup(gocCollider, &unit);
 				game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.CollisionType |= 4;
+				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_SPHERE;
+				collisionInfo.MotionType = 2;
+				collisionInfo.Radius = 3;
+				collisionInfo.field_54 = 0;
+				collisionInfo.field_44 = 0;
+				collisionInfo.field_48 = 0;
+				app::ObjUtil::SetupCollisionFilter(7, &collisionInfo);
+				collisionInfo.field_04 |= 4;
 
-				/* Collision Radius */
-				collisionInfo.CollisionSize.X = 3;
-
-				ObjUtil::SetupCollisionFilter(7, &collisionInfo);
-				game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
+				app::game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 
 				uint32_t extUserData = CSetObjectListener::GetExtUserData((GameObject*)this, 0);
 				if (!extUserData)
