@@ -40,7 +40,7 @@ namespace app
 
 			/* Crashed in 2P */
 			if (animationScript)
-				animation::AnimationResContainer::LoadFromBuffer((int*)&(this->AnimationContainer), &animationScript, packFile);
+				animation::AnimationResContainer::LoadFromBuffer(&this->AnimationContainer, &animationScript, packFile);
 		}
 
 		const char* GetInfoName()
@@ -194,44 +194,50 @@ namespace app
 			{
 			case fnd::PROC_MSG_GET_EXTERNAL_MOVE_POSITION:
 			{
+				int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), ((int*)message)[2]);
+				int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
+
 				int* gocAnimation = GameObject::GetGOC((GameObject*)(this - 8), GOCAnimationString);
 				int* gocTransform = GameObject::GetGOC((GameObject*)(this - 8), GOCTransformString);
 
-				if (app::game::GOCAnimationScript::GetFrame(gocAnimation) < 10.0 && *(int*)(this + 0x3A0) == 3)
+				if (gocAnimation)
 				{
-					xgame::MsgPLGetInputButton playerGetInputButtonMessage;
-
-					xgame::MsgPLGetInputButton::__ct(&playerGetInputButtonMessage, 0, 0);
-					if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), (int*)&playerGetInputButtonMessage))
+					if (app::game::GOCAnimationScript::GetFrame(gocAnimation) < 10.0 && *(int*)(this + 0x3A0) == 3)
 					{
-						if (!*(int*)(this + 0x398))
-							*(int*)(this + 0x398) = playerGetInputButtonMessage.field_20;
-						
-						if (playerGetInputButtonMessage.field_20 != 0)
-							game::GOCAnimationScript::ChangeAnimation(gocAnimation, "JUMP_BIG");
+						xgame::MsgPLGetInputButton playerGetInputButtonMessage;
 
-						xgame::MsgExtendPlayer::__dt((int*)&playerGetInputButtonMessage);
+						xgame::MsgPLGetInputButton::__ct(&playerGetInputButtonMessage, 0, 0);
+						if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), playerNo, (int*)&playerGetInputButtonMessage))
+						{
+							if (!*(int*)(this + 0x398))
+								*(int*)(this + 0x398) = playerGetInputButtonMessage.field_20;
+
+							if (playerGetInputButtonMessage.field_20 != 0)
+								game::GOCAnimationScript::ChangeAnimation(gocAnimation, "JUMP_BIG");
+
+							xgame::MsgExtendPlayer::__dt((int*)&playerGetInputButtonMessage);
+						}
+
+						int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), *(int*)(this + 0x39C));
+						int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
+
+						Vector3 playerPosition = *(Vector3*)(playerInfo + 4);
+						Vector3 targetPosition = *(Vector3*)(gocTransform + 0x50);
+
+						if ((std::abs(playerPosition.Y - targetPosition.Y)) > 0.55f)
+							if (app::game::GOCAnimationScript::GetFrame(gocAnimation) < 8)
+								playerPosition.Y -= 1.25f;
+							else
+								playerPosition.Y += 5.0f;
+
+						((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][0] = playerPosition.X;
+						((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][1] = playerPosition.Y;
+						((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][2] = playerPosition.Z;
 					}
-
-					int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), *(int*)(this + 0x39C));
-					int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
-
-					Vector3 playerPosition = *(Vector3*)(playerInfo + 4);
-					Vector3 targetPosition = *(Vector3*)(gocTransform + 0x50);
-
-					if ((std::abs(playerPosition.Y - targetPosition.Y)) > 0.55f)
-						if (app::game::GOCAnimationScript::GetFrame(gocAnimation) < 8)
-							playerPosition.Y -= 1.25f;
-						else
-							playerPosition.Y += 5.0f;
-
-					((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][0] = playerPosition.X;
-					((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][1] = playerPosition.Y;
-					((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][2] = playerPosition.Z;
-				}
-				else
-				{
-					*(int*)(this + 0x3A0) = 4;
+					else
+					{
+						*(int*)(this + 0x3A0) = 4;
+					}
 				}
 			}
 			default:
@@ -265,7 +271,7 @@ namespace app
 					catchPlayerMessage.field_18 = 0;
 					catchPlayerMessage.field_60 = 0x12;
 					catchPlayerMessage.field_64 = 0;
-					if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), (int*)&catchPlayerMessage))
+					if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), playerNo, (int*)&catchPlayerMessage))
 					{
 						*((int*)(this + 0x3A0)) = 2;
 						xgame::MsgExtendPlayer::__dt((int*)&catchPlayerMessage);
@@ -273,10 +279,14 @@ namespace app
 				}
 			}
 		}
+
 		void StateExpantion()
 		{
 			int* gocAnimation = GameObject::GetGOC((GameObject*)(this - 8), GOCAnimationString);
 			game::GOCLauncher::ShotInfo shotInfo;
+
+			int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), *(int*)(this + 0x39C));
+			int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
 
 			if (*((int*)(this + 0x3A0)) == 2)
 			{
@@ -303,7 +313,7 @@ namespace app
 				
 				ObjYoshiJumpBoardData* setData = (ObjYoshiJumpBoardData*)CSetAdapter::GetData(*(int**)(this + 0x31C));
 				springImpulseMessage.OutOfParkour = setData->OutOfParkour;
-				if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), (int*)&springImpulseMessage))
+				if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), playerNo, (int*)&springImpulseMessage))
 				{
 					*(int*)(this + 0x398) = 0;
 					*(int*)(this + 0x3A0) = 1;

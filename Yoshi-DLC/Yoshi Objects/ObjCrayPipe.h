@@ -88,12 +88,11 @@ namespace app
 			}
 			case fnd::PROC_MSG_GET_EXTERNAL_MOVE_POSITION:
 			{
-				//int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), ((int*)message)[8]);
-
 				int* gocTransform = GameObject::GetGOC((GameObject*)(this - 8), GOCTransformString);
 				if (gocTransform)
 				{
-					int* playerInfo = ObjUtil::GetPlayerInformation(*Document, 0);
+					int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), ((int*)message)[2]);
+					int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
 					Vector3 playerPosition = *(Vector3*)(playerInfo + 4);
 					Vector3 targetPosition = *(Vector3*)(gocTransform + 0x50);
 					float verticalDestination = 0;
@@ -141,7 +140,7 @@ namespace app
 
 								fnd::Message::__ct(&playerVisibleItemEffectMessage.Base, fnd::PROC_MSG_PL_VISIBLE_ITEM_EFFECT);
 								playerVisibleItemEffectMessage.field_18 = 0;
-								ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), (int*)&playerVisibleItemEffectMessage);
+								ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), playerNo, (int*)&playerVisibleItemEffectMessage);
 								xgame::MsgExtendPlayer::__dt((int*)&playerVisibleItemEffectMessage);
 							}
 						}
@@ -198,7 +197,7 @@ namespace app
 				playerGetInputButtonMessage.field_1C = 1;
 				playerGetInputButtonMessage.field_20 = 0;
 
-				if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8),(int*)&playerGetInputButtonMessage)
+				if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), playerNo, (int*)&playerGetInputButtonMessage)
 					&& playerGetInputButtonMessage.field_20 != 0)
 				{
 					if (*((bool*)(this + 0x3F1)) == false)
@@ -210,7 +209,7 @@ namespace app
 					catchPlayerMessage.field_18 = 0;
 					catchPlayerMessage.field_60 = 0x12;
 					catchPlayerMessage.field_64 = 0;
-					if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), (int*)&catchPlayerMessage))
+					if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), playerNo, (int*)&catchPlayerMessage))
 						StatePipeIn(parentMessage);
 
 					xgame::MsgExtendPlayer::__dt((int*)&catchPlayerMessage);

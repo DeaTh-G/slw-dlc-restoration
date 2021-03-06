@@ -68,17 +68,13 @@ namespace app
 				Vector3(0, 0, -distanceFromOrigin)
 			};
 
-			void* locColSize = _aligned_malloc(16, 16);
-			Vector3* collisionSize = new (locColSize)Vector3(10, 10, 10);
-
-			void* locRot = _aligned_malloc(16, 16);
-			csl::math::Quaternion* rotation = new (locRot)csl::math::Quaternion(0, 0.707, 0, 0.707);
+			csl::math::Quaternion rotation { 0, 0.707, 0, 0.707 };
 
 			// Variables
 			int unit = 1;
-			fnd::GOCVisualModel::VisualDescription visualDescriptor;
-			game::CollisionObjCInfo collisionInfo;
-			csl::math::Quaternion setRotation;
+			fnd::GOCVisualModel::VisualDescription visualDescriptor{};
+			game::CollisionObjCInfo collisionInfo{};
+			csl::math::Quaternion setRotation{};
 
 			// Create Game Object Components
 			int* visualContainer = fnd::GOComponent::Create((GameObject*)this, GOCVisualContainer);
@@ -101,11 +97,8 @@ namespace app
 				int* currentHFrameAddress = (int*)(this + 0x3A0 + (i * 0x130));
 
 				fnd::HFrame::SetLocalTranslation(currentHFrameAddress, &positionArray[i]);
-
 				fnd::HFrame::SetLocalRotation(currentHFrameAddress, &setRotation);
-				
 				fnd::HFrame::ResetFlag(currentHFrameAddress, 0x20);
-
 				fnd::HFrame::AddChild(branchHFrame, currentHFrameAddress);
 			}
 
@@ -130,7 +123,7 @@ namespace app
 				fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
 
 				if (i == 4)
-					fnd::GOCVisualTransformed::SetLocalRotation(gocVisual, rotation);
+					fnd::GOCVisualTransformed::SetLocalRotation(gocVisual, &rotation);
 			}
 
 			// Collider

@@ -70,6 +70,7 @@ namespace app
 
 		void Update(int* sUpdateInfo)
 		{
+			/* Second player isn't released in 2P */
 			if (*((bool*)(this + 0x3A6)))
 			{
 				xgame::MsgCatchEndPlayer catchEndPlayerMessage;
@@ -80,13 +81,13 @@ namespace app
 				catchEndPlayerMessage.field_19 = 0x0B;
 				catchEndPlayerMessage.field_20 = 0x4C;
 				catchEndPlayerMessage.field_21 = 0x00;
-				ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), (int*)&catchEndPlayerMessage);
+				ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), *(int*)(this + 0x398), (int*)&catchEndPlayerMessage);
 				xgame::MsgExtendPlayer::__dt((int*)&catchEndPlayerMessage);
 
 				xgame::MsgPLVisibleItemEffect playerVisibleItemEffectMessage;
 				fnd::Message::__ct(&playerVisibleItemEffectMessage.Base, fnd::PROC_MSG_PL_VISIBLE_ITEM_EFFECT);
 				playerVisibleItemEffectMessage.field_18 = 1;
-				ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), (int*)&playerVisibleItemEffectMessage);
+				ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), *(int*)(this + 0x398), (int*)&playerVisibleItemEffectMessage);
 				xgame::MsgExtendPlayer::__dt((int*)&playerVisibleItemEffectMessage);
 
 				int* gocCollider = GameObject::GetGOC((GameObject*)(this - 8), GOCColliderString);
@@ -96,9 +97,11 @@ namespace app
 			}
 		}
 
-		void StateIdle()
+		void StateIdle(fnd::Message* parentMessage)
 		{
 			(*((int*)(this + 0x3A0)))++;
+			int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), ((int*)parentMessage)[8]);
+			int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
 
 			if (*((int*)(this + 0x3A0)) >= 3)
 			{
@@ -108,18 +111,18 @@ namespace app
 				catchPlayerMessage.field_60 = 0x12;
 				catchPlayerMessage.field_64 = 0;
 
-				ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), (int*)&catchPlayerMessage);
+				ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), playerNo, (int*)&catchPlayerMessage);
 			}
 		}
 
 		void StatePipeOut(xgame::MsgGetExternalMovePosition* message)
 		{
-			/* The player that didn't enter isn't released in 2P */
-
 			int* gocTransform = GameObject::GetGOC((GameObject*)(this - 8), GOCTransformString);
 			if (gocTransform)
 			{
-				int* playerInfo = ObjUtil::GetPlayerInformation(*Document, 0);
+				int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), ((int*)message)[2]);
+				*((int*)(this + 0x398)) = playerNo;
+				int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
 				Vector3 playerPosition = *(Vector3*)(playerInfo + 4);
 				Vector3 targetPosition = *(Vector3*)(gocTransform + 0x50);
 				float verticalDestination = 0;
@@ -155,7 +158,7 @@ namespace app
 			}
 			case fnd::PROC_MSG_STAY_TRIGGER:
 			{
-				StateIdle();
+				StateIdle(message);
 				return true;
 			}
 			case fnd::PROC_MSG_GET_EXTERNAL_MOVE_POSITION:

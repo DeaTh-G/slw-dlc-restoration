@@ -58,7 +58,7 @@ namespace app
 			ObjUtil::GetAnimationScriptResource(&animationScript, "shyguy", packFile);
 
 			if (animationScript)
-				animation::AnimationResContainer::LoadFromBuffer((int*)&(this->AnimationContainer), &animationScript, packFile);
+				animation::AnimationResContainer::LoadFromBuffer(&this->AnimationContainer, &animationScript, packFile);
 
 			EnemyInfo::GetAnimationResource((int*)this, &(this->AnimationLeft), "hey_walk_left_loop");
 			EnemyInfo::GetAnimationResource((int*)this, &(this->AnimationRight), "hey_walk_right_loop");

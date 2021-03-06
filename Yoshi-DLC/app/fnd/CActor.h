@@ -7,7 +7,7 @@ namespace app
 		class CActor
 		{
 		public:
-			inline static FUNCTION_PTR(char, __thiscall, SendMessageImm, ASLR(0x0049A470), int* This, int a2, int* msg);
+			inline static FUNCTION_PTR(char, __thiscall, SendMessageImm, ASLR(0x0049A470), int* This, int a2, void* msg);
 		};
 	}
 }
