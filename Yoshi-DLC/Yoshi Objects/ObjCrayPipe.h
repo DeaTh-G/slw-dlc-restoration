@@ -257,7 +257,7 @@ namespace app
 				ObjUtil::SendMessageImmToSetObject((GameObject*)(this - 8), &data->TargetID, (int*)&notifyObjevtEventMessage, 0);
 
 				fnd::Message::__ct(&warpNewAreaMessage.Base, fnd::PROC_MSG_WARP_NEW_AREA);
-				warpNewAreaMessage.field_18 = ObjUtil::GetPlayerNo(*(int*)(this + 32), ((int*)parentMessage)[8]);
+				warpNewAreaMessage.field_18 = ObjUtil::GetPlayerNo(*(int*)(this + 32), ((int*)parentMessage)[2]);
 				warpNewAreaMessage.IsDestination2D = true;
 				warpNewAreaMessage.TargetPosition = targetPosition;
 				warpNewAreaMessage.TargetRotation = targetRotation;
