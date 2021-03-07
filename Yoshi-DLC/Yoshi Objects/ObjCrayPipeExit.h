@@ -209,9 +209,7 @@ namespace app
 						}
 						else
 						{
-							/* *((int*)(this + 0x3A0)) is always 5 at the beginning
-							   TODO: Fix so timer resumes after exiting pipe */
-							if (*((int*)(this + 0x3A0)) == 3)
+							if (*((int*)(this + 0x3A0)) == 5)
 							{
 								xgame::MsgResumeGameTimer resumeGameTimerMessage;
 
