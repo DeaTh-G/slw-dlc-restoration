@@ -13,21 +13,29 @@ namespace app
 	class ObjRotateLiftInfo
 	{
 	public:
+		int field_00;
+		int field_04;
+		int field_08;
+		int field_0C;
+		int StepModel;
+		int ChainModel;
+
+		CObjInfo* __ct()
+		{
+			CObjInfo::__ct((CObjInfo*)this);
+			field_00 = ASLR(0x00D94DDC);
+			StepModel = 0;
+			ChainModel = 0;
+
+			return (CObjInfo*)this;
+		}
+
 		void Initialize(GameDocument* gameDocument)
 		{
-			int stepModel = 0;
-			int chainModel = 0;
-
 			int packFile;
 			ObjUtil::GetPackFile(&packFile, ObjUtil::GetStagePackName(gameDocument));
-			ObjUtil::GetModelResource(&stepModel, "zdlc02_obj_rollinglift_step", &packFile);
-			ObjUtil::GetModelResource(&chainModel, "zdlc02_obj_rollinglift", &packFile);
-
-			if (stepModel)
-				*(int*)(this + 0x10) = stepModel;
-
-			if (chainModel)
-				*(int*)(this + 0x14) = chainModel;
+			ObjUtil::GetModelResource(&StepModel, "zdlc02_obj_rollinglift_step", &packFile);
+			ObjUtil::GetModelResource(&ChainModel, "zdlc02_obj_rollinglift", &packFile);
 		}
 
 		const char* GetInfoName()
@@ -68,7 +76,7 @@ namespace app
 				Vector3(0, 0, -distanceFromOrigin)
 			};
 
-			csl::math::Quaternion rotation { 0, 0.707, 0, 0.707 };
+			csl::math::Quaternion rotation { 0, 0.707f, 0, 0.707f };
 
 			// Variables
 			int unit = 1;
@@ -113,12 +121,12 @@ namespace app
 				if (i < 4)
 				{
 					int* currentHFrameAddress = (int*)(this + 0x3A0 + (i * 0x130));
-					visualDescriptor.Model = *(int*)(info + 0x10);
+					visualDescriptor.Model = info->StepModel;
 					visualDescriptor.HFramePointer = currentHFrameAddress;
 				}
 
 				if (i == 4)
-					visualDescriptor.Model = *(int*)(info + 0x14);
+					visualDescriptor.Model = info->ChainModel;
 
 				fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
 
@@ -143,7 +151,7 @@ namespace app
 					collisionInfo.field_08 = 0x4003;
 					collisionInfo.field_04 |= 0x100;
 					collisionInfo.field_02 = 14;
-					collisionInfo.Parent = currentHFrameAddress;
+					collisionInfo.Parent = (fnd::HFrame*)currentHFrameAddress;
 					game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 				}
 			}
@@ -176,6 +184,15 @@ namespace app
 		if (!object)
 			return 0;
 		((ObjRotateLift*)object)->__ct();
+		return object;
+	}
+
+	fnd::ReferencedObject* createObjInfo_ObjRotateLiftInfo(csl::fnd::IAllocator* allocator)
+	{
+		fnd::ReferencedObject* object = fnd::ReferencedObject::New(sizeof(ObjRotateLiftInfo), allocator);
+		if (!object)
+			return 0;
+		((ObjRotateLiftInfo*)object)->__ct();
 		return object;
 	}
 }

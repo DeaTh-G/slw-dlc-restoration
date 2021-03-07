@@ -12,31 +12,35 @@ namespace app
 	class ObjYoshiSpecialFlowerInfo
 	{
 	public:
+		int field_00;
+		int field_04;
+		int field_08;
+		int field_0C;
+		int Model;
+		int Skeleton;
+		int Animation;
+
+		CObjInfo* __ct()
+		{
+			CObjInfo::__ct((CObjInfo*)this);
+			field_00 = ASLR(0x00D95004);
+			Model = 0;
+			Skeleton = 0;
+			Animation = 0;
+			return (CObjInfo*)this;
+		}
+
 		void Initialize(GameDocument* gameDocument)
 		{
-			int model = 0;
-			int skeleton = 0;
-			int animation = 0;
-
 			int packFile;
 			app::ObjUtil::GetPackFile(&packFile, app::ObjUtil::GetStagePackName(gameDocument));
-			app::ObjUtil::GetModelResource(&model, "zdlc02_obj_goalA_on", &packFile);
+			app::ObjUtil::GetModelResource(&Model, "zdlc02_obj_goalA_on", &packFile);
 
 			int packFileVariation;
 			hh::ut::Packfile::__ct(&packFileVariation, &packFile);
-			app::ObjUtil::GetSkeletonResource(&skeleton, "zdlc02_obj_goalA_on", packFileVariation);
+			app::ObjUtil::GetSkeletonResource(&Skeleton, "zdlc02_obj_goalA_on", packFileVariation);
 			
-			
-			app::ObjUtil::GetAnimationResource(&animation, "zdlc02_obj_goalA_on_idle", &packFile);
-
-			if (model)
-				*(int*)(this + 0x10) = model;
-
-			if (skeleton)
-				*(int*)(this + 0x14) = skeleton;
-
-			if (animation)
-				*(int*)(this + 0x18) = animation;
+			app::ObjUtil::GetAnimationResource(&Animation, "zdlc02_obj_goalA_on_idle", &packFile);
 		}
 
 		const char* GetInfoName()
@@ -88,8 +92,8 @@ namespace app
 			if (gocVisual)
 			{
 				app::fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
-				visualDescriptor.Model = *(int*)(info + 0x10);
-				visualDescriptor.Skeleton = *(int*)(info + 0x14);
+				visualDescriptor.Model = info->Model;
+				visualDescriptor.Skeleton = info->Skeleton;
 				app::fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
 			}
 
@@ -98,7 +102,7 @@ namespace app
 			{
 				app::game::GOCAnimationSimple::Setup(gocAnimationSimple, &unit);
 				app::fnd::GOCVisualModel::AttachAnimation(gocVisual, gocAnimationSimple);
-				app::game::GOCAnimationSimple::Add(gocAnimationSimple, "IDLE_LOOP", *(int*)(info + 0x18), 1);
+				app::game::GOCAnimationSimple::Add(gocAnimationSimple, "IDLE_LOOP", info->Animation, 1);
 				app::game::GOCAnimationSimple::SetAnimation(gocAnimationSimple, "IDLE_LOOP");
 			}
 
@@ -158,7 +162,8 @@ namespace app
 			int field_00[3];
 			
 			void* eggManager = EggManager::GetService(*(GameDocument**)(this + 0x20));
-			app::EggManager::TakeYoshiSpecialFlower(eggManager, *(int*)(this + 0x488));
+			if (eggManager)
+				app::EggManager::TakeYoshiSpecialFlower(eggManager, *(int*)(this + 0x488));
 
 			int* gocEffect = GameObject::GetGOC((GameObject*)(this - 8), GOCEffectString);
 			game::GOCEffect::CreateEffect(gocEffect, "ef_dl2_goal_get");
@@ -173,10 +178,19 @@ namespace app
 
 	GameObject* create_ObjYoshiSpecialFlower()
 	{
-  		app::GameObject* object = app::GameObject::New(0x4A0);
+		app::GameObject* object = app::GameObject::New(0x4A0);
 		if (!object)
 			return 0;
 		((app::ObjYoshiSpecialFlower*)object)->__ct();
+		return object;
+	}
+
+	fnd::ReferencedObject* createObjInfo_ObjYoshiSpecialFlowerInfo(csl::fnd::IAllocator* allocator)
+	{
+		fnd::ReferencedObject* object = fnd::ReferencedObject::New(sizeof(ObjYoshiSpecialFlowerInfo), allocator);
+		if (!object)
+			return 0;
+		((ObjYoshiSpecialFlowerInfo*)object)->__ct();
 		return object;
 	}
 }

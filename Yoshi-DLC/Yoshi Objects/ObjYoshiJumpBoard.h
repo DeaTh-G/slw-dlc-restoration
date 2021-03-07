@@ -24,7 +24,17 @@ namespace app
 		int field_0C;
 		int Model;
 		int Skeleton;
-		animation::AnimationResContainer AnimationContainer;
+		animation::AnimationResContainer AnimationContainer{};
+
+		CObjInfo* __ct()
+		{
+			CObjInfo::__ct((CObjInfo*)this);
+			this->field_00 = ASLR(0x00D95038);
+			Model = 0;
+			Skeleton = 0;
+			animation::AnimationResContainer::__ct(&AnimationContainer, field_08);
+			return (CObjInfo*)this;
+		}
 
 		void Initialize(GameDocument* gameDocument)
 		{
@@ -36,7 +46,6 @@ namespace app
 			ObjUtil::GetSkeletonResource(&this->Skeleton, "zdlc02_obj_jumpboard", packFile);
 			ObjUtil::GetAnimationScriptResource(&animationScript, "zdlc02_obj_jumpboard", packFile);
 
-			/* Crashed in 2P */
 			if (animationScript)
 				animation::AnimationResContainer::LoadFromBuffer(&this->AnimationContainer, &animationScript, packFile);
 		}
@@ -132,12 +141,12 @@ namespace app
 			{
 				game::GOCCollider::Setup(gocCollider, &collisionUnit);
 				game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_CYLINDER;
+				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_CAPSULE;
 				collisionInfo.MotionType = 2;
 				collisionInfo.Radius = *(int*)(this + 0x3A4) ? 2.5f : 5;
 				collisionInfo.Height = *(int*)(this + 0x3A4) ? 3.7f : 4.75f;
-				collisionInfo.field_44 = *(int*)(this + 0x3A4) ? 2.5f : 5;
-				collisionInfo.field_48 = *(int*)(this + 0x3A4) ? 3.7f : 4.75f;
+				collisionInfo.field_44 = 0;
+				collisionInfo.field_48 = 0;
 				game::CollisionObjCInfo::SetLocalPosition(&collisionInfo, &position);
 				ObjUtil::SetupCollisionFilter(0, &collisionInfo);
 				collisionInfo.field_0C = 0;
@@ -199,7 +208,8 @@ namespace app
 
 				if (gocAnimation)
 				{
-					if (app::game::GOCAnimationScript::GetFrame(gocAnimation) < 10.0 && *(int*)(this + 0x3A0) == 3)
+					int currentFrame = game::GOCAnimationScript::GetFrame(gocAnimation);
+					if (currentFrame < 10.0 && *(int*)(this + 0x3A0) == 3)
 					{
 						xgame::MsgPLGetInputButton playerGetInputButtonMessage;
 
@@ -224,8 +234,9 @@ namespace app
 						if ((std::abs(playerPosition.Y - targetPosition.Y)) > 0.55f)
 							if (app::game::GOCAnimationScript::GetFrame(gocAnimation) < 8)
 								playerPosition.Y -= 1.25f;
-							else
-								playerPosition.Y += 5.0f;
+
+						if (app::game::GOCAnimationScript::GetFrame(gocAnimation) >= 9)
+							playerPosition.Y += 5.0f;
 
 						((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][0] = playerPosition.X;
 						((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][1] = playerPosition.Y;
@@ -247,7 +258,7 @@ namespace app
 		void Update(int* sUpdateInfo)
 		{
 			StateWait();
-			StateExpantion();
+			StateExpansion();
 		}
 
 	private:
@@ -277,7 +288,7 @@ namespace app
 			}
 		}
 
-		void StateExpantion()
+		void StateExpansion()
 		{
 			int* gocAnimation = GameObject::GetGOC((GameObject*)(this - 8), GOCAnimationString);
 			game::GOCLauncher::ShotInfo shotInfo;

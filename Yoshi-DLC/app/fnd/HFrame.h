@@ -6,38 +6,7 @@ namespace app
 	{
 		class HFrame
 		{
-		/*private:
-			int* vfTable;
-			int field_04;
-			int field_08;
-			int* field_0C; // GameObject + 0x19C
-			int* field_10; // GameObject + 0x19C
-			int* branchHFramePointer1;
-			int* branchHFramePointer2;
-			char Flag;
-			char field_21;
-			short field_22;
-			int field_24;
-			int field_28;
-			int* field_2C;
-			int* field_30;
-			int* field_34;
-			int field_38;
-			int field_3C;
-			int field_40;
-			int* GOCVisualModelPointer;
-			int* CollisionShapePointer;
-			int field_4C;
-			Quaternion field_50[7];
-			int field_C0;
-			int field_C4;
-			int field_C8;
-			int field_CC;
-			Quaternion field_D0[5];
-			int field_120;
-			int field_124;
-			int field_128;
-			int field_12C;*/
+			char Data[0x130];
 
 		public:
 			inline static FUNCTION_PTR(HFrame*, __thiscall, __ct, ASLR(0x0048E210), char* This);

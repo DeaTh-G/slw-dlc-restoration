@@ -16,7 +16,7 @@ namespace app
 	
 		OBJECT_FUNCTION(void, Sleep, ASLR(0x0049CCB0));
 
-		int Data[0x300];
+		int Data[0x34];
 
 		void* operator new(size_t size)
 		{

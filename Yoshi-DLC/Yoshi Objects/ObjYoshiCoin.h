@@ -15,16 +15,25 @@ namespace app
 	class ObjYoshiCoinInfo
 	{
 	public:
+		int field_00;
+		int field_04;
+		int field_08;
+		int field_0C;
+		int Model;
+
+		CObjInfo* __ct()
+		{
+			CObjInfo::__ct((CObjInfo*)this);
+			field_00 = ASLR(0x00D9964C);
+			Model = 0;
+			return (CObjInfo*)this;
+		}
+
 		void Initialize(GameDocument* gameDocument)
 		{
-			int coinModel = 0;
-			
 			int packFile;
 			ObjUtil::GetPackFile(&packFile, ObjUtil::GetStagePackName(gameDocument));
-			ObjUtil::GetModelResource(&coinModel, "zdlc02_obj_yoshicoin", &packFile);
-
-			if (coinModel)
-				*(int*)(this + 0x10) = coinModel;
+			ObjUtil::GetModelResource(&Model, "zdlc02_obj_yoshicoin", &packFile);
 		}
 
 		const char* GetInfoName()
@@ -72,14 +81,15 @@ namespace app
 
 			// Rotate Manager
 			void* ringManager = Gimmick::CRingManager::GetService(gameDocument, (void*)ASLR(0x00FECC20));
-			Gimmick::CRingManager::RegisterRotateRing(ringManager, (GameObject*)this);
+			if (ringManager)
+				Gimmick::CRingManager::RegisterRotateRing(ringManager, (GameObject*)this);
 
 			// Visual Model
 			int* gocVisual = GameObject::GetGOC((GameObject*)this, GOCVisual);
 			if (gocVisual)
 			{
 				fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
-				visualDescriptor.Model = *(int*)(info + 0x10);
+				visualDescriptor.Model = info->Model;
 				fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
 				fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, &position);
 			}
@@ -198,6 +208,15 @@ namespace app
 		if (!object)
 			return 0;
 		((ObjYoshiCoin*)object)->__ct();
+		return object;
+	}
+
+	fnd::ReferencedObject* createObjInfo_ObjYoshiCoinInfo(csl::fnd::IAllocator* allocator)
+	{
+		fnd::ReferencedObject* object = fnd::ReferencedObject::New(sizeof(ObjYoshiCoinInfo), allocator);
+		if (!object)
+			return 0;
+		((ObjYoshiCoinInfo*)object)->__ct();
 		return object;
 	}
 }

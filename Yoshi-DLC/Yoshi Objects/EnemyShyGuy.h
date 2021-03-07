@@ -32,7 +32,7 @@ namespace app
 
 		EnemyShyGuyInfo* __ct(EnemyShyGuyInfo* a1)
 		{
-			CObjInfo::__ct((int*)a1);
+			CObjInfo::__ct((CObjInfo*)a1);
 			a1->Pacfile = "EnemyHeyho.pac";
 			a1->field_14 = 0;
 			a1->field_00 = ASLR(0x00D93A44);
@@ -287,9 +287,9 @@ namespace app
 								else if (this->field_18 < 0)
 									this->field_18 = 0;
 
-								csl::math::Quaternion multiplier{ 0, 0.259, 0, 0.966 };
+								csl::math::Quaternion multiplier{ 0, 0.259f, 0, 0.966f };
 								if ((*(int*)(obj + 0x4C0) & 4) == 4)
-									multiplier.Y = -0.259;
+									multiplier.Y = -0.259f;
 
 								csl::math::Quaternion rotation;
 								csl::math::Quaternion::QuaternionMultiply(&this->Rotation, &this->Rotation, &multiplier);
@@ -306,7 +306,6 @@ namespace app
 							this->field_1C += 1;
 							if (this->field_1C >= 3)
 							{
-								app::animation::AnimCallbackBridge<EnemyShyGuy>;
 								int* gocAnimation = GameObject::GetGOC((GameObject*)obj, GOCAnimationString);
 								if (gocAnimation)
 								{
@@ -664,7 +663,7 @@ namespace app
 		return object;
 	}
 
-	EnemyShyGuyInfo*create_EnemyShyGuy_EnemyShyGuyInfo(csl::fnd::IAllocator* a1)
+	EnemyShyGuyInfo* create_EnemyShyGuy_EnemyShyGuyInfo(csl::fnd::IAllocator* a1)
 	{
 		EnemyShyGuyInfo* result = (EnemyShyGuyInfo*)app::fnd::ReferencedObject::New(0x64, a1);
 		if (result)

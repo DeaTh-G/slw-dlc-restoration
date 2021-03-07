@@ -1,5 +1,7 @@
 #pragma once
 
+/* Heavily based on Sajidur78's LWAPI:
+   https://github.com/Sajidur78/LWAPI/blob/master/Sonic2013/System/goc/goc_Collider.h */
 namespace app
 {
 	namespace game
@@ -23,7 +25,7 @@ namespace app
 			int field_04;
 			int field_08;
 			int field_0C;
-			int* Parent; // HFrame*
+			fnd::HFrame* Parent;
 			int field_14;
 			int field_18;
 			int field_1C;

@@ -35,7 +35,9 @@ void Initialize()
 	WriteCall((void*)ASLR(0x00916EED), &IsYoshiIslandStage);
 
 	auto Create_Big_ObjYoshiJumpBoard = &app::Create_Big_ObjYoshiJumpBoard;
-	auto Create_Small_bjYoshiJumpBoard = &app::Create_Small_ObjYoshiJumpBoard;
+	auto Create_Small_ObjYoshiJumpBoard = &app::Create_Small_ObjYoshiJumpBoard;
+	auto createObjInfo_ObjYoshiJumpBoardSmall = &app::createObjInfo_ObjYoshiJumpBoardSmall;
+	auto createObjInfo_ObjYoshiJumpBoardBig = &app::createObjInfo_ObjYoshiJumpBoardBig;
 	auto ObjYoshiJumpBoard_AddCallback = &app::ObjYoshiJumpBoard::AddCallback;
 	auto ObjYoshiJumpBoard_ProcessMessage = &app::ObjYoshiJumpBoard::ProcessMessage;
 	auto ObjYoshiJumpBoard_Update = &app::ObjYoshiJumpBoard::Update;
@@ -43,18 +45,21 @@ void Initialize()
 	auto ObjYoshiJumpBoardInfo_GetInfoName = &app::ObjYoshiJumpBoardInfo::GetInfoName;
 
 	auto create_ObjYoshiCoin = &app::create_ObjYoshiCoin;
+	auto createObjInfo_ObjYoshiCoinInfo = &app::createObjInfo_ObjYoshiCoinInfo;
 	auto ObjYoshiCoin__ProcessMessage = &app::ObjYoshiCoin::ProcessMessage;
 	auto ObjYoshiCoin__AddCallback = &app::ObjYoshiCoin::AddCallback;
 	auto ObjYoshiCoinInfo__Initialize = &app::ObjYoshiCoinInfo::Initialize;
 	auto ObjYoshiCoinInfo__GetInfoName = &app::ObjYoshiCoinInfo::GetInfoName;
 
 	auto create_ObjRotateLift = &app::create_ObjRotateLift;
+	auto createObjInfo_ObjRotateLiftInfo = &app::createObjInfo_ObjRotateLiftInfo;
 	auto ObjRotateLift__ProcessMessage = &app::ObjRotateLift::ProcessMessage;
 	auto ObjRotateLift__AddCallback = &app::ObjRotateLift::AddCallback;
 	auto ObjRotateLiftInfo__Initialize = &app::ObjRotateLiftInfo::Initialize;
 	auto ObjRotateLiftInfo__GetInfoName = &app::ObjRotateLiftInfo::GetInfoName;
 
 	auto create_ObjYoshiSpecialFlower = &app::create_ObjYoshiSpecialFlower;
+	auto createObjInfo_ObjYoshiSpecialFlowerInfo = &app::createObjInfo_ObjYoshiSpecialFlowerInfo;
 	auto ObjYoshiSpecialFlower__ProcessMessage = &app::ObjYoshiSpecialFlower::ProcessMessage;
 	auto ObjYoshiSpecialFlower__AddCallback = &app::ObjYoshiSpecialFlower::AddCallback;
 	auto ObjYoshiSpecialFlowerInfo__Initialize = &app::ObjYoshiSpecialFlowerInfo::Initialize;
@@ -69,6 +74,12 @@ void Initialize()
 	auto ObjCrayPipeExit__Update = &app::ObjCrayPipeExit::Update;
 	auto ObjCrayPipeExit__AddCallback = &app::ObjCrayPipeExit::AddCallback;
 
+	auto ObjEggBlockInfo__Initialize = &app::ObjEggBlockInfo::Initialize;
+	auto ObjEggBlockInfo__GetInfoName = &app::ObjEggBlockInfo::GetInfoName;
+	auto create_ObjEggBlock = &app::create_ObjEggBlock;
+	auto createObjInfo_ObjEggBlockInfo = &app::createObjInfo_ObjEggBlockInfo;
+	auto ObjEggBlock__AddCallback = &app::ObjEggBlock::AddCallback;
+
 	auto EnemyShyGuyInfo__Initialize = &app::EnemyShyGuyInfo::Initialize;
 	auto EnemyShyGuyInfo__GetInfoName = &app::EnemyShyGuyInfo::GetInfoName;
 	auto create_EnemyShyGuy = &app::create_EnemyShyGuy;
@@ -77,7 +88,9 @@ void Initialize()
 	auto EnemyShyGuy__ProcessMessage = &app::EnemyShyGuy::ProcessMessage;
 
 	WRITE_FUNCTION(ASLR(0x00D2C2D4), *(void**)&Create_Big_ObjYoshiJumpBoard);
-	WRITE_FUNCTION(ASLR(0x00D2C324), *(void**)&Create_Small_bjYoshiJumpBoard);
+	WRITE_FUNCTION(ASLR(0x00D2C324), *(void**)&Create_Small_ObjYoshiJumpBoard);
+	WRITE_FUNCTION(ASLR(0x00D2C2CF), *(void**)&createObjInfo_ObjYoshiJumpBoardSmall);
+	WRITE_FUNCTION(ASLR(0x00D2C31F), *(void**)&createObjInfo_ObjYoshiJumpBoardBig);
 	WRITE_FUNCTION(ASLR(0x00DE1390), *(void**)&ObjYoshiJumpBoard_AddCallback);
 	WRITE_FUNCTION(ASLR(0x00DE137C), *(void**)&ObjYoshiJumpBoard_ProcessMessage);
 	WRITE_FUNCTION(ASLR(0x00DE1380), *(void**)&ObjYoshiJumpBoard_Update);
@@ -89,18 +102,21 @@ void Initialize()
 	WRITE_FUNCTION(ASLR(0x00D99654), *(void**)&ObjYoshiCoinInfo__Initialize);
 	WRITE_FUNCTION(ASLR(0x00D9965C), *(void**)&ObjYoshiCoinInfo__GetInfoName);
 	WRITE_FUNCTION(ASLR(0x00D2C1E4), *(void**)&create_ObjYoshiCoin);
+	WRITE_FUNCTION(ASLR(0x00D2C1DF), *(void**)&createObjInfo_ObjYoshiCoinInfo);
 	
 	/*WRITE_FUNCTION(ASLR(0x00D94D9C), *(void**)&ObjRotateLift__ProcessMessage);
 	WRITE_FUNCTION(ASLR(0x00D94DB0), *(void**)&ObjRotateLift__AddCallback);
 	WRITE_FUNCTION(ASLR(0x00D94DE4), *(void**)&ObjRotateLiftInfo__Initialize);
 	WRITE_FUNCTION(ASLR(0x00D94DEC), *(void**)&ObjRotateLiftInfo__GetInfoName);
-	WRITE_FUNCTION(ASLR(0x00D2C0F4), *(void**)&create_ObjRotateLift);*/
+	WRITE_FUNCTION(ASLR(0x00D2C0F4), *(void**)&create_ObjRotateLift);
+	WRITE_FUNCTION(ASLR(0x00D2C0EF), *(void**)&createObjInfo_ObjRotateLiftInfo);*/
 
 	WRITE_FUNCTION(ASLR(0x00D94FC4), *(void**)&ObjYoshiSpecialFlower__ProcessMessage);
 	WRITE_FUNCTION(ASLR(0x00D94FD8), *(void**)&ObjYoshiSpecialFlower__AddCallback);
 	WRITE_FUNCTION(ASLR(0x00D9500C), *(void**)&ObjYoshiSpecialFlowerInfo__Initialize);
 	WRITE_FUNCTION(ASLR(0x00D95014), *(void**)&ObjYoshiSpecialFlowerInfo__GetInfoName);
 	WRITE_FUNCTION(ASLR(0x00D2C284), *(void**)&create_ObjYoshiSpecialFlower);
+	WRITE_FUNCTION(ASLR(0x00D2C27F), *(void**)&createObjInfo_ObjYoshiSpecialFlowerInfo);
 
 	WRITE_FUNCTION(ASLR(0x00D94730), *(void**)&ObjCrayPipe__ProcessMessage);
 	WRITE_FUNCTION(ASLR(0x00D94744), *(void**)&ObjCrayPipe__AddCallback);
@@ -110,7 +126,13 @@ void Initialize()
 	WRITE_FUNCTION(ASLR(0x00D947B4), *(void**)&ObjCrayPipeExit__Update);
 	WRITE_FUNCTION(ASLR(0x00D947C4), *(void**)&ObjCrayPipeExit__AddCallback);
 	WRITE_FUNCTION(ASLR(0x00D2BBA1), *(void**)&create_ObjCrayPipeExit);
-
+	
+	WRITE_FUNCTION(ASLR(0x00D94954), *(void**)&ObjEggBlockInfo__Initialize);
+	WRITE_FUNCTION(ASLR(0x00D9495C), *(void**)&ObjEggBlockInfo__GetInfoName);
+	WRITE_FUNCTION(ASLR(0x00D94920), *(void**)&ObjEggBlock__AddCallback);
+	WRITE_FUNCTION(ASLR(0x00D2BC94), *(void**)&create_ObjEggBlock);
+	WRITE_FUNCTION(ASLR(0x00D2BC8F), *(void**)&createObjInfo_ObjEggBlockInfo);
+	
 	WRITE_FUNCTION(ASLR(0x00D93A4C), *(void**)&EnemyShyGuyInfo__Initialize);
 	WRITE_FUNCTION(ASLR(0x00D93A54), *(void**)&EnemyShyGuyInfo__GetInfoName);
 	WRITE_FUNCTION(ASLR(0x00D93A18), *(void**)&EnemyShyGuy__AddCallback);
