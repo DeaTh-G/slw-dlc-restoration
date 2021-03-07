@@ -107,6 +107,8 @@
 #include "Yoshi Objects/EnemyShyGuy.h"
 #include "Yoshi Objects/ObjCrayPipe.h"
 #include "Yoshi Objects/ObjCrayPipeExit.h"
+#include "Yoshi Objects/ObjEgg.h"
+#include "Yoshi Objects/ObjYoshi.h"
 #include "Yoshi Objects/ObjEggBlock.h"
 #include "Yoshi Objects/ObjRotateLift.h"
 #include "Yoshi Objects/ObjYoshiCoin.h"

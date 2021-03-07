@@ -32,13 +32,11 @@ namespace app
 
 		void Initialize(GameDocument* gameDocument)
 		{
-			int packFile;
+			int packFile = 0;
 			app::ObjUtil::GetPackFile(&packFile, app::ObjUtil::GetStagePackName(gameDocument));
 			app::ObjUtil::GetModelResource(&Model, "zdlc02_obj_goalA_on", &packFile);
 
-			int packFileVariation;
-			hh::ut::Packfile::__ct(&packFileVariation, &packFile);
-			app::ObjUtil::GetSkeletonResource(&Skeleton, "zdlc02_obj_goalA_on", packFileVariation);
+			app::ObjUtil::GetSkeletonResource(&Skeleton, "zdlc02_obj_goalA_on", packFile);
 			
 			app::ObjUtil::GetAnimationResource(&Animation, "zdlc02_obj_goalA_on_idle", &packFile);
 		}

@@ -34,9 +34,14 @@ namespace app
 		{
 			return "ObjEggBlockInfo";
 		}
+
+		void RegistCallback(csl::fnd::IAllocator* allocator)
+		{
+
+		}
 	};
 
-	class ObjEggBlock : GameObject
+	class ObjEggBlock : public CSetObjectListener
 	{
 	private:
 		struct MotorSwing
@@ -60,7 +65,6 @@ namespace app
 		}
 
 	public:
-		char field_D0[0x2C0];
 		fnd::HFrame HFrame;
 		MotorSwing Motor;
 		float field_04D4[5];
@@ -77,11 +81,11 @@ namespace app
 
 		CSetObjectListener* __ct()
 		{
-			sizeof(ObjEggBlock);
+			sizeof(CActor);
 			CSetObjectListener::__ct(this);
 
-			Data[0] = ASLR(0x00D9491C);
-			Data[2] = ASLR(0x00D94900);
+			vftable = ASLR(0x00D9491C);
+			field_00[2] = ASLR(0x00D94900);
 			game::PathEvaluator::__ct(&PathEvaluator);
 
 			return (CSetObjectListener*)this;
