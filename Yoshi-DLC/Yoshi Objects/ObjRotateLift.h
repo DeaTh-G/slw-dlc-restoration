@@ -44,30 +44,35 @@ namespace app
 		}
 	};
 
-	class ObjRotateLift
+	class ObjRotateLift : public CSetObjectListener
 	{
 	public:
+		fnd::HFrame Parents[4];
+		INSERT_PADDING(16);
+		char StepCount;
+		bool UseGlobalTime;
+		INSERT_PADDING(12);
+
 		CSetObjectListener* __ct()
 		{
-			CSetObjectListener::__ct((GameObject*)this);
-			*(int*)this = ASLR(0x00D94DAC);
-			*((int*)this + 2) = ASLR(0x00D94D90);
-			fnd::HFrame::__ct((char*)this + 0x3A0);
-			fnd::HFrame::__ct((char*)this + 0x4D0);
-			fnd::HFrame::__ct((char*)this + 0x600);
-			fnd::HFrame::__ct((char*)this + 0x730);
-			*((char*)this + 0x870) = 0x4;
-			*((bool*)this + 0x871) = false;
-			GameObject::SetObjectCategory((GameObject*)this, 4);
+			CSetObjectListener::__ct(this);
+			vftable = ASLR(0x00D94DAC);
+			field_00[0] = ASLR(0x00D94D90);
+
+			for (fnd::HFrame& pointer : Parents)
+				fnd::HFrame::__ct(&pointer);
+
+			StepCount = 4;
+			UseGlobalTime = false;
+
+			GameObject::SetObjectCategory(this, 4);
 
 			return (CSetObjectListener*)this;
 		}
 
 		void AddCallback(GameDocument* gameDocument)
 		{
-			int stepCount = *((char*)this + 0x870);
-			int containerSize = stepCount + 1;
-
+			int unit = StepCount;
 			float distanceFromOrigin = 25.0f;
 			Vector3 positionArray[4] = {
 				Vector3(0, distanceFromOrigin, 0),
@@ -75,73 +80,79 @@ namespace app
 				Vector3(0, 0, distanceFromOrigin),
 				Vector3(0, 0, -distanceFromOrigin)
 			};
-
-			csl::math::Quaternion rotation { 0, 0.707f, 0, 0.707f };
-
-			// Variables
-			int unit = 1;
 			fnd::GOCVisualModel::VisualDescription visualDescriptor{};
 			game::ColliBoxShapeCInfo collisionInfo{};
-			csl::math::Quaternion setRotation{};
 
 			// Create Game Object Components
-			int* visualContainer = fnd::GOComponent::Create((GameObject*)this, GOCVisualContainer);
-			int* gocCollider	 = fnd::GOComponent::Create((GameObject*)this, GOCCollider);
-			int* gocSound		 = fnd::GOComponent::Create((GameObject*)this, GOCSound);
-			int* gocMotor		 = fnd::GOComponent::Create((GameObject*)this, GOCMotorRotate);
-			
-			fnd::GOComponent::BeginSetup((GameObject*)this);
+			fnd::GOComponent::Create(this, GOCVisualContainer);
+			fnd::GOComponent::Create(this, GOCCollider);
+			fnd::GOComponent::Create(this, GOCSound);
+			fnd::GOComponent::Create(this, GOCMotorRotate);
+			fnd::GOComponent::BeginSetup(this);
 
 			ObjRotateLiftInfo* info = (ObjRotateLiftInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjRotateLiftInfo");
-			ObjRotateLiftData* data = (ObjRotateLiftData*)CSetAdapter::GetData(*(int**)(this + 0x324));
-			*(bool*)(this + 0x871) = (true - (data->UseGlobalTime == true));
+			ObjRotateLiftData* data = (ObjRotateLiftData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
 
-			CSetAdapter::GetRotation(*(int**)(this + 0x324), &setRotation);
+			UseGlobalTime = !data->UseGlobalTime;
 
-			int* branchHFrame = GameObject::GetGOC((GameObject*)this, GOCTransformString) + 0x28;
+			fnd::HFrame* transformFrame = (fnd::HFrame*)(GameObject::GetGOC(this, GOCTransformString) + 0x28);
 
-			for (size_t i = 0; i < stepCount; i++)
+			csl::math::Quaternion rotation;
+			CSetAdapter::GetRotation(*(int**)((char*)this + 0x324), &rotation);
+
+			size_t i = 0;
+			for (fnd::HFrame& pointer : Parents)
 			{
-				int* currentHFrameAddress = (int*)(this + 0x3A0 + (i * 0x130));
-
-				fnd::HFrame::SetLocalTranslation(currentHFrameAddress, &positionArray[i]);
-				fnd::HFrame::SetLocalRotation(currentHFrameAddress, &setRotation);
-				fnd::HFrame::ResetFlag(currentHFrameAddress, 0x20);
-				fnd::HFrame::AddChild(branchHFrame, currentHFrameAddress);
+				fnd::HFrame::SetLocalTranslation(&pointer, &positionArray[i]);
+				fnd::HFrame::SetLocalRotation(&pointer, &rotation);
+				fnd::HFrame::ResetFlag(&pointer, 0x20);
+				fnd::HFrame::AddChild(transformFrame, &pointer);
+				i++;
 			}
 
-			fnd::GOCVisualContainer::Setup(visualContainer, &containerSize);
+			int modelCount = StepCount + 1;
 
-			for (size_t i = 0; i < containerSize; i++)
+			int* gocContainer = GameObject::GetGOC(this, GOCVisual);
+			if (gocContainer)
 			{
-				int* gocVisual = fnd::GOComponent::CreateSingle((GameObject*)this, GOCVisualModel);
-				fnd::GOCVisualContainer::Add(visualContainer, gocVisual);
-				fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
-				
-				if (i < 4)
+				fnd::GOCVisualContainer::Setup(gocContainer, &modelCount);
+
+				for (size_t i = 0; i < modelCount; i++)
 				{
-					int* currentHFrameAddress = (int*)(this + 0x3A0 + (i * 0x130));
-					visualDescriptor.Model = info->StepModel;
-					visualDescriptor.HFramePointer = currentHFrameAddress;
+					int* gocVisual = fnd::GOComponent::CreateSingle(this, GOCVisualModel);
+					if (gocVisual)
+					{
+						fnd::GOCVisualContainer::Add(gocContainer, gocVisual);
+						fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
+
+						if (i < 4)
+						{
+							visualDescriptor.Model = info->StepModel;
+							visualDescriptor.Parent = &Parents[i];
+						}
+
+						if (i == 4)
+							visualDescriptor.Model = info->ChainModel;
+
+						fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
+
+						if (i == 4)
+						{
+							csl::math::Quaternion chainRot{ 0, 0.707f, 0, 0.707f };
+							fnd::GOCVisualTransformed::SetLocalRotation(gocVisual, &chainRot);
+						}
+					}
 				}
-
-				if (i == 4)
-					visualDescriptor.Model = info->ChainModel;
-
-				fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
-
-				if (i == 4)
-					fnd::GOCVisualTransformed::SetLocalRotation(gocVisual, &rotation);
 			}
 
-			// Collider
+			game::GOCSound::SimpleSetup(this, 1, 0);
+
+			int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
 			if (gocCollider)
 			{
-				for (size_t i = 0; i < stepCount; i++)
+				game::GOCCollider::Setup(gocCollider, &unit);
+				for (size_t i = 0; i < StepCount; i++)
 				{
-					int* currentHFrameAddress = (int*)(this + 0x3A0 + (i * 0x130));
-
-					game::GOCCollider::Setup(gocCollider, &unit);
 					game::CollisionObjCInfo::__ct(&collisionInfo);
 					collisionInfo.ShapeType = game::CollisionShapeType::TYPE_BOX;
 					collisionInfo.MotionType = 2;
@@ -151,36 +162,45 @@ namespace app
 					collisionInfo.field_08 = 0x4003;
 					collisionInfo.field_04 |= 0x100;
 					collisionInfo.field_02 = 14;
-					collisionInfo.Parent = (fnd::HFrame*)currentHFrameAddress;
+					collisionInfo.Parent = &Parents[i];
 					game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 				}
 			}
 
-			// Motor
-			game::MotorInfo motorInfo = {};
-			motorInfo.someVector.X = 1;
-			motorInfo.Speed = data->Omega;
-			game::GOCMotorRotate::Setup(gocMotor, &motorInfo);
+			int* gocMotor = GameObject::GetGOC(this, GOCMotorString);
+			if (gocMotor)
+			{
+				game::MotorInfo motorInfo{};
+				motorInfo.someVector.X = 1;
+				motorInfo.Speed = data->Omega;
+				game::GOCMotorRotate::Setup(gocMotor, &motorInfo);
 
-			game::GOCSound::SimpleSetup((GameObject*)this, 1, 0);
+				if (UseGlobalTime)
+				{
+					game::GOCMotor::RequestEnable(gocMotor, 0);
+				}
+			}
 
-			fnd::GOComponent::EndSetup((GameObject*)this);
-
-			int deviceTag[3]{};
-			game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossyrollinglift_rotate", 0);
-
+			fnd::GOComponent::EndSetup(this);
+			
+			int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+			if (gocSound)
+			{
+				int deviceTag[3]{};
+				game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossyrollinglift_rotate", 0);
+			}
 		}
 
 		bool ProcessMessage(fnd::Message* message)
 		{
-			CSetObjectListener::ProcessMessage((int*)this, message);
-			return true;
+			printf("%X: \n", message->field_04);
+			return CSetObjectListener::ProcessMessage((int*)this, message);
 		}
 	};
 
 	GameObject* create_ObjRotateLift()
 	{
-		GameObject* object = GameObject::New(0x880);
+		GameObject* object = GameObject::New(sizeof(ObjRotateLift));
 		if (!object)
 			return 0;
 		((ObjRotateLift*)object)->__ct();

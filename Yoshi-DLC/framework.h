@@ -19,6 +19,12 @@ const HMODULE MODULE_HANDLE = GetModuleHandle(NULL);
 #define PROC_ADDRESS(libraryName, procName) \
 	GetProcAddress(LoadLibrary(TEXT(libraryName)), procName)
 
+#define _CONCATX(x, y) x##y
+#define _CONCAT(x, y)  _CONCATX(x, y)
+#define CONCAT2(x, y) _CONCAT(x, y)
+
+#define INSERT_PADDING(length) char CONCAT2(pad, __LINE__)[length]
+
 #define HOOK(returnType, callingConvention, functionName, location, ...) \
     typedef returnType callingConvention functionName(__VA_ARGS__); \
     functionName* original##functionName = (functionName*)(location); \

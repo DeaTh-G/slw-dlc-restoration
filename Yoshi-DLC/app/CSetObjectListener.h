@@ -2,9 +2,11 @@
 
 namespace app
 {
-	class CSetObjectListener
+	class CSetObjectListener : public GameObject3D
 	{
 	public:
+		char field_031C[0x78];
+
 		inline static FUNCTION_PTR(void, __thiscall, SetStatusRetire, ASLR(0x00844790), GameObject* This);
 		inline static FUNCTION_PTR(void, __thiscall, SetStatusTemporaryRetire, ASLR(0x008447B0), GameObject* This, float a2);
 		inline static FUNCTION_PTR(bool, __thiscall, ProcessMessage, ASLR(0x00844A30), int* This, fnd::Message* message);

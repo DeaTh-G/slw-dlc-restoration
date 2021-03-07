@@ -2,7 +2,7 @@
 
 namespace app
 {
-	class GameObject
+	class GameObject : public hh::base::CRefCountObject, public fnd::CLeafActor
 	{
 	public:
 		inline static FUNCTION_PTR(GameObject*, __cdecl, New, ASLR(0x0049CAD0), size_t size);
@@ -16,7 +16,7 @@ namespace app
 	
 		OBJECT_FUNCTION(void, Sleep, ASLR(0x0049CCB0));
 
-		int Data[0x34];
+		int field_24[0x2D];
 
 		void* operator new(size_t size)
 		{

@@ -18,6 +18,7 @@ char* const GOCAnimationString = (char*)ASLR(0x00D64E9C);
 char* const GOCLauncherString = (char*)ASLR(0x00D6435C);
 char* const GOCMovementString = (char*)ASLR(0x00D643E8);
 char* const GOCEnemyHsmString = (char*)ASLR(0x00D9C674);
+char* const GOCMotorString = (char*)ASLR(0x00D66438);
 
 int* GOCTransform = (int*)ASLR(0x00F68ED4);
 int* GOCAnimationScript = (int*)ASLR(0x00FD7518);

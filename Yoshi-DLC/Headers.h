@@ -9,17 +9,24 @@
 #include "csl/fnd.h"
 #include "csl/math/Quaternion.h"
 
+// hh
+#include "hh/base.h"
+
 // app
 #include "app/ut/internal/StateImpl.h"
 #include "app/animation/AnimationResContainer.h"
 #include "app/animation/AnimCallbackBridge.h"
 
 #include "app/fnd/HFrame.h"
+#include "csl/ut/NonCopyable.h"
 #include "app/fnd/CActor.h"
+#include "app/fnd/CLeafActor.h"
 #include "app/ut/StateBase.h"
 #include "app/EnemyState.h"
 #include "app/GameDocument.h"
+#include "app/fnd/GOCTransform.h"
 #include "app/GameObject.h"
+#include "app/GameObject3D.h"
 #include "app/fnd/Message.h"
 #include "app/CGOCCollectionImpl.h"
 #include "app/CLevelInfo.h"
@@ -37,7 +44,6 @@
 #include "app/fnd/GameService.h"
 #include "app/fnd/GameServiceClass.h"
 #include "app/fnd/GOComponent.h"
-#include "app/fnd/GOCTransform.h"
 #include "app/fnd/GOCVisualContainer.h"
 #include "app/fnd/MessageManager.h"
 #include "app/ObjUtil.h"
@@ -50,6 +56,7 @@
 #include "app/game/GOCEffect.h"
 #include "app/game/GOCGravity.h"
 #include "app/game/GOCHud.h"
+#include "app/game/GOCMotor.h"
 #include "app/game/GOCMotorRotate.h"
 #include "app/game/GOCShadowSimple.h"
 #include "app/game/GOCSound.h"
@@ -88,9 +95,6 @@
 #include "app/xgame/MsgStopGameTimer.h"
 #include "app/xgame/MsgTakeObject.h"
 #include "app/xgame/MsgWarpNewArea.h"
-
-// hh
-#include "hh/base.h"
 
 // hh:ut
 #include "hh/ut/Packfile.h"

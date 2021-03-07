@@ -15,7 +15,7 @@ namespace app
 				int field_08;
 				int Animation;
 				int field_10;
-				int* HFramePointer;
+				HFrame* Parent;
 				float ZIndex;
 				int field_1C;
 				int field_20;
