@@ -6,10 +6,26 @@ namespace app
 	{
 		class CActor : public csl::ut::NonCopyable
 		{
-		public:
-			int field_00[7];
+		private:
+			inline static FUNCTION_PTR(CActor*, __thiscall, __dt, ASLR(0x0049A350), CActor* This);
 
+		public:
 			inline static FUNCTION_PTR(char, __thiscall, SendMessageImm, ASLR(0x0049A470), int* This, int a2, void* msg);
+			int field_00[6];
+
+			virtual ~CActor()
+			{
+				__dt(this);
+				FORCE_RET;
+			}
+
+			virtual size_t ForEach(int& traverser) = 0;
+		
+		protected:
+			virtual bool PreProcessMessage(Message& message) { return false; }
+			virtual bool ProcessMessage(Message& message) { return PreProcessMessage(message); }
+			virtual void Update(const int& updateInfo) { };
+			virtual bool ActorProc(int id, void* data) = 0;
 		};
 	}
 }

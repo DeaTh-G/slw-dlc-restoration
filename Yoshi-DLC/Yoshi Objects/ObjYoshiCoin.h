@@ -149,7 +149,7 @@ namespace app
 				return true;
 			}
 			default:
-				CSetObjectListener::ProcessMessage((int*)this, message);
+				CSetObjectListener::f_ProcessMessage((CSetObjectListener*)this, message);
 				return true;
 				break;
 			}

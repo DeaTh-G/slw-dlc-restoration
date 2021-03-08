@@ -19,6 +19,7 @@
 
 #include "app/fnd/HFrame.h"
 #include "csl/ut/NonCopyable.h"
+#include "app/fnd/Message.h"
 #include "app/fnd/CActor.h"
 #include "app/fnd/CLeafActor.h"
 #include "app/ut/StateBase.h"
@@ -27,11 +28,11 @@
 #include "app/fnd/GOCTransform.h"
 #include "app/GameObject.h"
 #include "app/GameObject3D.h"
-#include "app/fnd/Message.h"
 #include "app/CGOCCollectionImpl.h"
 #include "app/CLevelInfo.h"
 #include "app/fnd/ReferencedObject.h"
 #include "app/CObjInfo.h"
+#include "app/CObjInfoContainer.h"
 #include "app/CSetAdapter.h"
 #include "app/CSetObjectListener.h"
 #include "app/enemy/DeadEffectCInfo.h"
@@ -103,10 +104,13 @@
 #include "SurfRide/Layer.h"
 
 // Yoshi Objects
+#include "app/egg.h"
+
 #include "Yoshi Objects/EggManager.h"
 #include "Yoshi Objects/EnemyShyGuy.h"
 #include "Yoshi Objects/ObjCrayPipe.h"
 #include "Yoshi Objects/ObjCrayPipeExit.h"
+#include "Yoshi Objects/ObjDroppedEgg.h"
 #include "Yoshi Objects/ObjEgg.h"
 #include "Yoshi Objects/ObjYoshi.h"
 #include "Yoshi Objects/ObjEggBlock.h"

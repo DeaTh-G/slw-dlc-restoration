@@ -35,9 +35,17 @@ namespace app
 			return "ObjEggBlockInfo";
 		}
 
-		void RegistCallback(csl::fnd::IAllocator* allocator)
+		void RegistCallback(int* container)
 		{
+			ObjEggInfo* eggObject = (ObjEggInfo*)fnd::ReferencedObject::New(sizeof(ObjEggInfo), field_08);
+			if (eggObject)
+				new (eggObject)ObjEggInfo();
+			CObjInfoContainer::Register(container, eggObject->GetInfoName(), eggObject);
 
+			ObjYoshiInfo* yoshiObject = (ObjYoshiInfo*)fnd::ReferencedObject::New(sizeof(ObjYoshiInfo), field_08);
+			if (yoshiObject)
+				new (yoshiObject)ObjYoshiInfo();
+			CObjInfoContainer::Register(container, yoshiObject->GetInfoName(), yoshiObject);
 		}
 	};
 
@@ -65,7 +73,7 @@ namespace app
 		}
 
 	public:
-		fnd::HFrame HFrame;
+		fnd::HFrame Parent;
 		MotorSwing Motor;
 		float field_04D4[5];
 		int EggBlockState;
@@ -79,19 +87,13 @@ namespace app
 		game::PathEvaluator PathEvaluator;
 		int Padding[2];
 
-		CSetObjectListener* __ct()
+		ObjEggBlock()
 		{
-			sizeof(CActor);
-			CSetObjectListener::__ct(this);
-
-			vftable = ASLR(0x00D9491C);
-			field_00[2] = ASLR(0x00D94900);
+			fnd::HFrame::__ct(&Parent);
 			game::PathEvaluator::__ct(&PathEvaluator);
-
-			return (CSetObjectListener*)this;
 		}
 
-		void AddCallback(GameDocument* gameDocument)
+		void AddCallback(GameDocument* gameDocument) override
 		{
 			fnd::GOCVisualModel::VisualDescription visualDescriptor;
 			game::ColliBoxShapeCInfo collisionInfo{};
@@ -112,6 +114,9 @@ namespace app
 			this->PopEggRandomAddSpeed = data->PopEggRandomAddSpeed;
 
 			fnd::GOComponent::BeginSetup(this);
+
+			fnd::HFrame* transformFrame = (fnd::HFrame*)(GameObject::GetGOC(this, GOCTransformString) + 0x28);
+			fnd::HFrame::AddChild(transformFrame, &Parent);
 
 			int* gocVisual = GameObject::GetGOC(this, GOCVisual);
 			if (gocVisual)
@@ -183,6 +188,15 @@ namespace app
 
 			fnd::GOComponent::EndSetup(this);
 		}
+
+	private:
+		void DoCheckPopEgg()
+		{
+			if (PopEggNum > 1 && !field_0508 && field_04D4[1] > (field_04D4[2] * 0.5) * 0.5)
+			{
+
+			}
+		}
 	};
 
 	GameObject* create_ObjEggBlock()
@@ -190,8 +204,7 @@ namespace app
 		GameObject* object = GameObject::New(sizeof(ObjEggBlock));
 		if (!object)
 			return 0;
-		((ObjEggBlock*)object)->__ct();
-		return object;
+		return new ObjEggBlock();
 	}
 
 	ObjEggBlockInfo* createObjInfo_ObjEggBlockInfo(csl::fnd::IAllocator* allocator)

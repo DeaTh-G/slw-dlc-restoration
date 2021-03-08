@@ -53,12 +53,8 @@ namespace app
 		bool UseGlobalTime;
 		INSERT_PADDING(12);
 
-		CSetObjectListener* __ct()
+		ObjRotateLift()
 		{
-			CSetObjectListener::__ct(this);
-			vftable = ASLR(0x00D94DAC);
-			field_00[0] = ASLR(0x00D94D90);
-
 			for (fnd::HFrame& pointer : Parents)
 				fnd::HFrame::__ct(&pointer);
 
@@ -66,11 +62,9 @@ namespace app
 			UseGlobalTime = false;
 
 			GameObject::SetObjectCategory(this, 4);
-
-			return (CSetObjectListener*)this;
 		}
 
-		void AddCallback(GameDocument* gameDocument)
+		void AddCallback(GameDocument* gameDocument) override
 		{
 			int unit = StepCount;
 			float distanceFromOrigin = 25.0f;
@@ -190,22 +184,9 @@ namespace app
 				game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossyrollinglift_rotate", 0);
 			}
 		}
-
-		bool ProcessMessage(fnd::Message* message)
-		{
-			printf("%X: \n", message->field_04);
-			return CSetObjectListener::ProcessMessage((int*)this, message);
-		}
 	};
 
-	GameObject* create_ObjRotateLift()
-	{
-		GameObject* object = GameObject::New(sizeof(ObjRotateLift));
-		if (!object)
-			return 0;
-		((ObjRotateLift*)object)->__ct();
-		return object;
-	}
+	GameObject* create_ObjRotateLift() { return new ObjRotateLift();  }
 
 	fnd::ReferencedObject* createObjInfo_ObjRotateLiftInfo(csl::fnd::IAllocator* allocator)
 	{

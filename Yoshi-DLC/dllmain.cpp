@@ -53,8 +53,6 @@ void Initialize()
 
 	auto create_ObjRotateLift = &app::create_ObjRotateLift;
 	auto createObjInfo_ObjRotateLiftInfo = &app::createObjInfo_ObjRotateLiftInfo;
-	auto ObjRotateLift__ProcessMessage = &app::ObjRotateLift::ProcessMessage;
-	auto ObjRotateLift__AddCallback = &app::ObjRotateLift::AddCallback;
 	auto ObjRotateLiftInfo__Initialize = &app::ObjRotateLiftInfo::Initialize;
 	auto ObjRotateLiftInfo__GetInfoName = &app::ObjRotateLiftInfo::GetInfoName;
 
@@ -76,9 +74,9 @@ void Initialize()
 
 	auto ObjEggBlockInfo__Initialize = &app::ObjEggBlockInfo::Initialize;
 	auto ObjEggBlockInfo__GetInfoName = &app::ObjEggBlockInfo::GetInfoName;
+	auto ObjEggBlockInfo__RegistCallback = &app::ObjEggBlockInfo::RegistCallback;
 	auto create_ObjEggBlock = &app::create_ObjEggBlock;
 	auto createObjInfo_ObjEggBlockInfo = &app::createObjInfo_ObjEggBlockInfo;
-	auto ObjEggBlock__AddCallback = &app::ObjEggBlock::AddCallback;
 
 	auto EnemyShyGuyInfo__Initialize = &app::EnemyShyGuyInfo::Initialize;
 	auto EnemyShyGuyInfo__GetInfoName = &app::EnemyShyGuyInfo::GetInfoName;
@@ -104,8 +102,6 @@ void Initialize()
 	WRITE_FUNCTION(ASLR(0x00D2C1E4), *(void**)&create_ObjYoshiCoin);
 	WRITE_FUNCTION(ASLR(0x00D2C1DF), *(void**)&createObjInfo_ObjYoshiCoinInfo);
 	
-	WRITE_FUNCTION(ASLR(0x00D94D9C), *(void**)&ObjRotateLift__ProcessMessage);
-	WRITE_FUNCTION(ASLR(0x00D94DB0), *(void**)&ObjRotateLift__AddCallback);
 	WRITE_FUNCTION(ASLR(0x00D94DE4), *(void**)&ObjRotateLiftInfo__Initialize);
 	WRITE_FUNCTION(ASLR(0x00D94DEC), *(void**)&ObjRotateLiftInfo__GetInfoName);
 	WRITE_FUNCTION(ASLR(0x00D2C0F4), *(void**)&create_ObjRotateLift);
@@ -129,7 +125,7 @@ void Initialize()
 	
 	WRITE_FUNCTION(ASLR(0x00D94954), *(void**)&ObjEggBlockInfo__Initialize);
 	WRITE_FUNCTION(ASLR(0x00D9495C), *(void**)&ObjEggBlockInfo__GetInfoName);
-	WRITE_FUNCTION(ASLR(0x00D94920), *(void**)&ObjEggBlock__AddCallback);
+	WRITE_FUNCTION(ASLR(0x00D94960), *(void**)&ObjEggBlockInfo__RegistCallback);
 	WRITE_FUNCTION(ASLR(0x00D2BC94), *(void**)&create_ObjEggBlock);
 	WRITE_FUNCTION(ASLR(0x00D2BC8F), *(void**)&createObjInfo_ObjEggBlockInfo);
 	

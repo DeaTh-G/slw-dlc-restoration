@@ -4,6 +4,10 @@ namespace app
 {
 	class GameObject : public hh::base::CRefCountObject, public fnd::CLeafActor
 	{
+	private:
+		inline static FUNCTION_PTR(bool, __thiscall, f_ActorProc, ASLR(0x0049D0A0), CActor* This, int id, void* data);
+		inline static FUNCTION_PTR(bool, __thiscall, f_ProcessMessage, ASLR(0x0049CD10), CActor* This, fnd::Message& message);
+
 	public:
 		inline static FUNCTION_PTR(GameObject*, __cdecl, New, ASLR(0x0049CAD0), size_t size);
 		inline static FUNCTION_PTR(void, __thiscall, SetObjectCategory, ASLR(0x0049CAB0), GameObject* This, char category);
@@ -16,7 +20,13 @@ namespace app
 	
 		OBJECT_FUNCTION(void, Sleep, ASLR(0x0049CCB0));
 
-		int field_24[0x2D];
+		int field_24[0x2B];
+
+		virtual void AddCallback(GameDocument* gameDocument) {};
+		virtual void RemoveCallback(GameDocument* gameDocument) {};
+		virtual void UpdatePhase(const int& updateInfo, int phase) {};
+		bool ActorProc(int id, void* data) override { return f_ActorProc(this, id, data); }
+		bool ProcessMessage(fnd::Message& message) override { return f_ProcessMessage(this, message); };
 
 		void* operator new(size_t size)
 		{

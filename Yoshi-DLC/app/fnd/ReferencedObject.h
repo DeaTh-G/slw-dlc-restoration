@@ -10,7 +10,7 @@ namespace app
 			int field_00;
 			short field_04;
 			short field_06;
-			int field_08;
+			csl::fnd::IAllocator* field_08;
 
 			inline static FUNCTION_PTR(ReferencedObject*, __cdecl, New, ASLR(0x0048D4A0), int size, csl::fnd::IAllocator* allocator);
 		};

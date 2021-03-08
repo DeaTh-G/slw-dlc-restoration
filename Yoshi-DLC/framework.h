@@ -19,6 +19,10 @@ const HMODULE MODULE_HANDLE = GetModuleHandle(NULL);
 #define PROC_ADDRESS(libraryName, procName) \
 	GetProcAddress(LoadLibrary(TEXT(libraryName)), procName)
 
+#define FORCE_RET __asm mov esp, ebp \
+	__asm pop ebp \
+	__asm retn \
+
 #define _CONCATX(x, y) x##y
 #define _CONCAT(x, y)  _CONCATX(x, y)
 #define CONCAT2(x, y) _CONCAT(x, y)
