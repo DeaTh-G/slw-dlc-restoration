@@ -25,5 +25,18 @@ namespace app
 			a3->Y = a1->Z * a2->X - a1->X * a2->Z;
 			a3->Z = a1->X * a2->Y - a1->Y * a2->X;
 		}
+
+		static void Clamp(float* result, float a2, float a3)
+		{
+			if (*result < a2)
+				*result = a2;
+			if (*result > a3)
+				*result = a3;
+		}
+
+		static void Lerp(float* result, float* a2, float* a3)
+		{
+			*result = (*a3 * (*a2 - *result)) + *result;
+		}
 	}
 }

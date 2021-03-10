@@ -106,7 +106,8 @@ namespace app
                 transformMatrix = transformMatrix.inverse();
 
                 csl::math::Vector3 inversePosition{ transformMatrix(3,0), transformMatrix(3,1), transformMatrix(3,2) };
-                inversePosition.Y *= 2.8f;
+
+                //inversePosition.Y *= 2.8f;
 
                 int playerNo = ObjUtil::GetPlayerNo(field_24[1], message.field_08);
                 int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], playerNo);
@@ -117,17 +118,21 @@ namespace app
                         Eigen::Vector4f(playerPosition.X, playerPosition.Y, playerPosition.Z, 1)).head<3>();
                     csl::math::Vector3 localPosition { locPos.x(), locPos.y(), locPos.z() };
 
+                    csl::math::Vector3 somePos = *(csl::math::Vector3*)(playerInfo + 0xC);
+                    auto invPos = (transformMatrix.transpose() *
+                        Eigen::Vector4f(somePos.X, somePos.Y, somePos.Z, 1)).head<3>();
+                    inversePosition = Vector3(invPos.x(), invPos.y(), invPos.z());
 
-                    csl::math::Vector3 upVec = csl::math::Vector3(0, 1, 0);
-                    if (math::Vector3NormalizeIfNotZero(&inversePosition, &inversePosition) &&
-                        math::Vector3DotProduct(&inversePosition, &upVec) >= 0)
+                    if (math::Vector3NormalizeIfNotZero(&inversePosition, &inversePosition))
                     {
+                        csl::math::Vector3 downVec = csl::math::Vector3(0, -1, 0);
                         if (*(handle + 0x2F) &&
                             localPosition.Y > 9 &&
+                            math::Vector3DotProduct(&inversePosition, &downVec) >= 0 &&
                             AttackType::IsDamaged(message.AttackType, 0xA))
                         {
                             DamageMotor = InitMotorParam(0.80000001f, 0, 0);
-                            EggParam = InitPopEggParam(upVec, 50);
+                            EggParam = InitPopEggParam(downVec, -5);
 
                             int* gocSound = GameObject::GetGOC(this, GOCSoundString);
                             if (gocSound)
@@ -146,16 +151,17 @@ namespace app
                             (message.AttackType & 0x20 || message.AttackType & 0x40))
                         {
                             if (math::Vector3NormalizeIfNotZero(&localPosition, &localPosition)
-                                && acosf(math::Vector3DotProduct(&localPosition, &localPosition)) < 1.3962634);
+                                && acosf(math::Vector3DotProduct(&localPosition, &localPosition)) < 1.3962634f);
                             {
                                 csl::math::Vector3 crossVector{};
+                                csl::math::Vector3 upVec = csl::math::Vector3(0, 1, 0);
                                 math::Vector3CrossProduct(&upVec, &localPosition, &crossVector);
                                 if (math::Vector3NormalizeIfNotZero(&crossVector, &crossVector))
                                 {
                                     csl::math::Vector3 zVector{ 0, 0, 1 };
 
                                     DamageMotor = InitMotorParam(1, -math::Vector3DotProduct(&zVector, &crossVector), 30);
-                                    EggParam = InitPopEggParam(upVec, 40);
+                                    EggParam = InitPopEggParam(upVec, 10);
 
                                     int* gocSound = GameObject::GetGOC(this, GOCSoundString);
                                     if (gocSound)
@@ -189,7 +195,6 @@ namespace app
         EggBlockState State{};
         int field_4EC{};
         PopEggParam EggParam{};
-        int field_50C{};
         int PopEggNum{};
         float PopEggRandomAddSpeed{};
         game::PathEvaluator PathEvaluator{};
@@ -197,7 +202,6 @@ namespace app
 
         ObjEggBlock()
         {
-            sizeof(ObjEggBlock);
             fnd::HFrame::__ct(&Parent);
             game::PathEvaluator::__ct(&PathEvaluator);
         }
@@ -277,8 +281,8 @@ namespace app
                 collisionInfo.MotionType = 2;
                 collisionInfo.field_44 = 0;
                 collisionInfo.field_48 = 0;
-                collisionInfo.Size = csl::math::Vector3(4.5, 4.5, 4.5);
-                collisionOffset = csl::math::Vector3(0, 4.5, 0);
+                collisionInfo.Size = csl::math::Vector3(4.5f, 4.5f, 4.5f);
+                collisionOffset = csl::math::Vector3(0, 4.5f, 0);
                 game::CollisionObjCInfo::SetLocalPosition(&collisionInfo, &collisionOffset);
                 collisionInfo.field_02 = 4;
                 collisionInfo.field_04 |= 0x100;
@@ -348,7 +352,32 @@ namespace app
             }
             else if (State == STATE_DAMAGE)
             {
-                printf("I'm in danger *chuckles*\n");
+                radianRotation = DamageMotor.field_10 * sinf(DamageMotor.field_0C * (DamageMotor.field_04 + DamageMotor.field_00));
+                csl::math::Vector3 translation{};
+                translation.Y += fabs(sinf(DamageMotor.field_0C * (DamageMotor.field_04 + DamageMotor.field_00))) * EggParam.field_14;
+
+                fnd::HFrame::SetLocalTranslation(&Parent, &translation);
+
+                DoCheckPopEgg();
+                if (DamageMotor.field_04 > DamageMotor.field_08 * 0.5f)
+                {
+                    State = STATE_IDLE;
+                    IdleMotor = InitMotorParam(1.8f, 0, 8);
+                }
+
+                Eigen::Quaternion<float> q;
+                q = Eigen::AngleAxis<float>(DamageMotor.field_00 * radianRotation, Eigen::Vector3f(0, 0, 1));
+                csl::math::Quaternion rotation{ q.x(), q.y(), q.z(), q.w() };
+
+                DamageMotor.field_04 += updateInfo.deltaTime;
+                fnd::HFrame::SetLocalRotation(&Parent, &rotation);
+
+                int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+                if (gocCollider)
+                {
+                    void* collider = game::GOCCollider::GetShapeById(gocCollider, 2);
+                    game::ColliShapeBase::SetLocalRotation(collider, &rotation);
+                }
             }
         }
 
