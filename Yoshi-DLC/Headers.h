@@ -102,6 +102,8 @@
 #include "app/xgame/MsgTakeObject.h"
 #include "app/xgame/MsgWarpNewArea.h"
 
+#include "SonicUSA/System/Random.h"
+
 // hh:ut
 #include "hh/ut/Packfile.h"
 

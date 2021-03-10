@@ -36,14 +36,15 @@ namespace app
 		}
 
 		INSERT_PADDING(0x1C);
-		DroppedEggCInfo* CInfo;
+		DroppedEggCInfo* CInfo{};
 		int ModelType;
 		INSERT_PADDING(0x34);
 	
 	public:
 		ObjDroppedEgg(GameDocument& document, DroppedEggCInfo* cInfo)
 		{
-
+			CInfo = cInfo;
+			printf("asd");
 		}
 
 		void AddCallback(GameDocument* gameDocument) override
@@ -112,6 +113,6 @@ app::ObjDroppedEgg* app::egg::CreateDroppedEgg(GameDocument& gameDocument, Dropp
 	ObjDroppedEgg* object = new ObjDroppedEgg(gameDocument, cInfo);
 	if (!object)
 		return 0;
-	GameDocument::AddGameObject(gameDocument, object);
+	GameDocument::AddGameObject(*(GameDocument**)&gameDocument, object);
 	return object;
 }

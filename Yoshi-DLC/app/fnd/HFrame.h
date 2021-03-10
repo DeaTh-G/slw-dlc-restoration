@@ -6,7 +6,9 @@ namespace app
 	{
 		class alignas(16) HFrame
 		{
-			char Data[0x130];
+			INSERT_PADDING(0x70);
+			csl::math::Matrix34 Transform;
+			INSERT_PADDING(0x80);
 
 		public:
 			inline static FUNCTION_PTR(HFrame*, __thiscall, __ct, ASLR(0x0048E210), HFrame* This);

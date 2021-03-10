@@ -53,11 +53,19 @@ namespace app
 
 		void AddCallback(GameDocument* gameDocument) override
 		{
+			sizeof(ObjEgg);
 			fnd::GOComponent::Create(this, GOCVisualModel);
 			fnd::GOComponent::Create(this, GOCCollider);
 			fnd::GOComponent::Create(this, GOCGravity);
 			fnd::GOComponent::Create(this, GOCEffect);
 			fnd::GOComponent::Create(this, GOCSound);
+
+			/*EggManager* eggManager = EggManager::GetService(gameDocument);
+			if (!eggManager)
+				return;
+
+			int handle[2];
+			GameObjectHandleBase::__ct(&handle, this);*/
 		}
 	};
 }
@@ -67,6 +75,6 @@ app::ObjEgg* app::egg::CreateEgg(GameDocument& gameDocument, EggCInfo* cInfo)
 	ObjEgg* object = new ObjEgg(gameDocument, cInfo);
 	if (!object)
 		return 0;
-	GameDocument::AddGameObject(gameDocument, object);
+	GameDocument::AddGameObject(&gameDocument, object);
 	return object;
 }
