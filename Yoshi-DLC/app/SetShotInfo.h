@@ -2,7 +2,7 @@
 
 namespace app
 {
-	void SetShotInfo(float speed, float distance, float outOfControl, Matrix34* transformMatrix, bool jumpBoardType, app::game::GOCLauncher::ShotInfo* shotInfo)
+	void SetShotInfo(float speed, float distance, float outOfControl, csl::math::Matrix34* transformMatrix, bool jumpBoardType, app::game::GOCLauncher::ShotInfo* shotInfo)
 	{
 		shotInfo->StartingPosition.X = transformMatrix->data[3][0];
 		shotInfo->StartingPosition.Y = transformMatrix->data[3][1];

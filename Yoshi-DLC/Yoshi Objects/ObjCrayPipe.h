@@ -53,7 +53,7 @@ namespace app
 			{
 				app::game::GOCCollider::Setup(gocCollider, &unit);
 				app::game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_SPHERE;
+				collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
 				collisionInfo.MotionType = 2;
 				collisionInfo.Radius = data->CollisionRadius;
 				collisionInfo.field_54 = 0;
@@ -96,8 +96,8 @@ namespace app
 				{
 					int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), ((int*)message)[2]);
 					int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
-					Vector3 playerPosition = *(Vector3*)(playerInfo + 4);
-					Vector3 targetPosition = *(Vector3*)(gocTransform + 0x50);
+					csl::math::Vector3 playerPosition = *(csl::math::Vector3*)(playerInfo + 4);
+					csl::math::Vector3 targetPosition = *(csl::math::Vector3*)(gocTransform + 0x50);
 					float verticalDestination = 0;
 
 					if (*((bool*)(this + 0x3EC)))
@@ -242,7 +242,7 @@ namespace app
 
 		void StateWarp(fnd::Message* parentMessage)
 		{
-			Vector3 targetPosition;
+			csl::math::Vector3 targetPosition;
 			csl::math::Quaternion targetRotation;
 			xgame::MsgNotifyObjectEvent notifyObjevtEventMessage;
 			xgame::MsgWarpNewArea warpNewAreaMessage;

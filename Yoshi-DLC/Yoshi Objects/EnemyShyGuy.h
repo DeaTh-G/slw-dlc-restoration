@@ -408,9 +408,9 @@ namespace app
 
 		void AddCallback(GameDocument* gameDocument)
 		{
-			Vector3 position;
+			csl::math::Vector3 position;
 			csl::math::Quaternion rotation;
-			Vector3 reticlePosition{};
+			csl::math::Vector3 reticlePosition{};
 			reticlePosition.Y = 5;
 			fnd::GOCVisualModel::VisualDescription visualDescriptor;
 			game::ShadowSphereShapeCInfo shadowInfo;
@@ -485,7 +485,7 @@ namespace app
 			{
 				game::GOCCollider::Setup(gocCollider, &unit);
 				game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_SPHERE;
+				collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
 				collisionInfo.MotionType = 2;
 				collisionInfo.field_48 = 0;
 				collisionInfo.field_44 = 0;
@@ -556,7 +556,7 @@ namespace app
 			switch (message->field_04)
 			{
 			case fnd::PROC_MSG_DAMAGE:
-				ProcMsgDamage(message);
+				ProcMsgDamage((xgame::MsgDamage*)message);
 				break;
 			case fnd::PROC_MSG_KICK:
 				ProcMsgKick(message);
@@ -576,15 +576,15 @@ namespace app
 			}
 		}
 	private:
-		void ProcMsgDamage(fnd::Message* message)
+		void ProcMsgDamage(xgame::MsgDamage* message)
 		{
 			int* gocTransform = GameObject::GetGOC((GameObject*)(this - 8), GOCTransformString);
 			if (gocTransform)
 			{
-				Vector3 translation{};
+				csl::math::Vector3 translation{};
 				enemy::DeadEffectCInfo effectInfo;
 
-				math::CalculatedTransform::GetTranslation((Matrix34*)(gocTransform + 0x44), &translation);
+				math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
 				xgame::MsgDamage::SetReply(message, &translation, 1);
 				ObjUtil::AddScore((GameObject*)(this - 8), "SHYGUY", message);
 
@@ -593,7 +593,7 @@ namespace app
 				enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, message);
 				enemy::DeadEffectCInfo::SetYoshiIsland(&effectInfo);
 
-				Matrix34 transform{};
+				csl::math::Matrix34 transform{};
 				int* gocVisual = GameObject::GetGOC((GameObject*)(this - 8), GOCVisual);
 				if (gocVisual)
 				{
@@ -626,7 +626,7 @@ namespace app
 				blowOffInfo.Animation = info->AnimationLeft;
 				if ((*(int*)(this + 0x4C0) & 4) == 4)
 					blowOffInfo.Animation = info->AnimationRight;
-				blowOffInfo.field_10 = *(Matrix34*)(gocTransform + 0x44);
+				blowOffInfo.field_10 = *(csl::math::Matrix34*)(gocTransform + 0x44);
 				blowOffInfo.field_50.Y = 5;
 				blowOffInfo.field_60 = 4;
 				blowOffInfo.field_6C = 3;
@@ -665,7 +665,7 @@ namespace app
 
 	EnemyShyGuyInfo* create_EnemyShyGuy_EnemyShyGuyInfo(csl::fnd::IAllocator* a1)
 	{
-		EnemyShyGuyInfo* result = (EnemyShyGuyInfo*)app::fnd::ReferencedObject::New(0x64, a1);
+		EnemyShyGuyInfo* result = (EnemyShyGuyInfo*)app::fnd::ReferencedObject::f_new(0x64, a1);
 		if (result)
 			result->__ct(result);
 		return result;

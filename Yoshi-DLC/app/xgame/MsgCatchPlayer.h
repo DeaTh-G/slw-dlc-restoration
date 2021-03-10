@@ -10,7 +10,7 @@ namespace app
 			fnd::Message Base;
 			int field_18;
 			int field_1C;
-			Matrix34 field_20;
+			csl::math::Matrix34 field_20;
 			int field_60;
 			int field_64;
 			int field_68;

@@ -68,11 +68,11 @@ namespace app
 		{
 			int unit = StepCount;
 			float distanceFromOrigin = 25.0f;
-			Vector3 positionArray[4] = {
-				Vector3(0, distanceFromOrigin, 0),
-				Vector3(0, -distanceFromOrigin, 0),
-				Vector3(0, 0, distanceFromOrigin),
-				Vector3(0, 0, -distanceFromOrigin)
+			csl::math::Vector3 positionArray[4] = {
+				csl::math::Vector3(0, distanceFromOrigin, 0),
+				csl::math::Vector3(0, -distanceFromOrigin, 0),
+				csl::math::Vector3(0, 0, distanceFromOrigin),
+				csl::math::Vector3(0, 0, -distanceFromOrigin)
 			};
 			fnd::GOCVisualModel::VisualDescription visualDescriptor{};
 			game::ColliBoxShapeCInfo collisionInfo{};
@@ -148,11 +148,11 @@ namespace app
 				for (size_t i = 0; i < StepCount; i++)
 				{
 					game::CollisionObjCInfo::__ct(&collisionInfo);
-					collisionInfo.ShapeType = game::CollisionShapeType::TYPE_BOX;
+					collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_BOX;
 					collisionInfo.MotionType = 2;
 					collisionInfo.field_44 = 0;
 					collisionInfo.field_48 = 0;
-					collisionInfo.Size = Vector3(1, 2.5f, 8);
+					collisionInfo.Size = csl::math::Vector3(1, 2.5f, 8);
 					collisionInfo.field_08 = 0x4003;
 					collisionInfo.field_04 |= 0x100;
 					collisionInfo.field_02 = 14;
@@ -190,7 +190,7 @@ namespace app
 
 	fnd::ReferencedObject* createObjInfo_ObjRotateLiftInfo(csl::fnd::IAllocator* allocator)
 	{
-		fnd::ReferencedObject* object = fnd::ReferencedObject::New(sizeof(ObjRotateLiftInfo), allocator);
+		fnd::ReferencedObject* object = fnd::ReferencedObject::f_new(sizeof(ObjRotateLiftInfo), allocator);
 		if (!object)
 			return 0;
 		((ObjRotateLiftInfo*)object)->__ct();

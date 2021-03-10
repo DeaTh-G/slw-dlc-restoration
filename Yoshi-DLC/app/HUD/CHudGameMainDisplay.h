@@ -7,7 +7,7 @@ namespace app
 		int* SetSpecialFlower(int* This)
 		{
 			char DstBuf[32]{};
-			void* eggManager = app::EggManager::GetService(*(app::GameDocument**)(This + 0xA));
+			EggManager* eggManager = app::EggManager::GetService(*(app::GameDocument**)(This + 0xA));
 			if (This[0x52])
 			{
 				int FlowerFlag = 0;
@@ -15,7 +15,7 @@ namespace app
 				{
 					for (size_t i = 0; i < 5; ++i)
 					{
-						int flower = app::EggManager::IsYoshiSpecialFlowerTaked(eggManager, i);
+						int flower = eggManager->IsYoshiSpecialFlowerTaked(i);
 						if (flower)
 							FlowerFlag |= 1 << i;
 					}

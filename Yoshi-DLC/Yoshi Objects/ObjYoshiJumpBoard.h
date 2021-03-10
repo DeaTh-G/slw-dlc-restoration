@@ -88,7 +88,7 @@ namespace app
 		void AddCallback(GameDocument* gameDocument)
 		{
 			// Collision Offset
-			Vector3 position { 0, 7.375f, 0 };
+			csl::math::Vector3 position { 0, 7.375f, 0 };
 
 			game::ShadowSphereShapeCInfo shadowInfo;
 			fnd::GOCVisualModel::VisualDescription visualDescriptor;
@@ -96,7 +96,7 @@ namespace app
 			float jumpBoardScale = *(int*)(this + 0x3A4) ? 0.75f : 1.25f;
 			float shadowSize = *(int*)(this + 0x3A4) ? 3.75f : 6.25f;
 			int collisionUnit = 1;
-			Vector3 objectScale;
+			csl::math::Vector3 objectScale;
 
 			fnd::GOComponent::Create((GameObject*)this, GOCVisualModel);
 			fnd::GOComponent::Create((GameObject*)this, GOCAnimationScript);
@@ -141,7 +141,7 @@ namespace app
 			{
 				game::GOCCollider::Setup(gocCollider, &collisionUnit);
 				game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_CAPSULE;
+				collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_CAPSULE;
 				collisionInfo.MotionType = 2;
 				collisionInfo.Radius = *(int*)(this + 0x3A4) ? 2.5f : 5;
 				collisionInfo.Height = *(int*)(this + 0x3A4) ? 3.7f : 4.75f;
@@ -172,12 +172,12 @@ namespace app
 				game::GOCLauncher::ShotInfo shotInfo;
 
 				SetShotInfo(data->FirstSpeed, data->KeepVelocityDistance, data->OutOfControl,
-					(Matrix34*)(gocTransform + 0xC), *(int*)(this + 0x3A4), &shotInfo);
+					(csl::math::Matrix34*)(gocTransform + 0xC), *(int*)(this + 0x3A4), &shotInfo);
 				*((game::GOCLauncher::ShotInfo*)(this + 0x3E0)) = shotInfo;
 
 				SetShotInfo(
 					*(int*)(this + 0x3A4) ? 75 : 100, *(int*)(this + 0x3A4) ? 7.5f : 10,
-					*(int*)(this + 0x3A4) ? 0.1 : 0.125, (Matrix34*)(gocTransform + 0xC),
+					*(int*)(this + 0x3A4) ? 0.1 : 0.125, (csl::math::Matrix34*)(gocTransform + 0xC),
 					*(int*)(this + 0x3A4), &shotInfo);
 				*((game::GOCLauncher::ShotInfo*)(this + 0x3B0)) = shotInfo;
 			}
@@ -228,8 +228,8 @@ namespace app
 						int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), *(int*)(this + 0x39C));
 						int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
 
-						Vector3 playerPosition = *(Vector3*)(playerInfo + 4);
-						Vector3 targetPosition = *(Vector3*)(gocTransform + 0x50);
+						csl::math::Vector3 playerPosition = *(csl::math::Vector3*)(playerInfo + 4);
+						csl::math::Vector3 targetPosition = *(csl::math::Vector3*)(gocTransform + 0x50);
 
 						if ((std::abs(playerPosition.Y - targetPosition.Y)) > 0.55f)
 							if (app::game::GOCAnimationScript::GetFrame(gocAnimation) < 8)
@@ -272,8 +272,8 @@ namespace app
 
 					int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), *(int*)(this + 0x39C));
 					int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
-					((game::GOCLauncher::ShotInfo*)(this + 0x3D8))->StartingPosition = *(Vector3*)(playerInfo + 4);
-					((game::GOCLauncher::ShotInfo*)(this + 0x3A8))->StartingPosition = *(Vector3*)(playerInfo + 4);
+					((game::GOCLauncher::ShotInfo*)(this + 0x3D8))->StartingPosition = *(csl::math::Vector3*)(playerInfo + 4);
+					((game::GOCLauncher::ShotInfo*)(this + 0x3A8))->StartingPosition = *(csl::math::Vector3*)(playerInfo + 4);
 
 					fnd::Message::__ct(&catchPlayerMessage.Base, fnd::PROC_MSG_CATCH_PLAYER);
 					catchPlayerMessage.field_18 = 0;

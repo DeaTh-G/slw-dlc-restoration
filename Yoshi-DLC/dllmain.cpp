@@ -24,10 +24,10 @@ void Initialize()
 	/* TODO: Please replace this with sane code. */
 	WRITE_MEMORY(ASLR(0x00D41252),
 		0x68,
-		(const char)((uint32_t)construct_EggManager >> 0),
-		(const char)((uint32_t)construct_EggManager >> 8),
-		(const char)((uint32_t)construct_EggManager >> 16),
-		(const char)((uint32_t)construct_EggManager >> 24)
+		(const char)((uint32_t)app::construct_EggManager >> 0),
+		(const char)((uint32_t)app::construct_EggManager >> 8),
+		(const char)((uint32_t)app::construct_EggManager >> 16),
+		(const char)((uint32_t)app::construct_EggManager >> 24)
 	);
 
 	WriteCall((void*)ASLR(0x009159F3), &IsYoshiIslandStage);
@@ -72,9 +72,6 @@ void Initialize()
 	auto ObjCrayPipeExit__Update = &app::ObjCrayPipeExit::Update;
 	auto ObjCrayPipeExit__AddCallback = &app::ObjCrayPipeExit::AddCallback;
 
-	auto ObjEggBlockInfo__Initialize = &app::ObjEggBlockInfo::Initialize;
-	auto ObjEggBlockInfo__GetInfoName = &app::ObjEggBlockInfo::GetInfoName;
-	auto ObjEggBlockInfo__RegistCallback = &app::ObjEggBlockInfo::RegistCallback;
 	auto create_ObjEggBlock = &app::create_ObjEggBlock;
 	auto createObjInfo_ObjEggBlockInfo = &app::createObjInfo_ObjEggBlockInfo;
 
@@ -123,9 +120,6 @@ void Initialize()
 	WRITE_FUNCTION(ASLR(0x00D947C4), *(void**)&ObjCrayPipeExit__AddCallback);
 	WRITE_FUNCTION(ASLR(0x00D2BBA1), *(void**)&create_ObjCrayPipeExit);
 	
-	WRITE_FUNCTION(ASLR(0x00D94954), *(void**)&ObjEggBlockInfo__Initialize);
-	WRITE_FUNCTION(ASLR(0x00D9495C), *(void**)&ObjEggBlockInfo__GetInfoName);
-	WRITE_FUNCTION(ASLR(0x00D94960), *(void**)&ObjEggBlockInfo__RegistCallback);
 	WRITE_FUNCTION(ASLR(0x00D2BC94), *(void**)&create_ObjEggBlock);
 	WRITE_FUNCTION(ASLR(0x00D2BC8F), *(void**)&createObjInfo_ObjEggBlockInfo);
 	

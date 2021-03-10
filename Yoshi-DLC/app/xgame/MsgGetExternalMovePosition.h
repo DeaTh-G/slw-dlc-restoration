@@ -8,7 +8,7 @@ namespace app
 		{
 		public:
 			fnd::Message Base;
-			Matrix34* Transform;
+			csl::math::Matrix34* Transform;
 		};
 	}
 

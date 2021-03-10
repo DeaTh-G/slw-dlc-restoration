@@ -10,8 +10,8 @@ namespace app
 			fnd::Message Base;
 			int field_18;
 			int field_1C;
-			Vector3 ObjectPosition;
-			Vector3 LaunchVector;
+			csl::math::Vector3 ObjectPosition;
+			csl::math::Vector3 LaunchVector;
 			float OutOfControl;
 			float TravelTime;
 			int field_48;
@@ -25,7 +25,7 @@ namespace app
 			int field_68;
 			int field_6C;
 
-			inline static FUNCTION_PTR(MsgSpringImpulse*, __thiscall, __ct, ASLR(0x00536CF0), MsgSpringImpulse* This, Vector3* objectPosition, Vector3* launchVector, float outOfControl, float travelTime);
+			inline static FUNCTION_PTR(MsgSpringImpulse*, __thiscall, __ct, ASLR(0x00536CF0), MsgSpringImpulse* This, csl::math::Vector3* objectPosition, csl::math::Vector3* launchVector, float outOfControl, float travelTime);
 		};
 	}
 

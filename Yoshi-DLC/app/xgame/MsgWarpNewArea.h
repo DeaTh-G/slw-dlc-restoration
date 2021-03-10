@@ -13,7 +13,7 @@ namespace app
 			int8_t field_1D;
 			int8_t field_1E;
 			int8_t field_1F;
-			Vector3 TargetPosition;
+			csl::math::Vector3 TargetPosition;
 			csl::math::Quaternion TargetRotation;
 			int field_40;
 			short field_44;

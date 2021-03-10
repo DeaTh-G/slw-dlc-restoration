@@ -22,10 +22,10 @@ namespace app
 		virtual void OnSetEditorParamChanged(CSetAdapter& adapter) {};
 
 	public:
-		CSetObjectListener() { __ct(this); sizeof(CSetObjectListener);  }
+		CSetObjectListener() { __ct(this); }
 		virtual unsigned int GetAbsordGuidePathID() { return 0; }
 		virtual double GetAbsorbPathPosition() { return -1; }
-		virtual Vector3 GetAbsorbPathOffset() { return { 0, 0, 0 }; }
+		virtual csl::math::Vector3 GetAbsorbPathOffset() { return { 0, 0, 0 }; }
 		virtual void SetAppearance(float opacity) {}
 	};
 }

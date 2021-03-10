@@ -10,7 +10,7 @@ namespace app
 			float					field_04;
 			int						field_08;
 			int						Padding;
-			Vector3					Position;
+			csl::math::Vector3		Position;
 			csl::math::Quaternion	Rotation;
 			bool					field_30;
 			int						field_34;

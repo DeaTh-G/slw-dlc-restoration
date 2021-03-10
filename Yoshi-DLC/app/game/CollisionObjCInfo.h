@@ -6,16 +6,20 @@ namespace app
 {
 	namespace game
 	{
-		typedef enum 
+		class CollisionShapeType
 		{
-			TYPE_SPHERE,
-			TYPE_BOX,
-			TYPE_CAPSULE,
-			TYPE_CYLINDER,
-			TYPE_MESH,
-			TYPE_RIGIDBODY,
-			TYPE_INVALID
-		} CollisionShapeType;
+		public:
+			enum class ShapeType : char
+			{
+				TYPE_SPHERE,
+				TYPE_BOX,
+				TYPE_CAPSULE,
+				TYPE_CYLINDER,
+				TYPE_MESH,
+				TYPE_RIGIDBODY,
+				TYPE_INVALID
+			};
+		};
 
 		class CollisionObjCInfo
 		{
@@ -29,22 +33,22 @@ namespace app
 			int field_14;
 			int field_18;
 			int field_1C;
-			Vector3 Position;
+			csl::math::Vector3 Position;
 			csl::math::Quaternion Rotation;
 
 			inline static FUNCTION_PTR(int*, __thiscall, __ct, ASLR(0x004B6190), CollisionObjCInfo* This);
-			inline static FUNCTION_PTR(void, __thiscall, SetLocalPosition, ASLR(0x004B61D0), CollisionObjCInfo* This, Vector3* position);
+			inline static FUNCTION_PTR(void, __thiscall, SetLocalPosition, ASLR(0x004B61D0), CollisionObjCInfo* This, csl::math::Vector3* position);
 		};
 
 		class ColliShapeCInfo : public CollisionObjCInfo
 		{
 		public:
-			CollisionShapeType ShapeType;
+			CollisionShapeType::ShapeType ShapeType;
 			char MotionType;
-			char field_42;
-			char field_43;
+			INSERT_PADDING(2);
 			int field_44;
 			int field_48;
+			int field_4C;
 		};
 
 		class ColliSphereShapeCInfo : public ColliShapeCInfo
@@ -57,7 +61,7 @@ namespace app
 		class ColliBoxShapeCInfo : public ColliShapeCInfo
 		{
 		public:
-			Vector3 Size;
+			csl::math::Vector3 Size;
 		};
 
 		class ColliCapsuleShapeCInfo : public ColliShapeCInfo

@@ -9,13 +9,13 @@ namespace app
 		int Skeleton;
 		int Animation;
 		int field_0C;
-		Matrix34 field_10;
-		Vector3 field_50;
+		csl::math::Matrix34 field_10;
+		csl::math::Vector3 field_50;
 		float field_60;
 		float field_64;
 		float field_68;
 		int field_6C;
-		Vector3 field_70;
+		csl::math::Vector3 field_70;
 		int field_80;
 		int field_84;
 		int field_88;

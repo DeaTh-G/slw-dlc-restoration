@@ -13,7 +13,7 @@ namespace app
 
 	fnd::ReferencedObject* createObjInfo_ObjYoshiJumpBoardSmall(csl::fnd::IAllocator* a1)
 	{
-		fnd::ReferencedObject* object = fnd::ReferencedObject::New(0x54, a1);
+		fnd::ReferencedObject* object = fnd::ReferencedObject::f_new(0x54, a1);
 		if (!object)
 			return 0;
 		((ObjYoshiJumpBoardInfo*)object)->__ct();

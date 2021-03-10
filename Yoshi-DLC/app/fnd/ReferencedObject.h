@@ -4,15 +4,26 @@ namespace app
 {
 	namespace fnd
 	{
-		class ReferencedObject
+		class ReferencedObject : public BaseObject
 		{
-		public:
-			int field_00;
+		protected:
 			short field_04;
 			short field_06;
-			csl::fnd::IAllocator* field_08;
+			csl::fnd::IAllocator* pAllocator;
 
-			inline static FUNCTION_PTR(ReferencedObject*, __cdecl, New, ASLR(0x0048D4A0), int size, csl::fnd::IAllocator* allocator);
+		public:
+			inline static FUNCTION_PTR(ReferencedObject*, __cdecl, f_new, ASLR(0x0048D4A0), size_t size, csl::fnd::IAllocator* pAllocator);
+			inline static FUNCTION_PTR(void, __cdecl, f_delete, ASLR(0x0048D480), void* obj);
+			
+			void* operator new(size_t size, csl::fnd::IAllocator* pAllocator)
+			{
+				return f_new(size, pAllocator);
+			}
+
+			void operator delete(void* obj)
+			{
+				f_delete(obj);
+			}
 		};
 	}
 }

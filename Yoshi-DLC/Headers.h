@@ -2,11 +2,12 @@
 
 #include "framework.h"
 #include "LWStructs.h"
-#include "LWTypes.h"
 #include "LWVariables.h"
 
 // csl
 #include "csl/fnd.h"
+#include "csl/math/Vector3.h"
+#include "csl/math/Matrix34.h"
 #include "csl/math/Quaternion.h"
 
 // hh
@@ -18,6 +19,7 @@
 #include "app/animation/AnimCallbackBridge.h"
 
 #include "app/fnd/HFrame.h"
+#include "app/fnd/Handle.h"
 #include "csl/ut/NonCopyable.h"
 #include "app/fnd/Message.h"
 #include "app/fnd/CActor.h"
@@ -30,6 +32,7 @@
 #include "app/GameObject3D.h"
 #include "app/CGOCCollectionImpl.h"
 #include "app/CLevelInfo.h"
+#include "app/fnd/BaseObject.h"
 #include "app/fnd/ReferencedObject.h"
 #include "app/CObjInfo.h"
 #include "app/CObjInfoContainer.h"
@@ -42,8 +45,8 @@
 #include "app/EnemyManager.h"
 #include "app/game/CollisionObjCInfo.h"
 
-#include "app/fnd/GameService.h"
 #include "app/fnd/GameServiceClass.h"
+#include "app/fnd/GameService.h"
 #include "app/fnd/GOComponent.h"
 #include "app/fnd/GOCVisualContainer.h"
 #include "app/fnd/MessageManager.h"
@@ -53,6 +56,7 @@
 #include "app/game/CollisionShapeType.h"
 #include "app/game/GOCAnimationScript.h"
 #include "app/game/GOCAnimationSimple.h"
+#include "app/game/ColliShapeBase.h"
 #include "app/game/GOCCollider.h"
 #include "app/game/GOCEffect.h"
 #include "app/game/GOCGravity.h"
@@ -74,6 +78,7 @@
 
 #include "app/HUD/SRUtility.h"
 
+#include "app/math/math.h"
 #include "app/math/CalculatedTransform.h"
 #include "app/math/Transform.h"
 
@@ -104,16 +109,14 @@
 #include "SurfRide/Layer.h"
 
 // Yoshi Objects
-#include "app/egg.h"
-
-#include "Yoshi Objects/EggManager.h"
 #include "Yoshi Objects/EnemyShyGuy.h"
-#include "Yoshi Objects/ObjCrayPipe.h"
-#include "Yoshi Objects/ObjCrayPipeExit.h"
-#include "Yoshi Objects/ObjDroppedEgg.h"
 #include "Yoshi Objects/ObjEgg.h"
 #include "Yoshi Objects/ObjYoshi.h"
+#include "Yoshi Objects/ObjDroppedEgg.h"
 #include "Yoshi Objects/ObjEggBlock.h"
+#include "Yoshi Objects/EggManager.h"
+#include "Yoshi Objects/ObjCrayPipe.h"
+#include "Yoshi Objects/ObjCrayPipeExit.h"
 #include "Yoshi Objects/ObjRotateLift.h"
 #include "Yoshi Objects/ObjYoshiCoin.h"
 #include "Yoshi Objects/ObjYoshiJumpBoard.h"
@@ -126,3 +129,4 @@
 #include "app/Objects/CObjDroppedRing.h"
 
 #include "app/HUD/CHudGameMainDisplay.h"
+#include "app/egg.h"

@@ -4,6 +4,12 @@ namespace app
 {
 	namespace fnd
 	{
+		struct SUpdateInfo
+		{
+			float deltaTime;
+			unsigned int frame;
+		};
+
 		class CActor : public csl::ut::NonCopyable
 		{
 		private:
@@ -24,7 +30,7 @@ namespace app
 		protected:
 			virtual bool PreProcessMessage(Message& message) { return false; }
 			virtual bool ProcessMessage(Message& message) { return PreProcessMessage(message); }
-			virtual void Update(const int& updateInfo) { };
+			virtual void Update(const SUpdateInfo& updateInfo) { };
 			virtual bool ActorProc(int id, void* data) = 0;
 		};
 	}

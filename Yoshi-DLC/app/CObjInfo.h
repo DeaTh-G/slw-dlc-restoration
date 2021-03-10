@@ -13,5 +13,11 @@ namespace app
 		{
 			__ct(this);
 		}
+
+		virtual void Load(int& loader) {}
+		virtual void Initialize(GameDocument& document) {}
+		virtual void Finalize() {}
+		virtual const char* GetInfoName() = 0;
+		virtual void RegistCallback(int& container) {}
 	};
 }

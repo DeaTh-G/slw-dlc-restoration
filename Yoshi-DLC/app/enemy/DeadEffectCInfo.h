@@ -15,7 +15,7 @@ namespace app
 			int field_14;
 			int field_18;
 			int field_1C;
-			Matrix34 field_20;
+			csl::math::Matrix34 field_20;
 			short field_60;
 			short field_62;
 			int field_64;
@@ -24,7 +24,7 @@ namespace app
 
 			inline static FUNCTION_PTR(int, __thiscall, __ct, ASLR(0x00728470), DeadEffectCInfo* This);
 			inline static FUNCTION_PTR(int, __thiscall, SetMsgDamage, ASLR(0x00728400), DeadEffectCInfo* This, fnd::Message* message);
-			inline static FUNCTION_PTR(int, __thiscall, SetTransform, ASLR(0x007284D0), DeadEffectCInfo* This, Matrix34* transform);
+			inline static FUNCTION_PTR(int, __thiscall, SetTransform, ASLR(0x007284D0), DeadEffectCInfo* This, csl::math::Matrix34* transform);
 
 			static short* SetYoshiIsland(DeadEffectCInfo* This)
 			{

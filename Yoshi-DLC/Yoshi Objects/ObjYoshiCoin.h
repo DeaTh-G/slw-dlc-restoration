@@ -57,7 +57,7 @@ namespace app
 		void AddCallback(GameDocument* gameDocument)
 		{
 			// Visual Offset
-			Vector3 position { 0, 5.0f, 0 };
+			csl::math::Vector3 position { 0, 5.0f, 0 };
 
 			// Variables
 			int unit = 1;
@@ -100,7 +100,7 @@ namespace app
 			{
 				game::GOCCollider::Setup(gocCollider, &unit);
 				game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_SPHERE;
+				collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
 				collisionInfo.MotionType = 2;
 				collisionInfo.Radius = 3.5f;
 				collisionInfo.field_54 = 0;
@@ -213,7 +213,7 @@ namespace app
 
 	fnd::ReferencedObject* createObjInfo_ObjYoshiCoinInfo(csl::fnd::IAllocator* allocator)
 	{
-		fnd::ReferencedObject* object = fnd::ReferencedObject::New(sizeof(ObjYoshiCoinInfo), allocator);
+		fnd::ReferencedObject* object = fnd::ReferencedObject::f_new(sizeof(ObjYoshiCoinInfo), allocator);
 		if (!object)
 			return 0;
 		((ObjYoshiCoinInfo*)object)->__ct();

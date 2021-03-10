@@ -110,7 +110,7 @@ namespace app
 			{
 				app::game::GOCCollider::Setup(gocCollider, &unit);
 				app::game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_SPHERE;
+				collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
 				collisionInfo.MotionType = 2;
 				collisionInfo.Radius = 5;
 				collisionInfo.field_54 = 0;
@@ -144,7 +144,6 @@ namespace app
 			{
 			case fnd::PROC_MSG_HIT_EVENT_COLLISION:
 			{
-				/* Crashed in 2P */
 				ProcMsgHitEventCollision((int*)message);
 				return true;
 			}
@@ -159,9 +158,9 @@ namespace app
 		{
 			int field_00[3];
 			
-			void* eggManager = EggManager::GetService(*(GameDocument**)(this + 0x20));
+			EggManager* eggManager = EggManager::GetService(*(GameDocument**)(this + 0x20));
 			if (eggManager)
-				app::EggManager::TakeYoshiSpecialFlower(eggManager, *(int*)(this + 0x488));
+				eggManager->TakeYoshiSpecialFlower(*(int*)(this + 0x488));
 
 			int* gocEffect = GameObject::GetGOC((GameObject*)(this - 8), GOCEffectString);
 			game::GOCEffect::CreateEffect(gocEffect, "ef_dl2_goal_get");
@@ -185,7 +184,7 @@ namespace app
 
 	fnd::ReferencedObject* createObjInfo_ObjYoshiSpecialFlowerInfo(csl::fnd::IAllocator* allocator)
 	{
-		fnd::ReferencedObject* object = fnd::ReferencedObject::New(sizeof(ObjYoshiSpecialFlowerInfo), allocator);
+		fnd::ReferencedObject* object = fnd::ReferencedObject::f_new(sizeof(ObjYoshiSpecialFlowerInfo), allocator);
 		if (!object)
 			return 0;
 		((ObjYoshiSpecialFlowerInfo*)object)->__ct();

@@ -1,10 +1,16 @@
 #pragma once
-#define M_PI           3.14159265358979323846;
+#include <Dependencies/Eigen/Geometry>
 
 bool IsEggBlockShadowOn;
 
 namespace app
 {
+	typedef enum
+	{
+		STATE_IDLE,
+		STATE_DAMAGE
+	} EggBlockState;
+
 	struct ObjEggBlockData
 	{
 		int PopEggNum;
@@ -14,45 +20,41 @@ namespace app
 	class ObjEggBlockInfo : public CObjInfo
 	{
 	public:
-		int Model;
+		int Model{};
 
-		ObjEggBlockInfo()
-		{
-			field_00 = ASLR(0x00D9494C);
-			Model = 0;
-		}
+		ObjEggBlockInfo() { }
 
-		void Initialize(GameDocument* gameDocument)
+		void Initialize(GameDocument& gameDocument) override
 		{
 			int packFile = 0;
-			ObjUtil::GetPackFile(&packFile, ObjUtil::GetStagePackName(gameDocument));
+			ObjUtil::GetPackFile(&packFile, ObjUtil::GetStagePackName(&gameDocument));
 
 			ObjUtil::GetModelResource(&Model, "zdlc02_obj_eggblock", &packFile);
 		}
 
-		const char* GetInfoName()
+		const char* GetInfoName() override
 		{
 			return "ObjEggBlockInfo";
 		}
 
-		void RegistCallback(int* container)
+		void RegistCallback(int& container) override
 		{
-			ObjEggInfo* eggObject = (ObjEggInfo*)fnd::ReferencedObject::New(sizeof(ObjEggInfo), field_08);
+			ObjEggInfo* eggObject = (ObjEggInfo*)fnd::ReferencedObject::f_new(sizeof(ObjEggInfo), pAllocator);
 			if (eggObject)
 				new (eggObject)ObjEggInfo();
-			CObjInfoContainer::Register(container, eggObject->GetInfoName(), eggObject);
+			CObjInfoContainer::Register(&container, eggObject->GetInfoName(), eggObject);
 
-			ObjYoshiInfo* yoshiObject = (ObjYoshiInfo*)fnd::ReferencedObject::New(sizeof(ObjYoshiInfo), field_08);
+			ObjYoshiInfo* yoshiObject = (ObjYoshiInfo*)fnd::ReferencedObject::f_new(sizeof(ObjYoshiInfo), pAllocator);
 			if (yoshiObject)
 				new (yoshiObject)ObjYoshiInfo();
-			CObjInfoContainer::Register(container, yoshiObject->GetInfoName(), yoshiObject);
+			CObjInfoContainer::Register(&container, yoshiObject->GetInfoName(), yoshiObject);
 		}
 	};
 
 	class ObjEggBlock : public CSetObjectListener
 	{
 	private:
-		struct MotorSwing
+		struct MotorParam
 		{
 			float field_00;
 			float field_04;
@@ -61,34 +63,109 @@ namespace app
 			float field_10;
 		};
 
-		MotorSwing InitMotorParam(float a1, float a2, float a3)
+		struct PopEggParam
 		{
-			MotorSwing result{};
+			csl::math::Vector3 field_00;
+			csl::math::Vector3* field_10;
+			float field_14;
+			int field_18;
+		};
+
+		MotorParam InitMotorParam(float a1, float a2, float a3)
+		{
+			MotorParam result{};
 			result.field_00 = a2;
 			result.field_04 = 0;
 			result.field_08 = a1;
-			result.field_10 = (3.1415927f + 3.1415927f) / a1;
-			result.field_0C = a3 * 0.017453292f;
+			result.field_10 = a3 * 0.017453292f;
+			result.field_0C = (3.1415927f + 3.1415927f) / a1;
+			return result;
+		}
+		
+		PopEggParam InitPopEggParam(csl::math::Vector3 a1, float a2)
+		{
+			PopEggParam result{};
+			result.field_00 = a1;
+			result.field_10 = &result.field_00;
+			result.field_14 = a2;
+			result.field_18 = 0;
 			return result;
 		}
 
+		void ProcMsgDamage(xgame::MsgDamage& message)
+		{
+			if (State != STATE_DAMAGE)
+			{
+				int* handle = fnd::Handle::Get(&message.field_18);
+				if (handle)
+				{
+					int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+					if (gocTransform)
+					{
+						csl::math::Vector3 objectPosition = *(csl::math::Vector3*)(gocTransform + 0x50);
+						math::Vector3Inverse(&objectPosition);
+						objectPosition.Y *= 2.8f;
+
+						int playerNo = ObjUtil::GetPlayerNo(field_24[1], message.field_08);
+						int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], playerNo);
+						if (playerInfo)
+						{
+							if (math::Vector3NormalizeIfNotZero(&objectPosition, &objectPosition))
+							{
+								csl::math::Vector3 b = csl::math::Vector3(0, 1, 0);
+								if (math::Vector3DotProduct(&objectPosition, &b) >= 0)
+								{
+									if (*(handle + 0x2F) && AttackType::IsDamaged(message.AttackType, 0xA))
+									{
+										DamageMotor = InitMotorParam(0.80000001f, 0, 0);
+										EggParam = InitPopEggParam(csl::math::Vector3(0, 1, 0), 50);
+
+										int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+										if (gocSound)
+										{
+											csl::math::Vector3 translation{};
+											int deviceTag[3];
+
+											app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggblock_hit", 0);
+											math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
+											xgame::MsgDamage::SetReply(&message, &translation, 0);
+											State = STATE_DAMAGE;
+										}
+									}
+									else if (!*(handle + 0x2F) && (message.AttackType & 0x20 || message.AttackType & 0x40))
+									{
+										printf("Normal Attack\n");
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		class asd : public CSetObjectListener
+		{
+			fnd::HFrame Parent{};
+			MotorParam Motor{};
+		};
+
 	public:
-		fnd::HFrame Parent;
-		MotorSwing Motor;
-		float field_04D4[5];
-		int EggBlockState;
-		Vector3 field_04F0;
-		float field_0500;
-		float field_0504;
-		int field_0508;
-		int field_050C;
-		int PopEggNum;
-		float PopEggRandomAddSpeed;
-		game::PathEvaluator PathEvaluator;
-		int Padding[2];
+		fnd::HFrame Parent{};
+		MotorParam IdleMotor{};
+		MotorParam DamageMotor{};
+		EggBlockState State{};
+		int field_4EC{};
+		PopEggParam EggParam{};
+		int field_50C{};
+		int PopEggNum{};
+		float PopEggRandomAddSpeed{};
+		game::PathEvaluator PathEvaluator{};
+		INSERT_PADDING(8);
 
 		ObjEggBlock()
 		{
+			sizeof(ObjEggBlock);
 			fnd::HFrame::__ct(&Parent);
 			game::PathEvaluator::__ct(&PathEvaluator);
 		}
@@ -97,8 +174,8 @@ namespace app
 		{
 			fnd::GOCVisualModel::VisualDescription visualDescriptor;
 			game::ColliBoxShapeCInfo collisionInfo{};
-			Vector3 visualOffset { 0, 5, 0 };
-			int unit = 1;
+			csl::math::Vector3 visualOffset { 0, 5, 0 };
+			int unit = 3;
 			
 			fnd::GOComponent::Create(this, GOCVisualModel);
 			fnd::GOComponent::Create(this, GOCCollider);
@@ -123,6 +200,7 @@ namespace app
 			{
 				fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
 				visualDescriptor.Model = info->Model;
+				visualDescriptor.Parent = &Parent;
 				fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
 				fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, &visualOffset);
 			}
@@ -130,17 +208,17 @@ namespace app
 			int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
 			if (gocCollider)
 			{
-				Vector3 collisionOffset{};
-				Vector3 collisionSize{};
+				csl::math::Vector3 collisionOffset{};
+				csl::math::Vector3 collisionSize{};
 
 				/* Damage Collision Layer */
 				game::GOCCollider::Setup(gocCollider, &unit);
 
 				game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_BOX;
+				collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_BOX;
 				collisionInfo.MotionType = 2;
-				collisionInfo.Size = Vector3(5, 0.65f, 5);
-				collisionOffset = Vector3(0, 0.65f, 0);
+				collisionInfo.Size = csl::math::Vector3(5, 0.65f, 5);
+				collisionOffset = csl::math::Vector3(0, 0.65f, 0);
 				game::CollisionObjCInfo::SetLocalPosition(&collisionInfo, &collisionOffset);
 				ObjUtil::SetupCollisionFilter(0, &collisionInfo);
 				collisionInfo.field_0C = 0;
@@ -150,10 +228,10 @@ namespace app
 
 				/* Unknown Collision Layer */
 				game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_BOX;
+				collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_BOX;
 				collisionInfo.MotionType = 2;
-				collisionInfo.Size = Vector3(3, 8, 3);
-				collisionOffset = Vector3(0, 13, 0);
+				collisionInfo.Size = csl::math::Vector3(3, 8, 3);
+				collisionOffset = csl::math::Vector3(0, 13, 0);
 				game::CollisionObjCInfo::SetLocalPosition(&collisionInfo, &collisionOffset);
 				ObjUtil::SetupCollisionFilter(0, &collisionInfo);
 				collisionInfo.field_0C = 1;
@@ -163,13 +241,15 @@ namespace app
 
 				/* Solid Collision Layer */
 				game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.ShapeType = game::CollisionShapeType::TYPE_BOX;
+				collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_BOX;
 				collisionInfo.MotionType = 2;
-				collisionInfo.Size = Vector3(4.5, 4.5, 4.5);
-				collisionOffset = Vector3(0, 4.5, 0);
+				collisionInfo.field_44 = 0;
+				collisionInfo.field_48 = 0;
+				collisionInfo.Size = csl::math::Vector3(4.5, 4.5, 4.5);
+				collisionOffset = csl::math::Vector3(0, 4.5, 0);
 				game::CollisionObjCInfo::SetLocalPosition(&collisionInfo, &collisionOffset);
 				collisionInfo.field_02 = 4;
-				collisionInfo.field_04 |= 100;
+				collisionInfo.field_04 |= 0x100;
 				collisionInfo.field_08 = 0x4003;
 				collisionInfo.field_0C = 2;
 
@@ -177,41 +257,83 @@ namespace app
 			}
 
 			game::GOCSound::SimpleSetup(this, 1, 0);
-			this->Motor = InitMotorParam(1.8f, 0, 8);
+			IdleMotor = InitMotorParam(1.8f, 0, 8);
 
 			void* pathManager = game::PathManager::GetService(gameDocument);
-			/*if (pathManager && app::game::PathManager::CastRay(pathManager))
-			{*/
-				game::PathEvaluator::SetPathObject(&PathEvaluator, 0);
-				game::PathEvaluator::SetDistance(&PathEvaluator, 0);
-			//}
+			if (pathManager)
+			{
+				game::PathRaycastInput inputRay{};
+				game::PathRaycastOutput outputRay{};
+
+				CSetAdapter::GetPosition(*(int**)((char*)this + 0x324), &inputRay.StartPostition);
+				inputRay.EndPosition = inputRay.StartPostition;
+				inputRay.EndPosition.Y -= 400;
+				inputRay.field_20 = 1;
+				inputRay.field_24 = 1;
+
+				outputRay.field_0C = 1;
+
+				if (game::PathManager::CastRay(pathManager, &inputRay, &outputRay))
+				{
+					game::PathEvaluator::SetPathObject(&PathEvaluator, outputRay.PathObject);
+					game::PathEvaluator::SetDistance(&PathEvaluator, outputRay.Distance);
+				}
+			}
 
 			fnd::GOComponent::EndSetup(this);
+		}
+
+		bool ProcessMessage(fnd::Message& message) override
+		{
+			if (PreProcessMessage(message))
+				return true;
+
+			if (message.field_04 != fnd::PROC_MSG_DAMAGE)
+				return CSetObjectListener::ProcessMessage(message);
+			
+			ProcMsgDamage((xgame::MsgDamage&)message);
+			return true;
+		}
+		void Update(const fnd::SUpdateInfo& updateInfo) override
+		{
+			float radianRotation = IdleMotor.field_10 * sinf(IdleMotor.field_0C * (IdleMotor.field_04 + IdleMotor.field_00));
+
+			if (State == STATE_IDLE)
+			{
+				Eigen::Quaternion<float> q;
+				q = Eigen::AngleAxis<float>(radianRotation, Eigen::Vector3f(0, 0, 1));
+				csl::math::Quaternion rotation { q.x(), q.y(), q.z(), q.w() };
+
+				IdleMotor.field_04 += updateInfo.deltaTime;
+				fnd::HFrame::SetLocalRotation(&Parent, &rotation);
+
+				int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+				if (gocCollider)
+				{
+					void* collider = game::GOCCollider::GetShapeById(gocCollider, 2);
+					game::ColliShapeBase::SetLocalRotation(collider, &rotation);
+				}
+			}
+			else if (State == STATE_DAMAGE)
+			{
+				printf("I'm in danger *chuckles*\n");
+			}
 		}
 
 	private:
 		void DoCheckPopEgg()
 		{
-			if (PopEggNum > 1 && !field_0508 && field_04D4[1] > (field_04D4[2] * 0.5) * 0.5)
-			{
 
-			}
 		}
 	};
 
 	GameObject* create_ObjEggBlock()
 	{
-		GameObject* object = GameObject::New(sizeof(ObjEggBlock));
-		if (!object)
-			return 0;
 		return new ObjEggBlock();
 	}
 
-	ObjEggBlockInfo* createObjInfo_ObjEggBlockInfo(csl::fnd::IAllocator* allocator)
+	ObjEggBlockInfo* createObjInfo_ObjEggBlockInfo(csl::fnd::IAllocator* pAllocator)
 	{
-		fnd::ReferencedObject* object = fnd::ReferencedObject::New(sizeof(ObjEggBlockInfo), allocator);
-		if (!object)
-			return 0;
-		return new (object)ObjEggBlockInfo();
+		return new(pAllocator) ObjEggBlockInfo();
 	}
 }

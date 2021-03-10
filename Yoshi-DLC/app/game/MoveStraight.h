@@ -9,7 +9,7 @@ namespace app
 		public:
 			struct MoveParameter
 			{
-				Vector3 Position;
+				csl::math::Vector3 Position;
 				csl::math::Quaternion Rotation;
 				float field_20;
 				int field_24;
@@ -17,9 +17,9 @@ namespace app
 				char field_2A;
 				char field_2B;
 				int field_2C;
-				Vector3 field_30;
-				Vector3 field_40;
-				Vector3 field_50;
+				csl::math::Vector3 field_30;
+				csl::math::Vector3 field_40;
+				csl::math::Vector3 field_50;
 				float field_60;
 			};
 

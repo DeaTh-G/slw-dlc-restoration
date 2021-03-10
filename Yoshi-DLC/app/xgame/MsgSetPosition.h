@@ -10,7 +10,7 @@ namespace app
 			fnd::Message Base;
 			int field_18;
 			int field_1C;
-			Vector3 Position;
+			csl::math::Vector3 Position;
 		};
 	}
 
