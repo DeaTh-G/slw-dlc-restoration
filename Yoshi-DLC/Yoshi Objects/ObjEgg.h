@@ -75,6 +75,6 @@ app::ObjEgg* app::egg::CreateEgg(GameDocument& gameDocument, EggCInfo* cInfo)
 	ObjEgg* object = new ObjEgg(gameDocument, cInfo);
 	if (!object)
 		return 0;
-	GameDocument::AddGameObject(&gameDocument, object);
+	GameDocument::AddGameObject(*(GameDocument**)&gameDocument, object);
 	return object;
 }

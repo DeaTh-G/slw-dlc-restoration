@@ -34,6 +34,7 @@ namespace app
 			__dt(this);
 			FORCE_RET;
 		}
+
 		virtual void AddCallback(GameDocument* gameDocument) {};
 		virtual void RemoveCallback(GameDocument* gameDocument) {};
 		virtual void UpdatePhase(const int& updateInfo, int phase) {};

@@ -1,10 +1,15 @@
 using csl::math::Vector3;
+using csl::math::Quaternion;
+using csl::math::Matrix34;
 
 namespace app
 {
 	namespace math
 	{
 		inline static FUNCTION_PTR(bool, __cdecl, Vector3NormalizeIfNotZero, ASLR(0x00417C40), Vector3* a1, Vector3* a2);
+		inline static FUNCTION_PTR(Quaternion*, __cdecl, Vector3Rotate, ASLR(0x00533000), Vector3* a1, Quaternion* a2, Vector3* a3);
+		inline static FUNCTION_PTR(Matrix34*, __cdecl, Matrix34AffineTransformation, ASLR(0x005325D0), Matrix34* a1, Vector3* a2, Quaternion* a3);
+
 		static void Vector3Inverse(Vector3* a1)
 		{
 			a1->X *= -1;
@@ -26,17 +31,18 @@ namespace app
 			a3->Z = a1->X * a2->Y - a1->Y * a2->X;
 		}
 
-		static void Clamp(float* result, float a2, float a3)
+		static void Vector3Scale(Vector3* srcVec, float scalar, Vector3* dstVec)
 		{
-			if (*result < a2)
-				*result = a2;
-			if (*result > a3)
-				*result = a3;
+			dstVec->X = srcVec->X * scalar;
+			dstVec->Y = srcVec->Y * scalar;
+			dstVec->Z = srcVec->Z * scalar;
 		}
 
-		static void Lerp(float* result, float* a2, float* a3)
+		static void Vector3Add(Vector3* a, Vector3* b, Vector3* abVec)
 		{
-			*result = (*a3 * (*a2 - *result)) + *result;
+			abVec->X = a->X + b->X;
+			abVec->Y = a->Y + b->Y;
+			abVec->Z = a->Z + b->Z;
 		}
 	}
 }

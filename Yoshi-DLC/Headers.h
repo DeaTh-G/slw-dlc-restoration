@@ -6,6 +6,7 @@
 
 // csl
 #include "csl/fnd.h"
+#include "csl/math/Plane.h"
 #include "csl/math/Vector3.h"
 #include "csl/math/Matrix34.h"
 #include "csl/math/Quaternion.h"
@@ -71,6 +72,7 @@
 #include "app/game/ShadowShapeCInfo.h"
 #include "app/game/PathManager.h"
 #include "app/game/PathEvaluator.h"
+#include "app/game/MoveBound.h"
 #include "app/GOCEnemyHsm.h"
 #include "app/SetShotInfo.h"
 
@@ -109,6 +111,8 @@
 
 // SurfRide
 #include "SurfRide/Layer.h"
+
+#include "Helpers.h"
 
 // Yoshi Objects
 #include "Yoshi Objects/EnemyShyGuy.h"

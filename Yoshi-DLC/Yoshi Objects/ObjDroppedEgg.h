@@ -6,7 +6,7 @@ namespace app
 
 	struct DroppedEggCInfo
 	{
-		csl::math::Matrix34 transform;
+		csl::math::Matrix34 Transform;
 		csl::math::Vector3 field_40;
 		game::PathEvaluator PathEvaluator;
 		int ModelType;
@@ -22,7 +22,24 @@ namespace app
 
 	class ObjDroppedEgg : public GameObject3D
 	{
+	public:
+		class BoundListener : public game::MoveBound::Listener
+		{
+			void OnBound(csl::math::Plane& const a1) override
+			{
+
+			}
+		};
+
 	private:
+
+
+
+		void BoundCallback()
+		{
+
+		}
+
 		bool ProcMsgHitEventCollision(fnd::Message& message)
 		{
 			EggCInfo cInfo{};
@@ -35,16 +52,23 @@ namespace app
 			return Kill(this);
 		}
 
-		INSERT_PADDING(0x1C);
+		INSERT_PADDING(0x8);
+		INSERT_PADDING(0x14);	// TinyFSM
 		DroppedEggCInfo* CInfo{};
-		int ModelType;
-		INSERT_PADDING(0x34);
+		int ModelType{};
+		float field_33C{};
+		int field_340{};
+		BoundListener Listener{};
+		int field_348;
+		fnd::HandleBase Handle{};
+		INSERT_PADDING(0xC);
+		csl::math::Vector3 field_360{};
 	
 	public:
 		ObjDroppedEgg(GameDocument& document, DroppedEggCInfo* cInfo)
 		{
 			CInfo = cInfo;
-			printf("asd");
+			ModelType = CInfo->ModelType;
 		}
 
 		void AddCallback(GameDocument* gameDocument) override
@@ -62,7 +86,9 @@ namespace app
 			int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
 			if (gocTransform)
 			{
-
+				csl::math::Quaternion rotation = GetRotationFromMatrix(&CInfo->Transform);
+				fnd::GOCTransform::SetLocalTranslation(gocTransform, (csl::math::Vector3*)&CInfo->Transform.data[3][0]);
+				fnd::GOCTransform::SetLocalRotation(gocTransform, &rotation);
 			}
 
 			ObjEggInfo* info = (ObjEggInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjEggInfo");

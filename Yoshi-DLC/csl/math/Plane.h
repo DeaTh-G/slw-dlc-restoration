@@ -4,10 +4,9 @@ namespace csl
 {
 	namespace math
 	{
-		class alignas(16) Matrix34
+		class Plane
 		{
-		public:
-			float data[4][4];
+
 		};
 	}
 }

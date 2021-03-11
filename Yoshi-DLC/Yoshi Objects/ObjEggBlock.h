@@ -181,11 +181,80 @@ namespace app
             }
         }
 
-        class asd : public CSetObjectListener
+        void DoCheckPopEgg()
         {
-            fnd::HFrame Parent{};
-            MotorParam Motor{};
-        };
+            DroppedEggCInfo eggInfo{};
+
+            if (PopEggNum <= 1 || EggParam.field_18 ||
+                DamageMotor.field_04 < (DamageMotor.field_08 * 0.25))
+                return;
+
+            csl::math::Vector3 upVec{ 0, 1, 0 };
+            csl::math::Quaternion rotation = GetRotationFromMatrix(&Parent.Transform);
+            csl::math::Vector3 someVector{};
+            csl::math::Vector3 rotationVector{};
+            csl::math::Vector3 scaledRotation{};
+            math::Vector3Rotate(&someVector, &rotation, &upVec);
+            math::Vector3Rotate(&rotationVector, &rotation, &EggParam.field_00);
+            math::Vector3Scale(&someVector, 4.5f, &someVector);
+            math::Vector3Add((csl::math::Vector3*) & Parent.Transform.data[3][0], &someVector, &someVector);
+            math::Vector3Scale(&rotationVector, 4.5f, &scaledRotation);
+            math::Vector3Add(&someVector, &scaledRotation, &someVector);
+
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            csl::math::Quaternion objectRotation{};
+            math::CalculatedTransform::GetQuaternionRotation((csl::math::Matrix34*)(gocTransform + 0x44), &objectRotation);
+            unsigned int random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
+            random = floorf((random * 2.328306436538696e-10) * 100);
+
+            int ModelType = 0;
+            for (size_t i = 0; i < 4; i++)
+            {
+                if (random < 40)
+                {
+                    random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
+                    random = floorf((random * 2.328306436538696e-10) * 100);
+                    ModelType++;
+                    continue;
+                }
+
+                csl::math::Matrix34 someMatrix{};
+
+                game::PathEvaluator::__ct(&eggInfo.PathEvaluator);
+                fnd::HandleBase::__as(&eggInfo.PathEvaluator, &PathEvaluator);
+                eggInfo.PathEvaluator.field_08 = PathEvaluator.field_08;
+                eggInfo.PathEvaluator.field_0C = PathEvaluator.field_0C;
+                math::Matrix34AffineTransformation(&someMatrix, &someVector, &objectRotation);
+                eggInfo.Transform = someMatrix;
+                eggInfo.ModelType = ModelType;
+                eggInfo.ZIndex = PopEggNum;
+
+                int randomEgg = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
+                randomEgg = floorf((randomEgg * 2.328306436538696e-10) * 3);
+                if (random >= INT_MAX - 47)
+                    continue;
+
+                csl::math::Vector3 eggVector{};
+                math::Vector3Scale(&rotationVector, (PopEggRandomAddSpeed / 3) * random + EggParam.field_14, &eggVector);
+                eggInfo.field_40 = eggVector;
+                egg::CreateDroppedEgg((GameDocument&)field_24[1], &eggInfo);
+
+                PopEggNum--;
+                EggParam.field_18 = 1;
+                CSetObjectListener::SetExtUserData(this, 0, PopEggNum);
+
+                int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+                if (!gocSound)
+                    continue;
+
+                int deviceTag[3];
+                app::game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossyegg_appear", 0);
+                return;
+            }
+        }
 
     public:
         fnd::HFrame Parent{};
@@ -222,8 +291,8 @@ namespace app
             uint32_t extUserData = CSetObjectListener::GetExtUserData(this, 0);
             if (!extUserData)
                 extUserData = data->PopEggNum + 1;
-            this->PopEggNum = extUserData;
-            this->PopEggRandomAddSpeed = data->PopEggRandomAddSpeed;
+            PopEggNum = extUserData;
+            PopEggRandomAddSpeed = data->PopEggRandomAddSpeed;
 
             fnd::GOComponent::BeginSetup(this);
 
@@ -329,6 +398,7 @@ namespace app
             ProcMsgDamage((xgame::MsgDamage&)message);
             return true;
         }
+
         void Update(const fnd::SUpdateInfo& updateInfo) override
         {
             float radianRotation = IdleMotor.field_10 * sinf(IdleMotor.field_0C * (IdleMotor.field_04 + IdleMotor.field_00));
@@ -376,61 +446,6 @@ namespace app
                 {
                     void* collider = game::GOCCollider::GetShapeById(gocCollider, 2);
                     game::ColliShapeBase::SetLocalRotation(collider, &rotation);
-                }
-            }
-        }
-
-    private:
-        void DoCheckPopEgg()
-        {
-            int someArray[4] { 0x28, 0x14, 0x14, 0x14 };
-
-            if (PopEggNum <= 1 || EggParam.field_18 ||
-                DamageMotor.field_04 < (DamageMotor.field_08 * 0.25))
-                return;
-
-            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
-            if (gocTransform)
-            {
-                csl::math::Quaternion rotation{};
-                math::CalculatedTransform::GetQuaternionRotation((csl::math::Matrix34*)(gocTransform + 0x44), &rotation);
-                int random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
-                random = floorf((random * 2.328306436538696e-10) * 100);
-                if (random >= INT_MAX - 47)
-                {
-                    random -= INT_MAX - 47;
-                    random += 0x80000000;
-                }
-
-                for (size_t i = 0; i < 4; i++)
-                {
-                    if (random >= someArray[i])
-                        return;
-
-                    DroppedEggCInfo eggInfo{};
-                    game::PathEvaluator::__ct(&eggInfo.PathEvaluator);
-                    fnd::HandleBase::__as(&eggInfo.PathEvaluator, &PathEvaluator);
-                    eggInfo.PathEvaluator.field_08 = PathEvaluator.field_08;
-                    eggInfo.PathEvaluator.field_0C = PathEvaluator.field_0C;
-                    eggInfo.ZIndex = PopEggNum;
-
-                    random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
-                    random = floorf((random * 2.328306436538696e-10) * 100);
-                    if (random < INT_MAX - 47)
-                    {
-                        egg::CreateDroppedEgg((GameDocument&)field_24[1], &eggInfo);
-
-                        int* gocSound = GameObject::GetGOC(this, GOCSoundString);
-                        if (gocSound)
-                        {
-                            int deviceTag[3];
-
-                            app::game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossyegg_appear", 0);
-                            PopEggNum--;
-                            EggParam.field_18 = 1;
-                            CSetObjectListener::SetExtUserData(this, 0, PopEggNum);
-                        }
-                    }
                 }
             }
         }

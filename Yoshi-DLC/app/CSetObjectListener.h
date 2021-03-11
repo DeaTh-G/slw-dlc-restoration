@@ -4,6 +4,11 @@ namespace app
 {
 	class CSetObjectListener : public GameObject3D
 	{
+	private:
+		/* After updating codebase update this to proper name*/
+		inline static FUNCTION_PTR(bool, __thiscall, f_ProcMsg, ASLR(0x00844A30), CActor* This, fnd::Message* message);
+		inline static FUNCTION_PTR(CSetObjectListener*, __thiscall, __dt, ASLR(0x00844A70), CSetObjectListener* This, int a2);
+
 	public:
 		char field_031C[0x78];
 
@@ -16,13 +21,19 @@ namespace app
 		inline static FUNCTION_PTR(int, __thiscall, SetExtUserData, ASLR(0x00844850), GameObject* This, int a2, int a3);
 	
 	protected:
-		bool ProcessMessage(fnd::Message& message) override { return f_ProcessMessage(this, &message); }
+		bool ProcessMessage(fnd::Message& message) override { return f_ProcMsg(this, &message); }
 		virtual void OnInitializedSetObject() {};
 		virtual void OnPutSetObject(CSetAdapter& adapter) {}
 		virtual void OnSetEditorParamChanged(CSetAdapter& adapter) {};
 
 	public:
 		CSetObjectListener() { __ct(this); }
+		~CSetObjectListener() override
+		{
+			__dt(this, 0);
+			FORCE_RET;
+		}
+
 		virtual unsigned int GetAbsordGuidePathID() { return 0; }
 		virtual double GetAbsorbPathPosition() { return -1; }
 		virtual csl::math::Vector3 GetAbsorbPathOffset() { return { 0, 0, 0 }; }
