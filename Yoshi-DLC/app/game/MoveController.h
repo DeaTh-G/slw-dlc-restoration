@@ -14,9 +14,9 @@ namespace app
 			
 		protected:
 			virtual void* GetRuntimeTypeInfo() { return (void*)ASLR(0x00FD7BF8); }
-			virtual int Update(const fnd::SUpdateInfo& updateInfo) {};
-			virtual int OnEnter() {};
-			virtual void OnLeave() {};
+			virtual int Update(const fnd::SUpdateInfo& updateInfo) { return 0; };
+			virtual int OnEnter() { return 0; };
+			virtual int OnLeave() { return 0; };
 
 		public:
 			virtual ~MoveController()

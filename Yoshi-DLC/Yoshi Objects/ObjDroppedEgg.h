@@ -2,7 +2,12 @@
 
 namespace app
 {
+	struct DroppedEggCInfo;
 	class ObjDroppedEgg;
+	namespace egg
+	{
+		ObjDroppedEgg* CreateDroppedEgg(GameDocument& gameDocument, DroppedEggCInfo* cInfo);
+	}
 
 	struct DroppedEggCInfo
 	{
@@ -15,11 +20,6 @@ namespace app
 		int field_6C;
 	};
 
-	namespace egg
-	{
-		ObjDroppedEgg* CreateDroppedEgg(GameDocument& gameDocument, DroppedEggCInfo* cInfo);
-	}
-
 	class ObjDroppedEgg : public GameObject3D
 	{
 	public:
@@ -27,19 +27,11 @@ namespace app
 		{
 			void OnBound(csl::math::Plane& const a1) override
 			{
-
+				
 			}
 		};
 
 	private:
-
-
-
-		void BoundCallback()
-		{
-
-		}
-
 		bool ProcMsgHitEventCollision(fnd::Message& message)
 		{
 			EggCInfo cInfo{};
@@ -52,19 +44,24 @@ namespace app
 			return Kill(this);
 		}
 
+		void BoundCallback()
+		{
+
+		}
+	
+	public:
 		INSERT_PADDING(0x8);
 		INSERT_PADDING(0x14);	// TinyFSM
 		DroppedEggCInfo* CInfo{};
 		int ModelType{};
 		float field_33C{};
-		int field_340{};
-		BoundListener Listener{};
-		int field_348;
+		game::MoveBound* Movement{};
+		BoundListener* Listener{};
+		ObjDroppedEgg* field_348;
 		fnd::HandleBase Handle{};
 		INSERT_PADDING(0xC);
 		csl::math::Vector3 field_360{};
-	
-	public:
+
 		ObjDroppedEgg(GameDocument& document, DroppedEggCInfo* cInfo)
 		{
 			CInfo = cInfo;
@@ -117,8 +114,33 @@ namespace app
 				game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 			}
 
-			// TODO: GOCMovementComplex
 			int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
+			if (gocMovement)
+			{
+				game::MoveBound moveBound{};
+				game::GOCMovement::SetupController(gocMovement, &moveBound);
+
+				game::MoveBound::Desc description{};
+				description.field_00 = CInfo->field_40;
+				description.field_10 = 3;
+				description.field_14 = 300;
+				description.field_18 = 0.8f;
+				description.field_20 = 150;
+				description.field_28 = 1;
+				description.field_2C = 0.1f;
+				game::PathEvaluator::__ct(&description.field_38);
+				if (fnd::HandleBase::IsValid((fnd::HandleBase*)&CInfo->PathEvaluator))
+				{
+					int pathObject = fnd::HandleBase::Get((fnd::HandleBase*)&CInfo->PathEvaluator);
+					game::PathEvaluator::SetPathObject(&description.field_38, pathObject);
+					game::PathEvaluator::SetDistance(&description.field_38, CInfo->PathEvaluator.field_08);
+				}
+				description.field_48 |= 3;
+
+				game::MoveBound::Setup(&moveBound, &description);
+				game::MoveBound::ResetListener(&moveBound, Listener);
+				Movement = &moveBound;
+			}
 		}
 
 		bool ProcessMessage(fnd::Message& message) override
