@@ -72,6 +72,7 @@
 #include "app/game/ShadowShapeCInfo.h"
 #include "app/game/PathManager.h"
 #include "app/game/PathEvaluator.h"
+#include "app/game/MoveController.h"
 #include "app/game/MoveBound.h"
 #include "app/GOCEnemyHsm.h"
 #include "app/SetShotInfo.h"

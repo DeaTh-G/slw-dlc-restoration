@@ -118,6 +118,7 @@ namespace app
 			}
 
 			// TODO: GOCMovementComplex
+			int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
 		}
 
 		bool ProcessMessage(fnd::Message& message) override
