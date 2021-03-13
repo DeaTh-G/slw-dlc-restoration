@@ -22,6 +22,13 @@ namespace app
 
 	class ObjDroppedEgg : public GameObject3D
 	{
+		typedef enum DropState
+		{
+			STATE_FALL,
+			STATE_LANDING,
+			STATE_WAIT
+		};
+
 	public:
 		class BoundListener : public game::MoveBound::Listener
 		{
@@ -48,14 +55,59 @@ namespace app
 		{
 
 		}
+
+		void UpdateFollow()
+		{
+			if (!fnd::HandleBase::IsValid(&Handle))
+				return;
+
+			int* handle = fnd::Handle::Get(&Handle);
+			if (!handle)
+				return;
+
+			csl::math::Vector3 origTranslation{};
+			csl::math::Vector3 translation{};
+			origTranslation = *(csl::math::Vector3*)(handle + 0xC);
+			math::Vector3Subtract(&origTranslation, &field_360, &translation);
+
+			int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+			if (!gocTransform)
+				return;
+
+			csl::math::Vector3 objectPosition{};
+			math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &objectPosition);
+			math::Vector3Add(&objectPosition, &translation, &objectPosition);
+			fnd::GOCTransform::SetLocalTranslation(gocTransform, &objectPosition);
+			field_360 = origTranslation;
+		}
+
+		void StateFall()
+		{
+			if (Movement->field_80 & 1)
+			{
+				game::MoveController::ResetFlag(Movement, 1);
+				State = STATE_LANDING;
+			}
+		}
+
+		void StateLanding()
+		{
+			UpdateFollow();
+		}
+
+		void StateWait()
+		{
+
+		}
 	
 	public:
-		INSERT_PADDING(0x8);
+		DropState State;
+		INSERT_PADDING(0x4);
 		INSERT_PADDING(0x14);	// TinyFSM
 		DroppedEggCInfo* CInfo{};
 		int ModelType{};
-		float field_33C{};
-		game::MoveBound* Movement{};
+		float Time{};
+		game::MoveBound* Movement = new game::MoveBound();
 		BoundListener* Listener{};
 		ObjDroppedEgg* field_348;
 		fnd::HandleBase Handle{};
@@ -90,7 +142,7 @@ namespace app
 
 			ObjEggInfo* info = (ObjEggInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjEggInfo");
 
-			int* gocVisual = GameObject::GetGOC((GameObject*)this, GOCVisual);
+			int* gocVisual = GameObject::GetGOC(this, GOCVisual);
 			if (gocVisual)
 			{
 				csl::math::Vector3 visualOffset{ 0, -3, 0 };
@@ -117,29 +169,27 @@ namespace app
 			int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
 			if (gocMovement)
 			{
-				game::MoveBound moveBound{};
-				game::GOCMovement::SetupController(gocMovement, &moveBound);
+				game::GOCMovement::SetupController(gocMovement, Movement);
 
 				game::MoveBound::Desc description{};
 				description.field_00 = CInfo->field_40;
 				description.field_10 = 3;
 				description.field_14 = 300;
 				description.field_18 = 0.8f;
+				description.field_1C = 0.75f;
 				description.field_20 = 150;
 				description.field_28 = 1;
 				description.field_2C = 0.1f;
 				game::PathEvaluator::__ct(&description.field_38);
 				if (fnd::HandleBase::IsValid((fnd::HandleBase*)&CInfo->PathEvaluator))
-				{
-					int pathObject = fnd::HandleBase::Get((fnd::HandleBase*)&CInfo->PathEvaluator);
-					game::PathEvaluator::SetPathObject(&description.field_38, pathObject);
-					game::PathEvaluator::SetDistance(&description.field_38, CInfo->PathEvaluator.field_08);
-				}
+					description.field_38 = CInfo->PathEvaluator;
+				
 				description.field_48 |= 3;
 
-				game::MoveBound::Setup(&moveBound, &description);
-				game::MoveBound::ResetListener(&moveBound, Listener);
-				Movement = &moveBound;
+				game::MoveBound::Setup(Movement, &description);
+				game::MoveBound::ResetListener(Movement, Listener);
+
+				State = STATE_FALL;
 			}
 		}
 
@@ -153,6 +203,18 @@ namespace app
 
 			ProcMsgHitEventCollision(message);
 			return true;
+		}
+
+		void Update(const fnd::SUpdateInfo& updateInfo) override
+		{
+			if (State == STATE_FALL)
+				StateFall();
+
+			if (State == STATE_LANDING)
+				StateLanding();
+		
+			if (State == STATE_WAIT)
+				StateWait();
 		}
 	};
 }

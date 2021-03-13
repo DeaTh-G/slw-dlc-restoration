@@ -44,5 +44,12 @@ namespace app
 			abVec->Y = a->Y + b->Y;
 			abVec->Z = a->Z + b->Z;
 		}
+
+		static void Vector3Subtract(Vector3* a, Vector3* b, Vector3* a_bVec)
+		{
+			a_bVec->X = a->X - b->X;
+			a_bVec->Y = a->Y - b->Y;
+			a_bVec->Z = a->Z - b->Z;
+		}
 	}
 }

@@ -7,7 +7,9 @@ namespace app
 		class MoveController
 		{
 		public:
-			INSERT_PADDING(0xC); // Fields
+			int field_04;
+			int field_08;
+			int field_0C;
 
 		private:
 			inline static FUNCTION_PTR(MoveController*, __thiscall, __dt, ASLR(0x004C3D50), MoveController* This, int a2);
@@ -19,6 +21,8 @@ namespace app
 			virtual int OnLeave() { return 0; };
 
 		public:
+			inline static FUNCTION_PTR(MoveController*, __thiscall, ResetFlag, ASLR(0x004C3DE0), MoveController* This, int a2);
+			
 			virtual ~MoveController()
 			{
 				__dt(this, 0);

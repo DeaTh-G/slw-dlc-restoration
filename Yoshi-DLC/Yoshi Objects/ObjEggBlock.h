@@ -232,13 +232,13 @@ namespace app
                 eggInfo.ModelType = ModelType;
                 eggInfo.ZIndex = PopEggNum;
 
-                int randomEgg = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
+                unsigned int randomEgg = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
                 randomEgg = floorf((randomEgg * 2.328306436538696e-10) * 3);
                 if (random >= INT_MAX - 47)
                     continue;
 
                 csl::math::Vector3 eggVector{};
-                math::Vector3Scale(&rotationVector, (PopEggRandomAddSpeed / 3) * random + EggParam.field_14, &eggVector);
+                math::Vector3Scale(&rotationVector, ((PopEggRandomAddSpeed / 3) * randomEgg + 40), &eggVector);
                 eggInfo.field_40 = eggVector;
                 egg::CreateDroppedEgg((GameDocument&)field_24[1], &eggInfo);
 
