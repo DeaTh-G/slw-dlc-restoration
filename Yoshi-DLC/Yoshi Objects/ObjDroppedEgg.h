@@ -90,14 +90,47 @@ namespace app
 			}
 		}
 
-		void StateLanding()
+		void StateLanding(const fnd::SUpdateInfo& updateInfo)
 		{
+			csl::math::Vector3 defaultScale { 1, 1, 1 };
+			csl::math::Vector3 scale{};
+
 			UpdateFollow();
+
+			int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+			if (!gocVisual)
+				return;
+
+			if (Time >= 0.35f)
+			{
+				fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &defaultScale);
+				if (Time > 0.55f)
+				{
+					Time = 0;
+					State = STATE_WAIT;
+				}
+			}
+			else
+			{
+				scale = egg::CalcSlipperyScale(Time, 0.7f, 0.4f, 0.2f);
+				fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
+			}
+			Time += updateInfo.deltaTime;
 		}
 
-		void StateWait()
+		void StateWait(const fnd::SUpdateInfo& updateInfo)
 		{
+			csl::math::Vector3 scale;
 
+			Time += updateInfo.deltaTime;
+			UpdateFollow();
+
+			int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+			if (!gocVisual)
+				return;
+		
+			scale = egg::CalcSlipperyScale(Time, 1.6f, 0.1f, 0.1f);
+			fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
 		}
 	
 	public:
@@ -211,10 +244,10 @@ namespace app
 				StateFall();
 
 			if (State == STATE_LANDING)
-				StateLanding();
+				StateLanding(updateInfo);
 		
 			if (State == STATE_WAIT)
-				StateWait();
+				StateWait(updateInfo);
 		}
 	};
 }

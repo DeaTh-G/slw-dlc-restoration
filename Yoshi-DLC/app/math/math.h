@@ -51,5 +51,15 @@ namespace app
 			a_bVec->Y = a->Y - b->Y;
 			a_bVec->Z = a->Z - b->Z;
 		}
+
+		static float Clamp(float result, float min, float max)
+		{
+			if (result < min)
+				result = min;
+			if (result > max)
+				result = max;
+
+			return result;
+		}
 	}
 }

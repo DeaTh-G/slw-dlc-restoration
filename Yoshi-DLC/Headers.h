@@ -116,6 +116,8 @@
 #include "Helpers.h"
 
 // Yoshi Objects
+#include "app/egg.h"
+
 #include "Yoshi Objects/EnemyShyGuy.h"
 #include "Yoshi Objects/ObjEgg.h"
 #include "Yoshi Objects/ObjYoshi.h"
@@ -136,4 +138,3 @@
 #include "app/Objects/CObjDroppedRing.h"
 
 #include "app/HUD/CHudGameMainDisplay.h"
-#include "app/egg.h"
