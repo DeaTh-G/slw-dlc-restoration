@@ -148,8 +148,7 @@ namespace app
 				return true;
 			}
 			default:
-				return true;
-				break;
+				return CSetObjectListener::f_ProcessMessage((CSetObjectListener*)this, message);
 			}
 		}
 

@@ -7,7 +7,7 @@ namespace app
 		class MsgExtendPlayer
 		{
 		public:
-			inline static FUNCTION_PTR(int, __thiscall, __dt, ASLR(0x0049A620), int* This);
+			inline static FUNCTION_PTR(int, __thiscall, __dt, ASLR(0x0049A620), void* This);
 		};
 	}
 }

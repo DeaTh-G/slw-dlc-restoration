@@ -104,6 +104,9 @@
 #include "app/xgame/MsgStopGameTimer.h"
 #include "app/xgame/MsgTakeObject.h"
 #include "app/xgame/MsgWarpNewArea.h"
+#include "app/xgame/MsgHitEventCollision.h"
+#include "app/xgame/MsgLeaveEventCollision.h"
+#include "app/xgame/MsgDlcChangeEggRotation.h"
 
 #include "SonicUSA/System/Random.h"
 
@@ -119,11 +122,12 @@
 #include "app/egg.h"
 
 #include "Yoshi Objects/EnemyShyGuy.h"
+#include "Yoshi Objects/EggManager.h"
 #include "Yoshi Objects/ObjEgg.h"
 #include "Yoshi Objects/ObjYoshi.h"
 #include "Yoshi Objects/ObjDroppedEgg.h"
 #include "Yoshi Objects/ObjEggBlock.h"
-#include "Yoshi Objects/EggManager.h"
+#include "Yoshi Objects/ObjEggRotationChangeCollision.h"
 #include "Yoshi Objects/ObjCrayPipe.h"
 #include "Yoshi Objects/ObjCrayPipeExit.h"
 #include "Yoshi Objects/ObjRotateLift.h"

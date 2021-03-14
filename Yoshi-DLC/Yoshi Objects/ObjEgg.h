@@ -2,18 +2,17 @@
 
 namespace app
 {
-	class ObjEgg;
+	struct EggCInfo;
+	namespace egg
+	{
+		ObjEgg* CreateEgg(GameDocument& gameDocument, EggCInfo* cInfo);
+	}
 
 	struct EggCInfo
 	{
 		csl::math::Matrix34* Transform;
 		int ModelType;
 	};
-
-	namespace egg
-	{
-		ObjEgg* CreateEgg(GameDocument& gameDocument, EggCInfo* cInfo);
-	}
 
 	class ObjEggInfo
 	{
@@ -43,13 +42,32 @@ namespace app
 
 	class ObjEgg : public GameObject3D
 	{
-		INSERT_PADDING(0x1C);
-		EggCInfo CInfo;
-		int ModelType;
-		INSERT_PADDING(0x40);
+		int State{};
+		INSERT_PADDING(0x4);
+		INSERT_PADDING(0x14); // TinyFsm
+		EggCInfo* CInfo = new EggCInfo();
+		int ModelType{};
+		int field_33C{};
+		int field_340{};
+		int field_344{};
+		int field_348{};
+		int field_34C{};
+		csl::math::Vector3 field_350{};
+		int field_360{};
+		int field_364{};
+		int field_368{};
+		int field_36C{};
+		int field_370{};
+		int field_374{};
+		int field_378{};
+		int field_37C{};
 	
 	public:
-		ObjEgg(GameDocument& gameDocument, EggCInfo* cInfo) {}
+		ObjEgg(GameDocument& gameDocument, EggCInfo* cInfo)
+		{
+			CInfo = cInfo;
+			ModelType = cInfo->ModelType;
+		}
 
 		void AddCallback(GameDocument* gameDocument) override
 		{
@@ -60,12 +78,9 @@ namespace app
 			fnd::GOComponent::Create(this, GOCEffect);
 			fnd::GOComponent::Create(this, GOCSound);
 
-			/*EggManager* eggManager = EggManager::GetService(gameDocument);
+			EggManager* eggManager = EggManager::GetService(gameDocument);
 			if (!eggManager)
 				return;
-
-			int handle[2];
-			GameObjectHandleBase::__ct(&handle, this);*/
 		}
 	};
 }

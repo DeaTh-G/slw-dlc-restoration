@@ -2,6 +2,8 @@
 
 namespace app
 {
+	class ObjEgg;
+
 	class EggManager : public fnd::GameService
 	{
 		struct LocusData

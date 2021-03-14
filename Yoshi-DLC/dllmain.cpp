@@ -74,6 +74,7 @@ void Initialize()
 
 	auto create_ObjEggBlock = &app::create_ObjEggBlock;
 	auto createObjInfo_ObjEggBlockInfo = &app::createObjInfo_ObjEggBlockInfo;
+	auto create_ObjEggRotationChangeCollision = &app::create_ObjEggRotationChangeCollision;
 
 	auto EnemyShyGuyInfo__Initialize = &app::EnemyShyGuyInfo::Initialize;
 	auto EnemyShyGuyInfo__GetInfoName = &app::EnemyShyGuyInfo::GetInfoName;
@@ -122,6 +123,9 @@ void Initialize()
 	
 	WRITE_FUNCTION(ASLR(0x00D2BC94), *(void**)&create_ObjEggBlock);
 	WRITE_FUNCTION(ASLR(0x00D2BC8F), *(void**)&createObjInfo_ObjEggBlockInfo);
+	//WRITE_FUNCTION(ASLR(0x00D2BC41), *(void**)&create_ObjEggBlock);
+	//WRITE_FUNCTION(ASLR(0x00D2BC3F), *(void**)&createObjInfo_ObjEggBlockInfo);
+	WRITE_FUNCTION(ASLR(0x00D2BC41), *(void**)&create_ObjEggRotationChangeCollision);
 	
 	WRITE_FUNCTION(ASLR(0x00D93A4C), *(void**)&EnemyShyGuyInfo__Initialize);
 	WRITE_FUNCTION(ASLR(0x00D93A54), *(void**)&EnemyShyGuyInfo__GetInfoName);

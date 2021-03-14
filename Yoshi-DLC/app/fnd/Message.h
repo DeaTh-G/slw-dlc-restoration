@@ -362,7 +362,7 @@ namespace app
 			PROC_MSG_CAMERA_UPDATE								= 0x8026,
 			PROC_MSG_FOCUS_CHANGE								= 0x8027,
 			PROC_MSG_HIT_EVENT_COLLISION						= 0x9000,
-			PROC_MSG_HIT_LEAVE_COLLISION						= 0x9001,
+			PROC_MSG_LEAVE_EVENT_COLLISION						= 0x9001,
 			PROC_MSG_STAY_TRIGGER								= 0x9002,
 			PROC_MSG_CONTACT_COLLISION							= 0x9003,
 			PROC_MSG_HUD_UPDATE_INFO							= 0xC000,
@@ -419,8 +419,37 @@ namespace app
 			PROC_MSG_CHANGE_BGM_VOLUME							= 0xD007,
 		} MessageType;
 
+		/* Change new Message after Refactor*/
+		class MessageNew
+		{
+		private:
+			inline static FUNCTION_PTR(MessageNew*, __thiscall, f_Clone, ASLR(0x0049A630), MessageNew* This);
+			inline static FUNCTION_PTR(MessageNew*, __thiscall, __dt, ASLR(0x004AC6A0), MessageNew* This, int a2);
+
+		public:
+			MessageType Type;
+			int field_08;
+			int field_0C;
+			short field_10;
+			short field_12;
+			int field_14;
+
+			inline static FUNCTION_PTR(MessageNew*, __thiscall, __ct, ASLR(0x0049A5F0), MessageNew* This, MessageType type);
+
+			virtual void Clone() { f_Clone(this); }
+			virtual ~MessageNew()
+			{
+				__dt(this, 0);
+				FORCE_RET;
+			}
+		};
+
 		__declspec(align(4)) class Message
 		{
+		private:
+			//inline static FUNCTION_PTR(Message*, __thiscall, f_Clone, ASLR(0x0049A630), Message* This);
+			//inline static FUNCTION_PTR(Message*, __thiscall, __dt, ASLR(0x0049A630), Message* This, int a2);
+
 		public:
 			int* field_00;
 			MessageType field_04;
@@ -430,8 +459,7 @@ namespace app
 			short field_12;
 			int field_14;
 
-			inline static FUNCTION_PTR(int*, __thiscall, __ct, ASLR(0x0049A5F0), fnd::Message* This, MessageType type);
+			inline static FUNCTION_PTR(int*, __thiscall, __ct, ASLR(0x0049A5F0), Message* This, MessageType type);
 		};
 	}
-
 }

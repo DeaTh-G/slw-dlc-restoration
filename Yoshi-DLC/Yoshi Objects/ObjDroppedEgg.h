@@ -29,15 +29,6 @@ namespace app
 			STATE_WAIT
 		};
 
-	public:
-		class BoundListener : public game::MoveBound::Listener
-		{
-			void OnBound(csl::math::Plane& const a1) override
-			{
-				
-			}
-		};
-
 	private:
 		bool ProcMsgHitEventCollision(fnd::Message& message)
 		{
@@ -49,11 +40,6 @@ namespace app
 			egg::CreateEgg(document, &cInfo);
 
 			return Kill(this);
-		}
-
-		void BoundCallback()
-		{
-
 		}
 
 		void UpdateFollow()
@@ -141,7 +127,7 @@ namespace app
 		int ModelType{};
 		float Time{};
 		game::MoveBound* Movement = new game::MoveBound();
-		BoundListener* Listener{};
+		INSERT_PADDING(0x4);	// BoundListener
 		ObjDroppedEgg* field_348;
 		fnd::HandleBase Handle{};
 		INSERT_PADDING(0xC);
@@ -220,7 +206,6 @@ namespace app
 				description.field_48 |= 3;
 
 				game::MoveBound::Setup(Movement, &description);
-				game::MoveBound::ResetListener(Movement, Listener);
 
 				State = STATE_FALL;
 			}
