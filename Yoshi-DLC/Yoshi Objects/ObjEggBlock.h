@@ -38,10 +38,9 @@ namespace app
 
         void RegistCallback(int& container) override
         {
-            ObjEggInfo* eggObject = (ObjEggInfo*)fnd::ReferencedObject::f_new(sizeof(ObjEggInfo), pAllocator);
+            ObjEggInfo* eggObject = new(pAllocator) ObjEggInfo();
             if (eggObject)
-                new (eggObject)ObjEggInfo();
-            CObjInfoContainer::Register(&container, eggObject->GetInfoName(), eggObject);
+                CObjInfoContainer::Register(&container, eggObject->GetInfoName(), eggObject);
 
             ObjYoshiInfo* yoshiObject = (ObjYoshiInfo*)fnd::ReferencedObject::f_new(sizeof(ObjYoshiInfo), pAllocator);
             if (yoshiObject)

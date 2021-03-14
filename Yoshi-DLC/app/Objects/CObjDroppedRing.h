@@ -7,7 +7,7 @@ namespace app
 		const char* packFileName = ObjUtil::GetStagePackName(*Document);
 		if (strncmp(packFileName, "zdlc02", 6) == 0)
 		{
-			MessageTakeObject msgTakeObject;
+			xgame::MsgTakeObject msgTakeObject { 0 };
 			game::EffectCreateInfo effectInfo;
 
 			int* gocSound;
@@ -17,7 +17,6 @@ namespace app
 
 			if ((This[0xD2] & 0x40) == 0)
 			{
-				xgame::MsgTakeObject::__ct(&msgTakeObject, 0);
 				xgame::MsgTakeObject::SetShapeUserID(&msgTakeObject, *(int*)(message[7] + 0xBC));
 				if (fnd::CActor::SendMessageImm((int*)This + 2, message[8], (int*)&msgTakeObject))
 				{

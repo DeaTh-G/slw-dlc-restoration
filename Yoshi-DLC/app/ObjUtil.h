@@ -5,7 +5,7 @@ namespace app
 	class ObjUtil
 	{
 	public:
-		inline static FUNCTION_PTR(int*, __cdecl, GetObjectInfo, ASLR(0x0073D380), GameDocument* gameDocument, const char* infoName);
+		inline static FUNCTION_PTR(CObjInfo*, __cdecl, GetObjectInfo, ASLR(0x0073D380), GameDocument* gameDocument, const char* infoName);
 		inline static FUNCTION_PTR(int*, __cdecl, GetPackFile, ASLR(0x0073D830), int* file, const char* name);
 		inline static FUNCTION_PTR(char*, __cdecl, GetStagePackName, ASLR(0x0073D2B0), GameDocument* gameDocument);
 		inline static FUNCTION_PTR(int*, __cdecl, GetModelResource, ASLR(0x0073D490), void* dataPtr, const char* name, int* packFile);

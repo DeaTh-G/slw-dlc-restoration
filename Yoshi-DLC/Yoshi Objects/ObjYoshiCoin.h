@@ -158,7 +158,7 @@ namespace app
 	private:
 		void ProcMsgHitEventCollision(int* message)
 		{
-			MessageTakeObject msgTakeObject;
+			xgame::MsgTakeObject msgTakeObject { 0 };
 			game::EffectCreateInfo effectInfo;
 
 			int* gocSound;
@@ -166,7 +166,6 @@ namespace app
 			int something[3];
 			int effectVar = 0;
 
-			xgame::MsgTakeObject::__ct(&msgTakeObject, 0);
 			xgame::MsgTakeObject::SetShapeUserID(&msgTakeObject, *(int*)(message[7] + 0xBC));
 			if (fnd::CActor::SendMessageImm((int*)this, message[8], (int*)&msgTakeObject))
 			{

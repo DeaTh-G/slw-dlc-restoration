@@ -442,6 +442,16 @@ namespace app
 				__dt(this, 0);
 				FORCE_RET;
 			}
+
+			MessageNew()
+			{
+				Type = (fnd::MessageType)0;
+				field_08 = 0;
+				field_0C = 0;
+				field_10 = 0;
+				field_12 = 0;
+				field_14 = -1;
+			}
 		};
 
 		__declspec(align(4)) class Message

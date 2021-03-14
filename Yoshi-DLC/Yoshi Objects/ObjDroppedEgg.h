@@ -36,6 +36,10 @@ namespace app
 			GameDocument& document = (GameDocument&)field_24[1];
 
 			// TODO: Copy transform over to EggCInfo
+			int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+			if (gocTransform)
+				cInfo.Transform = (csl::math::Matrix34*)(gocTransform + 0x44);
+
 			cInfo.ModelType = ModelType;
 			egg::CreateEgg(document, &cInfo);
 

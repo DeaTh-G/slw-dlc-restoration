@@ -45,6 +45,7 @@
 #include "app/EnemyInfo.h"
 #include "app/EnemyManager.h"
 #include "app/game/CollisionObjCInfo.h"
+#include "app/CSetObjClass.h"
 
 #include "app/fnd/GameServiceClass.h"
 #include "app/fnd/GameService.h"

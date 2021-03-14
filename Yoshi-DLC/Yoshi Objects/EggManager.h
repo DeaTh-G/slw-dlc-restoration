@@ -1,4 +1,4 @@
-#pragma once
+#pragma 
 
 namespace app
 {
@@ -17,7 +17,7 @@ namespace app
 		};
 
 	public:
-		ObjEgg* Eggs[4]{};
+		std::vector<ObjEgg*> Eggs;
 		LocusData Locus{};
 		int field_64{};
 		bool SpaceShrink{};
@@ -33,7 +33,21 @@ namespace app
 	private:
 		static void* staticClass() { return (void*)ASLR(0x00FEE764); }
 
+		void UpdateLocusPos(float a2)
+		{
+			
+		}
+
 	public:
+		bool AddEgg(ObjEgg* egg)
+		{
+			if (Eggs.size() >= 0xC)
+				return false;
+			
+			Eggs.push_back(egg);
+			return true;
+		}
+		
 		void SetForceSpaceShrink(bool isShrink)
 		{
 			if (!SpaceShrink)
@@ -54,9 +68,7 @@ namespace app
 
 		void StartGame(bool a1) override
 		{
-			for (size_t i = 0; i < 4; i++)
-				Eggs[i] = nullptr;
-
+			Eggs.clear();
 			Locus.field_00 = 0;
 			Locus.field_04 = 0;
 			Locus.field_08 = 0;
@@ -67,6 +79,11 @@ namespace app
 			field_64 = 0;
 			SpaceShrink = false;
 			FlowerCount = 0;
+		}
+
+		void Update(const fnd::SUpdateInfo& updateInfo) override
+		{
+
 		}
 	};
 	
