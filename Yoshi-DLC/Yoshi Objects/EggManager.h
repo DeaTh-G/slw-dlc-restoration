@@ -1,94 +1,119 @@
-#pragma 
+#pragma once
 
 namespace app
 {
-	class ObjEgg;
+    class ObjEgg;
 
-	class EggManager : public fnd::GameService
-	{
-		struct LocusData
-		{
-			int field_00;
-			int field_04;
-			int field_08;
-			int field_0C;
-			int field_10;
-			csl::fnd::IAllocator* pAllocator;
-		};
+    class EggManager : public fnd::GameService
+    {
+    public:
+        struct LocusData
+        {
+            csl::math::Vector3 Position;
+            csl::math::Quaternion Rotation;
+            char field_20;
+            INSERT_PADDING(13);
+        };
 
-	public:
-		std::vector<ObjEgg*> Eggs;
-		LocusData Locus{};
-		int field_64{};
-		bool SpaceShrink{};
-		char FlowerCount{};
-		INSERT_PADDING(2);
+        std::vector<ObjEgg*> Eggs;
+        boost::circular_buffer<LocusData> EffectData;
+        INSERT_PADDING(4);
+        float field_64{};
+        char IsSpaceShrink{};
+        char FlowerCount{};
+        INSERT_PADDING(2);
 
-		EggManager()
-		{
-			// TODO: CHECK IF CRASH
-			Locus.pAllocator = (*(csl::fnd::IAllocator**)ASLR(0x00FD3FC4) + 3);
-		}
+        EggManager()
+        {
+            // TODO: CHECK IF CRASH
+            //Locus.pAllocator = (*(csl::fnd::IAllocator**)ASLR(0x00FD3FC4) + 3);
+        }
 
-	private:
-		static void* staticClass() { return (void*)ASLR(0x00FEE764); }
+    private:
+        static void* staticClass() { return (void*)ASLR(0x00FEE764); }
 
-		void UpdateLocusPos(float a2)
-		{
-			
-		}
+    public:
+        bool AddEgg(ObjEgg* egg)
+        {
+            if (Eggs.size() >= 0xC)
+                return false;
+            
+            Eggs.push_back(egg);
+            return true;
+        }
 
-	public:
-		bool AddEgg(ObjEgg* egg)
-		{
-			if (Eggs.size() >= 0xC)
-				return false;
-			
-			Eggs.push_back(egg);
-			return true;
-		}
-		
-		void SetForceSpaceShrink(bool isShrink)
-		{
-			if (!SpaceShrink)
-				SpaceShrink = true;
-			else
-				SpaceShrink = false;
-		}
+        bool CheckAccessLocusData(LocusData* locus)
+        {
+            if (!EffectData.size())
+                return false;
 
-		void TakeYoshiSpecialFlower(char flowerID) { FlowerCount |= 1 << flowerID; }
-		unsigned int IsYoshiSpecialFlowerTaked(char flowerID) { return (FlowerCount >> flowerID) & 1; }
+            LocusData data = EffectData.at(EffectData.size());
+            *locus = data;
 
-		static EggManager* GetService(GameDocument* gameDocument)
-		{
-			void* managerClass = staticClass();
-			EggManager* service = (EggManager*)GameDocument::GetServiceByClass(gameDocument, managerClass);
-			return service;
-		}
+            return true;
+        }
 
-		void StartGame(bool a1) override
-		{
-			Eggs.clear();
-			Locus.field_00 = 0;
-			Locus.field_04 = 0;
-			Locus.field_08 = 0;
-			Locus.field_0C = 0;
-			Locus.field_10 = 0;
-			Locus.pAllocator = (*(csl::fnd::IAllocator**)ASLR(0x00FD3FC4) + 3);
-		
-			field_64 = 0;
-			SpaceShrink = false;
-			FlowerCount = 0;
-		}
+        void GetTargetDataFromLocusIndex(LocusData* locus, bool a2, float* magnitude)
+        {
+            LocusData data1{};
+            LocusData data2{};
+            *locus = data1;
 
-		void Update(const fnd::SUpdateInfo& updateInfo) override
-		{
+            if (!CheckAccessLocusData(&data1) || !a2 || !CheckAccessLocusData(&data2))
+                return;
 
-		}
-	};
-	
-	EggManager* construct_EggManager(csl::fnd::IAllocator* pAllocator)
-	{
-		return new(pAllocator) EggManager();
-	}
+            csl::math::Vector3 positionDifference{};
+            float localMagnitude{};
+            math::Vector3Subtract(&data1.Position, &data2.Position, &positionDifference);
+            math::Vector3Magnitude(&positionDifference, &localMagnitude);
+
+            if (localMagnitude > 0.3f && (field_64 > 0 || (IsSpaceShrink >> 2) & 1))
+            {
+                a2 = true;
+                if (magnitude)
+                    *magnitude = localMagnitude;
+            }
+        }
+        
+        void SetForceSpaceShrink(bool isShrink)
+        {
+            if (!IsSpaceShrink)
+                IsSpaceShrink = true;
+            else
+                IsSpaceShrink = false;
+        }
+
+        char AddSpaceCount();
+
+        void TakeYoshiSpecialFlower(char flowerID) { FlowerCount |= 1 << flowerID; }
+        unsigned int IsYoshiSpecialFlowerTaked(char flowerID) { return (FlowerCount >> flowerID) & 1; }
+
+        static EggManager* GetService(GameDocument* gameDocument)
+        {
+            void* managerClass = staticClass();
+            EggManager* service = (EggManager*)GameDocument::GetServiceByClass(gameDocument, managerClass);
+            return service;
+        }
+
+        void StartGame(bool a1) override
+        {
+            EffectData.clear();
+            EffectData.set_capacity(egg::GetMaxLocusPositionNum());
+            Eggs.clear();
+        
+            field_64 = 0;
+            IsSpaceShrink = false;
+            FlowerCount = 0;
+        }
+
+        void Update(const fnd::SUpdateInfo& updateInfo) override
+        {
+
+        }
+    };
+    
+    inline static EggManager* construct_EggManager(csl::fnd::IAllocator* pAllocator)
+    {
+        return new(pAllocator) EggManager();
+    }
 }

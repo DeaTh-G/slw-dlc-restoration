@@ -7,12 +7,13 @@ namespace app
 		class MsgDlcChangeEggRotation : public fnd::MessageNew
 		{
 		public:
-			int field_18;
+			bool field_18;
+			INSERT_PADDING(3);
 
 			MsgDlcChangeEggRotation() : MessageNew()
 			{
 				Type = fnd::PROC_MSG_DLC_CHANGE_EGG_ROTATION;
-				field_18 = 0;
+				field_18 = false;
 			}
 		};
 	}

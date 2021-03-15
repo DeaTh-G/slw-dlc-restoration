@@ -55,13 +55,12 @@ namespace app
 			fnd::GOComponent::EndSetup(this);
 		}
 
-		bool ProcessMessage(fnd::Message& message) override
+		bool ProcessMessage(fnd::MessageNew& message) override
 		{
-			printf("%X", message.field_04);
 			if (PreProcessMessage(message))
 				return true;
 
-			switch (message.field_04)
+			switch (message.Type)
 			{
 			case fnd::PROC_MSG_HIT_EVENT_COLLISION:
 				ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
@@ -75,7 +74,7 @@ namespace app
 		}
 	};
 
-	ObjEggRotationChangeCollision* create_ObjEggRotationChangeCollision()
+	inline static ObjEggRotationChangeCollision* create_ObjEggRotationChangeCollision()
 	{
 		return new ObjEggRotationChangeCollision();
 	}

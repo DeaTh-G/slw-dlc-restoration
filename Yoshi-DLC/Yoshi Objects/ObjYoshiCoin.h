@@ -1,6 +1,6 @@
 #pragma once
 
-bool IsYoshiCoinShadowOn;
+inline static bool IsYoshiCoinShadowOn;
 
 namespace app
 {
@@ -201,7 +201,7 @@ namespace app
 		}
 	};
 
-	GameObject* create_ObjYoshiCoin()
+	inline static GameObject* create_ObjYoshiCoin()
 	{
 		GameObject* object = GameObject::New(0x3A0);
 		if (!object)
@@ -210,7 +210,7 @@ namespace app
 		return object;
 	}
 
-	fnd::ReferencedObject* createObjInfo_ObjYoshiCoinInfo(csl::fnd::IAllocator* allocator)
+	inline static fnd::ReferencedObject* createObjInfo_ObjYoshiCoinInfo(csl::fnd::IAllocator* allocator)
 	{
 		fnd::ReferencedObject* object = fnd::ReferencedObject::f_new(sizeof(ObjYoshiCoinInfo), allocator);
 		if (!object)

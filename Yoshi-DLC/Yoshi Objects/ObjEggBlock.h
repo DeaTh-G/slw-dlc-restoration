@@ -386,12 +386,12 @@ namespace app
             fnd::GOComponent::EndSetup(this);
         }
 
-        bool ProcessMessage(fnd::Message& message) override
+        bool ProcessMessage(fnd::MessageNew& message) override
         {
             if (PreProcessMessage(message))
                 return true;
 
-            if (message.field_04 != fnd::PROC_MSG_DAMAGE)
+            if (message.Type != fnd::PROC_MSG_DAMAGE)
                 return CSetObjectListener::ProcessMessage(message);
             
             ProcMsgDamage((xgame::MsgDamage&)message);
@@ -450,12 +450,12 @@ namespace app
         }
     };
 
-    GameObject* create_ObjEggBlock()
+    inline static GameObject* create_ObjEggBlock()
     {
         return new ObjEggBlock();
     }
 
-    ObjEggBlockInfo* createObjInfo_ObjEggBlockInfo(csl::fnd::IAllocator* pAllocator)
+    inline static ObjEggBlockInfo* createObjInfo_ObjEggBlockInfo(csl::fnd::IAllocator* pAllocator)
     {
         return new(pAllocator) ObjEggBlockInfo();
     }

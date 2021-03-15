@@ -2,250 +2,250 @@
 
 namespace app
 {
-	struct DroppedEggCInfo;
-	class ObjDroppedEgg;
-	namespace egg
-	{
-		ObjDroppedEgg* CreateDroppedEgg(GameDocument& gameDocument, DroppedEggCInfo* cInfo);
-	}
+    struct DroppedEggCInfo;
+    class ObjDroppedEgg;
+    namespace egg
+    {
+        ObjDroppedEgg* CreateDroppedEgg(GameDocument& gameDocument, DroppedEggCInfo* cInfo);
+    }
 
-	struct DroppedEggCInfo
-	{
-		csl::math::Matrix34 Transform;
-		csl::math::Vector3 field_40;
-		game::PathEvaluator PathEvaluator;
-		int ModelType;
-		int ZIndex;
-		int field_68;
-		int field_6C;
-	};
+    struct DroppedEggCInfo
+    {
+        csl::math::Matrix34 Transform;
+        csl::math::Vector3 field_40;
+        game::PathEvaluator PathEvaluator;
+        int ModelType;
+        int ZIndex;
+        int field_68;
+        int field_6C;
+    };
 
-	class ObjDroppedEgg : public GameObject3D
-	{
-		typedef enum DropState
-		{
-			STATE_FALL,
-			STATE_LANDING,
-			STATE_WAIT
-		};
+    class ObjDroppedEgg : public GameObject3D
+    {
+        typedef enum DropState
+        {
+            STATE_FALL,
+            STATE_LANDING,
+            STATE_WAIT
+        };
 
-	private:
-		bool ProcMsgHitEventCollision(fnd::Message& message)
-		{
-			EggCInfo cInfo{};
-			GameDocument& document = (GameDocument&)field_24[1];
+    private:
+        bool ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
+        {
+            EggCInfo cInfo{};
+            GameDocument& document = (GameDocument&)field_24[1];
 
-			// TODO: Copy transform over to EggCInfo
-			int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
-			if (gocTransform)
-				cInfo.Transform = (csl::math::Matrix34*)(gocTransform + 0x44);
+            // TODO: Copy transform over to EggCInfo
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (gocTransform)
+                cInfo.Transform = (csl::math::Matrix34*)(gocTransform + 0x44);
 
-			cInfo.ModelType = ModelType;
-			egg::CreateEgg(document, &cInfo);
+            cInfo.ModelType = ModelType;
+            egg::CreateEgg(document, &cInfo);
 
-			return Kill(this);
-		}
+            return Kill(this);
+        }
 
-		void UpdateFollow()
-		{
-			if (!fnd::HandleBase::IsValid(&Handle))
-				return;
+        void UpdateFollow()
+        {
+            if (!fnd::HandleBase::IsValid(&Handle))
+                return;
 
-			int* handle = fnd::Handle::Get(&Handle);
-			if (!handle)
-				return;
+            int* handle = fnd::Handle::Get(&Handle);
+            if (!handle)
+                return;
 
-			csl::math::Vector3 origTranslation{};
-			csl::math::Vector3 translation{};
-			origTranslation = *(csl::math::Vector3*)(handle + 0xC);
-			math::Vector3Subtract(&origTranslation, &field_360, &translation);
+            csl::math::Vector3 origTranslation{};
+            csl::math::Vector3 translation{};
+            origTranslation = *(csl::math::Vector3*)(handle + 0xC);
+            math::Vector3Subtract(&origTranslation, &field_360, &translation);
 
-			int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
-			if (!gocTransform)
-				return;
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
 
-			csl::math::Vector3 objectPosition{};
-			math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &objectPosition);
-			math::Vector3Add(&objectPosition, &translation, &objectPosition);
-			fnd::GOCTransform::SetLocalTranslation(gocTransform, &objectPosition);
-			field_360 = origTranslation;
-		}
+            csl::math::Vector3 objectPosition{};
+            math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &objectPosition);
+            math::Vector3Add(&objectPosition, &translation, &objectPosition);
+            fnd::GOCTransform::SetLocalTranslation(gocTransform, &objectPosition);
+            field_360 = origTranslation;
+        }
 
-		void StateFall()
-		{
-			if (Movement->field_80 & 1)
-			{
-				game::MoveController::ResetFlag(Movement, 1);
-				State = STATE_LANDING;
-			}
-		}
+        void StateFall()
+        {
+            if (Movement->field_80 & 1)
+            {
+                game::MoveController::ResetFlag(Movement, 1);
+                State = STATE_LANDING;
+            }
+        }
 
-		void StateLanding(const fnd::SUpdateInfo& updateInfo)
-		{
-			csl::math::Vector3 defaultScale { 1, 1, 1 };
-			csl::math::Vector3 scale{};
+        void StateLanding(const fnd::SUpdateInfo& updateInfo)
+        {
+            csl::math::Vector3 defaultScale { 1, 1, 1 };
+            csl::math::Vector3 scale{};
 
-			UpdateFollow();
+            UpdateFollow();
 
-			int* gocVisual = GameObject::GetGOC(this, GOCVisual);
-			if (!gocVisual)
-				return;
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+            if (!gocVisual)
+                return;
 
-			if (Time >= 0.35f)
-			{
-				fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &defaultScale);
-				if (Time > 0.55f)
-				{
-					Time = 0;
-					State = STATE_WAIT;
-				}
-			}
-			else
-			{
-				scale = egg::CalcSlipperyScale(Time, 0.7f, 0.4f, 0.2f);
-				fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
-			}
-			Time += updateInfo.deltaTime;
-		}
+            if (Time >= 0.35f)
+            {
+                fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &defaultScale);
+                if (Time > 0.55f)
+                {
+                    Time = 0;
+                    State = STATE_WAIT;
+                }
+            }
+            else
+            {
+                scale = egg::CalcSlipperyScale(Time, 0.7f, 0.4f, 0.2f);
+                fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
+            }
+            Time += updateInfo.deltaTime;
+        }
 
-		void StateWait(const fnd::SUpdateInfo& updateInfo)
-		{
-			csl::math::Vector3 scale;
+        void StateWait(const fnd::SUpdateInfo& updateInfo)
+        {
+            csl::math::Vector3 scale;
 
-			Time += updateInfo.deltaTime;
-			UpdateFollow();
+            Time += updateInfo.deltaTime;
+            UpdateFollow();
 
-			int* gocVisual = GameObject::GetGOC(this, GOCVisual);
-			if (!gocVisual)
-				return;
-		
-			scale = egg::CalcSlipperyScale(Time, 1.6f, 0.1f, 0.1f);
-			fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
-		}
-	
-	public:
-		DropState State;
-		INSERT_PADDING(0x4);
-		INSERT_PADDING(0x14);	// TinyFSM
-		DroppedEggCInfo* CInfo{};
-		int ModelType{};
-		float Time{};
-		game::MoveBound* Movement = new game::MoveBound();
-		INSERT_PADDING(0x4);	// BoundListener
-		ObjDroppedEgg* field_348;
-		fnd::HandleBase Handle{};
-		INSERT_PADDING(0xC);
-		csl::math::Vector3 field_360{};
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+            if (!gocVisual)
+                return;
+        
+            scale = egg::CalcSlipperyScale(Time, 1.6f, 0.1f, 0.1f);
+            fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
+        }
+    
+    public:
+        DropState State;
+        INSERT_PADDING(0x4);
+        INSERT_PADDING(0x14);	// TinyFSM
+        DroppedEggCInfo* CInfo{};
+        int ModelType{};
+        float Time{};
+        game::MoveBound* Movement = new game::MoveBound();
+        INSERT_PADDING(0x4);	// BoundListener
+        ObjDroppedEgg* field_348;
+        fnd::HandleBase Handle{};
+        INSERT_PADDING(0xC);
+        csl::math::Vector3 field_360{};
 
-		ObjDroppedEgg(GameDocument& document, DroppedEggCInfo* cInfo)
-		{
-			CInfo = cInfo;
-			ModelType = CInfo->ModelType;
-		}
+        ObjDroppedEgg(GameDocument& document, DroppedEggCInfo* cInfo)
+        {
+            CInfo = cInfo;
+            ModelType = CInfo->ModelType;
+        }
 
-		void AddCallback(GameDocument* gameDocument) override
-		{
-			fnd::GOCVisualModel::VisualDescription visualDescriptor{};
-			game::ColliSphereShapeCInfo collisionInfo{};
-			int unit = 1;
+        void AddCallback(GameDocument* gameDocument) override
+        {
+            fnd::GOCVisualModel::VisualDescription visualDescriptor{};
+            game::ColliSphereShapeCInfo collisionInfo{};
+            int unit = 1;
 
-			fnd::GOComponent::Create(this, GOCVisualModel);
-			fnd::GOComponent::Create(this, GOCCollider);
-			fnd::GOComponent::Create(this, GOCMovementComplex);
+            fnd::GOComponent::Create(this, GOCVisualModel);
+            fnd::GOComponent::Create(this, GOCCollider);
+            fnd::GOComponent::Create(this, GOCMovementComplex);
 
-			fnd::GOComponent::BeginSetup(this);
+            fnd::GOComponent::BeginSetup(this);
 
-			int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
-			if (gocTransform)
-			{
-				csl::math::Quaternion rotation = GetRotationFromMatrix(&CInfo->Transform);
-				fnd::GOCTransform::SetLocalTranslation(gocTransform, (csl::math::Vector3*)&CInfo->Transform.data[3][0]);
-				fnd::GOCTransform::SetLocalRotation(gocTransform, &rotation);
-			}
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (gocTransform)
+            {
+                csl::math::Quaternion rotation = GetRotationFromMatrix(&CInfo->Transform);
+                fnd::GOCTransform::SetLocalTranslation(gocTransform, (csl::math::Vector3*)&CInfo->Transform.data[3][0]);
+                fnd::GOCTransform::SetLocalRotation(gocTransform, &rotation);
+            }
 
-			ObjEggInfo* info = (ObjEggInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjEggInfo");
+            ObjEggInfo* info = (ObjEggInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjEggInfo");
 
-			int* gocVisual = GameObject::GetGOC(this, GOCVisual);
-			if (gocVisual)
-			{
-				csl::math::Vector3 visualOffset{ 0, -3, 0 };
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+            if (gocVisual)
+            {
+                csl::math::Vector3 visualOffset{ 0, -3, 0 };
 
-				visualDescriptor.Model = info->Models[ModelType];
-				visualDescriptor.Animation |= 0x400000;
-				visualDescriptor.ZIndex = -0.2 * CInfo->ZIndex;
-				fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
-				fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, &visualOffset);
-			}
+                visualDescriptor.Model = info->Models[ModelType];
+                visualDescriptor.Animation |= 0x400000;
+                visualDescriptor.ZIndex = -0.2 * CInfo->ZIndex;
+                fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
+                fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, &visualOffset);
+            }
 
-			int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
-			if (gocCollider)
-			{
-				game::GOCCollider::Setup(gocCollider, &unit);
-				collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
-				collisionInfo.MotionType = 2;
-				collisionInfo.Radius = 3;
-				ObjUtil::SetupCollisionFilter(8, &collisionInfo);
-				collisionInfo.field_04 |= 1;
-				game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
-			}
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+            if (gocCollider)
+            {
+                game::GOCCollider::Setup(gocCollider, &unit);
+                collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
+                collisionInfo.MotionType = 2;
+                collisionInfo.Radius = 3;
+                ObjUtil::SetupCollisionFilter(8, &collisionInfo);
+                collisionInfo.field_04 |= 1;
+                game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
+            }
 
-			int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
-			if (gocMovement)
-			{
-				game::GOCMovement::SetupController(gocMovement, Movement);
+            int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
+            if (gocMovement)
+            {
+                game::GOCMovement::SetupController(gocMovement, Movement);
 
-				game::MoveBound::Desc description{};
-				description.field_00 = CInfo->field_40;
-				description.field_10 = 3;
-				description.field_14 = 300;
-				description.field_18 = 0.8f;
-				description.field_1C = 0.75f;
-				description.field_20 = 150;
-				description.field_28 = 1;
-				description.field_2C = 0.1f;
-				game::PathEvaluator::__ct(&description.field_38);
-				if (fnd::HandleBase::IsValid((fnd::HandleBase*)&CInfo->PathEvaluator))
-					description.field_38 = CInfo->PathEvaluator;
-				
-				description.field_48 |= 3;
+                game::MoveBound::Desc description{};
+                description.field_00 = CInfo->field_40;
+                description.field_10 = 3;
+                description.field_14 = 300;
+                description.field_18 = 0.8f;
+                description.field_1C = 0.75f;
+                description.field_20 = 150;
+                description.field_28 = 1;
+                description.field_2C = 0.1f;
+                game::PathEvaluator::__ct(&description.field_38);
+                if (fnd::HandleBase::IsValid((fnd::HandleBase*)&CInfo->PathEvaluator))
+                    description.field_38 = CInfo->PathEvaluator;
+                
+                description.field_48 |= 3;
 
-				game::MoveBound::Setup(Movement, &description);
+                game::MoveBound::Setup(Movement, &description);
 
-				State = STATE_FALL;
-			}
-		}
+                State = STATE_FALL;
+            }
+        }
 
-		bool ProcessMessage(fnd::Message& message) override
-		{
-			if (PreProcessMessage(message))
-				return true;
+        bool ProcessMessage(fnd::MessageNew& message) override
+        {
+            if (PreProcessMessage(message))
+                return true;
 
-			if (message.field_04 != fnd::PROC_MSG_HIT_EVENT_COLLISION)
-				return app::GameObject::ProcessMessage(message);
+            if (message.Type != fnd::PROC_MSG_HIT_EVENT_COLLISION)
+                return app::GameObject::ProcessMessage(message);
 
-			ProcMsgHitEventCollision(message);
-			return true;
-		}
+            ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
+            return true;
+        }
 
-		void Update(const fnd::SUpdateInfo& updateInfo) override
-		{
-			if (State == STATE_FALL)
-				StateFall();
+        void Update(const fnd::SUpdateInfo& updateInfo) override
+        {
+            if (State == STATE_FALL)
+                StateFall();
 
-			if (State == STATE_LANDING)
-				StateLanding(updateInfo);
-		
-			if (State == STATE_WAIT)
-				StateWait(updateInfo);
-		}
-	};
+            if (State == STATE_LANDING)
+                StateLanding(updateInfo);
+        
+            if (State == STATE_WAIT)
+                StateWait(updateInfo);
+        }
+    };
 }
 
-app::ObjDroppedEgg* app::egg::CreateDroppedEgg(GameDocument& gameDocument, DroppedEggCInfo* cInfo)
+inline static app::ObjDroppedEgg* app::egg::CreateDroppedEgg(GameDocument& gameDocument, DroppedEggCInfo* cInfo)
 {
-	ObjDroppedEgg* object = new ObjDroppedEgg(gameDocument, cInfo);
-	if (!object)
-		return 0;
-	GameDocument::AddGameObject(*(GameDocument**)&gameDocument, object);
-	return object;
+    ObjDroppedEgg* object = new ObjDroppedEgg(gameDocument, cInfo);
+    if (!object)
+        return 0;
+    GameDocument::AddGameObject(*(GameDocument**)&gameDocument, object);
+    return object;
 }

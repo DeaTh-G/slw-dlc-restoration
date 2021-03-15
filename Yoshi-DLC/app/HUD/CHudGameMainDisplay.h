@@ -4,7 +4,7 @@ namespace app
 {
 	namespace HUD 
 	{
-		int* SetSpecialFlower(int* This)
+		inline static int* SetSpecialFlower(int* This)
 		{
 			char DstBuf[32]{};
 			EggManager* eggManager = app::EggManager::GetService(*(app::GameDocument**)(This + 0xA));
@@ -42,7 +42,7 @@ namespace app
 			return This;
 		}
 
-		void SpecialFlowerUpdate(int* This, float a2, char a3)
+		inline static void SpecialFlowerUpdate(int* This, float a2, char a3)
 		{
 			int result = *(This + 0x52);
 			if (This[0x52])
@@ -77,43 +77,11 @@ namespace app
 			}
 		}
 
-		HOOK(int*, __fastcall, SpecialRingUpdateHook, ASLR(0x005027A0), int* This, void* edx, float a2, char a3)
-		{
-			int* result = 0;
-			const char* packFileName = app::ObjUtil::GetStagePackName((app::GameDocument*) * app::Document);
-			if (strncmp(packFileName, "zdlc02", 6) == 0)
-				SpecialFlowerUpdate(This, a2, a3);
-			else
-				result = originalSpecialRingUpdateHook(This, edx, a2, a3);
-			return result;
-		}
-
-		HOOK(int*, __fastcall, CHudGameMainDisplayHook, ASLR(0x00503290), int* This, int* edx, char a2, int a3, int a4, char a5, int a6, int a7)
-		{
-			originalCHudGameMainDisplayHook(This, edx, a2, a3, a4, a5, a6, a7);
-
-			const char* packFileName = app::ObjUtil::GetStagePackName((app::GameDocument*) * app::Document);
-			if (strncmp(packFileName, "zdlc02", 6) == 0)
-			{
-				*(This + 0x7A) |= 0x40;
-				*(This + 0x7A) |= 0x20;
-			}
-
-			return This;
-		}
-
 		class CHudGameMainDisplay
 		{
 		public:
-			static void __ct()
-			{
-				INSTALL_HOOK(CHudGameMainDisplayHook);
-			}
-
-			static void SpecialRingUpdate()
-			{
-				INSTALL_HOOK(SpecialRingUpdateHook);
-			}
+			static void __ct();
+			static void SpecialRingUpdate();
 		};
 	}
 }

@@ -8,7 +8,8 @@
 #define PCH_H
 
 // add headers that you want to pre-compile here
-#include "framework.h"
 #include <Dependencies/Eigen/Geometry>
+#include <Dependencies/boost/circular_buffer.hpp>
+#include "Headers.h"
 
 #endif //PCH_H

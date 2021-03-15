@@ -28,8 +28,8 @@ namespace app
 			virtual size_t ForEach(int& traverser) = 0;
 		
 		protected:
-			virtual bool PreProcessMessage(Message& message) { return false; }
-			virtual bool ProcessMessage(Message& message) { return PreProcessMessage(message); }
+			virtual bool PreProcessMessage(MessageNew& message) { return false; }
+			virtual bool ProcessMessage(MessageNew& message) { return PreProcessMessage(message); }
 			virtual void Update(const SUpdateInfo& updateInfo) { };
 			virtual bool ActorProc(int id, void* data) = 0;
 		};

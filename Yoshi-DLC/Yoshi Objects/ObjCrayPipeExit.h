@@ -273,7 +273,7 @@ namespace app
 		}
 	};
 
-	GameObject* create_ObjCrayPipeExit()
+	inline static GameObject* create_ObjCrayPipeExit()
 	{
 		GameObject* object = GameObject::New(0x3B0);
 		if (!object)

@@ -271,7 +271,7 @@ namespace app
 		}
 	};
 
-	GameObject* create_ObjCrayPipe()
+	inline static GameObject* create_ObjCrayPipe()
 	{
 		GameObject* object = GameObject::New(0x400);
 		if (!object)

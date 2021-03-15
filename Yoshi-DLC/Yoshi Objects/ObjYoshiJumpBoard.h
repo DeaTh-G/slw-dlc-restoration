@@ -1,6 +1,6 @@
 #pragma once
 
-bool IsJumpBoardShadowOn;
+inline static bool IsJumpBoardShadowOn;
 
 namespace app
 {

@@ -2,7 +2,7 @@
 
 namespace app
 {
-	GameObject* Create_Big_ObjYoshiJumpBoard()
+	inline static GameObject* Create_Big_ObjYoshiJumpBoard()
 	{
 		GameObject* object = GameObject::New(0x410);
 		if (!object)
@@ -11,7 +11,7 @@ namespace app
 		return object;
 	}
 
-	fnd::ReferencedObject* createObjInfo_ObjYoshiJumpBoardBig(csl::fnd::IAllocator* a1)
+	inline static fnd::ReferencedObject* createObjInfo_ObjYoshiJumpBoardBig(csl::fnd::IAllocator* a1)
 	{
 		fnd::ReferencedObject* object = fnd::ReferencedObject::f_new(0x54, a1);
 		if (!object)

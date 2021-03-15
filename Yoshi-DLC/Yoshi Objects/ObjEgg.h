@@ -13,6 +13,7 @@ namespace app
 	{
 		csl::math::Matrix34* Transform;
 		int ModelType;
+		int PlayerNo;
 	};
 
 	class ObjEggInfo : public CObjInfo
@@ -35,16 +36,102 @@ namespace app
 
 	class ObjEgg : public GameObject3D
 	{
-		int State{};
-		INSERT_PADDING(0x4);
+		typedef enum EggState
+		{
+			STATE_TO_FIRST_LOCUS,
+			STATE_TO_INDEX_LOCUS,
+			STATE_MOVE_INDEX_LOCUS,
+			STATE_DROP,
+			STATE_MOVE_TO_EXTRICATION,
+			STATE_AFTER_EXTRICATION
+		};
+
+	private:
+		void ProcMsgDlcChangeEggRotation(xgame::MsgDlcChangeEggRotation& message)
+		{
+			if (message.field_18 && !field_34C)
+			{
+				field_34C = true;
+				field_348 = 0.3f;
+			}
+			else if (field_34C)
+			{
+				field_34C = false;
+				field_348 = 0.3f;
+			}
+		}
+
+		void UpdateRotation()
+		{
+
+		}
+
+		void UpdateSlippery()
+		{
+
+		}
+
+		void StateFirstToLocus(const fnd::SUpdateInfo& updateInfo)
+		{
+			EggManager::LocusData locusData{};
+			csl::math::Vector3 translation{};
+
+			EggManager* eggManager = EggManager::GetService((GameDocument*)field_24[1]);
+			if (!eggManager)
+				return;
+
+			int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+			if (!gocTransform)
+				return;
+
+			eggManager->GetTargetDataFromLocusIndex(&locusData, 0, nullptr);
+			Time = math::Clamp(Time, 0, 1);
+				
+			math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
+			math::Vector3Subtract(&translation, &locusData.Position, &translation);
+			
+
+			fnd::GOCTransform::SetLocalTranslation(gocTransform, &translation);
+			
+			Time += updateInfo.deltaTime;
+		}
+
+		void StateToIndexLocus()
+		{
+
+		}
+
+		void StateMoveIndexLocus()
+		{
+
+		}
+
+		void StateDrop()
+		{
+
+		}
+
+		void StateMoveToExtrication()
+		{
+
+		}
+
+		void StateAfterExtrication()
+		{
+
+		}
+
+		EggState State{};
+		INSERT_PADDING(4);
 		INSERT_PADDING(0x14); // TinyFsm
 		EggCInfo* CInfo = new EggCInfo();
 		int ModelType{};
 		int field_33C{};
 		int field_340{};
-		int field_344{};
-		int field_348{};
-		int field_34C{};
+		float Time{};
+		float field_348{};
+		bool field_34C{};
+		INSERT_PADDING(3);
 		csl::math::Vector3 field_350{};
 		int field_360{};
 		int field_364{};
@@ -142,7 +229,7 @@ namespace app
 				else
 				{
 					xgame::MsgTakeObject msg { 3 };
-					ObjUtil::SendMessageImmToPlayer(this, 0, &msg);
+					ObjUtil::SendMessageImmToPlayer(this, CInfo->PlayerNo, &msg);
 					int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
 					if (msg.field_20 && gocEffect)
 					{
@@ -153,10 +240,52 @@ namespace app
 				}
 			}
 		}
+
+		bool ProcessMessage(fnd::MessageNew& message) override
+		{
+			if (PreProcessMessage(message))
+				return true;
+
+			if (message.Type != fnd::PROC_MSG_DLC_CHANGE_EGG_ROTATION)
+				return GameObject::ProcessMessage(message);
+
+			ProcMsgDlcChangeEggRotation((xgame::MsgDlcChangeEggRotation&)message);
+			return true;
+		}
+
+		void Update(const fnd::SUpdateInfo& updateInfo) override
+		{
+			if (State == STATE_TO_FIRST_LOCUS)
+				StateFirstToLocus(updateInfo);
+				
+			if (State == STATE_TO_INDEX_LOCUS)
+				StateToIndexLocus();
+
+			if (State == STATE_MOVE_INDEX_LOCUS)
+				StateMoveIndexLocus();
+
+			if (State == STATE_DROP)
+				StateDrop();
+
+			if (State == STATE_MOVE_TO_EXTRICATION)
+				StateMoveToExtrication();
+
+			if (State == STATE_AFTER_EXTRICATION)
+				StateAfterExtrication();
+		}
+
+		bool AddSpaceOffset()
+		{
+			if (field_340 >= 0xA)
+				return false;
+
+			field_340 += 1;
+			return true;
+		}
 	};
 }
 
-app::ObjEgg* app::egg::CreateEgg(GameDocument& gameDocument, EggCInfo* cInfo)
+inline static app::ObjEgg* app::egg::CreateEgg(GameDocument& gameDocument, EggCInfo* cInfo)
 {
 	ObjEgg* object = new ObjEgg(gameDocument, cInfo);
 	if (!object)

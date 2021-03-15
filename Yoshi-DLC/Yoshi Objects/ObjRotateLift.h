@@ -186,9 +186,9 @@ namespace app
 		}
 	};
 
-	GameObject* create_ObjRotateLift() { return new ObjRotateLift();  }
+	inline static GameObject* create_ObjRotateLift() { return new ObjRotateLift();  }
 
-	fnd::ReferencedObject* createObjInfo_ObjRotateLiftInfo(csl::fnd::IAllocator* allocator)
+	inline static fnd::ReferencedObject* createObjInfo_ObjRotateLiftInfo(csl::fnd::IAllocator* allocator)
 	{
 		fnd::ReferencedObject* object = fnd::ReferencedObject::f_new(sizeof(ObjRotateLiftInfo), allocator);
 		if (!object)
