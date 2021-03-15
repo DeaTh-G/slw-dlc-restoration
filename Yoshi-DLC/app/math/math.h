@@ -57,6 +57,13 @@ namespace app
             *length = sqrt(pow(a->X, 2) + pow(a->Y, 2) + pow(a->Z, 2));
         }
 
+        static void Vector3MultiplyByScalar(Vector3* a, float scalar)
+        {
+            a->X *= scalar;
+            a->Y *= scalar;
+            a->Z *= scalar;
+        }
+
         static float Clamp(float result, float min, float max)
         {
             if (result < min)

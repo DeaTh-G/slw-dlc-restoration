@@ -8,17 +8,21 @@ namespace app
 		{
 		private:
 			inline static FUNCTION_PTR(bool, __thiscall, f_ActorProc, ASLR(0x004A1BF0), CActor* This, int id, void* data);
+			inline static FUNCTION_PTR(GameService*, __thiscall, __ct, ASLR(0x004A1C20), GameService* This, int a2);
 
 		protected:
-			GameDocument* document;
-			GameServiceClass* serviceClass;
+			GameDocument* Document;
+			GameServiceClass* ServiceClass;
 			void* field_04;
 			void* field_08;
 			unsigned int flags;
 
 		public:
-			inline static FUNCTION_PTR(int*, __thiscall, __ct, ASLR(0x004A1C20), int* gameService, int a2);
-		
+			GameService()
+			{
+				__ct(this, 0);
+			}
+
 			virtual void ResolveAccessibleSerivce(GameDocument& document) {}
 			virtual void Load() {}
 			virtual void EndLoad() {}

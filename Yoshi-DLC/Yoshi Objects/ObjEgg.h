@@ -75,6 +75,7 @@ namespace app
 		{
 			EggManager::LocusData locusData{};
 			csl::math::Vector3 translation{};
+			csl::math::Vector3 posDifference{};
 
 			EggManager* eggManager = EggManager::GetService((GameDocument*)field_24[1]);
 			if (!eggManager)
@@ -88,12 +89,14 @@ namespace app
 			Time = math::Clamp(Time, 0, 1);
 				
 			math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
-			math::Vector3Subtract(&translation, &locusData.Position, &translation);
-			
+			math::Vector3Subtract(&locusData.Position, &translation, &posDifference);
+			math::Vector3MultiplyByScalar(&posDifference, Time);
+			math::Vector3Add(&posDifference, &locusData.Position, &posDifference);
 
-			fnd::GOCTransform::SetLocalTranslation(gocTransform, &translation);
+			fnd::GOCTransform::SetLocalTranslation(gocTransform, &posDifference);
 			
 			Time += updateInfo.deltaTime;
+			Frame += 1;
 		}
 
 		void StateToIndexLocus()
@@ -122,13 +125,13 @@ namespace app
 		}
 
 		EggState State{};
-		INSERT_PADDING(4);
+		float Time{};
 		INSERT_PADDING(0x14); // TinyFsm
 		EggCInfo* CInfo = new EggCInfo();
 		int ModelType{};
 		int field_33C{};
-		int field_340{};
-		float Time{};
+		int SpaceCount{};
+		int Frame{};
 		float field_348{};
 		bool field_34C{};
 		INSERT_PADDING(3);
@@ -274,12 +277,21 @@ namespace app
 				StateAfterExtrication();
 		}
 
-		bool AddSpaceOffset()
+		bool SubSpaceOffset()
 		{
-			if (field_340 >= 0xA)
+			if (!SpaceCount)
 				return false;
 
-			field_340 += 1;
+			SpaceCount -= 1;
+			return true;
+		}
+
+		bool AddSpaceOffset()
+		{
+			if (SpaceCount >= 0xA)
+				return false;
+
+			SpaceCount += 1;
 			return true;
 		}
 	};

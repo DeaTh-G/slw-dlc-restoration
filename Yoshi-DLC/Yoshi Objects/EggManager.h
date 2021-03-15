@@ -32,6 +32,42 @@ namespace app
     private:
         static void* staticClass() { return (void*)ASLR(0x00FEE764); }
 
+        void UpdateLocusPos()
+        {
+            int* playerInfo = ObjUtil::GetPlayerInformation(Document, 0);
+            if (!playerInfo)
+                return;
+
+            if (EffectData.size() <= 1)
+            {
+                LocusData data { *(csl::math::Vector3*)(playerInfo + 4),
+                    *(csl::math::Quaternion*)(playerInfo + 8), *(playerInfo + 0x51) ^ 1 };
+
+                EffectData.push_front(data);
+            }
+
+            LocusData data{ *(csl::math::Vector3*)(playerInfo + 4),
+                *(csl::math::Quaternion*)(playerInfo + 8), 0 };
+
+            EffectData.push_front(data);
+        }
+
+        char SubSpaceCount();
+
+        void UpdateEggSpace()
+        {
+            IsSpaceShrink &= ~4;
+            int* playerInfo = ObjUtil::GetPlayerInformation(Document, 0);
+            if (playerInfo && *(char*)(playerInfo + 0x51))
+                SubSpaceCount();
+
+            if (IsSpaceShrink & 1)
+                SubSpaceCount();
+
+            if (field_64 > 0)
+                AddSpaceCount();
+        }
+
     public:
         bool AddEgg(ObjEgg* egg)
         {
@@ -47,7 +83,7 @@ namespace app
             if (!EffectData.size())
                 return false;
 
-            LocusData data = EffectData.at(EffectData.size());
+            LocusData data = EffectData.back();
             *locus = data;
 
             return true;
@@ -57,10 +93,11 @@ namespace app
         {
             LocusData data1{};
             LocusData data2{};
-            *locus = data1;
 
-            if (!CheckAccessLocusData(&data1) || !a2 || !CheckAccessLocusData(&data2))
+            if (!CheckAccessLocusData(&data1) || a2 || !CheckAccessLocusData(&data2))
                 return;
+
+            *locus = data1;
 
             csl::math::Vector3 positionDifference{};
             float localMagnitude{};
@@ -77,10 +114,10 @@ namespace app
         
         void SetForceSpaceShrink(bool isShrink)
         {
-            if (!IsSpaceShrink)
-                IsSpaceShrink = true;
+            if (isShrink)
+                IsSpaceShrink |= 2;
             else
-                IsSpaceShrink = false;
+                IsSpaceShrink &= ~2;
         }
 
         char AddSpaceCount();
@@ -108,7 +145,8 @@ namespace app
 
         void Update(const fnd::SUpdateInfo& updateInfo) override
         {
-
+            UpdateLocusPos();
+            UpdateEggSpace();
         }
     };
     

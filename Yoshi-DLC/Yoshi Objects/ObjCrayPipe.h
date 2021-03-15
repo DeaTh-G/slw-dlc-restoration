@@ -232,9 +232,9 @@ namespace app
 			fnd::Message::__ct(&stopGameTimerMessage.Base, fnd::PROC_MSG_STOP_GAME_TIMER);
 			if (ObjUtil::SendMessageImmToGameActor((GameObject*)(this - 8), (int*)&stopGameTimerMessage))
 			{
-				/*void* eggManager = EggManager::GetService(*Document);
+				EggManager* eggManager = EggManager::GetService(*Document);
 				if (eggManager)
-					EggManager::SetForceSpaceShrink(eggManager, true);*/
+					eggManager->SetForceSpaceShrink(true);
 
 				xgame::MsgExtendPlayer::__dt((int*)&stopGameTimerMessage);
 			}
