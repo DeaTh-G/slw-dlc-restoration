@@ -83,7 +83,7 @@ namespace app
             if (!EffectData.size())
                 return false;
 
-            LocusData data = EffectData.back();
+            LocusData data = EffectData.at(20);
             *locus = data;
 
             return true;

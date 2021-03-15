@@ -94,7 +94,7 @@ namespace app
 			math::Vector3Add(&posDifference, &locusData.Position, &posDifference);
 
 			fnd::GOCTransform::SetLocalTranslation(gocTransform, &posDifference);
-			
+
 			Time += updateInfo.deltaTime;
 			Frame += 1;
 		}
