@@ -212,7 +212,11 @@ namespace app
 			EggManager* eggManager = EggManager::GetService(gameDocument);
 			if (!eggManager)
 				return;
-			field_33C = eggManager->Eggs.size();
+
+			if (!PlayerNo)
+				field_33C = eggManager->EggsP1.size();
+			else
+				field_33C = eggManager->EggsP2.size();
 			bool isEggStored = eggManager->AddEgg(this);
 
 			fnd::GOComponent::BeginSetup(this);

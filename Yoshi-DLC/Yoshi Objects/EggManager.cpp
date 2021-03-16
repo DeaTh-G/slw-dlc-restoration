@@ -2,12 +2,35 @@
 
 char app::EggManager::SubSpaceCount(int playerNo)
 {
-    for (app::ObjEgg* egg : Eggs)
-        if (playerNo == egg->PlayerNo)
+    if (!playerNo)
+        for (app::ObjEgg* egg : EggsP1)
+            egg->SubSpaceOffset();
+    else
+        for (app::ObjEgg* egg : EggsP2)
             egg->SubSpaceOffset();
 
     IsSpaceShrink |= 4;
     return IsSpaceShrink;
+}
+
+bool app::EggManager::AddEgg(ObjEgg* egg)
+{
+    if (!egg->PlayerNo)
+    {
+        if (EggsP1.size() >= 0xC)
+            return false;
+
+        EggsP1.push_back(egg);
+        return true;
+    }
+    else
+    {
+        if (EggsP2.size() >= 0xC)
+            return false;
+
+        EggsP2.push_back(egg);
+        return true;
+    }
 }
 
 int app::EggManager::GetTargetLocusIndex(int index, char playerNo)
@@ -18,16 +41,27 @@ int app::EggManager::GetTargetLocusIndex(int index, char playerNo)
     if (!playerInfo)
         return 0;
 
-    for (size_t i = 0; i <= index; i++)
-        result += Eggs.at(i)->SpaceCount;
+    if (!playerNo)
+    {
+        for (size_t i = 0; i <= index; i++)
+            result += EggsP1.at(i)->SpaceCount;
+    }
+    else
+    {
+        for (size_t i = 0; i <= index; i++)
+            result += EggsP2.at(i)->SpaceCount;
+    }
 
     return result;
 }
 
 char app::EggManager::AddSpaceCount(int playerNo)
 {
-    for (app::ObjEgg* egg : Eggs)
-        if (playerNo == egg->PlayerNo)
+    if (!playerNo)
+        for (app::ObjEgg* egg : EggsP1)
+            egg->AddSpaceOffset();
+    else
+        for (app::ObjEgg* egg : EggsP2)
             egg->AddSpaceOffset();
 
     IsSpaceShrink |= 4;
