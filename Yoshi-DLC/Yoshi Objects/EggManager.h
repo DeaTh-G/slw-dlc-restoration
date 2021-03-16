@@ -25,14 +25,12 @@ namespace app
         char FlowerCount{};
         INSERT_PADDING(2);
 
-        EggManager()
-        {
-            // TODO: CHECK IF CRASH
-            //Locus.pAllocator = (*(csl::fnd::IAllocator**)ASLR(0x00FD3FC4) + 3);
-        }
+        EggManager() {}
 
     private:
         static void* staticClass() { return (void*)ASLR(0x00FEE764); }
+
+        void DoCheckReleaseAllEgg(int playerNo);
 
         bool IsLocusDataInGroundToAir(int playerNo)
         {
@@ -360,6 +358,8 @@ namespace app
             UpdateLocusPos(updateInfo, 1);
             UpdateEggSpace(0);
             UpdateEggSpace(1);
+            DoCheckReleaseAllEgg(0);
+            DoCheckReleaseAllEgg(1);
         }
     };
     

@@ -61,7 +61,7 @@ namespace app
 			}
 		}
 
-		void UpdateRotation()
+		void UpdateRotation(csl::math::Quaternion* rotation, int playerNo)
 		{
 
 		}
@@ -95,7 +95,7 @@ namespace app
 			fnd::GOCTransform::SetLocalTranslation(gocTransform, &posDifference);
 			
 			/* TODO */
-			UpdateRotation();
+			UpdateRotation(&locusData.Rotation, PlayerNo);
 			UpdateSlippery();
 
 			Time += updateInfo.deltaTime;
@@ -128,7 +128,7 @@ namespace app
 			fnd::GOCTransform::SetLocalTranslation(gocTransform, &locusData.Position);
 
 			/* TODO */
-			UpdateRotation();
+			UpdateRotation(&locusData.Rotation, PlayerNo);
 			UpdateSlippery();
 
 			Frame++;
@@ -152,7 +152,7 @@ namespace app
 			fnd::GOCTransform::SetLocalTranslation(gocTransform, &locusData.Position);
 
 			/* TODO */
-			UpdateRotation();
+			UpdateRotation(&locusData.Rotation, PlayerNo);
 			UpdateSlippery();
 		}
 
@@ -348,6 +348,8 @@ namespace app
 			SpaceCount += 1;
 			return true;
 		}
+
+		void StartDrop() { State = STATE_DROP; }
 	};
 }
 

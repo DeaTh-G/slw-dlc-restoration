@@ -55,6 +55,39 @@ int app::EggManager::GetTargetLocusIndex(int index, char playerNo)
     return result;
 }
 
+void app::EggManager::DoCheckReleaseAllEgg(int playerNo)
+{
+    int* playerInfo = ObjUtil::GetPlayerInformation(Document, playerNo);
+    if (!playerInfo)
+        return;
+
+    bool isDamaged = *((char*)playerInfo + 0x172);
+    if (isDamaged)
+    {
+        if (IsSpaceShrink & 8)
+            return;
+
+        if (!playerNo)
+        {
+            for (ObjEgg* egg : EggsP1)
+                egg->StartDrop();
+            EggsP1.clear();
+        }
+        else
+        {
+            for (ObjEgg* egg : EggsP2)
+                egg->StartDrop();
+            EggsP2.clear();
+        }
+
+        IsSpaceShrink |= 8;
+    }
+    else
+    {
+        IsSpaceShrink &= ~8;
+    }
+}
+
 char app::EggManager::AddSpaceCount(int playerNo)
 {
     if (!playerNo)
