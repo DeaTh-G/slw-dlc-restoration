@@ -61,7 +61,7 @@ namespace app
             }
         }
 
-        void UpdateRotation(csl::math::Quaternion* rotation, int playerNo)
+        void UpdateRotation(csl::math::Quaternion* rotation, const fnd::SUpdateInfo updateInfo, int playerNo)
         {
             csl::math::Quaternion normalizedRotation{};
             csl::math::Quaternion normalizedPlayerRotation{};
@@ -78,7 +78,7 @@ namespace app
                 return;
 
             csl::math::Quaternion objectRotation = GetRotationFromMatrix((csl::math::Matrix34*)(gocTransform + 0x44));
-            if (DoRotate > 0)
+            if (RotationTime > 0)
             {
                 float interpolationAmount = 1 - (RotationTime / 0.3f);
                 math::Clamp(interpolationAmount, 0, 1);
@@ -86,13 +86,62 @@ namespace app
                 Eigen::Quaternionf nR(normalizedRotation.X, normalizedRotation.Y, normalizedRotation.Z, normalizedRotation.W);
                 oR.slerp(interpolationAmount, nR);
                 normalizedRotation = csl::math::Quaternion(oR.x(), oR.y(), oR.z(), oR.w());
+                RotationTime -= updateInfo.deltaTime;
             }
 
             fnd::GOCTransform::SetLocalRotation(gocTransform, &normalizedRotation);
         }
 
-        void UpdateSlippery()
+        void SlipperyInterpolate(float a1, float a2, float a3, float a4)
         {
+            if ((field_360 / (a1 * 0.5)) > 1)
+                field_374 &= ~2;
+
+            ScaleX = csl::math::Lerp(ScaleX, a2, field_360 / (a1 * 0.5));
+
+            ScaleY = csl::math::Lerp(ScaleY, a3, field_360 / (a1 * 0.5));
+
+            ScaleZ = csl::math::Lerp(ScaleZ, a4, field_360 / (a1 * 0.5));
+        }
+
+        void UpdateSlippery(bool isInAir, bool a3, const fnd::SUpdateInfo updateInfo)
+        {
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+            if (!gocVisual)
+                return;
+
+            int type = 2;
+            if (!isInAir)
+                type = !a3;
+
+            if (SlipperyType != type)
+            {
+                field_374 |= 2;
+                field_360 = 0;
+                SlipperyType = 0;
+            }
+
+            if (!SlipperyType)
+            {
+                float multiplier = 0.18f;
+                if (field_374 & 1)
+                    multiplier = 0.1f;
+            
+                field_360 += updateInfo.deltaTime;
+                float time = field_360 + ((multiplier * 0.25f) * Index);
+                time = csl::math::Max(time, 0);
+                float ratio = egg::CalcSlipperyRatio(time, multiplier);
+                if (ratio >= 0)
+                {
+                    if ((field_374 & 2))
+                    {
+                        SlipperyInterpolate(multiplier, field_374, (0.05f * ratio) + 1, -((0.13f * ratio) - 1));
+                        csl::math::Vector3 scale { ScaleY, ScaleZ, 1 };
+                        fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
+                        return;
+                    }
+                }
+            }
         }
 
         void StateFirstToLocus(const fnd::SUpdateInfo& updateInfo)
@@ -119,8 +168,8 @@ namespace app
             fnd::GOCTransform::SetLocalTranslation(gocTransform, &posDifference);
             
             /* TODO */
-            UpdateRotation(&locusData.Rotation, PlayerNo);
-            UpdateSlippery();
+            UpdateRotation(&locusData.Rotation, updateInfo, PlayerNo);
+            UpdateSlippery(locusData.IsInAir, 1, updateInfo);
 
             Time += updateInfo.deltaTime;
             Frame++;
@@ -132,7 +181,7 @@ namespace app
             }
         }
 
-        void StateToIndexLocus()
+        void StateToIndexLocus(const fnd::SUpdateInfo& updateInfo)
         {
             EggManager::LocusData locusData{};
 
@@ -144,7 +193,7 @@ namespace app
             if (!gocTransform)
                 return;
 
-            int locusIndex = eggManager->GetTargetLocusIndex(field_33C, PlayerNo);
+            int locusIndex = eggManager->GetTargetLocusIndex(Index, PlayerNo);
             if (locusIndex < Frame)
                 Frame = locusIndex;
 
@@ -152,15 +201,15 @@ namespace app
             fnd::GOCTransform::SetLocalTranslation(gocTransform, &locusData.Position);
 
             /* TODO */
-            UpdateRotation(&locusData.Rotation, PlayerNo);
-            UpdateSlippery();
+            UpdateRotation(&locusData.Rotation, updateInfo, PlayerNo);
+            UpdateSlippery(locusData.IsInAir, 1, updateInfo);
 
             Frame++;
             if (locusIndex < Frame)
                 State = STATE_MOVE_INDEX_LOCUS;
         }
 
-        void StateMoveIndexLocus()
+        void StateMoveIndexLocus(const fnd::SUpdateInfo& updateInfo)
         {
             EggManager::LocusData locusData{};
 
@@ -172,12 +221,12 @@ namespace app
             if (!gocTransform)
                 return;
 
-            eggManager->GetTargetData(&locusData, field_33C, false, nullptr, PlayerNo);
+            eggManager->GetTargetData(&locusData, Index, false, nullptr, PlayerNo);
             fnd::GOCTransform::SetLocalTranslation(gocTransform, &locusData.Position);
 
             /* TODO */
-            UpdateRotation(&locusData.Rotation, PlayerNo);
-            UpdateSlippery();
+            UpdateRotation(&locusData.Rotation, updateInfo, PlayerNo);
+            UpdateSlippery(locusData.IsInAir, 0, updateInfo);
         }
 
         void StateDrop()
@@ -231,7 +280,7 @@ namespace app
         INSERT_PADDING(0x14); // TinyFsm
         EggCInfo* CInfo = new EggCInfo();
         int ModelType{};
-        int field_33C{};
+        int Index = -1;
         int SpaceCount = 10;
         int Frame{};
         float RotationTime{};
@@ -240,13 +289,12 @@ namespace app
         INSERT_PADDING(2);
         csl::math::Vector3 DropPosition {0, 34.732917f, 35.966991f };
         float field_360{};
-        int ScaleX{};
-        int ScaleY{};
-        int ScaleZ{};
-        int field_370{};
+        float ScaleX = 1;
+        float ScaleY = 1;
+        float ScaleZ = 1;
+        int SlipperyType = 1;
         int field_374{};
-        int field_378{};
-        int field_37C{};
+        INSERT_PADDING(8);
 
         ObjEgg(GameDocument& gameDocument, EggCInfo* cInfo)
         {
@@ -268,9 +316,9 @@ namespace app
                 return;
 
             if (!PlayerNo)
-                field_33C = eggManager->EggsP1.size();
+                Index = eggManager->EggsP1.size();
             else
-                field_33C = eggManager->EggsP2.size();
+                Index = eggManager->EggsP2.size();
             bool isEggStored = eggManager->AddEgg(this);
 
             fnd::GOComponent::BeginSetup(this);
@@ -295,7 +343,7 @@ namespace app
                 fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
                 visualDescriptor.Model = info->Models[ModelType];
                 visualDescriptor.Animation |= 0x400000;
-                visualDescriptor.ZIndex = (-0.2 * field_33C) - 2;
+                visualDescriptor.ZIndex = (-0.2 * Index) - 2;
                 fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
 
                 Eigen::Quaternion<float> q;
@@ -370,10 +418,10 @@ namespace app
                 StateFirstToLocus(updateInfo);
                 
             if (State == STATE_TO_INDEX_LOCUS)
-                StateToIndexLocus();
+                StateToIndexLocus(updateInfo);
 
             if (State == STATE_MOVE_INDEX_LOCUS)
-                StateMoveIndexLocus();
+                StateMoveIndexLocus(updateInfo);
 
             if (State == STATE_DROP)
                 StateDrop();

@@ -6,6 +6,7 @@
 
 // csl
 #include "csl/fnd.h"
+#include "csl/math/math.h"
 #include "csl/math/Plane.h"
 #include "csl/math/Vector3.h"
 #include "csl/math/Matrix34.h"
