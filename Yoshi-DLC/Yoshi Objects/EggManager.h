@@ -163,6 +163,12 @@ namespace app
             }
         }
         
+        void GetTargetData(LocusData* locus, int index, bool a3, float* magnitude, char playerNo)
+        {
+            int dataIndex = GetTargetLocusIndex(index, playerNo);
+            GetTargetDataFromLocusIndex(locus, dataIndex, a3, magnitude, playerNo);
+        }
+
         void SetForceSpaceShrink(bool isShrink)
         {
             if (isShrink)

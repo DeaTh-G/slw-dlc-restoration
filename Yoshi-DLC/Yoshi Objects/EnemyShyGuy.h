@@ -400,7 +400,7 @@ namespace app
                     else
                     {
                         game::GOCSound::Play3D(gocSound, deviceTag, "enm_heyho_foot", 0);
-                        game::GOCSound::Play3D(gocSound, deviceTag, "enm_heyho_voice_hey", 0);
+                        game::GOCSound::Play3D(gocSound, deviceTag, "enm_heyho_voice_ho", 0);
                     }
                 }
             }

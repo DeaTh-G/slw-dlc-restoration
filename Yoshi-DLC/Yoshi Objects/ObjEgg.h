@@ -121,17 +121,39 @@ namespace app
 				return;
 
 			int locusIndex = eggManager->GetTargetLocusIndex(field_33C, PlayerNo);
-			eggManager->GetTargetDataFromLocusIndex(&locusData, locusIndex, false, nullptr, PlayerNo);
+			if (locusIndex < Frame)
+				Frame = locusIndex;
+
+			eggManager->GetTargetDataFromLocusIndex(&locusData, Frame, false, nullptr, PlayerNo);
 			fnd::GOCTransform::SetLocalTranslation(gocTransform, &locusData.Position);
 
 			/* TODO */
 			UpdateRotation();
 			UpdateSlippery();
+
+			Frame++;
+			if (locusIndex < Frame)
+				State = STATE_MOVE_INDEX_LOCUS;
 		}
 
 		void StateMoveIndexLocus()
 		{
+			EggManager::LocusData locusData{};
 
+			EggManager* eggManager = EggManager::GetService((GameDocument*)field_24[1]);
+			if (!eggManager)
+				return;
+
+			int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+			if (!gocTransform)
+				return;
+
+			eggManager->GetTargetData(&locusData, field_33C, false, nullptr, PlayerNo);
+			fnd::GOCTransform::SetLocalTranslation(gocTransform, &locusData.Position);
+
+			/* TODO */
+			UpdateRotation();
+			UpdateSlippery();
 		}
 
 		void StateDrop()
