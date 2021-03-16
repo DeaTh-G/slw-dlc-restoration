@@ -16,8 +16,8 @@ namespace app
         };
 
         std::vector<ObjEgg*> Eggs;
-        boost::circular_buffer<LocusData> EffectData;
-        INSERT_PADDING(4);
+        boost::circular_buffer<LocusData> GhostDataP1;
+        boost::circular_buffer<LocusData> GhostDataP2;
         float field_64{};
         char IsSpaceShrink{};
         char FlowerCount{};
@@ -34,38 +34,68 @@ namespace app
 
         void UpdateLocusPos()
         {
-            int* playerInfo = ObjUtil::GetPlayerInformation(Document, 0);
-            if (!playerInfo)
+            int* p1_info = ObjUtil::GetPlayerInformation(Document, 0);
+            if (!p1_info)
                 return;
 
-            if (EffectData.size() <= 1)
+            if (GhostDataP1.size() <= 1)
             {
-                LocusData data { *(csl::math::Vector3*)(playerInfo + 4),
-                    *(csl::math::Quaternion*)(playerInfo + 8), *(playerInfo + 0x51) ^ 1 };
+                LocusData data { *(csl::math::Vector3*)(p1_info + 4),
+                    *(csl::math::Quaternion*)(p1_info + 8), *(p1_info + 0x51) ^ 1 };
 
-                EffectData.push_front(data);
+                GhostDataP1.push_front(data);
             }
 
-            LocusData data{ *(csl::math::Vector3*)(playerInfo + 4),
-                *(csl::math::Quaternion*)(playerInfo + 8), 0 };
+            LocusData data{ *(csl::math::Vector3*)(p1_info + 4),
+                *(csl::math::Quaternion*)(p1_info + 8), 0 };
 
-            EffectData.push_front(data);
+            GhostDataP1.push_front(data);
+
+            int* p2_info = ObjUtil::GetPlayerInformation(Document, 1);
+            if (!p2_info)
+                return;
+
+            if (GhostDataP2.size() <= 1)
+            {
+                LocusData data{ *(csl::math::Vector3*)(p2_info + 4),
+                    *(csl::math::Quaternion*)(p2_info + 8), *(p2_info + 0x51) ^ 1 };
+
+                GhostDataP2.push_front(data);
+            }
+
+
+            data = LocusData { *(csl::math::Vector3*)(p2_info + 4),
+                *(csl::math::Quaternion*)(p2_info + 8), 0 };
+
+            GhostDataP2.push_front(data);
         }
 
-        char SubSpaceCount();
+        char AddSpaceCount(int playerNo);
+        char SubSpaceCount(int playerNo);
 
         void UpdateEggSpace()
         {
             IsSpaceShrink &= ~4;
-            int* playerInfo = ObjUtil::GetPlayerInformation(Document, 0);
-            if (playerInfo && *(char*)(playerInfo + 0x51))
-                SubSpaceCount();
+            int* p1_info = ObjUtil::GetPlayerInformation(Document, 0);
+            int* p2_info = ObjUtil::GetPlayerInformation(Document, 1);
+
+            /*if (p1_info && *(char*)(p1_info + 0x52))
+                SubSpaceCount(0);
+
+            if (p2_info && *(char*)(p2_info + 0x52))
+                SubSpaceCount(1);
 
             if (IsSpaceShrink & 1)
-                SubSpaceCount();
+            {
+                SubSpaceCount(0);
+                SubSpaceCount(1);
+            }*/
 
             if (field_64 > 0)
-                AddSpaceCount();
+            {
+                AddSpaceCount(0);
+                AddSpaceCount(1);
+            }
         }
 
     public:
@@ -78,23 +108,44 @@ namespace app
             return true;
         }
 
-        bool CheckAccessLocusData(LocusData* locus)
+        bool CheckAccessLocusData(LocusData* locus, int i, int playerNo)
         {
-            if (!EffectData.size())
-                return false;
+            if (!playerNo)
+            {
+                if (!GhostDataP1.size())
+                    return false;
 
-            LocusData data = EffectData.at(20);
-            *locus = data;
+                if (i < GhostDataP1.size())
+                    *locus = GhostDataP1.at(i);
+                else
+                    *locus = GhostDataP1.back();
+            }
+            else
+            {
+                if (!GhostDataP2.size())
+                    return false;
+
+                if (i < GhostDataP2.size())
+                    *locus = GhostDataP2.at(i);
+                else
+                    *locus = GhostDataP2.back();
+            }
 
             return true;
         }
 
-        void GetTargetDataFromLocusIndex(LocusData* locus, bool a2, float* magnitude)
+        int GetTargetLocusIndex(int index, char playerNo);
+
+        void GetTargetDataFromLocusIndex(LocusData* locus, int i, bool a3, float* magnitude, char playerNo)
         {
             LocusData data1{};
             LocusData data2{};
 
-            if (!CheckAccessLocusData(&data1) || a2 || !CheckAccessLocusData(&data2))
+            int* playerInfo = ObjUtil::GetPlayerInformation(Document, playerNo);
+            if (!playerInfo)
+                return;
+
+            if (!CheckAccessLocusData(&data1, i, playerNo) || a3 || !CheckAccessLocusData(&data2, i, playerNo))
                 return;
 
             *locus = data1;
@@ -106,7 +157,7 @@ namespace app
 
             if (localMagnitude > 0.3f && (field_64 > 0 || (IsSpaceShrink >> 2) & 1))
             {
-                a2 = true;
+                a3 = true;
                 if (magnitude)
                     *magnitude = localMagnitude;
             }
@@ -120,8 +171,6 @@ namespace app
                 IsSpaceShrink &= ~2;
         }
 
-        char AddSpaceCount();
-
         void TakeYoshiSpecialFlower(char flowerID) { FlowerCount |= 1 << flowerID; }
         unsigned int IsYoshiSpecialFlowerTaked(char flowerID) { return (FlowerCount >> flowerID) & 1; }
 
@@ -134,8 +183,12 @@ namespace app
 
         void StartGame(bool a1) override
         {
-            EffectData.clear();
-            EffectData.set_capacity(egg::GetMaxLocusPositionNum());
+            GhostDataP1.clear();
+            GhostDataP1.set_capacity(egg::GetMaxLocusPositionNum());
+
+            GhostDataP2.clear();
+            GhostDataP2.set_capacity(egg::GetMaxLocusPositionNum());
+
             Eggs.clear();
         
             field_64 = 0;

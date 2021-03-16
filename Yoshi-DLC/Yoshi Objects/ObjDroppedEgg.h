@@ -40,6 +40,7 @@ namespace app
             if (gocTransform)
                 cInfo.Transform = (csl::math::Matrix34*)(gocTransform + 0x44);
 
+            cInfo.PlayerNo = ObjUtil::GetPlayerNo(field_24[1], message.ActorID);
             cInfo.ModelType = ModelType;
             egg::CreateEgg(document, &cInfo);
 

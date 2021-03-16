@@ -16,7 +16,7 @@ namespace app
 		{
 			xgame::MsgDlcChangeEggRotation msg{};
 
-			fnd::CActor::SendMessageImm(&field_04[1], message.field_20, &msg);
+			fnd::CActor::SendMessageImm(&field_04[1], message.ActorID, &msg);
 			xgame::MsgExtendPlayer::__dt(&msg);
 		}
 
@@ -24,7 +24,7 @@ namespace app
 		{
 			xgame::MsgDlcChangeEggRotation msg{};
 
-			fnd::CActor::SendMessageImm(&field_04[1], message.field_20, &msg);
+			fnd::CActor::SendMessageImm(&field_04[1], message.ActorID, &msg);
 			xgame::MsgExtendPlayer::__dt(&msg);
 		}
 

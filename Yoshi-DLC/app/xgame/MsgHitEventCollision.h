@@ -9,14 +9,14 @@ namespace app
         public:
             int field_18;
             int field_1C;
-            int field_20;
+            int ActorID;
 
             MsgHitEventCollision() : MessageNew()
             {
                 Type = fnd::PROC_MSG_HIT_EVENT_COLLISION;
                 field_18 = 0;
                 field_1C = 0;
-                field_20 = 0;
+                ActorID = 0;
             }
         };
     }

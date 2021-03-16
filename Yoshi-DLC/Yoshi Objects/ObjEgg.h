@@ -85,23 +85,48 @@ namespace app
 			if (!gocTransform)
 				return;
 
-			eggManager->GetTargetDataFromLocusIndex(&locusData, 0, nullptr);
+			eggManager->GetTargetDataFromLocusIndex(&locusData, 0, false, nullptr, PlayerNo);
 			Time = math::Clamp(Time, 0, 1);
 				
 			math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
 			math::Vector3Subtract(&locusData.Position, &translation, &posDifference);
 			math::Vector3MultiplyByScalar(&posDifference, Time);
-			math::Vector3Add(&posDifference, &locusData.Position, &posDifference);
-
+			math::Vector3Add(&posDifference, &translation, &posDifference);
 			fnd::GOCTransform::SetLocalTranslation(gocTransform, &posDifference);
+			
+			/* TODO */
+			UpdateRotation();
+			UpdateSlippery();
 
 			Time += updateInfo.deltaTime;
-			Frame += 1;
+			Frame++;
+
+			if (Frame == 60)
+			{
+				Frame = 0;
+				State = STATE_TO_INDEX_LOCUS;
+			}
 		}
 
 		void StateToIndexLocus()
 		{
+			EggManager::LocusData locusData{};
 
+			EggManager* eggManager = EggManager::GetService((GameDocument*)field_24[1]);
+			if (!eggManager)
+				return;
+
+			int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+			if (!gocTransform)
+				return;
+
+			int locusIndex = eggManager->GetTargetLocusIndex(field_33C, PlayerNo);
+			eggManager->GetTargetDataFromLocusIndex(&locusData, locusIndex, false, nullptr, PlayerNo);
+			fnd::GOCTransform::SetLocalTranslation(gocTransform, &locusData.Position);
+
+			/* TODO */
+			UpdateRotation();
+			UpdateSlippery();
 		}
 
 		void StateMoveIndexLocus()
@@ -124,32 +149,34 @@ namespace app
 
 		}
 
+	public:
 		EggState State{};
 		float Time{};
 		INSERT_PADDING(0x14); // TinyFsm
 		EggCInfo* CInfo = new EggCInfo();
 		int ModelType{};
 		int field_33C{};
-		int SpaceCount{};
+		int SpaceCount = 10;
 		int Frame{};
 		float field_348{};
 		bool field_34C{};
-		INSERT_PADDING(3);
+		char PlayerNo{};
+		INSERT_PADDING(2);
 		csl::math::Vector3 field_350{};
 		int field_360{};
-		int field_364{};
-		int field_368{};
-		int field_36C{};
+		int ScaleX{};
+		int ScaleY{};
+		int ScaleZ{};
 		int field_370{};
 		int field_374{};
 		int field_378{};
 		int field_37C{};
 
-	public:
 		ObjEgg(GameDocument& gameDocument, EggCInfo* cInfo)
 		{
 			CInfo = cInfo;
 			ModelType = cInfo->ModelType;
+			PlayerNo = cInfo->PlayerNo;
 		}
 
 		void AddCallback(GameDocument* gameDocument) override
@@ -163,6 +190,7 @@ namespace app
 			EggManager* eggManager = EggManager::GetService(gameDocument);
 			if (!eggManager)
 				return;
+			field_33C = eggManager->Eggs.size();
 			bool isEggStored = eggManager->AddEgg(this);
 
 			fnd::GOComponent::BeginSetup(this);
