@@ -209,6 +209,8 @@ namespace app
 						}
 						else
 						{
+							// TODO: FIX
+							// Is 8 in multiplayer
 							if (*((int*)(this + 0x3A0)) == 5)
 							{
 								xgame::MsgResumeGameTimer resumeGameTimerMessage;

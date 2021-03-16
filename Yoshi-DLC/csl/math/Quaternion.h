@@ -30,5 +30,7 @@ namespace csl
 				W = w;
 			}
 		};
+
+		inline static FUNCTION_PTR(Quaternion*, __cdecl, QuaternionNormalize, ASLR(0x00963EB0), Quaternion* result, Quaternion* base);
 	}
 }
