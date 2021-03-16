@@ -46,7 +46,7 @@ namespace app
             {
                 if (!playerNo)
                 {
-                    for (size_t i = 0; i < EggsP1.size() * 10; i++)
+                    for (size_t i = 0; i < EggsP1.size() * 10 + 1; i++)
                     {
                         if (CheckAccessLocusData(&data, i, playerNo))
                             if (data.IsInAir && flag)
@@ -57,7 +57,7 @@ namespace app
                 }
                 else
                 {
-                    for (size_t i = 0; i < EggsP2.size() * 10; i++)
+                    for (size_t i = 0; i < EggsP2.size() * 10 + 1; i++)
                     {
                         if (CheckAccessLocusData(&data, i, playerNo))
                             if (data.IsInAir && flag)
@@ -177,7 +177,7 @@ namespace app
                         return;
                     }
 
-                    if (IsLocusDataInGroundToAir(0))
+                    if (IsLocusDataInGroundToAir(1))
                     {
                         LocusData data{ *(csl::math::Vector3*)(p2_info + 4),
                             *(csl::math::Quaternion*)(p2_info + 8), *((char*)p2_info + 0x144) ^ 1 };
