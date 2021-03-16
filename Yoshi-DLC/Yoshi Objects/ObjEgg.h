@@ -158,7 +158,37 @@ namespace app
 
 		void StateDrop()
 		{
+			int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+			int* gocGravity = GameObject::GetGOC(this, GOCGravityString);
+			if (!gocTransform && !gocGravity)
+			{
+				Kill(this);
+				return;
+			}
 
+			csl::math::Vector3 gravityDirection { *game::GOCGravity::GetGravityDirection(gocGravity) };
+			math::Vector3Scale(&gravityDirection, 200, &gravityDirection);
+			math::Vector3Scale(&gravityDirection, Time, &gravityDirection);
+			math::Vector3Add(&DropPosition, &gravityDirection, &DropPosition);
+			csl::math::Vector3 dropDistance{};
+			math::Vector3Scale(&DropPosition, Time, &dropDistance);
+		
+			csl::math::Vector3 eggPosition{};
+			math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &eggPosition);
+			math::Vector3Add(&eggPosition, &dropDistance, &eggPosition);
+			fnd::GOCTransform::SetLocalTranslation(gocTransform, &eggPosition);
+			if (!(Frame % 5))
+			{
+				int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+				if (gocVisual)
+				{
+					bool isVisible = fnd::GOCVisual::IsVisible(gocVisual);
+					fnd::GOCVisual::SetVisible(gocVisual, isVisible ^ 1);
+				}
+			}
+			Frame++;
+			if (Frame > 300)
+				Kill(this);
 		}
 
 		void StateMoveToExtrication()
@@ -184,7 +214,7 @@ namespace app
 		bool field_34C{};
 		char PlayerNo{};
 		INSERT_PADDING(2);
-		csl::math::Vector3 field_350{};
+		csl::math::Vector3 DropPosition {0, 34.732917f, 35.966991f };
 		int field_360{};
 		int ScaleX{};
 		int ScaleY{};

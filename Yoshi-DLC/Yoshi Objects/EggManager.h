@@ -30,7 +30,7 @@ namespace app
     private:
         static void* staticClass() { return (void*)ASLR(0x00FEE764); }
 
-        void DoCheckReleaseAllEgg(int playerNo);
+        void DoCheckReleaseAllEgg(const fnd::SUpdateInfo updateInfom, int playerNo);
 
         bool IsLocusDataInGroundToAir(int playerNo)
         {
@@ -358,8 +358,8 @@ namespace app
             UpdateLocusPos(updateInfo, 1);
             UpdateEggSpace(0);
             UpdateEggSpace(1);
-            DoCheckReleaseAllEgg(0);
-            DoCheckReleaseAllEgg(1);
+            DoCheckReleaseAllEgg(updateInfo, 0);
+            DoCheckReleaseAllEgg(updateInfo, 1);
         }
     };
     

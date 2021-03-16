@@ -67,6 +67,7 @@
 #include "app/game/GOCMotorRotate.h"
 #include "app/game/GOCShadowSimple.h"
 #include "app/game/GOCSound.h"
+#include "app/game/GOCVisual.h"
 #include "app/game/GOCVisualModel.h"
 #include "app/game/GOCMovement.h"
 #include "app/game/MoveStraight.h"

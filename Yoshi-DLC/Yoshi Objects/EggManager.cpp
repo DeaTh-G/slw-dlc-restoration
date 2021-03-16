@@ -55,7 +55,7 @@ int app::EggManager::GetTargetLocusIndex(int index, char playerNo)
     return result;
 }
 
-void app::EggManager::DoCheckReleaseAllEgg(int playerNo)
+void app::EggManager::DoCheckReleaseAllEgg(const fnd::SUpdateInfo updateInfo, int playerNo)
 {
     int* playerInfo = ObjUtil::GetPlayerInformation(Document, playerNo);
     if (!playerInfo)
@@ -70,13 +70,22 @@ void app::EggManager::DoCheckReleaseAllEgg(int playerNo)
         if (!playerNo)
         {
             for (ObjEgg* egg : EggsP1)
+            {
                 egg->StartDrop();
+                egg->Time = updateInfo.deltaTime;
+                egg->Frame = 0;
+            }
+            
             EggsP1.clear();
         }
         else
         {
             for (ObjEgg* egg : EggsP2)
+            {
                 egg->StartDrop();
+                egg->Time = updateInfo.deltaTime;
+                egg->Frame = 0;
+            }
             EggsP2.clear();
         }
 
