@@ -87,8 +87,11 @@
 #include "app/math/Transform.h"
 
 #include "app/Player/CPhysics.h"
+#include "app/Player/StateUtil.h"
+#include "app/Player/CPlayer.h"
 
 #include "app/xgame.h"
+#include "app/xgame/Blackboard.h"
 #include "app/xgame/MsgCatchEndPlayer.h"
 #include "app/xgame/MsgCatchPlayer.h"
 #include "app/xgame/MsgDamage.h"

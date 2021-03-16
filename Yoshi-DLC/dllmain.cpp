@@ -139,6 +139,7 @@ void Initialize()
     app::CSharedObjInfo::Initialize();
     app::CObjDroppedRing::ProcMsgHitEventCollision();
     app::EnemyBlowOffObject::OnDead();
+    app::Player::CPlayer::UpdatePlayerInformation();
 }
 
 extern "C"

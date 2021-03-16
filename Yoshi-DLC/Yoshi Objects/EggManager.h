@@ -11,8 +11,8 @@ namespace app
         {
             csl::math::Vector3 Position;
             csl::math::Quaternion Rotation;
-            char field_20;
-            INSERT_PADDING(13);
+            char IsInAir;
+            INSERT_PADDING(15);
         };
 
         std::vector<ObjEgg*> Eggs;
@@ -32,42 +32,84 @@ namespace app
     private:
         static void* staticClass() { return (void*)ASLR(0x00FEE764); }
 
-        void UpdateLocusPos()
+        bool IsLocusDataInGroundToAir(int playerNo)
         {
-            int* p1_info = ObjUtil::GetPlayerInformation(Document, 0);
-            if (!p1_info)
+            LocusData data{};
+            bool IsInAir = 0;
+            bool flag = 0;
+
+            int* playerInfo = ObjUtil::GetPlayerInformation(Document, playerNo);
+            if (playerInfo)
+            {
+                for (size_t i = 0; i < Eggs.size() * 10; i++)
+                {
+                    if (CheckAccessLocusData(&data, i, playerNo))
+                        if (data.IsInAir && flag)
+                            IsInAir = true;
+                        else
+                            flag = 1;
+                }
+            }
+
+            return IsInAir;
+        }
+
+        void UpdateLocusPos(int playerNo, const fnd::SUpdateInfo& updateInfo, boost::circular_buffer<LocusData> ghostBuffer)
+        {
+            int* playerInfo = ObjUtil::GetPlayerInformation(Document, playerNo);
+            if (!playerInfo)
                 return;
 
             if (GhostDataP1.size() <= 1)
             {
-                LocusData data { *(csl::math::Vector3*)(p1_info + 4),
-                    *(csl::math::Quaternion*)(p1_info + 8), *(p1_info + 0x51) ^ 1 };
+                LocusData data { *(csl::math::Vector3*)(playerInfo + 4),
+                    *(csl::math::Quaternion*)(playerInfo + 8), *(char*)(playerInfo + 0x51) ^ 1 };
 
                 GhostDataP1.push_front(data);
             }
-
-            LocusData data{ *(csl::math::Vector3*)(p1_info + 4),
-                *(csl::math::Quaternion*)(p1_info + 8), 0 };
-
-            GhostDataP1.push_front(data);
-
-            int* p2_info = ObjUtil::GetPlayerInformation(Document, 1);
-            if (!p2_info)
-                return;
-
-            if (GhostDataP2.size() <= 1)
+            else
             {
-                LocusData data{ *(csl::math::Vector3*)(p2_info + 4),
-                    *(csl::math::Quaternion*)(p2_info + 8), *(p2_info + 0x51) ^ 1 };
+                csl::math::Vector3 ghost1Position { GhostDataP1.at(0).Position };
+                csl::math::Vector3 playerPosition { *(csl::math::Vector3*)(playerInfo + 4) };
+                float pos1Magnitude{};
+                math::Vector3Subtract(&playerPosition, &ghost1Position, &playerPosition);
+                math::Vector3SquareMagnitude(&playerPosition, &pos1Magnitude);
 
-                GhostDataP2.push_front(data);
+                csl::math::Vector3 ghost2Position { GhostDataP1.at(1).Position };
+                playerPosition = *(csl::math::Vector3*)(playerInfo + 4);
+                math::Vector3Subtract(&ghost1Position, &ghost2Position, &ghost1Position);
+                float pos2Magnitude{};
+                math::Vector3SquareMagnitude(&ghost1Position, &pos2Magnitude);
+                if (pos1Magnitude >= 0.09f || (pos1Magnitude - pos2Magnitude) > 0.000001f)
+                {
+                    field_64 = 0.3f;
+
+                    LocusData data{ *(csl::math::Vector3*)(playerInfo + 4),
+                        *(csl::math::Quaternion*)(playerInfo + 8), *((char*)playerInfo + 0x144) ^ 1 };
+
+                    GhostDataP1.push_front(data);
+                    return;
+                }
+
+                field_64 -= updateInfo.deltaTime;
+                if (field_64 >= 0)
+                {
+                    LocusData data{ *(csl::math::Vector3*)(playerInfo + 4),
+                        *(csl::math::Quaternion*)(playerInfo + 8), *((char*)playerInfo + 0x144) ^ 1 };
+
+                    GhostDataP1.push_front(data);
+                    return;
+                }
+
+                if (IsLocusDataInGroundToAir(0))
+                {
+                    LocusData data{ *(csl::math::Vector3*)(playerInfo + 4),
+                        *(csl::math::Quaternion*)(playerInfo + 8), *((char*)playerInfo + 0x144) ^ 1 };
+
+                    GhostDataP1.push_front(data);
+                    return;
+                }
             }
-
-
-            data = LocusData { *(csl::math::Vector3*)(p2_info + 4),
-                *(csl::math::Quaternion*)(p2_info + 8), 0 };
-
-            GhostDataP2.push_front(data);
         }
 
         char AddSpaceCount(int playerNo);
@@ -79,22 +121,27 @@ namespace app
             int* p1_info = ObjUtil::GetPlayerInformation(Document, 0);
             int* p2_info = ObjUtil::GetPlayerInformation(Document, 1);
 
-            /*if (p1_info && *(char*)(p1_info + 0x52))
+            if (p1_info && *((char*)p1_info + 0x144) && *((char*)p1_info + 0x145))
+            {
                 SubSpaceCount(0);
+                return;
+            }
 
-            if (p2_info && *(char*)(p2_info + 0x52))
-                SubSpaceCount(1);
+            /*if (p2_info && *(char*)(p2_info + 0x51))
+                SubSpaceCount(1);*/
 
             if (IsSpaceShrink & 1)
             {
                 SubSpaceCount(0);
-                SubSpaceCount(1);
-            }*/
+                return;
+                //SubSpaceCount(1);
+            }
 
             if (field_64 > 0)
             {
                 AddSpaceCount(0);
-                AddSpaceCount(1);
+                return;
+                //AddSpaceCount(1);
             }
         }
 
@@ -153,7 +200,7 @@ namespace app
             csl::math::Vector3 positionDifference{};
             float localMagnitude{};
             math::Vector3Subtract(&data1.Position, &data2.Position, &positionDifference);
-            math::Vector3Magnitude(&positionDifference, &localMagnitude);
+            math::Vector3SquareMagnitude(&positionDifference, &localMagnitude);
 
             if (localMagnitude > 0.3f && (field_64 > 0 || (IsSpaceShrink >> 2) & 1))
             {
@@ -172,9 +219,9 @@ namespace app
         void SetForceSpaceShrink(bool isShrink)
         {
             if (isShrink)
-                IsSpaceShrink |= 2;
+                IsSpaceShrink |= 1;
             else
-                IsSpaceShrink &= ~2;
+                IsSpaceShrink &= ~1;
         }
 
         void TakeYoshiSpecialFlower(char flowerID) { FlowerCount |= 1 << flowerID; }
@@ -204,7 +251,8 @@ namespace app
 
         void Update(const fnd::SUpdateInfo& updateInfo) override
         {
-            UpdateLocusPos();
+            UpdateLocusPos(0, updateInfo, GhostDataP1);
+            //UpdateLocusPos(1, GhostDataP2);
             UpdateEggSpace();
         }
     };
