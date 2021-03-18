@@ -120,6 +120,14 @@ namespace app
             private:
                 int ProcMsgNotifyObjectEvent(EnemyShyGuy* obj, int stateID)
                 {
+                    int* gocAnimation = GameObject::GetGOC((GameObject*)obj, GOCAnimationString);
+                    if (gocAnimation)
+                    {
+                        game::GOCAnimationScript::ChangeAnimation(gocAnimation, "WALK_L");
+                        if ((*(int*)(obj + 0x4C0) & 4) == 4)
+                            game::GOCAnimationScript::ChangeAnimation(gocAnimation, "WALK_R");
+                    }
+
                     int* gocEnemyHsm = GameObject::GetGOC((GameObject*)obj, GOCEnemyHsmString);
                     if (gocEnemyHsm)
                         GOCEnemyHsm::ChangeState(gocEnemyHsm, stateID);
@@ -173,7 +181,21 @@ namespace app
                     return 1;
                 };
                 
-                virtual int Step(EnemyShyGuy* obj, float a2) { return 0; };
+                virtual int Step(EnemyShyGuy* obj, float a2)
+                {
+                    if (!(*(int*)(obj + 0x4C0) & 2))
+                    {
+                        int* gocAnimation = GameObject::GetGOC((GameObject*)obj, GOCAnimationString);
+                        if (gocAnimation)
+                        {
+                            game::GOCAnimationScript::ChangeAnimation(gocAnimation, "IDLE_L");
+                            if ((*(int*)(obj + 0x4C0) & 4) == 4)
+                                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "IDLE_R");
+                        }
+                    }
+
+                    return 1;
+                };
             };
 
             class Turnaround
