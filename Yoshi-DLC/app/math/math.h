@@ -54,7 +54,7 @@ namespace app
 
         static void Vector3SquareMagnitude(Vector3* a, float* length)
         {
-            *length = sqrt(pow(a->X, 2) + pow(a->Y, 2) + pow(a->Z, 2));
+            *length = pow(a->X, 2) + pow(a->Y, 2) + pow(a->Z, 2);
         }
 
         static void Vector3MultiplyByScalar(Vector3* a, float scalar)

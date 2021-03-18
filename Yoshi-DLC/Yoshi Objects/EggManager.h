@@ -180,7 +180,7 @@ namespace app
                     return;
                 }
 
-                if (field_64P1 > 0)
+                if (field_64P2 > 0)
                 {
                     AddSpaceCount(playerNo);
                     return;
