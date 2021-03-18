@@ -272,7 +272,7 @@ namespace app
 
         int GetTargetLocusIndex(int index, char playerNo);
 
-        void GetTargetDataFromLocusIndex(LocusData* locus, int i, bool a3, float* magnitude, char playerNo)
+        void GetTargetDataFromLocusIndex(LocusData* locus, int i, bool* a3, float* magnitude, char playerNo)
         {
             LocusData data1{};
             LocusData data2{};
@@ -281,8 +281,15 @@ namespace app
             if (!playerInfo)
                 return;
 
-            if (!CheckAccessLocusData(&data1, i, playerNo) || a3 || !CheckAccessLocusData(&data2, i, playerNo))
+
+            if (!CheckAccessLocusData(&data1, i, playerNo) || *a3)
+            {
+                if (i - 1 >= 0)
+                    if (!CheckAccessLocusData(&data2, i - 1, playerNo))
+                        return;
+               
                 return;
+            }
 
             *locus = data1;
 
@@ -293,25 +300,25 @@ namespace app
 
             if (!playerNo)
             {
-                if (localMagnitude > 0.3f && (field_64P1 > 0 || (IsSpaceShrink >> 2) & 1))
+                if (localMagnitude > 0.3f && (field_64P1 > 0 || (IsSpaceShrink >> 4) & 1))
                 {
-                    a3 = true;
+                    *a3 = true;
                     if (magnitude)
                         *magnitude = localMagnitude;
                 }
             }
             else
             {
-                if (localMagnitude > 0.3f && (field_64P2 > 0 || (IsSpaceShrink >> 2) & 1))
+                if (localMagnitude > 0.3f && (field_64P2 > 0 || (IsSpaceShrink >> 4) & 1))
                 {
-                    a3 = true;
+                    *a3 = true;
                     if (magnitude)
                         *magnitude = localMagnitude;
                 }
             }
         }
         
-        void GetTargetData(LocusData* locus, int index, bool a3, float* magnitude, char playerNo)
+        void GetTargetData(LocusData* locus, int index, bool* a3, float* magnitude, char playerNo)
         {
             int dataIndex = GetTargetLocusIndex(index, playerNo);
             GetTargetDataFromLocusIndex(locus, dataIndex, a3, magnitude, playerNo);

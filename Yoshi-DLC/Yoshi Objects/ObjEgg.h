@@ -49,10 +49,13 @@ namespace app
     private:
         void ProcMsgDlcChangeEggRotation(xgame::MsgDlcChangeEggRotation& message)
         {
-            if (message.field_18 && !DoRotate)
+            if (message.field_18)
             {
-                DoRotate = true;
-                RotationTime = 0.3f;
+                if (message.field_18 && !DoRotate)
+                {
+                    DoRotate = true;
+                    RotationTime = 0.3f;
+                }
             }
             else if (DoRotate)
             {
@@ -78,6 +81,7 @@ namespace app
                 return;
 
             csl::math::Quaternion objectRotation = GetRotationFromMatrix((csl::math::Matrix34*)(gocTransform + 0x44));
+
             if (RotationTime > 0)
             {
                 float interpolationAmount = 1 - (RotationTime / 0.3f);
@@ -92,16 +96,23 @@ namespace app
             fnd::GOCTransform::SetLocalRotation(gocTransform, &normalizedRotation);
         }
 
-        void SlipperyInterpolate(float a1, float a2, float a3, float a4)
+        void SlipperyInterpolate(float a1, float scalarX, float scalarY, float scalarZ)
         {
-            if ((field_360 / (a1 * 0.5)) > 1)
+            if ((ScaleTime / (a1 * 0.5)) > 1)
                 field_374 &= ~2;
 
-            ScaleX = csl::math::Lerp(ScaleX, a2, field_360 / (a1 * 0.5));
+            ScaleX = csl::math::Lerp(ScaleX, scalarX, ScaleTime / (a1 * 0.5));
 
-            ScaleY = csl::math::Lerp(ScaleY, a3, field_360 / (a1 * 0.5));
+            ScaleY = csl::math::Lerp(ScaleY, scalarY, ScaleTime / (a1 * 0.5));
 
-            ScaleZ = csl::math::Lerp(ScaleZ, a4, field_360 / (a1 * 0.5));
+            ScaleZ = csl::math::Lerp(ScaleZ, scalarZ, ScaleTime / (a1 * 0.5));
+        }
+
+        void SetSlipperyHeightScale(float scalarX, float scalarY, float scalarZ)
+        {
+            ScaleX = scalarX;
+            ScaleY = scalarY;
+            ScaleZ = scalarZ;
         }
 
         void UpdateSlippery(bool isInAir, bool a3, const fnd::SUpdateInfo updateInfo)
@@ -117,31 +128,122 @@ namespace app
             if (SlipperyType != type)
             {
                 field_374 |= 2;
-                field_360 = 0;
-                SlipperyType = 0;
+                SlipperyType = type;
+                field_374 &= ~1;
+                ScaleTime = 0;
             }
+
+            csl::math::Vector3 position{};
+            csl::math::Vector3 scale { 1, 1, 1 };
+            csl::math::Vector3 upVec { 0, 1, 0 };
+            float multiplier = 0.18f;
+            float time{};
 
             if (!SlipperyType)
             {
-                float multiplier = 0.18f;
+                float scalarX = 0;
+                float scalarY = 0.6f;
+                float scalarZ = 0.1f;
+
                 if (field_374 & 1)
-                    multiplier = 0.1f;
-            
-                field_360 += updateInfo.deltaTime;
-                float time = field_360 + ((multiplier * 0.25f) * Index);
-                time = csl::math::Max(time, 0);
-                float ratio = egg::CalcSlipperyRatio(time, multiplier);
-                if (ratio >= 0)
                 {
-                    if ((field_374 & 2))
-                    {
-                        SlipperyInterpolate(multiplier, field_374, (0.05f * ratio) + 1, -((0.13f * ratio) - 1));
-                        csl::math::Vector3 scale { ScaleY, ScaleZ, 1 };
-                        fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
-                        return;
-                    }
+                    scalarY = 0.4f;
+                    multiplier = 0.1f;
+                    scalarZ = 0.1f;
+                }
+
+                ScaleTime += updateInfo.deltaTime;
+                time = ScaleTime + (multiplier * 0.25f * Index);
+                float ratio = egg::CalcSlipperyRatio(csl::math::Max(time, 0), multiplier);
+
+                if (0 <= ratio)
+                {
+                    scalarY = (scalarZ * ratio) + 1;
+                    scalarZ = -((0.13f * ratio) - 1);
+                }
+                else
+                {
+                    scalarX = scalarY * abs(ratio);
+                    scalarY = 1;
+                    scalarZ = 1;
+                }
+
+                if (field_374 & 2)
+                {
+                    SlipperyInterpolate(multiplier, scalarX, scalarY, scalarZ);
+                    scale = Vector3(ScaleY, ScaleZ, 1);
+                    fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
+                    math::Vector3Scale(&upVec, ScaleX, &position);
+                    fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, &position);
+                    return;
+                }
+
+                SetSlipperyHeightScale(scalarX, scalarY, scalarZ);
+                int flag = (((60.0f * updateInfo.deltaTime < 0) << 2) << 0x1C) >> 0x1E;
+                if (flag != field_374 & 1)
+                {
+                    if (flag == 0)
+                        multiplier = 0.18f;
+
+                    ScaleTime = -(multiplier * 0.25f * Index);
+                    scale = Vector3(ScaleY, ScaleZ, 1);
+                    fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
+                    math::Vector3Scale(&upVec, ScaleX, &position);
+                    fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, &position);
+                    return;
                 }
             }
+            else
+            {
+                float scalarX = 0;
+                float scalarY{};
+                float scalarZ = 0.1f;
+
+                if (SlipperyType == 1)
+                {
+                    ScaleTime += updateInfo.deltaTime;
+                    float ratio = egg::CalcSlipperyRatio((Index * 1.6f * 0.25f) + ScaleTime, 1.6f);
+
+                    scalarY = scalarZ * abs(ratio) + 1;
+                    scalarZ = 1 - 0.1f * abs(ratio);
+
+                    if (!(field_374 & 2))
+                    {
+                        SetSlipperyHeightScale(scalarX, scalarY, scalarZ);
+                        scale = Vector3(ScaleY, ScaleZ, 1);
+                        fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
+                        math::Vector3Scale(&upVec, ScaleX, &position);
+                        fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, &position);
+                        return;
+                    }
+
+                    SlipperyInterpolate(1.6f, scalarX, scalarY, scalarZ);
+                    scale = Vector3(ScaleY, ScaleZ, 1);
+                    fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
+                    math::Vector3Scale(&upVec, ScaleX, &position);
+                    fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, &position);
+                    return;
+                }
+
+                if (SlipperyType != 2)
+                {
+                    scale = Vector3(ScaleY, ScaleZ, 1);
+                    fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
+                    math::Vector3Scale(&upVec, ScaleX, &position);
+                    fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, &position);
+                    return;
+                }
+
+                ScaleTime += updateInfo.deltaTime;
+                if (field_374 & 2)
+                    SlipperyInterpolate(0.2f, scalarX, 1, 1);
+            }
+
+            scale = Vector3(ScaleY, ScaleZ, 1);
+            fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
+            math::Vector3Scale(&upVec, ScaleX, &position);
+            fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, &position);
+            return;
         }
 
         void StateFirstToLocus(const fnd::SUpdateInfo& updateInfo)
@@ -158,7 +260,8 @@ namespace app
             if (!gocTransform)
                 return;
 
-            eggManager->GetTargetDataFromLocusIndex(&locusData, 0, false, nullptr, PlayerNo);
+            bool isMoving = false;
+            eggManager->GetTargetDataFromLocusIndex(&locusData, 0, &isMoving, nullptr, PlayerNo);
             Time = math::Clamp(Time, 0, 1);
                 
             math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
@@ -167,7 +270,6 @@ namespace app
             math::Vector3Add(&posDifference, &translation, &posDifference);
             fnd::GOCTransform::SetLocalTranslation(gocTransform, &posDifference);
             
-            /* TODO */
             UpdateRotation(&locusData.Rotation, updateInfo, PlayerNo);
             UpdateSlippery(locusData.IsInAir, 1, updateInfo);
 
@@ -197,10 +299,10 @@ namespace app
             if (locusIndex < Frame)
                 Frame = locusIndex;
 
-            eggManager->GetTargetDataFromLocusIndex(&locusData, Frame, false, nullptr, PlayerNo);
+            bool isMoving = false;
+            eggManager->GetTargetDataFromLocusIndex(&locusData, Frame, &isMoving, nullptr, PlayerNo);
             fnd::GOCTransform::SetLocalTranslation(gocTransform, &locusData.Position);
 
-            /* TODO */
             UpdateRotation(&locusData.Rotation, updateInfo, PlayerNo);
             UpdateSlippery(locusData.IsInAir, 1, updateInfo);
 
@@ -221,12 +323,12 @@ namespace app
             if (!gocTransform)
                 return;
 
-            eggManager->GetTargetData(&locusData, Index, false, nullptr, PlayerNo);
+            bool isMoving = false;
+            eggManager->GetTargetData(&locusData, Index, &isMoving, nullptr, PlayerNo);
             fnd::GOCTransform::SetLocalTranslation(gocTransform, &locusData.Position);
 
-            /* TODO */
             UpdateRotation(&locusData.Rotation, updateInfo, PlayerNo);
-            UpdateSlippery(locusData.IsInAir, 0, updateInfo);
+            UpdateSlippery(locusData.IsInAir, isMoving, updateInfo);
         }
 
         void StateDrop()
@@ -288,7 +390,7 @@ namespace app
         char PlayerNo{};
         INSERT_PADDING(2);
         csl::math::Vector3 DropPosition {0, 34.732917f, 35.966991f };
-        float field_360{};
+        float ScaleTime{};
         float ScaleX = 1;
         float ScaleY = 1;
         float ScaleZ = 1;
