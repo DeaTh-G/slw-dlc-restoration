@@ -71,119 +71,67 @@ namespace app
 
         void UpdateLocusPos(const fnd::SUpdateInfo& updateInfo, int playerNo)
         {
+            int* playerInfo = ObjUtil::GetPlayerInformation(Document, playerNo);
+            if (!playerInfo)
+                return;
+
+            csl::math::Vector3 playerPos { *(csl::math::Vector3*)(playerInfo + 4) };
+            csl::math::Vector3 ghostPos{};
+            csl::math::Vector3 ghostPos2{};
+            csl::math::Vector3 posDiff{};
+            csl::math::Vector3 posDiff2{};
+            float diffMagnitude{};
+            float diff2Magnitude{};
+
             if (!playerNo)
             {
-                int* p1_info = ObjUtil::GetPlayerInformation(Document, 0);
-                if (!p1_info)
-                    return;
-
-                if (GhostDataP1.size() <= 1)
+                if (GhostDataP1.size() > 1)
                 {
-                    LocusData data{ *(csl::math::Vector3*)(p1_info + 4),
-                        *(csl::math::Quaternion*)(p1_info + 8), *(char*)(p1_info + 0x51) ^ 1 };
+                    ghostPos = GhostDataP1.at(0).Position;
+                    math::Vector3Subtract(&playerPos, &ghostPos, &posDiff);
+                    math::Vector3SquareMagnitude(&posDiff, &diffMagnitude);
+                    ghostPos2 = GhostDataP1.at(1).Position;
+                    math::Vector3Subtract(&ghostPos, &ghostPos2, &posDiff2);
+                    math::Vector3SquareMagnitude(&posDiff2, &diff2Magnitude);
 
-                    GhostDataP1.push_front(data);
-                }
-                else
-                {
-                    csl::math::Vector3 ghost1Position{ GhostDataP1.at(0).Position };
-                    csl::math::Vector3 playerPosition{ *(csl::math::Vector3*)(p1_info + 4) };
-                    float pos1Magnitude{};
-                    math::Vector3Subtract(&playerPosition, &ghost1Position, &playerPosition);
-                    math::Vector3SquareMagnitude(&playerPosition, &pos1Magnitude);
-
-                    csl::math::Vector3 ghost2Position{ GhostDataP1.at(1).Position };
-                    playerPosition = *(csl::math::Vector3*)(p1_info + 4);
-                    math::Vector3Subtract(&ghost1Position, &ghost2Position, &ghost1Position);
-                    float pos2Magnitude{};
-                    math::Vector3SquareMagnitude(&ghost1Position, &pos2Magnitude);
-                    if (pos1Magnitude >= 0.09f || (pos1Magnitude - pos2Magnitude) > 0.000001f)
-                    {
+                    if (0.09f <= diffMagnitude || 0.000001f < (diffMagnitude - diff2Magnitude))
                         field_64P1 = 0.3f;
-
-                        LocusData data{ *(csl::math::Vector3*)(p1_info + 4),
-                            *(csl::math::Quaternion*)(p1_info + 8), *((char*)p1_info + 0x144) ^ 1 };
-
-                        GhostDataP1.push_front(data);
-                        return;
-                    }
-
-                    field_64P1 -= updateInfo.deltaTime;
-                    if (field_64P1 >= 0)
+                    else
                     {
-                        LocusData data{ *(csl::math::Vector3*)(p1_info + 4),
-                            *(csl::math::Quaternion*)(p1_info + 8), *((char*)p1_info + 0x144) ^ 1 };
-
-                        GhostDataP1.push_front(data);
-                        return;
-                    }
-
-                    if (IsLocusDataInGroundToAir(0))
-                    {
-                        LocusData data{ *(csl::math::Vector3*)(p1_info + 4),
-                            *(csl::math::Quaternion*)(p1_info + 8), *((char*)p1_info + 0x144) ^ 1 };
-
-                        GhostDataP1.push_front(data);
-                        return;
+                        field_64P1 -= updateInfo.deltaTime;
+                        if (field_64P1 < 0 && !IsLocusDataInGroundToAir(playerNo))
+                            return;
                     }
                 }
+
+                LocusData data{ playerPos, *(csl::math::Quaternion*)(playerInfo + 8),
+                    *((char*)playerInfo + 0x144) ^ 1 };
+                GhostDataP1.push_front(data);
             }
             else
             {
-                int* p2_info = ObjUtil::GetPlayerInformation(Document, 1);
-                if (!p2_info)
-                    return;
-
-                if (GhostDataP2.size() <= 1)
+                if (GhostDataP2.size() > 1)
                 {
-                    LocusData data{ *(csl::math::Vector3*)(p2_info + 4),
-                        *(csl::math::Quaternion*)(p2_info + 8), *(char*)(p2_info + 0x51) ^ 1 };
+                    ghostPos = GhostDataP2.at(0).Position;
+                    math::Vector3Subtract(&playerPos, &ghostPos, &posDiff);
+                    math::Vector3SquareMagnitude(&posDiff, &diffMagnitude);
+                    ghostPos2 = GhostDataP2.at(1).Position;
+                    math::Vector3Subtract(&ghostPos, &ghostPos2, &posDiff2);
+                    math::Vector3SquareMagnitude(&posDiff2, &diff2Magnitude);
 
-                    GhostDataP2.push_front(data);
-                }
-                else
-                {
-                    csl::math::Vector3 ghost1Position{ GhostDataP2.at(0).Position };
-                    csl::math::Vector3 playerPosition{ *(csl::math::Vector3*)(p2_info + 4) };
-                    float pos1Magnitude{};
-                    math::Vector3Subtract(&playerPosition, &ghost1Position, &playerPosition);
-                    math::Vector3SquareMagnitude(&playerPosition, &pos1Magnitude);
-
-                    csl::math::Vector3 ghost2Position{ GhostDataP2.at(1).Position };
-                    playerPosition = *(csl::math::Vector3*)(p2_info + 4);
-                    math::Vector3Subtract(&ghost1Position, &ghost2Position, &ghost1Position);
-                    float pos2Magnitude{};
-                    math::Vector3SquareMagnitude(&ghost1Position, &pos2Magnitude);
-                    if (pos1Magnitude >= 0.09f || (pos1Magnitude - pos2Magnitude) > 0.000001f)
-                    {
+                    if (0.09f <= diffMagnitude || 0.000001f < (diffMagnitude - diff2Magnitude))
                         field_64P2 = 0.3f;
-
-                        LocusData data{ *(csl::math::Vector3*)(p2_info + 4),
-                            *(csl::math::Quaternion*)(p2_info + 8), *((char*)p2_info + 0x144) ^ 1 };
-
-                        GhostDataP2.push_front(data);
-                        return;
-                    }
-
-                    field_64P2 -= updateInfo.deltaTime;
-                    if (field_64P2 >= 0)
+                    else
                     {
-                        LocusData data{ *(csl::math::Vector3*)(p2_info + 4),
-                            *(csl::math::Quaternion*)(p2_info + 8), *((char*)p2_info + 0x144) ^ 1 };
-
-                        GhostDataP2.push_front(data);
-                        return;
-                    }
-
-                    if (IsLocusDataInGroundToAir(1))
-                    {
-                        LocusData data{ *(csl::math::Vector3*)(p2_info + 4),
-                            *(csl::math::Quaternion*)(p2_info + 8), *((char*)p2_info + 0x144) ^ 1 };
-
-                        GhostDataP2.push_front(data);
-                        return;
+                        field_64P2 -= updateInfo.deltaTime;
+                        if (field_64P2 < 0 && !IsLocusDataInGroundToAir(playerNo))
+                            return;
                     }
                 }
+
+                LocusData data{ playerPos, *(csl::math::Quaternion*)(playerInfo + 8),
+                    *((char*)playerInfo + 0x144) ^ 1 };
+                GhostDataP2.push_front(data);
             }
         }
 
@@ -194,48 +142,47 @@ namespace app
         {
             IsSpaceShrink &= ~4;
 
+            int* playerInfo = ObjUtil::GetPlayerInformation(Document, playerNo);
+            if (!playerInfo)
+                return;
+
             if (!playerNo)
             {
-                int* p1_info = ObjUtil::GetPlayerInformation(Document, 0);
-
-                if (p1_info && *((char*)p1_info + 0x144) && *((char*)p1_info + 0x145))
+                if (*((char*)playerInfo + 0x145) && *((char*)playerInfo + 0x144))
                 {
-                    SubSpaceCount(0);
+                    SubSpaceCount(playerNo);
                     return;
                 }
 
                 if (IsSpaceShrink & 1)
                 {
-                    SubSpaceCount(0);
+                    SubSpaceCount(playerNo);
                     return;
                 }
 
                 if (field_64P1 > 0)
                 {
-                    AddSpaceCount(0);
+                    AddSpaceCount(playerNo);
                     return;
                 }
-
             }
             else
             {
-                int* p2_info = ObjUtil::GetPlayerInformation(Document, 1);
-
-                if (p2_info && *((char*)p2_info + 0x144) && *((char*)p2_info + 0x145))
+                if (*((char*)playerInfo + 0x145) && *((char*)playerInfo + 0x144))
                 {
-                    SubSpaceCount(1);
+                    SubSpaceCount(playerNo);
                     return;
                 }
 
                 if (IsSpaceShrink & 1)
                 {
-                    SubSpaceCount(1);
+                    SubSpaceCount(playerNo);
                     return;
                 }
 
-                if (field_64P2 > 0)
+                if (field_64P1 > 0)
                 {
-                    AddSpaceCount(1);
+                    AddSpaceCount(playerNo);
                     return;
                 }
             }
@@ -276,46 +223,30 @@ namespace app
         {
             LocusData data1{};
             LocusData data2{};
+            csl::math::Vector3 positionDifference{};
+            float localMagnitude{};
 
             int* playerInfo = ObjUtil::GetPlayerInformation(Document, playerNo);
             if (!playerInfo)
                 return;
 
-
-            if (!CheckAccessLocusData(&data1, i, playerNo) || *a3)
+            if (CheckAccessLocusData(&data1, i, playerNo) && *a3 &&
+                i - 1 >= 0 && CheckAccessLocusData(&data2, i - 1, playerNo))
             {
-                if (i - 1 >= 0)
-                    if (!CheckAccessLocusData(&data2, i - 1, playerNo))
-                        return;
-               
-                return;
+                math::Vector3Subtract(&data1.Position, &data2.Position, &positionDifference);
+                math::Vector3SquareMagnitude(&positionDifference, &localMagnitude);
+                if (!playerNo)
+                {
+                    if (localMagnitude > 0.3f && (field_64P1 > 0 || IsSpaceShrink & 4))
+                    {
+                        *a3 = true;
+                        if (magnitude)
+                            *magnitude = localMagnitude;
+                    }
+                }
             }
 
             *locus = data1;
-
-            csl::math::Vector3 positionDifference{};
-            float localMagnitude{};
-            math::Vector3Subtract(&data1.Position, &data2.Position, &positionDifference);
-            math::Vector3SquareMagnitude(&positionDifference, &localMagnitude);
-
-            if (!playerNo)
-            {
-                if (localMagnitude > 0.3f && (field_64P1 > 0 || (IsSpaceShrink >> 4) & 1))
-                {
-                    *a3 = true;
-                    if (magnitude)
-                        *magnitude = localMagnitude;
-                }
-            }
-            else
-            {
-                if (localMagnitude > 0.3f && (field_64P2 > 0 || (IsSpaceShrink >> 4) & 1))
-                {
-                    *a3 = true;
-                    if (magnitude)
-                        *magnitude = localMagnitude;
-                }
-            }
         }
         
         void GetTargetData(LocusData* locus, int index, bool* a3, float* magnitude, char playerNo)
