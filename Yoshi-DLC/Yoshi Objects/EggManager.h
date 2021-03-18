@@ -230,7 +230,7 @@ namespace app
             if (!playerInfo)
                 return;
 
-            if (CheckAccessLocusData(&data1, i, playerNo) && *a3 &&
+            if (CheckAccessLocusData(&data1, i, playerNo) && !*a3 &&
                 i - 1 >= 0 && CheckAccessLocusData(&data2, i - 1, playerNo))
             {
                 math::Vector3Subtract(&data1.Position, &data2.Position, &positionDifference);

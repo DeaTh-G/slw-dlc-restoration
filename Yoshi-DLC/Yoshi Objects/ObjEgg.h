@@ -324,7 +324,8 @@ namespace app
                 return;
 
             bool isMoving = false;
-            eggManager->GetTargetData(&locusData, Index, &isMoving, nullptr, PlayerNo);
+            float magnitude = 0;
+            eggManager->GetTargetData(&locusData, Index, &isMoving, &magnitude, PlayerNo);
             fnd::GOCTransform::SetLocalTranslation(gocTransform, &locusData.Position);
 
             UpdateRotation(&locusData.Rotation, updateInfo, PlayerNo);

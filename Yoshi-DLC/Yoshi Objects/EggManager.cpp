@@ -42,15 +42,11 @@ int app::EggManager::GetTargetLocusIndex(int index, char playerNo)
         return 0;
 
     if (!playerNo)
-    {
         for (size_t i = 0; i <= index; i++)
             result += EggsP1.at(i)->SpaceCount;
-    }
     else
-    {
         for (size_t i = 0; i <= index; i++)
             result += EggsP2.at(i)->SpaceCount;
-    }
 
     return result;
 }
