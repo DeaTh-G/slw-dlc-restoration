@@ -18,7 +18,7 @@ namespace app
 		inline static FUNCTION_PTR(int*, __thiscall, SendTouchDamage, ASLR(0x00672180), GameObject* This, xgame::MsgDamage& message);
 
 		fnd::HFrame Parent;
-		char asd[32];
+		INSERT_PADDING(32);
 
 		EnemyBase() { __ct(this); }
 		~EnemyBase() override
@@ -29,6 +29,7 @@ namespace app
 		}
 	};
 
+	/* To be removed... */
 	class EnmBase
 	{
 	public:
