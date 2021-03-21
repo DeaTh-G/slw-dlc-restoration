@@ -36,6 +36,8 @@
 #include "app/CLevelInfo.h"
 #include "app/fnd/BaseObject.h"
 #include "app/fnd/ReferencedObject.h"
+#include "app/animation/AnimationObj.h"
+#include "app/animation/AnimationListener.h"
 #include "app/CObjInfo.h"
 #include "app/EnemyInfo.h"
 #include "app/CObjInfoContainer.h"

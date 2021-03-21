@@ -24,5 +24,7 @@ namespace csl
 				Z = z;
 			}
 		};
+
+		inline static FUNCTION_PTR(Vector3*, __cdecl, Vector3NormalizeZero, ASLR(0x00963BE0), Vector3* a1, Vector3* a2);
 	}
 }

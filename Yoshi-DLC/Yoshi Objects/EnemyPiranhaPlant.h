@@ -50,34 +50,33 @@ namespace app
 
     class EnemyPiranhaPlant : public EnemyBase
     {
-    private:
-        inline static void* AnimCallbackBridge_Initialize(csl::fnd::IAllocator* pAllocator)
+        class AnimListener : public animation::AnimationListener
         {
-            return new animation::AnimCallbackBridge<EnemyPiranhaPlant>();
-        }
+        public:
+            EnemyPiranhaPlant* pPiranhaPlant;
+
+            void OnEvent(int notifyTiming) override
+            {
+                pPiranhaPlant->AfterUpdatePoseCallback();
+            }
+        };
 
     public:
-        int AnimationListener;
-        int field_514;
-        int field_518;
-        int field_51C;
-        int field_520;
-        int field_524;
-        int field_528;
-        int field_52C;
-        int field_530;
-        int field_534;
-        int field_538;
-        int field_53C;
-        fnd::HFrame Parent;
-        float field_670;
-        float Scale;
-        int field_678;
-        int Direction;
+        AnimListener AnimationListener{};
+        int field_53C{};
+        fnd::HFrame Parent{};
+        float HeadRotation{};
+        float Scale{};
+        int field_678{};
+        int Direction{};
 
         EnemyPiranhaPlant()
         {
+            AnimationListener.field_20 = 2;
             fnd::HFrame::__ct(&Parent);
+            Scale = 1;
+            field_678 = -1;
+            HeadRotation = -(3.1415927f * 0.5f);
         }
 
         void AddCallback(GameDocument* gameDocument) override
@@ -137,6 +136,9 @@ namespace app
                         game::GOCAnimationScript::SetAnimation(gocAnimation, "IDLE_L");
                     else
                         game::GOCAnimationScript::SetAnimation(gocAnimation, "IDLE_R");
+
+                    AnimationListener.pPiranhaPlant = this;
+                    game::GOCAnimationSimple::AddListener(gocAnimation, &AnimationListener);
 
                     csl::fnd::IAllocator* allocator{};
                     auto funcPtr = &EnemyPiranhaPlant::SoundCallback;
@@ -262,6 +264,7 @@ namespace app
             class Idle
             {
                 char field_00[20];
+                int* GocEnemyTarget;
             public:
                 virtual ~Idle() {};
                 virtual int Trigger(EnemyPiranhaPlant* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
@@ -269,11 +272,17 @@ namespace app
                 virtual int Enter(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
                 virtual int Leave(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyPiranhaPlant* obj, float a2) { return EnemyState::Update(this, obj, a2); };
-                virtual int ProcessMessage(EnemyPiranhaPlant* obj, int a2) { return 0; };
+                virtual bool ProcessMessage(EnemyPiranhaPlant* obj, fnd::MessageNew& message)
+                {
+                    if (message.Type == fnd::PROC_MSG_DAMAGE)
+                        return ProcMsgDamage(obj, (xgame::MsgDamage&)message);
+                    else
+                        return false;
+                };
                 virtual int OnEnter(EnemyPiranhaPlant* obj, int a2)
                 {
-                    int* gocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
-                    if (!gocEnemyTarget)
+                    GocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
+                    if (!GocEnemyTarget)
                         return 0;
 
                     int* gocAnimation = GameObject::GetGOC(obj, GOCAnimationString);
@@ -290,15 +299,47 @@ namespace app
                     return 1;
                 };
                 virtual int OnLeave(EnemyPiranhaPlant* obj, int a2) { return 0; };
-                virtual int Step(EnemyPiranhaPlant* obj, float a2)
+
+                virtual int Step(EnemyPiranhaPlant* obj, float deltaTime)
                 {
-                    return 0;
+                    obj->HeadRotation = csl::math::Lerp(obj->HeadRotation,
+                        csl::math::Select(obj->HeadRotation, abs(1.2217305f), -abs(1.2217305f)), deltaTime * 5);
+                    UpdateHeadPosture(obj, 0);
+                    
+                    if (!GocEnemyTarget || !GOCEnemyTarget::IsFindTarget(GocEnemyTarget))
+                        return 0;
+
+                    /*int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                    if (!gocEnemyHsm)
+                        return 0;
+
+                    GOCEnemyHsm::ChangeState(gocEnemyHsm, 1);*/
+
+                    return 1;
                 };
+
+            private:
+                bool ProcMsgDamage(EnemyPiranhaPlant* obj, xgame::MsgDamage& message)
+                {
+                    csl::math::Vector3 position{};
+
+                    fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
+                    math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
+                    xgame::MsgDamage::SetReply(&message, &position, 1);
+
+                    int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                    if (!gocEnemyHsm)
+                        return false;
+
+                    GOCEnemyHsm::ChangeState(gocEnemyHsm, 4);
+                    return true;
+                }
             };
 
             class ShiftAttack
             {
                 char field_00[20];
+                float Time;
             public:
                 virtual ~ShiftAttack() {};
                 virtual int Trigger(EnemyPiranhaPlant* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
@@ -306,10 +347,36 @@ namespace app
                 virtual int Enter(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
                 virtual int Leave(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyPiranhaPlant* obj, float a2) { return EnemyState::Update(this, obj, a2); };
-                virtual int ProcessMessage(EnemyPiranhaPlant* obj, int a2) { return 0; };
-                virtual int OnEnter(EnemyPiranhaPlant* obj, int a2) { return 0; };
+                virtual bool ProcessMessage(EnemyPiranhaPlant* obj, int a2) { return 0; };
+                virtual int OnEnter(EnemyPiranhaPlant* obj, int a2)
+                {
+                    Time = 0;
+                    obj->SetEnableDamageCollision(false);
+                    return true;
+                };
+
                 virtual int OnLeave(EnemyPiranhaPlant* obj, int a2) { return 0; };
-                virtual int Step(EnemyPiranhaPlant* obj, float a2) { return 0; };
+                virtual int Step(EnemyPiranhaPlant* obj, float deltaTime)
+                {
+                    UpdateHeadPosture(obj, false);
+                    Time += deltaTime;
+                    if (Time < 0.1f)
+                    {
+                        float multiplier = sinf(1.5707964f * (Time / 0.1));
+                        obj->SetScale((0.60000002 * multiplier) + 0.40000001);
+                    }
+                    else
+                    {
+                        int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                        if (!gocEnemyHsm)
+                            return 0;
+
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 2);
+                        return 1;
+                    }
+
+                    return 1;
+                };
             };
             
             class Attack
@@ -323,9 +390,69 @@ namespace app
                 virtual int Leave(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyPiranhaPlant* obj, float a2) { return EnemyState::Update(this, obj, a2); };
                 virtual int ProcessMessage(EnemyPiranhaPlant* obj, int a2) { return 0; };
-                virtual int OnEnter(EnemyPiranhaPlant* obj, int a2) { return 0; };
+                virtual int OnEnter(EnemyPiranhaPlant* obj, int a2)
+                {
+                    int* gocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
+                    if (!gocEnemyTarget)
+                        return 0;
+
+                    obj->SetEnableDamageCollision(true);
+                    obj->SetScale(1);
+
+                    int* gocAnimation = GameObject::GetGOC(obj, GOCAnimationString);
+                    if (!gocAnimation)
+                        return 0;
+
+                    if (obj->Direction & 1)
+                        game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_L");
+                    else
+                        game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_R");
+
+                    return true;
+                };
                 virtual int OnLeave(EnemyPiranhaPlant* obj, int a2) { return 0; };
-                virtual int Step(EnemyPiranhaPlant* obj, float a2) { return 0; };
+                
+                virtual int Step(EnemyPiranhaPlant* obj, float deltaTime)
+                {
+                    csl::math::Vector3 playerPos{};
+                    csl::math::Vector3 objectPos{};
+
+                    int* gocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
+                    if (!gocEnemyTarget)
+                        return 0;
+
+                    if (!GOCEnemyTarget::IsFindTarget(gocEnemyTarget))
+                    {
+                        int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                        if (!gocEnemyHsm)
+                            return 0;
+
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 2);
+                        return 1;
+                    }
+
+                    GOCEnemyTarget::GetTargetCenterPosition(gocEnemyTarget, &playerPos);
+
+                    fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(obj, GOCTransformString);
+                    if (!gocTransform)
+                        return 0;
+
+                    fnd::HFrame* center = EnemyBase::GetCenterPositionFrame(obj);
+                    math::CalculatedTransform::GetTranslation(&center->Transform, &objectPos);
+                    csl::math::Vector3 rotX = *(csl::math::Vector3*)&center->Transform.data[1][0];
+                    csl::math::Vector3 rotY = *(csl::math::Vector3*) &center->Transform.data[2][0];
+                    
+                    math::Vector3Subtract(&playerPos, &objectPos, &playerPos);
+                    csl::math::Vector3NormalizeZero(&playerPos, &playerPos);
+                    float xDot = math::Vector3DotProduct(&rotX, &playerPos);
+                    xDot = math::Clamp(xDot, -1, 1);
+                    float xMin = csl::math::Min(acosf(xDot), 1.2217305f);
+
+                    float yDot = math::Vector3DotProduct(&rotY, &playerPos);
+                    obj->HeadRotation = csl::math::Lerp(obj->HeadRotation, csl::math::Select(abs(xMin), yDot, abs(xMin)), (deltaTime * 5));
+                    UpdateHeadPosture(obj, true);
+                    return 1;
+                };
             };
 
             class ShiftIdle
@@ -359,8 +486,58 @@ namespace app
                 virtual int OnLeave(EnemyPiranhaPlant* obj, int a2) { return 0; };
                 virtual int Step(EnemyPiranhaPlant* obj, float a2) { return 0; };
             };
-        };
 
+        private:
+            static void UpdateHeadPosture(EnemyPiranhaPlant* obj, bool changeAnimation)
+            {
+                if (obj->HeadRotation >= 0)
+                {
+                    if (obj->Direction & 2)
+                    {
+                        obj->Direction ^= 2;
+                        if (changeAnimation)
+                        {
+                            int* gocAnimation = GameObject::GetGOC(obj, GOCAnimationString);
+                            if (!gocAnimation)
+                                return;
+
+                            if (obj->Direction & 1)
+                                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_L");
+                            else
+                                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_R");
+                        }
+                    }
+
+                    csl::math::Quaternion rotation { 0, 0, 0, 1 };
+                    fnd::HFrame* center = EnemyBase::GetCenterPositionFrame(obj);
+                    fnd::HFrame::SetLocalRotation(center, &rotation);
+                }
+                else
+                {
+                    if (!(obj->Direction & 2))
+                    {
+                        obj->Direction ^= 2;
+                        if (changeAnimation)
+                        {
+                            int* gocAnimation = GameObject::GetGOC(obj, GOCAnimationString);
+                            if (!gocAnimation)
+                                return;
+
+                            if (obj->Direction & 1)
+                                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_L");
+                            else
+                                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_R");
+                        }
+                    }
+
+                    Eigen::Quaternion<float> q;
+                    q = Eigen::AngleAxis<float>(3.1415927f, Eigen::Vector3f(0, 1, 0));
+                    csl::math::Quaternion rotation { q.x(), q.y(), q.z(), q.w() };
+                    fnd::HFrame* center = EnemyBase::GetCenterPositionFrame(obj);
+                    fnd::HFrame::SetLocalRotation(center, &rotation);
+                }
+            }
+        };
         private:
             void ProcMsgDamage(xgame::MsgDamage& message)
             {
@@ -421,11 +598,29 @@ namespace app
                 if (a2 || a3)
                     return;
 
-                int* gocSound = GameObject::GetGOC((GameObject*)(this + 1), GOCSoundString);
+                int* gocSound = GameObject::GetGOC((GameObject*)((char*)this + 1), GOCSoundString);
                 if (!gocSound)
                     return;
 
                 game::GOCSound::Play3D(gocSound, deviceTag, "enm_pakkunflower_bite", 0);
+            }
+
+            void AfterUpdatePoseCallback()
+            {
+                int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+                if (!gocVisual)
+                    return;
+
+                float multiplier = HeadRotation * 0.25f;
+                if (!(Direction & 4))
+                    fabs(multiplier);
+
+                printf("hi");
+            }
+
+            inline static void* AnimCallbackBridge_Initialize(csl::fnd::IAllocator* pAllocator)
+            {
+                return new animation::AnimCallbackBridge<EnemyPiranhaPlant>();
             }
 
             inline static void* Idle_Initialize(csl::fnd::IAllocator* pAllocator)

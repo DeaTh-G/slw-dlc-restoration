@@ -23,7 +23,6 @@ namespace app
 		EnemyBase() { __ct(this); }
 		~EnemyBase() override
 		{
-			sizeof(EnemyBase);
 			__dt(this, 0);
 			FORCE_RET;
 		}
