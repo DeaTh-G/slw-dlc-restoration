@@ -7,7 +7,7 @@ namespace hh
 		class CRefCountObject
 		{
 		public:
-			int RefCount;
+			int RefCount{};
 
 			virtual ~CRefCountObject() {};
 		};

@@ -48,20 +48,20 @@ namespace app
         void Initialize(GameDocument* gameDocument)
         {
             int packFile = 0;
-            int animationScript = 0;
-            int animation = 0;
+            int animationScript[3]{};
 
-            EnemyInfo::GetModelResource((int*)this, &(this->Model), "enm_heyho");
-            EnemyInfo::GetSkeletonResource((int*)this, &(this->Skeleton), "enm_heyho");
+            EnemyInfo::GetModelResource((EnemyInfo*)this, &(this->Model), "enm_heyho");
+            EnemyInfo::GetSkeletonResource((EnemyInfo*)this, &(this->Skeleton), "enm_heyho");
 
-            EnemyInfo::GetEnemyPackfile((int*)this, &packFile);
-            ObjUtil::GetAnimationScriptResource(&animationScript, "shyguy", packFile);
+            EnemyInfo::GetEnemyPackfile((EnemyInfo*)this, &packFile);
+            ObjUtil::GetAnimationScriptResource(animationScript, "shyguy", packFile);
+            animationScript[1] = Skeleton;
 
             if (animationScript)
-                animation::AnimationResContainer::LoadFromBuffer(&this->AnimationContainer, &animationScript, packFile);
+                animation::AnimationResContainer::LoadFromBuffer(&this->AnimationContainer, animationScript, packFile);
 
-            EnemyInfo::GetAnimationResource((int*)this, &(this->AnimationLeft), "hey_walk_left_loop");
-            EnemyInfo::GetAnimationResource((int*)this, &(this->AnimationRight), "hey_walk_right_loop");
+            EnemyInfo::GetAnimationResource((EnemyInfo*)this, &(this->AnimationLeft), "hey_walk_left_loop");
+            EnemyInfo::GetAnimationResource((EnemyInfo*)this, &(this->AnimationRight), "hey_walk_right_loop");
         }
 
         const char* GetInfoName()
@@ -391,7 +391,7 @@ namespace app
 
         CSetObjectListener* __ct()
         {
-            EnemyBase::__ct((GameObject*)this);
+            EnmBase::__ct((GameObject*)this);
             *(int*)this = ASLR(0x00D93A14);
             *((int*)this + 2) = ASLR(0x00D939F8);
 
@@ -461,7 +461,7 @@ namespace app
             if (data->Direction)
                 *(int*)(this + 0x4C0) |= 4;
 
-            EnemyBase::CreateCenterPositionFrame((GameObject*)this, &reticlePosition);
+            EnmBase::CreateCenterPositionFrame((GameObject*)this, &reticlePosition);
             int* gocVisual = GameObject::GetGOC((GameObject*)this, GOCVisual);
             if (gocVisual)
             {
@@ -515,7 +515,7 @@ namespace app
                 ObjUtil::SetupCollisionFilter(9, &collisionInfo);
                 collisionInfo.field_08 = 0x20000;
                 collisionInfo.field_04 |= 1;
-                collisionInfo.Parent = EnemyBase::GetCenterPositionFrame((GameObject*)this);
+                collisionInfo.Parent = EnmBase::GetCenterPositionFrame((GameObject*)this);
 
                 game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
             }
@@ -585,7 +585,7 @@ namespace app
                 return true;
                 break;
             case fnd::PROC_MSG_NOTIFY_OBJECT_EVENT:
-                ProcMsgNotifyObjectEvent(message);
+                ProcMsgNotifyObjectEvent((fnd::MessageNew*)message);
                 return true;
                 break;
             case fnd::PROC_MSG_HIT_EVENT_COLLISION:
@@ -593,10 +593,11 @@ namespace app
                 return true;
                 break;
             default:
-                EnemyBase::ProcessMessage((int*)this, message);
+                EnmBase::ProcMsg((int*)this, message);
                 return true;
             }
         }
+
     private:
         void ProcMsgDamage(xgame::MsgDamage* message)
         {
@@ -628,7 +629,7 @@ namespace app
 
                 void* enemyManager = EnemyManager::GetService(*(GameDocument**)(this + 0x20));
                 EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
-                EnemyBase::ProcMission((GameObject*)(this - 8), message);
+                EnmBase::ProcMission((GameObject*)(this - 8), message);
                 CSetObjectListener::SetStatusRetire((GameObject*)(this - 8));
                 GameObject::Kill((GameObject*)(this - 8));
             }
@@ -652,7 +653,7 @@ namespace app
                 blowOffInfo.field_50.Y = 5;
                 blowOffInfo.field_60 = 4;
                 blowOffInfo.field_6C = 3;
-                EnemyBase::CreateEnemyBlowOffObject((GameObject*)(this - 8), &blowOffInfo);
+                EnmBase::CreateEnemyBlowOffObject((GameObject*)(this - 8), &blowOffInfo);
                 xgame::MsgKick::SetReplyForSucceed(message);
                 ObjUtil::AddScore((GameObject*)(this - 8), "SHYGUY", message);
                 CSetObjectListener::SetStatusRetire((GameObject*)(this - 8));
@@ -660,7 +661,7 @@ namespace app
             }
         }
 
-        void ProcMsgNotifyObjectEvent(fnd::Message* message)
+        void ProcMsgNotifyObjectEvent(fnd::MessageNew* message)
         {
             if ((*(int*)(this + 0x4B8) & 1))
             {
@@ -672,7 +673,7 @@ namespace app
 
         void ProcMsgHitEventCollision(fnd::Message* message)
         {
-            EnemyBase::SendTouchDamage((int*)this - 2, message);
+            EnmBase::SendTouchDamage((int*)this - 2, message);
         }
     };
 

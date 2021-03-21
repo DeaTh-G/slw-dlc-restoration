@@ -10,9 +10,9 @@ namespace app
 		inline static FUNCTION_PTR(void, __thiscall, __dt, ASLR(0x0090BD30), GameObject3D* This, int a2);
 
 	public:
-		fnd::GOCTransform Transform;
-		char Padding[100];
-		fnd::GOCTransform* pTransform;
+		fnd::GOCTransform Transform{};
+		char Padding[100]{};
+		fnd::GOCTransform* pTransform = new fnd::GOCTransform();
 
 		GameObject3D()
 		{

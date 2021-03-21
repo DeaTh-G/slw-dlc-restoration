@@ -17,6 +17,7 @@ inline static char* const GOCHudString = (char*)ASLR(0x00D64334);
 inline static char* const GOCAnimationString = (char*)ASLR(0x00D64E9C);
 inline static char* const GOCLauncherString = (char*)ASLR(0x00D6435C);
 inline static char* const GOCMovementString = (char*)ASLR(0x00D643E8);
+inline static char* const GOCEnemyTargetString = (char*)ASLR(0x00D9C6A0);
 char* const GOCEnemyHsmString = (char*)ASLR(0x00D9C674);
 char* const GOCMotorString = (char*)ASLR(0x00D66438);
 
@@ -29,6 +30,7 @@ inline static int* GOCGravity = (int*)ASLR(0x00FD76D8);
 inline static int* GOCCollider = (int*)ASLR(0x00FD75A4);
 inline static int* GOCSound = (int*)ASLR(0x00FD7908);
 inline static int* GOCShadowSimple = (int*)ASLR(0x00FD78EC);
+inline static int* EnemyTargetGOC = (int*)ASLR(0x00FE7608);
 inline static int* GOCEffect = (int*)ASLR(0x00FD7630);
 inline static int* GOCMotorRotate = (int*)ASLR(0x00FD77D4);
 inline static int* GOCHud = (int*)ASLR(0x00FD7710);

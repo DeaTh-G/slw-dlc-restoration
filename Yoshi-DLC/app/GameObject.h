@@ -22,7 +22,7 @@ namespace app
 
 		OBJECT_FUNCTION(void, Sleep, ASLR(0x0049CCB0));
 
-		int field_24[0x2B];
+		int field_24[0x2B]{};
 
 		GameObject()
 		{
