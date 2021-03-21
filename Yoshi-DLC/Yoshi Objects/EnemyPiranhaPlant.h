@@ -71,7 +71,7 @@ namespace app
         int field_53C;
         fnd::HFrame Parent;
         float field_670;
-        float field_674;
+        float Scale;
         int field_678;
         int Direction;
 
@@ -270,9 +270,30 @@ namespace app
                 virtual int Leave(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyPiranhaPlant* obj, float a2) { return EnemyState::Update(this, obj, a2); };
                 virtual int ProcessMessage(EnemyPiranhaPlant* obj, int a2) { return 0; };
-                virtual int OnEnter(EnemyPiranhaPlant* obj, int a2) { return 0; };
+                virtual int OnEnter(EnemyPiranhaPlant* obj, int a2)
+                {
+                    int* gocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
+                    if (!gocEnemyTarget)
+                        return 0;
+
+                    int* gocAnimation = GameObject::GetGOC(obj, GOCAnimationString);
+                    if (!gocAnimation)
+                        return 0;
+
+                    obj->SetEnableDamageCollision(false);
+                    obj->SetScale(0.4f);
+                    if (obj->Direction & 1)
+                        game::GOCAnimationScript::ChangeAnimation(gocAnimation, "IDLE_L");
+                    else
+                        game::GOCAnimationScript::ChangeAnimation(gocAnimation, "IDLE_R");
+
+                    return 1;
+                };
                 virtual int OnLeave(EnemyPiranhaPlant* obj, int a2) { return 0; };
-                virtual int Step(EnemyPiranhaPlant* obj, float a2) { return 0;  };
+                virtual int Step(EnemyPiranhaPlant* obj, float a2)
+                {
+                    return 0;
+                };
             };
 
             class ShiftAttack
@@ -359,6 +380,38 @@ namespace app
             {
                 if (Direction & 8)
                     EnemyBase::SendTouchDamage(this, (xgame::MsgDamage&)message);
+            }
+
+            void SetEnableDamageCollision(bool isEnable)
+            {
+                int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+                if (!gocCollider)
+                    return;
+
+                if (isEnable)
+                    Direction |= 8;
+                else
+                    Direction &= ~8;
+                
+                ObjUtil::SetEnableColliShape(gocCollider, 2, isEnable);
+            }
+
+            void SetScale(float scale)
+            {
+                int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+                if (!gocVisual)
+                    return;
+
+                Scale = scale;
+
+                csl::math::Vector3 visualScale { scale, scale, scale };
+                fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &visualScale);
+
+                int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
+                if (!gocShadow)
+                    return;
+
+                game::GOCShadowSimple::SetScale(gocShadow, &visualScale);
             }
 
             void SoundCallback(int a1, int a2, int a3)
