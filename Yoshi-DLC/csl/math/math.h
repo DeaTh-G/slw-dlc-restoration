@@ -14,10 +14,10 @@ namespace csl
 
 		inline static float Min(float value, float min)
 		{
-			float result = min;
-			if (value <= min)
-				result = value;
-			return result;
+			if (min < value)
+				return min;
+			
+			return value;
 		}
 
 		inline static float Lerp(float a1, float a2, float a3)

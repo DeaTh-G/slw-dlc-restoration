@@ -616,14 +616,14 @@ namespace app
                 enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, message);
                 enemy::DeadEffectCInfo::SetYoshiIsland(&effectInfo);
 
-                csl::math::Matrix34 transform{};
+                math::Transform transform{};
                 int* gocVisual = GameObject::GetGOC((GameObject*)(this - 8), GOCVisual);
                 if (gocVisual)
                 {
                     fnd::GOCVisualModel::GetNodeTransform(gocVisual, 0, "Spine", &transform);
-                    effectInfo.field_20.data[3][0] = transform.data[0][0];
-                    effectInfo.field_20.data[3][1] = transform.data[0][1];
-                    effectInfo.field_20.data[3][2] = transform.data[0][2];
+                    effectInfo.field_20.data[3][0] = transform.Position.X;
+                    effectInfo.field_20.data[3][1] = transform.Position.Y;
+                    effectInfo.field_20.data[3][2] = transform.Position.Z;
                     effectInfo.field_62 |= 1;
                 }
 

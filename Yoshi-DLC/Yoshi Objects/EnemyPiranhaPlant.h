@@ -142,7 +142,8 @@ namespace app
 
                     csl::fnd::IAllocator* allocator{};
                     auto funcPtr = &EnemyPiranhaPlant::SoundCallback;
-                    animation::AnimCallbackBridge<EnemyPiranhaPlant>* callback = (animation::AnimCallbackBridge<EnemyPiranhaPlant>*)AnimCallbackBridge_Initialize(allocator);
+                    animation::AnimCallbackBridge<EnemyPiranhaPlant>* callback =
+                        (animation::AnimCallbackBridge<EnemyPiranhaPlant>*)AnimCallbackBridge_Initialize(allocator);
                     callback->GameObject = this;
                     callback->field_10 = reinterpret_cast<void*&>(funcPtr);
                     callback->field_14 = -1;
@@ -309,11 +310,11 @@ namespace app
                     if (!GocEnemyTarget || !GOCEnemyTarget::IsFindTarget(GocEnemyTarget))
                         return 0;
 
-                    /*int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                    int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
                     if (!gocEnemyHsm)
                         return 0;
 
-                    GOCEnemyHsm::ChangeState(gocEnemyHsm, 1);*/
+                    GOCEnemyHsm::ChangeState(gocEnemyHsm, 1);
 
                     return 1;
                 };
@@ -396,7 +397,7 @@ namespace app
                     if (!gocEnemyTarget)
                         return 0;
 
-                    obj->SetEnableDamageCollision(true);
+                    //obj->SetEnableDamageCollision(true);
                     obj->SetScale(1);
 
                     int* gocAnimation = GameObject::GetGOC(obj, GOCAnimationString);
@@ -427,7 +428,7 @@ namespace app
                         if (!gocEnemyHsm)
                             return 0;
 
-                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 2);
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 3);
                         return 1;
                     }
 
@@ -440,17 +441,19 @@ namespace app
                     fnd::HFrame* center = EnemyBase::GetCenterPositionFrame(obj);
                     math::CalculatedTransform::GetTranslation(&center->Transform, &objectPos);
                     csl::math::Vector3 rotX = *(csl::math::Vector3*)&center->Transform.data[1][0];
-                    csl::math::Vector3 rotY = *(csl::math::Vector3*) &center->Transform.data[2][0];
-                    
+                    csl::math::Vector3 rotY = *(csl::math::Vector3*)&center->Transform.data[2][0];
+
+                    // Fix Rotation Issues in the 2nd Warp Area
                     math::Vector3Subtract(&playerPos, &objectPos, &playerPos);
                     csl::math::Vector3NormalizeZero(&playerPos, &playerPos);
                     float xDot = math::Vector3DotProduct(&rotX, &playerPos);
                     xDot = math::Clamp(xDot, -1, 1);
                     float xMin = csl::math::Min(acosf(xDot), 1.2217305f);
-
                     float yDot = math::Vector3DotProduct(&rotY, &playerPos);
-                    obj->HeadRotation = csl::math::Lerp(obj->HeadRotation, csl::math::Select(abs(xMin), yDot, abs(xMin)), (deltaTime * 5));
+                    obj->HeadRotation = csl::math::Lerp(obj->HeadRotation, csl::math::Select(yDot, abs(xMin), -abs(xMin)), (deltaTime * 5));
+
                     UpdateHeadPosture(obj, true);
+                    
                     return 1;
                 };
             };
@@ -458,6 +461,7 @@ namespace app
             class ShiftIdle
             {
                 char field_00[20];
+                float Time;
             public:
                 virtual ~ShiftIdle() {};
                 virtual int Trigger(EnemyPiranhaPlant* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
@@ -466,9 +470,41 @@ namespace app
                 virtual int Leave(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyPiranhaPlant* obj, float a2) { return EnemyState::Update(this, obj, a2); };
                 virtual int ProcessMessage(EnemyPiranhaPlant* obj, int a2) { return 0; };
-                virtual int OnEnter(EnemyPiranhaPlant* obj, int a2) { return 0; };
+                virtual int OnEnter(EnemyPiranhaPlant* obj, int a2)
+                {
+                    int* gocAnimation = GameObject::GetGOC(obj, GOCAnimationString);
+                    if (!gocAnimation)
+                        return 0;
+
+                    Time = 0;
+
+                    obj->SetEnableDamageCollision(false);
+                    if (obj->Direction & 1)
+                        game::GOCAnimationScript::ChangeAnimation(gocAnimation, "IDLE_L");
+                    else
+                        game::GOCAnimationScript::ChangeAnimation(gocAnimation, "IDLE_R");
+
+                    return 1;
+                };
                 virtual int OnLeave(EnemyPiranhaPlant* obj, int a2) { return 0; };
-                virtual int Step(EnemyPiranhaPlant* obj, float a2) { return 0; };
+                virtual int Step(EnemyPiranhaPlant* obj, float deltaTime)
+                {
+                    int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                    if (!gocEnemyHsm)
+                        return 0;
+
+                    obj->HeadRotation = csl::math::Lerp(obj->HeadRotation,
+                        csl::math::Select(obj->HeadRotation, fabs(1.2217305f), -fabs(1.2217305f)), (deltaTime * 5));
+                    UpdateHeadPosture(obj, false);
+
+                    Time += deltaTime;
+                    if (Time < 0.1f)
+                        obj->SetScale(-(0.6f * sinf(1.5707964f * (Time / 0.1f)) - 1));
+                    else
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 0);
+
+                    return 1;
+                };
             };
 
             class Dead
@@ -529,12 +565,6 @@ namespace app
                                 game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_R");
                         }
                     }
-
-                    Eigen::Quaternion<float> q;
-                    q = Eigen::AngleAxis<float>(3.1415927f, Eigen::Vector3f(0, 1, 0));
-                    csl::math::Quaternion rotation { q.x(), q.y(), q.z(), q.w() };
-                    fnd::HFrame* center = EnemyBase::GetCenterPositionFrame(obj);
-                    fnd::HFrame::SetLocalRotation(center, &rotation);
                 }
             }
         };
@@ -615,7 +645,27 @@ namespace app
                 if (!(Direction & 4))
                     fabs(multiplier);
 
-                printf("hi");
+                for (size_t i = 2; i <= 5; i++)
+                {
+                    math::Transform transform{};
+                    char buffer[8]{};
+
+                    snprintf(buffer, 8, "Body%d", i);
+                    fnd::GOCVisualModel::GetNodeTransform(gocVisual, 2, buffer, &transform);
+
+                    Eigen::Quaternion<float> q;
+                    q = Eigen::AngleAxis<float>(multiplier, Eigen::Vector3f(0, 1, 0));
+                    csl::math::Quaternion rotation{ q.x(), q.y(), q.z(), q.w() };
+                    transform.Rotation = rotation;
+
+                    fnd::GOCVisualModel::SetNodeTransform(gocVisual, 2, buffer, &transform);
+                }
+
+                math::Transform transform{};
+                fnd::GOCVisualModel::GetNodeTransform(gocVisual, 1, "Head", &transform);
+                csl::math::Matrix34 transformMatrix{};
+                math::Transform::GetTransformMatrix(&transform, &transformMatrix);
+                fnd::HFrame::SetLocalTransform(&Parent, &transformMatrix);
             }
 
             inline static void* AnimCallbackBridge_Initialize(csl::fnd::IAllocator* pAllocator)
