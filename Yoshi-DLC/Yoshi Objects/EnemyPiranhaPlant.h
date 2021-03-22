@@ -67,7 +67,7 @@ namespace app
         fnd::HFrame Parent{};
         float HeadRotation{};
         float Scale{};
-        int field_678{};
+        xgame::MsgDamage* Message{};
         int Direction{};
 
         EnemyPiranhaPlant()
@@ -75,7 +75,6 @@ namespace app
             AnimationListener.field_20 = 2;
             fnd::HFrame::__ct(&Parent);
             Scale = 1;
-            field_678 = -1;
             HeadRotation = -(3.1415927f * 0.5f);
         }
 
@@ -280,6 +279,7 @@ namespace app
                     else
                         return false;
                 };
+
                 virtual int OnEnter(EnemyPiranhaPlant* obj, int a2)
                 {
                     GocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
@@ -323,6 +323,7 @@ namespace app
                 bool ProcMsgDamage(EnemyPiranhaPlant* obj, xgame::MsgDamage& message)
                 {
                     csl::math::Vector3 position{};
+                    obj->Message = &message;
 
                     fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
                     math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
@@ -348,7 +349,14 @@ namespace app
                 virtual int Enter(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
                 virtual int Leave(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyPiranhaPlant* obj, float a2) { return EnemyState::Update(this, obj, a2); };
-                virtual bool ProcessMessage(EnemyPiranhaPlant* obj, int a2) { return 0; };
+                virtual bool ProcessMessage(EnemyPiranhaPlant* obj, fnd::MessageNew& message)
+                {
+                    if (message.Type == fnd::PROC_MSG_DAMAGE)
+                        return ProcMsgDamage(obj, (xgame::MsgDamage&)message);
+                    else
+                        return false;
+                };
+
                 virtual int OnEnter(EnemyPiranhaPlant* obj, int a2)
                 {
                     Time = 0;
@@ -378,6 +386,24 @@ namespace app
 
                     return 1;
                 };
+
+            private:
+                bool ProcMsgDamage(EnemyPiranhaPlant* obj, xgame::MsgDamage& message)
+                {
+                    csl::math::Vector3 position{};
+                    obj->Message = &message;
+
+                    fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
+                    math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
+                    xgame::MsgDamage::SetReply(&message, &position, 1);
+
+                    int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                    if (!gocEnemyHsm)
+                        return false;
+
+                    GOCEnemyHsm::ChangeState(gocEnemyHsm, 4);
+                    return true;
+                }
             };
             
             class Attack
@@ -390,7 +416,14 @@ namespace app
                 virtual int Enter(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
                 virtual int Leave(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyPiranhaPlant* obj, float a2) { return EnemyState::Update(this, obj, a2); };
-                virtual int ProcessMessage(EnemyPiranhaPlant* obj, int a2) { return 0; };
+                virtual bool ProcessMessage(EnemyPiranhaPlant* obj, fnd::MessageNew& message)
+                {
+                    if (message.Type == fnd::PROC_MSG_DAMAGE)
+                        return ProcMsgDamage(obj, (xgame::MsgDamage&)message);
+                    else
+                        return false;
+                };
+
                 virtual int OnEnter(EnemyPiranhaPlant* obj, int a2)
                 {
                     int* gocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
@@ -456,6 +489,24 @@ namespace app
                     
                     return 1;
                 };
+
+            private:
+                bool ProcMsgDamage(EnemyPiranhaPlant* obj, xgame::MsgDamage& message)
+                {
+                    csl::math::Vector3 position{};
+                    obj->Message = &message;
+
+                    fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
+                    math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
+                    xgame::MsgDamage::SetReply(&message, &position, 1);
+
+                    int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                    if (!gocEnemyHsm)
+                        return false;
+
+                    GOCEnemyHsm::ChangeState(gocEnemyHsm, 4);
+                    return true;
+                }
             };
 
             class ShiftIdle
@@ -469,7 +520,14 @@ namespace app
                 virtual int Enter(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
                 virtual int Leave(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyPiranhaPlant* obj, float a2) { return EnemyState::Update(this, obj, a2); };
-                virtual int ProcessMessage(EnemyPiranhaPlant* obj, int a2) { return 0; };
+                virtual bool ProcessMessage(EnemyPiranhaPlant* obj, fnd::MessageNew& message)
+                {
+                    if (message.Type == fnd::PROC_MSG_DAMAGE)
+                        return ProcMsgDamage(obj, (xgame::MsgDamage&)message);
+                    else
+                        return false;
+                };
+
                 virtual int OnEnter(EnemyPiranhaPlant* obj, int a2)
                 {
                     int* gocAnimation = GameObject::GetGOC(obj, GOCAnimationString);
@@ -505,11 +563,33 @@ namespace app
 
                     return 1;
                 };
+
+            private:
+                bool ProcMsgDamage(EnemyPiranhaPlant* obj, xgame::MsgDamage& message)
+                {
+                    csl::math::Vector3 position{};
+                    obj->Message = &message;
+
+                    fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
+                    math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
+                    xgame::MsgDamage::SetReply(&message, &position, 1);
+
+                    int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                    if (!gocEnemyHsm)
+                        return false;
+
+                    GOCEnemyHsm::ChangeState(gocEnemyHsm, 4);
+                    return true;
+                }
             };
 
             class Dead
             {
                 char field_00[20];
+                int State;
+                float Time;
+                float AbsoluteRotation;
+                float Scale;
             public:
                 virtual ~Dead() {};
                 virtual int Trigger(EnemyPiranhaPlant* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
@@ -518,9 +598,113 @@ namespace app
                 virtual int Leave(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyPiranhaPlant* obj, float a2) { return EnemyState::Update(this, obj, a2); };
                 virtual int ProcessMessage(EnemyPiranhaPlant* obj, int a2) { return 0; };
-                virtual int OnEnter(EnemyPiranhaPlant* obj, int a2) { return 0; };
+                virtual int OnEnter(EnemyPiranhaPlant* obj, int a2)
+                {
+                    obj->SetEnableCollision(false);
+                    ChangeSubState(0);                    
+                    
+                    int* gocAnimation = GameObject::GetGOC(obj, GOCAnimationString);
+                    if (!gocAnimation)
+                        return 0;
+
+                    if (obj->Direction & 1)
+                        game::GOCAnimationScript::ChangeAnimation(gocAnimation, "DAMAGE_L");
+                    else
+                        game::GOCAnimationScript::ChangeAnimation(gocAnimation, "DAMAGE_R");
+
+                    obj->Direction |= 4;
+
+                    return 1;
+                };
                 virtual int OnLeave(EnemyPiranhaPlant* obj, int a2) { return 0; };
-                virtual int Step(EnemyPiranhaPlant* obj, float a2) { return 0; };
+                virtual int Step(EnemyPiranhaPlant* obj, float deltaTime)
+                {
+                    Time += deltaTime;
+
+                    if (!State)
+                    {
+                        float multiplier = math::Clamp(Time / 0.2, 0, 1);
+                        obj->HeadRotation = (-0.34906584 - AbsoluteRotation) *
+                            math::Clamp(sinf(multiplier * 1.5707964), 0, 1) + AbsoluteRotation;
+
+                        if (multiplier >= 1)
+                        {
+                            ChangeSubState(1);
+                            return 1;
+                        }
+                    }
+                    else if (State == 1)
+                    {
+                        int deviceTag[3]{};
+
+                        if (Time < 0.4f)
+                            return 1;
+
+                        int* gocVisual = GameObject::GetGOC(obj, GOCVisual);
+                        if (!gocVisual)
+                            return 0;
+
+                        int* gocSound = GameObject::GetGOC(obj, GOCSoundString);
+                        if (!gocSound)
+                            return 0;
+
+                        game::GOCSound::Play3D(gocSound, deviceTag, "enm_pakkunflower_down", 0);
+                        ChangeSubState(2);
+                        return 1;
+                    }
+                    else if (State == 2)
+                    {
+                        float multiplier = math::Clamp(Time / 0.6f, 0, 1);
+                        obj->SetScale(((0.2 - obj->Scale) * multiplier) + obj->Scale);
+                        if (multiplier >= 1)
+                        {
+                            ChangeSubState(3);
+                            return 1;
+                        }
+                    }
+                    else if (State == 3)
+                    {
+                        enemy::DeadEffectCInfo effectInfo{};
+                        math::Transform transform{};
+
+                        fnd::HFrame* center = EnemyBase::GetCenterPositionFrame(obj);
+                        csl::math::Vector3 position = *(csl::math::Vector3*)&center->Transform.data[3][0];
+                        ObjUtil::AddScore(obj, "PIRANHAPLANT", obj->Message);
+                        
+                        enemy::DeadEffectCInfo::__ct(&effectInfo);
+                        enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, obj->Message);
+                        enemy::DeadEffectCInfo::SetYoshiIsland(&effectInfo);
+
+                        int* gocVisual = GameObject::GetGOC(obj, GOCVisual);
+                        if (!gocVisual)
+                            return 0;
+
+                        fnd::GOCVisualModel::GetNodeTransform(gocVisual, 1, "Mouth", &transform);
+                        math::Vector3Scale(&transform.Position, 0.2, &transform.Position);
+                        math::Vector3Add(&transform.Position, (csl::math::Vector3*) & center->Transform.data[3][0], &transform.Position);
+                        transform.SetFlag(1);
+
+                        effectInfo.field_20.data[3][0] = transform.Position.X;
+                        effectInfo.field_20.data[3][1] = transform.Position.Y;
+                        effectInfo.field_20.data[3][2] = transform.Position.Z;
+                        effectInfo.field_62 |= 1;
+
+                        void* enemyManager = EnemyManager::GetService((GameDocument*)obj->field_24[1]);
+                        EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
+                        EnemyBase::ProcMission(obj, (fnd::Message*)obj->Message);
+                        CSetObjectListener::SetStatusRetire(obj);
+                        GameObject::Kill(obj);
+                        
+                        return 1;
+                    }
+                };
+
+            private:
+                void ChangeSubState(int stateID)
+                {
+                    Time = 0;
+                    State = stateID;
+                }
             };
 
         private:
@@ -587,6 +771,16 @@ namespace app
             {
                 if (Direction & 8)
                     EnemyBase::SendTouchDamage(this, (xgame::MsgDamage&)message);
+            }
+
+            void SetEnableCollision(int isEnable)
+            {
+                int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+                if (!gocCollider)
+                    return;
+            
+                ObjUtil::SetEnableColliShape(gocCollider, 2, isEnable);
+                ObjUtil::SetEnableColliShape(gocCollider, 1, isEnable);
             }
 
             void SetEnableDamageCollision(bool isEnable)

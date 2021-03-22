@@ -73,5 +73,12 @@ namespace app
 
             return result;
         }
+
+        static void MatrixConcat(Matrix34* a, Matrix34* b, Matrix34* ab)
+        {
+            for (size_t i = 0; i < 4; i++)
+                for (size_t j = 0; j < 4; j++)
+                    ab->data[i][j] = a->data[i][j] * b->data[i][j];
+        }
     }
 }
