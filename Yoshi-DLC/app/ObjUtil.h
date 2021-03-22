@@ -25,6 +25,7 @@ namespace app
 		inline static FUNCTION_PTR(int, __cdecl, GetPlayerActorID, ASLR(0x0073DDF0), GameDocument* gameDocument, int playerNo);
 		inline static FUNCTION_PTR(int, __cdecl, SetPropertyLockonTarget, ASLR(0x0073D280), GameObject* This);
 		inline static FUNCTION_PTR(int, __cdecl, SetEnableColliShape, ASLR(0x0073D8D0), int* This, int colliNo, bool isEnable);
+		inline static FUNCTION_PTR(bool, __cdecl, CheckShapeUserID, ASLR(0x0073D8B0), int a1, int a2);
 
 		static int SendMessageImmToPlayer(GameObject* gameObject, int playerNo, void* message)
 		{

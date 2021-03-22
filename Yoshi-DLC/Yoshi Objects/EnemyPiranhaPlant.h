@@ -94,7 +94,7 @@ namespace app
             
             EnemyPiranhaPlantData* data = (EnemyPiranhaPlantData*)CSetAdapter::GetData(*(int**)&(field_031C[0xC]));
             EnemyPiranhaPlantInfo* info = (EnemyPiranhaPlantInfo*)ObjUtil::GetObjectInfo(gameDocument, "EnemyPiranhaPlantInfo");
-            Direction = !data->Direction;
+            Direction |= !data->Direction;
 
             fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
             if (!gocTransform)
@@ -176,25 +176,19 @@ namespace app
                 game::CollisionObjCInfo::__ct(&collisionInfo);
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
                 collisionInfo.MotionType = 2;
-                collisionInfo.field_48 = 0;
-                collisionInfo.field_44 = 0;
-                collisionInfo.field_54 = 0;
                 collisionInfo.Radius = data->SearchRadius;
                 ObjUtil::SetupCollisionFilter(6, &collisionInfo);
                 collisionInfo.field_0C = 0;
-                collisionInfo.field_04 |= 3;
+                collisionInfo.field_04 = 3;
                 game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 
                 /* Unknown Collision */
                 game::CollisionObjCInfo::__ct(&collisionInfo);
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
                 collisionInfo.MotionType = 2;
-                collisionInfo.field_48 = 0;
-                collisionInfo.field_44 = 0;
-                collisionInfo.field_54 = 0;
                 collisionInfo.Radius = 6;
                 ObjUtil::SetupCollisionFilter(9, &collisionInfo);
-                collisionInfo.field_0C = 2;
+                collisionInfo.field_0C = 1;
                 collisionInfo.field_04 |= 1;
                 collisionInfo.Parent = EnemyBase::GetCenterPositionFrame(this);
                 game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
@@ -204,9 +198,6 @@ namespace app
                 game::CollisionObjCInfo::__ct(&collisionInfo);
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
                 collisionInfo.MotionType = 2;
-                collisionInfo.field_48 = 0;
-                collisionInfo.field_44 = 0;
-                collisionInfo.field_54 = 0;
                 collisionInfo.Radius = 3;
                 ObjUtil::SetupCollisionFilter(9, &collisionInfo);
                 collisionInfo.field_0C = 2;
@@ -272,6 +263,7 @@ namespace app
                 virtual int Enter(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
                 virtual int Leave(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyPiranhaPlant* obj, float a2) { return EnemyState::Update(this, obj, a2); };
+
                 virtual bool ProcessMessage(EnemyPiranhaPlant* obj, fnd::MessageNew& message)
                 {
                     if (message.Type == fnd::PROC_MSG_DAMAGE)
@@ -299,6 +291,7 @@ namespace app
 
                     return 1;
                 };
+
                 virtual int OnLeave(EnemyPiranhaPlant* obj, int a2) { return 0; };
 
                 virtual int Step(EnemyPiranhaPlant* obj, float deltaTime)
@@ -365,6 +358,7 @@ namespace app
                 };
 
                 virtual int OnLeave(EnemyPiranhaPlant* obj, int a2) { return 0; };
+
                 virtual int Step(EnemyPiranhaPlant* obj, float deltaTime)
                 {
                     UpdateHeadPosture(obj, false);
@@ -416,6 +410,7 @@ namespace app
                 virtual int Enter(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
                 virtual int Leave(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyPiranhaPlant* obj, float a2) { return EnemyState::Update(this, obj, a2); };
+
                 virtual bool ProcessMessage(EnemyPiranhaPlant* obj, fnd::MessageNew& message)
                 {
                     if (message.Type == fnd::PROC_MSG_DAMAGE)
@@ -430,7 +425,7 @@ namespace app
                     if (!gocEnemyTarget)
                         return 0;
 
-                    //obj->SetEnableDamageCollision(true);
+                    obj->SetEnableDamageCollision(true);
                     obj->SetScale(1);
 
                     int* gocAnimation = GameObject::GetGOC(obj, GOCAnimationString);
@@ -444,6 +439,7 @@ namespace app
 
                     return true;
                 };
+
                 virtual int OnLeave(EnemyPiranhaPlant* obj, int a2) { return 0; };
                 
                 virtual int Step(EnemyPiranhaPlant* obj, float deltaTime)
@@ -769,7 +765,7 @@ namespace app
 
             void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
             {
-                if (Direction & 8)
+                if (Direction & 8 && !ObjUtil::CheckShapeUserID(message.field_18, 0))
                     EnemyBase::SendTouchDamage(this, (xgame::MsgDamage&)message);
             }
 
