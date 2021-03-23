@@ -605,7 +605,7 @@ namespace app
             if (gocTransform)
             {
                 csl::math::Vector3 translation{};
-                enemy::DeadEffectCInfo effectInfo;
+                enemy::DeadEffectCInfo effectInfo{};
 
                 math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
                 xgame::MsgDamage::SetReply(message, &translation, 1);

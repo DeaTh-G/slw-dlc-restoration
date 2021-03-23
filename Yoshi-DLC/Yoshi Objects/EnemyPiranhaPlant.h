@@ -435,7 +435,7 @@ namespace app
                     if (obj->Direction & 1)
                         game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_L");
                     else
-                        game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_R");
+                        game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_L");
 
                     return true;
                 };
@@ -720,7 +720,7 @@ namespace app
                             if (obj->Direction & 1)
                                 game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_L");
                             else
-                                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_R");
+                                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_L");
                         }
                     }
 
@@ -742,7 +742,7 @@ namespace app
                             if (obj->Direction & 1)
                                 game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_L");
                             else
-                                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_R");
+                                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_L");
                         }
                     }
                 }
