@@ -56,6 +56,7 @@
 #include "app/fnd/GOComponent.h"
 #include "app/fnd/GOCVisualContainer.h"
 #include "app/fnd/MessageManager.h"
+#include "app/fnd/TexSrtControlHH.h"
 #include "app/ObjUtil.h"
 #include "app/game/GOCLauncher.h"
 

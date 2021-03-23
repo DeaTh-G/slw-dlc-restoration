@@ -63,7 +63,7 @@ namespace app
 
     public:
         AnimListener AnimationListener{};
-        int field_53C{};
+        void* TexSrtControl{};
         fnd::HFrame Parent{};
         float HeadRotation{};
         float Scale{};
@@ -127,9 +127,14 @@ namespace app
                 if (gocAnimation)
                 {
                     animation::AnimationResContainer* animation = &(info->AnimationContainer);
+                    int texSrtAnimation[2]{};
+                    texSrtAnimation[0] = info->TexSrtAnimation;
+                    texSrtAnimation[1] = 1;
 
                     game::GOCAnimationScript::Setup(gocAnimation, (int*)&animation);
                     fnd::GOCVisualModel::AttachAnimation(gocVisual, gocAnimation);
+                    TexSrtControl = fnd::GOCVisualModel::SetTexSrtAnimation(gocVisual, texSrtAnimation);
+                    fnd::TexSrtControlHH::SetSpeed(TexSrtControl, 0);
 
                     if (Direction)
                         game::GOCAnimationScript::SetAnimation(gocAnimation, "IDLE_L");
@@ -435,7 +440,7 @@ namespace app
                     if (obj->Direction & 1)
                         game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_L");
                     else
-                        game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_L");
+                        game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_R");
 
                     return true;
                 };
@@ -644,6 +649,8 @@ namespace app
                         if (!gocSound)
                             return 0;
 
+                        fnd::TexSrtControlHH::SetSpeed(obj->TexSrtControl, 1);
+
                         game::GOCSound::Play3D(gocSound, deviceTag, "enm_pakkunflower_down", 0);
                         ChangeSubState(2);
                         return 1;
@@ -720,7 +727,7 @@ namespace app
                             if (obj->Direction & 1)
                                 game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_L");
                             else
-                                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_L");
+                                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_R");
                         }
                     }
 
@@ -742,7 +749,7 @@ namespace app
                             if (obj->Direction & 1)
                                 game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_L");
                             else
-                                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_L");
+                                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK_R");
                         }
                     }
                 }
