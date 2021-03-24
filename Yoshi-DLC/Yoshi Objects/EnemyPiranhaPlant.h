@@ -174,7 +174,7 @@ namespace app
             if (gocCollider)
             {
                 int shapeCount = 3;
-                app::game::ColliSphereShapeCInfo collisionInfo;
+                app::game::ColliSphereShapeCInfo collisionInfo{};
                 game::GOCCollider::Setup(gocCollider, &shapeCount);
 
                 // Search Collider
@@ -184,7 +184,7 @@ namespace app
                 collisionInfo.Radius = data->SearchRadius;
                 ObjUtil::SetupCollisionFilter(6, &collisionInfo);
                 collisionInfo.field_0C = 0;
-                collisionInfo.field_04 = 3;
+                collisionInfo.field_04 |= 3;
                 game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 
                 /* Unknown Collision */
@@ -192,6 +192,9 @@ namespace app
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
                 collisionInfo.MotionType = 2;
                 collisionInfo.Radius = 6;
+                collisionInfo.field_44 = 0;
+                collisionInfo.field_48 = 0;
+                collisionInfo.field_54 = 0;
                 ObjUtil::SetupCollisionFilter(9, &collisionInfo);
                 collisionInfo.field_0C = 1;
                 collisionInfo.field_04 |= 1;
@@ -204,6 +207,9 @@ namespace app
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
                 collisionInfo.MotionType = 2;
                 collisionInfo.Radius = 3;
+                collisionInfo.field_44 = 0;
+                collisionInfo.field_48 = 0;
+                collisionInfo.field_54 = 0;
                 ObjUtil::SetupCollisionFilter(9, &collisionInfo);
                 collisionInfo.field_0C = 2;
                 collisionInfo.field_04 |= 1;
@@ -672,10 +678,10 @@ namespace app
 
                         fnd::HFrame* center = EnemyBase::GetCenterPositionFrame(obj);
                         csl::math::Vector3 position = *(csl::math::Vector3*)&center->Transform.data[3][0];
-                        ObjUtil::AddScore(obj, "PIRANHAPLANT", obj->Message);
+                        ObjUtil::AddScore(obj, "PIRANHAPLANT", (fnd::Message*)obj->Message);
                         
                         enemy::DeadEffectCInfo::__ct(&effectInfo);
-                        enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, obj->Message);
+                        enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, (fnd::Message*)obj->Message);
                         enemy::DeadEffectCInfo::SetYoshiIsland(&effectInfo);
 
                         int* gocVisual = GameObject::GetGOC(obj, GOCVisual);
@@ -773,7 +779,11 @@ namespace app
             void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
             {
                 if (Direction & 8 && !ObjUtil::CheckShapeUserID(message.field_18, 0))
-                    EnemyBase::SendTouchDamage(this, (xgame::MsgDamage&)message);
+                {
+                    csl::math::Vector3 position{};
+                    xgame::MsgDamage msgDamage{ 3, 8, 3, &message, &position };
+                    SendMessageImm(message.ActorID, &msgDamage);
+                }
             }
 
             void SetEnableCollision(int isEnable)

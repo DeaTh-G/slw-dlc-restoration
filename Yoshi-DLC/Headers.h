@@ -45,6 +45,7 @@
 #include "app/CSetObjectListener.h"
 #include "app/enemy/DeadEffectCInfo.h"
 #include "app/EnemyBlowOffObjectCInfo.h"
+#include "app/xgame/MsgHitEventCollision.h"
 #include "app/xgame/MsgDamage.h"
 #include "app/EnemyBase.h"
 #include "app/EnemyManager.h"
@@ -114,7 +115,6 @@
 #include "app/xgame/MsgStopGameTimer.h"
 #include "app/xgame/MsgTakeObject.h"
 #include "app/xgame/MsgWarpNewArea.h"
-#include "app/xgame/MsgHitEventCollision.h"
 #include "app/xgame/MsgLeaveEventCollision.h"
 #include "app/xgame/MsgDlcChangeEggRotation.h"
 

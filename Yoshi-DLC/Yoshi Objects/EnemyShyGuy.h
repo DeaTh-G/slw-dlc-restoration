@@ -609,11 +609,11 @@ namespace app
 
                 math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
                 xgame::MsgDamage::SetReply(message, &translation, 1);
-                ObjUtil::AddScore((GameObject*)(this - 8), "SHYGUY", message);
+                ObjUtil::AddScore((GameObject*)(this - 8), "SHYGUY", (fnd::Message*)message);
 
                 enemy::DeadEffectCInfo::__ct(&effectInfo);
                 GameObjectHandleBase::__ct(&effectInfo, (GameObject*)(this - 8));
-                enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, message);
+                enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, (fnd::Message*)message);
                 enemy::DeadEffectCInfo::SetYoshiIsland(&effectInfo);
 
                 math::Transform transform{};
@@ -629,7 +629,7 @@ namespace app
 
                 void* enemyManager = EnemyManager::GetService(*(GameDocument**)(this + 0x20));
                 EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
-                EnmBase::ProcMission((GameObject*)(this - 8), message);
+                EnmBase::ProcMission((GameObject*)(this - 8), (fnd::Message*)message);
                 CSetObjectListener::SetStatusRetire((GameObject*)(this - 8));
                 GameObject::Kill((GameObject*)(this - 8));
             }
