@@ -770,7 +770,7 @@ namespace app
 
                 if (message.field_28 == 3)
                     GOCEnemyHsm::Dispatch(gocEnemyHsm, (fnd::MessageNew*)&message);
-                else if (message.field_54 = 3)
+                else if (message.field_54 == 3)
                     if (ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0) &&
                         Transform.Data[0x24] == 7)
                         GOCEnemyHsm::Dispatch(gocEnemyHsm, (fnd::MessageNew*)&message);
