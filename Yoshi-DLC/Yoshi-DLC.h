@@ -13,8 +13,8 @@
 // This class is exported from the dll
 class YOSHIDLC_API CYoshiDLC {
 public:
-	CYoshiDLC(void);
-	// TODO: add your methods here.
+    CYoshiDLC(void);
+    // TODO: add your methods here.
 };
 
 extern YOSHIDLC_API int nYoshiDLC;

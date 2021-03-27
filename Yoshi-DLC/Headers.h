@@ -1,7 +1,6 @@
 #pragma once
 
 #include "framework.h"
-#include "LWStructs.h"
 #include "LWVariables.h"
 
 // csl
@@ -68,6 +67,7 @@
 #include "app/game/GOCCollider.h"
 #include "app/game/GOCEffect.h"
 #include "app/game/GOCGravity.h"
+#include "app/game/HudLayerController.h"
 #include "app/game/GOCHud.h"
 #include "app/game/GOCMotor.h"
 #include "app/game/GOCMotorRotate.h"
@@ -83,6 +83,8 @@
 #include "app/game/PathEvaluator.h"
 #include "app/game/MoveController.h"
 #include "app/game/MoveBound.h"
+#include "app/GameMode.h"
+#include "app/GameModeStage.h"
 #include "app/GOCEnemyTarget.h"
 #include "app/GOCEnemyHsm.h"
 #include "app/SetShotInfo.h"
@@ -131,6 +133,7 @@
 // Yoshi Objects
 #include "app/egg.h"
 
+#include "Yoshi Objects/HudWipeCrayPipe.h"
 #include "Yoshi Objects/EnemyPiranhaPlant.h"
 #include "Yoshi Objects/EnemyShyGuy.h"
 #include "Yoshi Objects/EggManager.h"

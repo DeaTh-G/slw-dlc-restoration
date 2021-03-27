@@ -262,7 +262,7 @@ namespace app
 				warpNewAreaMessage.TargetPosition = targetPosition;
 				warpNewAreaMessage.TargetRotation = targetRotation;
 				warpNewAreaMessage.field_40 = 5;
-				warpNewAreaMessage.field_48 = 1;
+				warpNewAreaMessage.field_45 = 1;
 				ObjUtil::SendMessageImmToGameActor((GameObject*)(this - 8), (int*)&warpNewAreaMessage);
 
 				xgame::MsgExtendPlayer::__dt((int*)&notifyObjevtEventMessage);

@@ -7,7 +7,7 @@ namespace app
 		class GOCHud
 		{
 		public:
-			struct alignas(4) Description
+			struct Description
 			{
 				const char* field_00;
 				int field_04;
@@ -19,10 +19,29 @@ namespace app
 				int field_0C;
 				int field_10;
 				int field_14;
+				int field_18;
 			};
 
-			inline static FUNCTION_PTR(void, __thiscall, Setup, ASLR(0x004BFF90), GOCHud* This, Description* hudDescriptor);
-			inline static FUNCTION_PTR(int* , __thiscall, SetupProject, ASLR(0x004BFA20), GOCHud* This, int* a2, const char* a3, int* packFile);
+		private:
+			inline static FUNCTION_PTR(void, __thiscall, f_Setup, ASLR(0x004BFF90), GOCHud* This, Description* hudDescriptor);
+			inline static FUNCTION_PTR(int*, __thiscall, f_SetupProject, ASLR(0x004BFA20), GOCHud* This, int* a2, const char* fileName, int packFile);
+			inline static FUNCTION_PTR(HudLayerController*, __thiscall, f_CreateLayerController, ASLR(0x004BFEB0), GOCHud* This, int a1, const char* sceneName, const char* layerName, int a4);
+
+		public:
+			void Setup(Description* hudDescriptor)
+			{
+				f_Setup(this, hudDescriptor);
+			}
+
+			int* SetupProject(int* a2, const char* fileName, int packFile)
+			{
+				return f_SetupProject(this, a2, fileName, packFile);
+			}
+
+			HudLayerController* CreateLayerController(int a1, const char* sceneName, const char* layerName, int a4)
+			{
+				return f_CreateLayerController(this, a1, sceneName, layerName, a4);
+			}
 		};
 	}
 }

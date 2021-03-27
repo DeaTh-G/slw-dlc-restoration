@@ -144,6 +144,7 @@ void Initialize()
     app::CObjDroppedRing::ProcMsgHitEventCollision();
     app::EnemyBlowOffObject::OnDead();
     app::Player::CPlayer::UpdatePlayerInformation();
+    app::GameModeStage::StateWarp();
 }
 
 extern "C"
