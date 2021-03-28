@@ -17,8 +17,9 @@ namespace app
 
         void Initialize(GameDocument& gameDocument) override
         {
-            int packFile;
+            int packFile = 0;
             ObjUtil::GetPackFile(&packFile, ObjUtil::GetStagePackName(&gameDocument));
+
             ObjUtil::GetModelResource(&Model, "zdlc02_obj_yoshicoin", &packFile);
         }
 

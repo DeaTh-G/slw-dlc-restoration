@@ -53,10 +53,6 @@ void Initialize()
 
     auto create_ObjYoshiSpecialFlower = &app::create_ObjYoshiSpecialFlower;
     auto createObjInfo_ObjYoshiSpecialFlowerInfo = &app::createObjInfo_ObjYoshiSpecialFlowerInfo;
-    auto ObjYoshiSpecialFlower__ProcessMessage = &app::ObjYoshiSpecialFlower::ProcessMessage;
-    auto ObjYoshiSpecialFlower__AddCallback = &app::ObjYoshiSpecialFlower::AddCallback;
-    auto ObjYoshiSpecialFlowerInfo__Initialize = &app::ObjYoshiSpecialFlowerInfo::Initialize;
-    auto ObjYoshiSpecialFlowerInfo__GetInfoName = &app::ObjYoshiSpecialFlowerInfo::GetInfoName;
 
     auto create_ObjCrayPipe = &app::create_ObjCrayPipe;
     auto ObjCrayPipe__ProcessMessage = &app::ObjCrayPipe::ProcessMessage;
@@ -98,10 +94,6 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2C0F4), *(void**)&create_ObjRotateLift);
     WRITE_FUNCTION(ASLR(0x00D2C0EF), *(void**)&createObjInfo_ObjRotateLiftInfo);
 
-    WRITE_FUNCTION(ASLR(0x00D94FC4), *(void**)&ObjYoshiSpecialFlower__ProcessMessage);
-    WRITE_FUNCTION(ASLR(0x00D94FD8), *(void**)&ObjYoshiSpecialFlower__AddCallback);
-    WRITE_FUNCTION(ASLR(0x00D9500C), *(void**)&ObjYoshiSpecialFlowerInfo__Initialize);
-    WRITE_FUNCTION(ASLR(0x00D95014), *(void**)&ObjYoshiSpecialFlowerInfo__GetInfoName);
     WRITE_FUNCTION(ASLR(0x00D2C284), *(void**)&create_ObjYoshiSpecialFlower);
     WRITE_FUNCTION(ASLR(0x00D2C27F), *(void**)&createObjInfo_ObjYoshiSpecialFlowerInfo);
 
