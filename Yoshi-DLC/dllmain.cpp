@@ -4,6 +4,8 @@
 #include "LostCodeLoader.h"
 #include "Dependencies/INIReader.h"
 
+bool DisablePipeTransition = false;
+
 char IsYoshiIslandStage()
 {
     const char* packFileName = app::ObjUtil::GetStagePackName((app::GameDocument*)*app::Document);
@@ -144,7 +146,9 @@ void Initialize()
     app::CObjDroppedRing::ProcMsgHitEventCollision();
     app::EnemyBlowOffObject::OnDead();
     app::Player::CPlayer::UpdatePlayerInformation();
-    app::GameModeStage::StateWarp();
+
+    if (!DisablePipeTransition)
+        app::GameModeStage::StateWarp();
 }
 
 extern "C"
@@ -167,7 +171,7 @@ extern "C"
         //IsPiranhaPlantShadowOn = reader->GetBoolean("Shadows", "isPiranhaPlantShadowOn", true);
         IsShyGuyShadowOn = reader->GetBoolean("Shadows", "isShyGuyShadowOn", false);
 
-        //PlayPipeOutTransition = reader->GetBoolean("Misc", "playPipeOutTransition", true);
+        DisablePipeTransition = reader->GetBoolean("Misc", "disablePipeTransition", true);
         //ScoreToUnlockLevel = reader->GetInteger("Misc", "scoreToUnlockLevel", 1000000);
 
         Initialize();
