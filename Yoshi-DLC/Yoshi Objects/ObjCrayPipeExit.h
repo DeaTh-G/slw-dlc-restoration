@@ -16,13 +16,15 @@ namespace app
 			*(int*)this = ASLR(0x00D947C0);
 			*((int*)this + 2) = ASLR(0x00D947A4);
 
+			*((float*)(this + 0x398)) = 0;
+
 			/* OutwardsDirection */
 			*((int*)(this + 0x3A4)) = false;
 
 			*((int*)(this + 0x3A8)) = 0;
 
 			/* IsNotMoving */
-			*((bool*)(this + 0x3AC)) = true;
+			*((bool*)(this + 0x3AC)) = false;
 
 			/* IsInPosition */
 			*((bool*)(this + 0x3AD)) = false;
@@ -71,8 +73,9 @@ namespace app
 			fnd::GOComponent::EndSetup((GameObject*)this);
 		}
 
-		void Update(int* sUpdateInfo)
+		void Update(const fnd::SUpdateInfo& sUpdateInfo)
 		{
+			*((float*)(this + 0x394)) = sUpdateInfo.deltaTime;
 			/* Second player isn't released in 2P */
 			if (*((bool*)(this + 0x3A6)))
 			{
@@ -252,16 +255,10 @@ namespace app
 
 		void PipeOutMotion(csl::math::Vector3 playerPos, xgame::MsgGetExternalMovePosition* message)
 		{
-			if (*((bool*)(this + 0x39C)))
-				playerPos.Y -= 0.3f;
-			else
-				playerPos.Y += 0.3f;
-
-			((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][0] = playerPos.X;
-			((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][1] = playerPos.Y;
-			((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][2] = playerPos.Z;
-
-			if (*((bool*)(this + 0x3A4)))
+			float Time = *((float*)(this + 0x390));
+			float NewTime = *((float*)(this + 0x390)) + *((float*)(this + 0x394));
+			*((float*)(this + 0x390)) = NewTime;
+			if (Time < 0.5f && 0.5f <= NewTime)
 			{
 				int* gocSound = GameObject::GetGOC((GameObject*)(this - 8), GOCSoundString);
 				if (gocSound)
@@ -269,8 +266,20 @@ namespace app
 					int deviceTag[3]{};
 
 					app::game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossypipe_in_out", 0);
-					*((bool*)(this + 0x3A4)) = false;
+					*((bool*)(this + 0x3A4)) = true;
 				}
+			}
+
+			if (*((bool*)(this + 0x3A4)))
+			{
+				if (*((bool*)(this + 0x39C)))
+					playerPos.Y -= 0.3f;
+				else
+					playerPos.Y += 0.3f;
+
+				((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][0] = playerPos.X;
+				((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][1] = playerPos.Y;
+				((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][2] = playerPos.Z;
 			}
 		}
 	};
