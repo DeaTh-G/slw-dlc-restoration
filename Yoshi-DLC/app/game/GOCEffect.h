@@ -7,19 +7,19 @@ namespace app
 		struct alignas(16) EffectCreateInfo
 		{
 			const char* Name;
-			float					field_04;
-			int						field_08;
-			int						Padding;
-			csl::math::Vector3		Position;
-			csl::math::Quaternion	Rotation;
-			bool					field_30;
-			int						field_34;
-			int						field_38;
-			int						field_3C;
-			int						field_40;
-			int						field_44;
-			int						field_48;
-			int						field_4C;
+			float field_04;
+			int field_08;
+			int	Padding;
+			csl::math::Vector3 Position;
+			csl::math::Quaternion Rotation;
+			bool field_30;
+			int	field_34;
+			int	field_38;
+			int	field_3C;
+			int	field_40;
+			int	field_44;
+			int	field_48;
+			int	field_4C;
 
 		public:
 			static EffectCreateInfo* __ct(EffectCreateInfo* This)
@@ -28,6 +28,8 @@ namespace app
 				This->field_04 = 0;
 				This->field_08 = 0;
 				This->Padding = 0;
+				This->Position = csl::math::Vector3(0, 0, 0);
+				This->Rotation = csl::math::Quaternion(0, 0, 0, 1);
 				This->field_30 = 0;
 				This->field_34 = 0;
 				This->field_38 = 0;

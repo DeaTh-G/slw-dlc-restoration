@@ -432,7 +432,7 @@ namespace app
 			int field_0C;
 			short field_10;
 			short field_12;
-			int field_14;
+			unsigned int field_14;
 
 			inline static FUNCTION_PTR(MessageNew*, __thiscall, __ct, ASLR(0x0049A5F0), MessageNew* This, MessageType type);
 

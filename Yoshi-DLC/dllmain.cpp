@@ -4,8 +4,6 @@
 #include "LostCodeLoader.h"
 #include "Dependencies/INIReader.h"
 
-bool DisablePipeTransition = false;
-
 char IsYoshiIslandStage()
 {
     const char* packFileName = app::ObjUtil::GetStagePackName((app::GameDocument*)*app::Document);
@@ -47,10 +45,6 @@ void Initialize()
 
     auto create_ObjYoshiCoin = &app::create_ObjYoshiCoin;
     auto createObjInfo_ObjYoshiCoinInfo = &app::createObjInfo_ObjYoshiCoinInfo;
-    auto ObjYoshiCoin__ProcessMessage = &app::ObjYoshiCoin::ProcessMessage;
-    auto ObjYoshiCoin__AddCallback = &app::ObjYoshiCoin::AddCallback;
-    auto ObjYoshiCoinInfo__Initialize = &app::ObjYoshiCoinInfo::Initialize;
-    auto ObjYoshiCoinInfo__GetInfoName = &app::ObjYoshiCoinInfo::GetInfoName;
 
     auto create_ObjRotateLift = &app::create_ObjRotateLift;
     auto createObjInfo_ObjRotateLiftInfo = &app::createObjInfo_ObjRotateLiftInfo;
@@ -96,10 +90,6 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D95040), *(void**)&ObjYoshiJumpBoardInfo_Initialize);
     WRITE_FUNCTION(ASLR(0x00D95048), *(void**)&ObjYoshiJumpBoardInfo_GetInfoName);
 
-    WRITE_FUNCTION(ASLR(0x00D94EDC), *(void**)&ObjYoshiCoin__ProcessMessage);
-    WRITE_FUNCTION(ASLR(0x00D94EF0), *(void**)&ObjYoshiCoin__AddCallback);
-    WRITE_FUNCTION(ASLR(0x00D99654), *(void**)&ObjYoshiCoinInfo__Initialize);
-    WRITE_FUNCTION(ASLR(0x00D9965C), *(void**)&ObjYoshiCoinInfo__GetInfoName);
     WRITE_FUNCTION(ASLR(0x00D2C1E4), *(void**)&create_ObjYoshiCoin);
     WRITE_FUNCTION(ASLR(0x00D2C1DF), *(void**)&createObjInfo_ObjYoshiCoinInfo);
     
@@ -164,14 +154,9 @@ extern "C"
         if (reader->ParseError() != 0)
             MessageBox(NULL, L"Failed to parse DLCRestoration.ini", NULL, MB_ICONERROR);
 
-        IsJumpBoardShadowOn = reader->GetBoolean("Shadows", "isYoshiJumpBoardShadowOn", true);
-        //IsEggBlockShadowOn = reader->GetBoolean("Shadows", "isEggBlockShadowOn", false);
-        IsYoshiSpecialFlowerShadowOn = reader->GetBoolean("Shadows", "isYoshiSpecialFlowerShadowOn", false);
-        IsYoshiCoinShadowOn = reader->GetBoolean("Shadows", "isYoshiCoinShadowOn", false);
-        //IsPiranhaPlantShadowOn = reader->GetBoolean("Shadows", "isPiranhaPlantShadowOn", true);
-        IsShyGuyShadowOn = reader->GetBoolean("Shadows", "isShyGuyShadowOn", false);
+        IsConsistentShadow = reader->GetBoolean("Tweaks", "isConsistentShadows", false);
+        DisablePipeTransition = reader->GetBoolean("Tweaks", "disablePipeTransition", false);
 
-        DisablePipeTransition = reader->GetBoolean("Misc", "disablePipeTransition", true);
         //ScoreToUnlockLevel = reader->GetInteger("Misc", "scoreToUnlockLevel", 1000000);
 
         Initialize();

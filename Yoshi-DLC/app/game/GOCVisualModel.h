@@ -14,7 +14,7 @@ namespace app
                 int Skeleton;
                 int field_08;
                 int Animation;
-                int field_10;
+                int LightQualityType;
                 HFrame* Parent;
                 float ZIndex;
                 int field_1C;

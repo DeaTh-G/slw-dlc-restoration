@@ -1,5 +1,8 @@
 #pragma once
 
+inline static bool DisablePipeTransition = false;
+inline static bool IsConsistentShadow = false;
+
 static csl::math::Quaternion GetRotationFromMatrix(csl::math::Matrix34* matrix)
 {
     Eigen::Matrix3f m;

@@ -6,24 +6,30 @@ namespace app
 	{
 		class MsgTakeObject : public fnd::MessageNew
 		{
+			// Make this private
 		public:
-			int field_18;
+			inline static FUNCTION_PTR(void, __thiscall, f_SetShapeUserID, ASLR(0x00536700), MsgTakeObject* This, char a1);
+
+		public:
+			int EType;
 			int field_1C;
-			short field_20;
+			char field_20;
+			char field_21;
 			short field_22;
-			int shapeID;
+			int ShapeID;
 
 			MsgTakeObject(int a1) : MessageNew()
 			{
 				Type = fnd::PROC_MSG_TAKE_OBJECT;
-				field_18 = a1;
+				EType = a1;
 				field_1C = -1;
 				field_20 = 0;
+				field_21 = 0;
 				field_22 = 0;
-				shapeID = 0;
+				ShapeID = 0;
 			}
 
-			inline static FUNCTION_PTR(void, __thiscall, SetShapeUserID, ASLR(0x00536700), MsgTakeObject* This, char a2);
+			void SetShapeUserID(int a1) { f_SetShapeUserID(this, a1); }
 		};
 	}
 }
