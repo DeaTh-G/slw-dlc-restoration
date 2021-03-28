@@ -10,35 +10,22 @@ namespace app
 		bool IsEventDriven;
 	};
 
-	class ObjRotateLiftInfo
+	class ObjRotateLiftInfo : public CObjInfo
 	{
 	public:
-		int field_00;
-		int field_04;
-		int field_08;
-		int field_0C;
-		int StepModel;
-		int ChainModel;
+		int StepModel{};
+		int ChainModel{};
 
-		CObjInfo* __ct()
+		void Initialize(GameDocument& gameDocument) override
 		{
-			CObjInfo::__ct((CObjInfo*)this);
-			field_00 = ASLR(0x00D94DDC);
-			StepModel = 0;
-			ChainModel = 0;
+			int packFile = 0;
+			ObjUtil::GetPackFile(&packFile, ObjUtil::GetStagePackName(&gameDocument));
 
-			return (CObjInfo*)this;
-		}
-
-		void Initialize(GameDocument* gameDocument)
-		{
-			int packFile;
-			ObjUtil::GetPackFile(&packFile, ObjUtil::GetStagePackName(gameDocument));
 			ObjUtil::GetModelResource(&StepModel, "zdlc02_obj_rollinglift_step", &packFile);
 			ObjUtil::GetModelResource(&ChainModel, "zdlc02_obj_rollinglift", &packFile);
 		}
 
-		const char* GetInfoName()
+		const char* GetInfoName() override
 		{
 			return "ObjRotateLiftInfo";
 		}
@@ -47,7 +34,7 @@ namespace app
 	class ObjRotateLift : public CSetObjectListener
 	{
 	public:
-		fnd::HFrame Parents[4];
+		fnd::HFrame Children[4];
 		INSERT_PADDING(16);
 		char StepCount;
 		bool UseGlobalTime;
@@ -55,7 +42,7 @@ namespace app
 
 		ObjRotateLift()
 		{
-			for (fnd::HFrame& pointer : Parents)
+			for (fnd::HFrame& pointer : Children)
 				fnd::HFrame::__ct(&pointer);
 
 			StepCount = 4;
@@ -66,7 +53,22 @@ namespace app
 
 		void AddCallback(GameDocument* gameDocument) override
 		{
-			int unit = StepCount;
+			fnd::GOComponent::Create(this, GOCVisualContainer);
+			fnd::GOComponent::Create(this, GOCCollider);
+			fnd::GOComponent::Create(this, GOCSound);
+			fnd::GOComponent::Create(this, GOCMotorRotate);
+
+			ObjRotateLiftInfo* info = (ObjRotateLiftInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjRotateLiftInfo");
+			ObjRotateLiftData* data = (ObjRotateLiftData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
+			UseGlobalTime = !data->UseGlobalTime;
+
+			fnd::GOComponent::BeginSetup(this);
+
+			fnd::HFrame* transformFrame = (fnd::HFrame*)(GameObject::GetGOC(this, GOCTransformString) + 0x28);
+
+			csl::math::Quaternion rotation;
+			CSetAdapter::GetRotation(*(int**)((char*)this + 0x324), &rotation);
+
 			float distanceFromOrigin = 25.0f;
 			csl::math::Vector3 positionArray[4] = {
 				csl::math::Vector3(0, distanceFromOrigin, 0),
@@ -74,34 +76,12 @@ namespace app
 				csl::math::Vector3(0, 0, distanceFromOrigin),
 				csl::math::Vector3(0, 0, -distanceFromOrigin)
 			};
-			fnd::GOCVisualModel::VisualDescription visualDescriptor{};
-			game::ColliBoxShapeCInfo collisionInfo{};
-
-			// Create Game Object Components
-			fnd::GOComponent::Create(this, GOCVisualContainer);
-			fnd::GOComponent::Create(this, GOCCollider);
-			fnd::GOComponent::Create(this, GOCSound);
-			fnd::GOComponent::Create(this, GOCMotorRotate);
-			fnd::GOComponent::BeginSetup(this);
-
-			ObjRotateLiftInfo* info = (ObjRotateLiftInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjRotateLiftInfo");
-			ObjRotateLiftData* data = (ObjRotateLiftData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
-
-			UseGlobalTime = !data->UseGlobalTime;
-
-			fnd::HFrame* transformFrame = (fnd::HFrame*)(GameObject::GetGOC(this, GOCTransformString) + 0x28);
-
-			csl::math::Quaternion rotation;
-			CSetAdapter::GetRotation(*(int**)((char*)this + 0x324), &rotation);
-
-			size_t i = 0;
-			for (fnd::HFrame& pointer : Parents)
+			for (size_t i = 0; i < 4; i++)
 			{
-				fnd::HFrame::SetLocalTranslation(&pointer, &positionArray[i]);
-				fnd::HFrame::SetLocalRotation(&pointer, &rotation);
-				fnd::HFrame::ResetFlag(&pointer, 0x20);
-				fnd::HFrame::AddChild(transformFrame, &pointer);
-				i++;
+				fnd::HFrame::SetLocalTranslation(&Children[i], &positionArray[i]);
+				fnd::HFrame::SetLocalRotation(&Children[i], &rotation);
+				fnd::HFrame::ResetFlag(&Children[i], 0x20);
+				fnd::HFrame::AddChild(transformFrame, &Children[i]);
 			}
 
 			int modelCount = StepCount + 1;
@@ -116,25 +96,25 @@ namespace app
 					int* gocVisual = fnd::GOComponent::CreateSingle(this, GOCVisualModel);
 					if (gocVisual)
 					{
+						fnd::GOCVisualModel::VisualDescription visualDescriptor{};
+
 						fnd::GOCVisualContainer::Add(gocContainer, gocVisual);
 						fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
 
 						if (i < 4)
 						{
 							visualDescriptor.Model = info->StepModel;
-							visualDescriptor.Parent = &Parents[i];
+							visualDescriptor.Parent = &Children[i];
 						}
-
-						if (i == 4)
-							visualDescriptor.Model = info->ChainModel;
-
-						fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
 
 						if (i == 4)
 						{
+							visualDescriptor.Model = info->ChainModel;
 							csl::math::Quaternion chainRot{ 0, 0.707f, 0, 0.707f };
 							fnd::GOCVisualTransformed::SetLocalRotation(gocVisual, &chainRot);
 						}
+
+						fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
 					}
 				}
 			}
@@ -144,19 +124,20 @@ namespace app
 			int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
 			if (gocCollider)
 			{
-				game::GOCCollider::Setup(gocCollider, &unit);
+				int shapeCount = StepCount;
+				game::GOCCollider::Setup(gocCollider, &shapeCount);
 				for (size_t i = 0; i < StepCount; i++)
 				{
+					game::ColliBoxShapeCInfo collisionInfo{};
+
 					game::CollisionObjCInfo::__ct(&collisionInfo);
 					collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_BOX;
 					collisionInfo.MotionType = 2;
-					collisionInfo.field_44 = 0;
-					collisionInfo.field_48 = 0;
 					collisionInfo.Size = csl::math::Vector3(1, 2.5f, 8);
 					collisionInfo.field_08 = 0x4003;
 					collisionInfo.field_04 |= 0x100;
 					collisionInfo.field_02 = 14;
-					collisionInfo.Parent = &Parents[i];
+					collisionInfo.Parent = &Children[i];
 					game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 				}
 			}
@@ -170,9 +151,7 @@ namespace app
 				game::GOCMotorRotate::Setup(gocMotor, &motorInfo);
 
 				if (UseGlobalTime)
-				{
 					game::GOCMotor::RequestEnable(gocMotor, 0);
-				}
 			}
 
 			fnd::GOComponent::EndSetup(this);
@@ -184,16 +163,39 @@ namespace app
 				game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossyrollinglift_rotate", 0);
 			}
 		}
+
+		bool ProcessMessage(fnd::MessageNew& message) override
+		{
+			if (PreProcessMessage(message))
+				return true;
+
+			if (message.Type != fnd::PROC_MSG_HIT_EVENT_COLLISION)
+				return CSetObjectListener::ProcessMessage(message);
+
+			ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
+			return true;
+		}
+	private:
+		void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
+		{
+			if (!UseGlobalTime)
+				return;
+
+			int* gocMotor = GameObject::GetGOC(this, GOCMotorString);
+			if (!gocMotor)
+				return;
+
+			if (message.field_18 == 1)
+				game::GOCMotor::RequestEnable(gocMotor, true);
+			else if (message.field_18 == 2)
+				game::GOCMotor::RequestEnable(gocMotor, false);
+		}
 	};
 
-	inline static GameObject* create_ObjRotateLift() { return new ObjRotateLift();  }
+	inline static ObjRotateLift* create_ObjRotateLift() { return new ObjRotateLift();  }
 
-	inline static fnd::ReferencedObject* createObjInfo_ObjRotateLiftInfo(csl::fnd::IAllocator* allocator)
+	inline static ObjRotateLiftInfo* createObjInfo_ObjRotateLiftInfo(csl::fnd::IAllocator* pAllocator)
 	{
-		fnd::ReferencedObject* object = fnd::ReferencedObject::f_new(sizeof(ObjRotateLiftInfo), allocator);
-		if (!object)
-			return 0;
-		((ObjRotateLiftInfo*)object)->__ct();
-		return object;
+		return new(pAllocator) ObjRotateLiftInfo();
 	}
 }

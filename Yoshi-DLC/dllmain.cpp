@@ -48,8 +48,6 @@ void Initialize()
 
     auto create_ObjRotateLift = &app::create_ObjRotateLift;
     auto createObjInfo_ObjRotateLiftInfo = &app::createObjInfo_ObjRotateLiftInfo;
-    auto ObjRotateLiftInfo__Initialize = &app::ObjRotateLiftInfo::Initialize;
-    auto ObjRotateLiftInfo__GetInfoName = &app::ObjRotateLiftInfo::GetInfoName;
 
     auto create_ObjYoshiSpecialFlower = &app::create_ObjYoshiSpecialFlower;
     auto createObjInfo_ObjYoshiSpecialFlowerInfo = &app::createObjInfo_ObjYoshiSpecialFlowerInfo;
@@ -86,16 +84,18 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D95040), *(void**)&ObjYoshiJumpBoardInfo_Initialize);
     WRITE_FUNCTION(ASLR(0x00D95048), *(void**)&ObjYoshiJumpBoardInfo_GetInfoName);
 
+    WRITE_FUNCTION(ASLR(0x00D2BC41), *(void**)&create_ObjEggRotationChangeCollision);
     WRITE_FUNCTION(ASLR(0x00D2C1E4), *(void**)&create_ObjYoshiCoin);
-    WRITE_FUNCTION(ASLR(0x00D2C1DF), *(void**)&createObjInfo_ObjYoshiCoinInfo);
-    
-    WRITE_FUNCTION(ASLR(0x00D94DE4), *(void**)&ObjRotateLiftInfo__Initialize);
-    WRITE_FUNCTION(ASLR(0x00D94DEC), *(void**)&ObjRotateLiftInfo__GetInfoName);
     WRITE_FUNCTION(ASLR(0x00D2C0F4), *(void**)&create_ObjRotateLift);
-    WRITE_FUNCTION(ASLR(0x00D2C0EF), *(void**)&createObjInfo_ObjRotateLiftInfo);
-
     WRITE_FUNCTION(ASLR(0x00D2C284), *(void**)&create_ObjYoshiSpecialFlower);
+    WRITE_FUNCTION(ASLR(0x00D2BC94), *(void**)&create_ObjEggBlock);
+    WRITE_FUNCTION(ASLR(0x00D2A2E4), *(void**)&create_EnemyPiranhaPlant);
+
+    WRITE_FUNCTION(ASLR(0x00D2C1DF), *(void**)&createObjInfo_ObjYoshiCoinInfo);
+    WRITE_FUNCTION(ASLR(0x00D2C0EF), *(void**)&createObjInfo_ObjRotateLiftInfo);
     WRITE_FUNCTION(ASLR(0x00D2C27F), *(void**)&createObjInfo_ObjYoshiSpecialFlowerInfo);
+    WRITE_FUNCTION(ASLR(0x00D2BC8F), *(void**)&createObjInfo_ObjEggBlockInfo);
+    WRITE_FUNCTION(ASLR(0x00D2A2DF), *(void**)&create_EnemyPiranhaPlantInfo);
 
     WRITE_FUNCTION(ASLR(0x00D94730), *(void**)&ObjCrayPipe__ProcessMessage);
     WRITE_FUNCTION(ASLR(0x00D94744), *(void**)&ObjCrayPipe__AddCallback);
@@ -105,12 +105,6 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D947B4), *(void**)&ObjCrayPipeExit__Update);
     WRITE_FUNCTION(ASLR(0x00D947C4), *(void**)&ObjCrayPipeExit__AddCallback);
     WRITE_FUNCTION(ASLR(0x00D2BBA1), *(void**)&create_ObjCrayPipeExit);
-    
-    WRITE_FUNCTION(ASLR(0x00D2BC94), *(void**)&create_ObjEggBlock);
-    WRITE_FUNCTION(ASLR(0x00D2BC8F), *(void**)&createObjInfo_ObjEggBlockInfo);
-    WRITE_FUNCTION(ASLR(0x00D2BC41), *(void**)&create_ObjEggRotationChangeCollision);
-    WRITE_FUNCTION(ASLR(0x00D2A2E4), *(void**)&create_EnemyPiranhaPlant);
-    WRITE_FUNCTION(ASLR(0x00D2A2DF), *(void**)&create_EnemyPiranhaPlantInfo);
     
     WRITE_FUNCTION(ASLR(0x00D93A4C), *(void**)&EnemyShyGuyInfo__Initialize);
     WRITE_FUNCTION(ASLR(0x00D93A54), *(void**)&EnemyShyGuyInfo__GetInfoName);
