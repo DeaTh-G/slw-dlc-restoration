@@ -136,7 +136,7 @@ namespace app
                 ProcMsgNotifyObjectEvent((xgame::MsgNotifyObjectEvent&)message);
                 return true;
             case fnd::PROC_MSG_RING_GET_SUCKED_INTO:
-                // TODO - MsgRingGetSuckedInto
+                // TODO: Reimplement if sensible people bug me.
                 return false;
             case fnd::PROC_MSG_HIT_EVENT_COLLISION:
                 ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
