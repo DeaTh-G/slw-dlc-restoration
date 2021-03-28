@@ -9,6 +9,11 @@ namespace app
         inline static FUNCTION_PTR(bool, __thiscall, f_ProcMsg, ASLR(0x00844A30), CActor* This, fnd::MessageNew* message);
         inline static FUNCTION_PTR(CSetObjectListener*, __thiscall, __dt, ASLR(0x00844A70), CSetObjectListener* This, int a2);
 
+        // Make these private
+    public:
+        inline static FUNCTION_PTR(uint32_t, __thiscall, f_GetExtUserData, ASLR(0x00844830), GameObject* This, int a2);
+        inline static FUNCTION_PTR(uint32_t, __thiscall, f_SetExtUserData, ASLR(0x00844850), GameObject* This, int a2, int a3);
+
     public:
         char field_031C[0x88]{};
 
@@ -17,9 +22,7 @@ namespace app
         inline static FUNCTION_PTR(bool, __thiscall, f_ProcessMessage, ASLR(0x00844A30), CSetObjectListener* This, fnd::Message* message);
         inline static FUNCTION_PTR(GameObject*, __thiscall, __ct, ASLR(0x008448A0), GameObject* This);
         inline static FUNCTION_PTR(GameObject*, __thiscall, GetParentObject, ASLR(0x00844AE0), GameObject* This);
-        inline static FUNCTION_PTR(uint32_t, __thiscall, GetExtUserData, ASLR(0x00844830), GameObject* This, int a2);
-        inline static FUNCTION_PTR(int, __thiscall, SetExtUserData, ASLR(0x00844850), GameObject* This, int a2, int a3);
-    
+
     protected:
         bool ProcessMessage(fnd::MessageNew& message) override { return f_ProcMsg(this, &message); }
         virtual void OnInitializedSetObject() {};
@@ -38,5 +41,8 @@ namespace app
         virtual double GetAbsorbPathPosition() { return -1; }
         virtual csl::math::Vector3 GetAbsorbPathOffset() { return { 0, 0, 0 }; }
         virtual void SetAppearance(float opacity) {}
+
+        uint32_t GetExtUserData(int a1) { return f_GetExtUserData(this, a1); }
+        uint32_t SetExtUserData(int a1, int a2) { return f_SetExtUserData(this, a1, a2); }
     };
 }

@@ -56,6 +56,7 @@ namespace app
 
             fnd::GOComponent::BeginSetup(this);
 
+            // Caused allocation error randomly, now it decided to do. Check back in the future.
             RingManager = Gimmick::CRingManager::GetService(gameDocument, (void*)ASLR(0x00FECC20));
             if (RingManager)
                 Gimmick::CRingManager::RegisterRotateRing(RingManager, this);
@@ -117,7 +118,7 @@ namespace app
             game::GOCEffect::SimpleSetup(this);
             game::GOCSound::SimpleSetup(this, 0, 0);
 
-            uint32_t extUserData = CSetObjectListener::GetExtUserData(this, 0);
+            uint32_t extUserData = GetExtUserData(0);
             if (extUserData == 1 || data->EventType == 2)
                 SetActivate(false);
             
@@ -132,11 +133,11 @@ namespace app
             switch (message.Type)
             {
             case fnd::PROC_MSG_NOTIFY_OBJECT_EVENT:
-                // TODO - MsgNotifyObjectEvent
+                ProcMsgNotifyObjectEvent((xgame::MsgNotifyObjectEvent&)message);
                 return true;
             case fnd::PROC_MSG_RING_GET_SUCKED_INTO:
                 // TODO - MsgRingGetSuckedInto
-                return true;
+                return false;
             case fnd::PROC_MSG_HIT_EVENT_COLLISION:
                 ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
                 return true;
@@ -172,6 +173,24 @@ namespace app
                 CSetObjectListener::SetStatusRetire(this);
 
             GameObject::Kill(this);
+        }
+
+        void ProcMsgNotifyObjectEvent(xgame::MsgNotifyObjectEvent& message)
+        {
+            ObjYoshiCoinData* data = (ObjYoshiCoinData*)CSetAdapter::GetData(*(int**)((char*)this + 0x31C));
+            if (data->EventType)
+            {
+                if (message.field_18 == 1)
+                {
+                    SetActivate(true);
+                    SetExtUserData(0, 2);
+                }
+                else if (message.field_18 == 2)
+                {
+                    SetActivate(false);
+                    SetExtUserData(0, 1);
+                }
+            }
         }
 
         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)

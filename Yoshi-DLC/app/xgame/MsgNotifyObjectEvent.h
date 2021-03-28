@@ -4,11 +4,15 @@ namespace app
 {
 	namespace xgame
 	{
-		__declspec(align(16)) struct MsgNotifyObjectEvent
+		class MsgNotifyObjectEvent : public fnd::MessageNew
 		{
 		public:
-			fnd::Message Base;
-			int field_18;
+			int field_18{};
+
+			MsgNotifyObjectEvent() : MessageNew()
+			{
+				Type = fnd::PROC_MSG_NOTIFY_OBJECT_EVENT;
+			}
 		};
 	}
 

@@ -252,7 +252,7 @@ namespace app
 			if (ObjUtil::GetSetObjectTransform((GameDocument*)*Document,
 				&data->TargetID, &targetPosition, &targetRotation))
 			{
-				fnd::Message::__ct(&notifyObjevtEventMessage.Base, fnd::PROC_MSG_NOTIFY_OBJECT_EVENT);
+				fnd::Message::__ct((fnd::Message*)&notifyObjevtEventMessage, fnd::PROC_MSG_NOTIFY_OBJECT_EVENT);
 				notifyObjevtEventMessage.field_18 = 1;
 				ObjUtil::SendMessageImmToSetObject((GameObject*)(this - 8), &data->TargetID, (int*)&notifyObjevtEventMessage, 0);
 

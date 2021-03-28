@@ -243,7 +243,7 @@ namespace app
 
                 PopEggNum--;
                 EggParam.field_18 = 1;
-                CSetObjectListener::SetExtUserData(this, 0, PopEggNum);
+                SetExtUserData(0, PopEggNum);
 
                 int* gocSound = GameObject::GetGOC(this, GOCSoundString);
                 if (!gocSound)
@@ -287,7 +287,7 @@ namespace app
             ObjEggBlockData* data = (ObjEggBlockData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
             ObjEggBlockInfo* info = (ObjEggBlockInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjEggBlockInfo");
 
-            uint32_t extUserData = CSetObjectListener::GetExtUserData(this, 0);
+            uint32_t extUserData = GetExtUserData(0);
             if (!extUserData)
                 extUserData = data->PopEggNum + 1;
             PopEggNum = extUserData;

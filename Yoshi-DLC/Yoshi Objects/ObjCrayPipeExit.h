@@ -65,7 +65,7 @@ namespace app
 
 				app::game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 
-				uint32_t extUserData = CSetObjectListener::GetExtUserData((GameObject*)this, 0);
+				uint32_t extUserData = CSetObjectListener::f_GetExtUserData((GameObject*)this, 0);
 				if (!extUserData)
 					game::GOCCollider::SetEnable(gocCollider, false);
 			}
@@ -248,9 +248,9 @@ namespace app
 		void ProcMsgNotifyObjectEvent(xgame::MsgNotifyObjectEvent* message)
 		{
 			if (message->field_18 == 1)
-				CSetObjectListener::SetExtUserData((GameObject*)(this - 8), 0, 2);
+				CSetObjectListener::f_SetExtUserData((GameObject*)(this - 8), 0, 2);
 			else if (message->field_18 != 2)
-				CSetObjectListener::SetExtUserData((GameObject*)(this - 8), 0, 1);
+				CSetObjectListener::f_SetExtUserData((GameObject*)(this - 8), 0, 1);
 		}
 
 		void PipeOutMotion(csl::math::Vector3 playerPos, xgame::MsgGetExternalMovePosition* message)
