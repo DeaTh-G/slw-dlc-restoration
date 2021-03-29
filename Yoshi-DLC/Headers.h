@@ -148,6 +148,7 @@
 #include "Yoshi Objects/ObjYoshiCoin.h"
 #include "Yoshi Objects/ObjYoshiJumpBoard.h"
 #include "Yoshi Objects/ObjYoshiSpecialFlower.h"
+#include "Yoshi Objects/ObjYoshiGoal.h"
 
 #include "app/Objects/CSharedObjInfo.h"
 #include "app/Objects/EnemyBlowOffObject.h"

@@ -17,11 +17,11 @@ namespace app
         void Initialize(GameDocument& gameDocument) override
         {
             int packFile = 0;
-            app::ObjUtil::GetPackFile(&packFile, app::ObjUtil::GetStagePackName(&gameDocument));
+            ObjUtil::GetPackFile(&packFile, ObjUtil::GetStagePackName(&gameDocument));
 
-            app::ObjUtil::GetModelResource(&Model, "zdlc02_obj_goalA_on", &packFile);
-            app::ObjUtil::GetSkeletonResource(&Skeleton, "zdlc02_obj_goalA_on", packFile);
-            app::ObjUtil::GetAnimationResource(&Animation, "zdlc02_obj_goalA_on_idle", &packFile);
+            ObjUtil::GetModelResource(&Model, "zdlc02_obj_goalA_on", &packFile);
+            ObjUtil::GetSkeletonResource(&Skeleton, "zdlc02_obj_goalA_on", packFile);
+            ObjUtil::GetAnimationResource(&Animation, "zdlc02_obj_goalA_on_idle", &packFile);
         }
 
         const char* GetInfoName() override
@@ -38,61 +38,61 @@ namespace app
     public:
         void AddCallback(GameDocument* gameDocument) override
         {
-            app::game::ColliSphereShapeCInfo collisionInfo;
+            game::ColliSphereShapeCInfo collisionInfo;
             game::ShadowHemisphereShapeCInfo shadowInfo;
 
-            app::fnd::GOComponent::Create(this, GOCVisualModel);
-            app::fnd::GOComponent::Create(this, GOCAnimationSimple);
-            app::fnd::GOComponent::Create(this, GOCCollider);
-            app::fnd::GOComponent::Create(this, GOCEffect);
-            app::fnd::GOComponent::Create(this, GOCSound);
+            fnd::GOComponent::Create(this, GOCVisualModel);
+            fnd::GOComponent::Create(this, GOCAnimationSimple);
+            fnd::GOComponent::Create(this, GOCCollider);
+            fnd::GOComponent::Create(this, GOCEffect);
+            fnd::GOComponent::Create(this, GOCSound);
 
-            ObjYoshiSpecialFlowerInfo* info = (ObjYoshiSpecialFlowerInfo*)app::ObjUtil::GetObjectInfo(gameDocument, "ObjYoshiSpecialFlowerInfo");
-            ObjYoshiSpecialFlowerData* data = (ObjYoshiSpecialFlowerData*)app::CSetAdapter::GetData(*(int**)((char*)this + 0x324));
+            ObjYoshiSpecialFlowerInfo* info = (ObjYoshiSpecialFlowerInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjYoshiSpecialFlowerInfo");
+            ObjYoshiSpecialFlowerData* data = (ObjYoshiSpecialFlowerData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
             FlowerID = data->FlowerID;
 
-            app::fnd::GOComponent::BeginSetup(this);
+            fnd::GOComponent::BeginSetup(this);
 
-            int* gocVisual = app::GameObject::GetGOC(this, GOCVisual);
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
             if (gocVisual)
             {
-                app::fnd::GOCVisualModel::VisualDescription visualDescriptor;
+                fnd::GOCVisualModel::VisualDescription visualDescriptor;
 
-                app::fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
+                fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
                 visualDescriptor.Model = info->Model;
                 visualDescriptor.Skeleton = info->Skeleton;
-                app::fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
+                fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
 
-                int* gocAnimation = app::GameObject::GetGOC(this, GOCAnimation);
+                int* gocAnimation = GameObject::GetGOC(this, GOCAnimation);
                 if (gocAnimation)
                 {
                     int animCount = 1;
-                    app::game::GOCAnimationSimple::Setup(gocAnimation, &animCount);
-                    app::fnd::GOCVisualModel::AttachAnimation(gocVisual, gocAnimation);
-                    app::game::GOCAnimationSimple::Add(gocAnimation, "IDLE_LOOP", info->Animation, 1);
-                    app::game::GOCAnimationSimple::SetAnimation(gocAnimation, "IDLE_LOOP");
+                    game::GOCAnimationSimple::Setup(gocAnimation, &animCount);
+                    fnd::GOCVisualModel::AttachAnimation(gocVisual, gocAnimation);
+                    game::GOCAnimationSimple::Add(gocAnimation, "IDLE_LOOP", info->Animation, 1);
+                    game::GOCAnimationSimple::SetAnimation(gocAnimation, "IDLE_LOOP");
                 }
             }
 
-            int* gocCollider = app::GameObject::GetGOC(this, GOCColliderString);
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
             if (gocCollider)
             {
                 int shapeCount = 1;
-                app::game::GOCCollider::Setup(gocCollider, &shapeCount);
-                app::game::CollisionObjCInfo::__ct(&collisionInfo);
+                game::GOCCollider::Setup(gocCollider, &shapeCount);
+                game::CollisionObjCInfo::__ct(&collisionInfo);
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
                 collisionInfo.MotionType = 2;
                 collisionInfo.Radius = 7.5f;
-                app::ObjUtil::SetupCollisionFilter(6, &collisionInfo);
+                ObjUtil::SetupCollisionFilter(6, &collisionInfo);
                 collisionInfo.field_04 |= 1;
 
-                app::game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
+                game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
             }
 
-            app::game::GOCEffect::SimpleSetup(this);
-            app::game::GOCSound::SimpleSetup(this, 0, 0);
+            game::GOCEffect::SimpleSetup(this);
+            game::GOCSound::SimpleSetup(this, 0, 0);
 
-            app::fnd::GOComponent::EndSetup(this);
+            fnd::GOComponent::EndSetup(this);
         }
 
         bool ProcessMessage(fnd::Message& message) override

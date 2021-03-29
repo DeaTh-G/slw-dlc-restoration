@@ -230,15 +230,15 @@ namespace app
                 GOCEnemyTarget::SetEyesightOffset(gocEnemyTarget, &eyeOffset);
             }
 
-            int* gocEnemyHsm = GameObject::GetGOC((GameObject*)this, GOCEnemyHsmString);
+            int* gocEnemyHsm = GameObject::GetGOC(this, GOCEnemyHsmString);
             if (gocEnemyHsm)
             {
                 GOCEnemyHsm::Description hsmDescription{ StateDescriptors, 5, 0 };
                 GOCEnemyHsm::Setup(gocEnemyHsm, &hsmDescription);
             }
 
-            game::GOCEffect::SimpleSetup((GameObject*)this);
-            game::GOCSound::SimpleSetup((GameObject*)this, 0, 0);
+            game::GOCEffect::SimpleSetup(this);
+            game::GOCSound::SimpleSetup(this, 0, 0);
 
             fnd::GOComponent::EndSetup(this);
         }

@@ -264,7 +264,7 @@ namespace app
         }
 
         void TakeYoshiSpecialFlower(char flowerID) { FlowerCount |= 1 << flowerID; }
-        unsigned int IsYoshiSpecialFlowerTaked(char flowerID) { return (FlowerCount >> flowerID) & 1; }
+        bool IsYoshiSpecialFlowerTaked(char flowerID) { return (FlowerCount >> flowerID) & 1; }
 
         static EggManager* GetService(GameDocument* gameDocument)
         {

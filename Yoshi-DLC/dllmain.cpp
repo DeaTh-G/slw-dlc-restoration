@@ -41,6 +41,7 @@ void Initialize()
     auto create_ObjEggRotationChangeCollision = &app::create_ObjEggRotationChangeCollision;
     auto create_ObjRotateLift = &app::create_ObjRotateLift;
     auto create_ObjYoshiCoin = &app::create_ObjYoshiCoin;
+    auto create_ObjYoshiGoal = &app::create_ObjYoshiGoal;
     auto create_ObjYoshiJumpBoardBig = &app::ObjYoshiJumpBoard::Create_Big;
     auto create_ObjYoshiJumpBoardSmall = &app::ObjYoshiJumpBoard::Create_Small;
     auto create_ObjYoshiSpecialFlower = &app::create_ObjYoshiSpecialFlower;
@@ -50,6 +51,7 @@ void Initialize()
     auto createObjInfo_ObjEggBlockInfo = &app::createObjInfo_ObjEggBlockInfo;
     auto createObjInfo_ObjRotateLiftInfo = &app::createObjInfo_ObjRotateLiftInfo;
     auto createObjInfo_ObjYoshiCoinInfo = &app::createObjInfo_ObjYoshiCoinInfo;
+    auto createObjInfo_ObjYoshiGoalInfo = &app::createObjInfo_ObjYoshiGoalInfo;
     auto createObjInfo_ObjYoshiJumpBoard = &app::createObjInfo_ObjYoshiJumpBoard;
     auto createObjInfo_ObjYoshiSpecialFlowerInfo = &app::createObjInfo_ObjYoshiSpecialFlowerInfo;
 
@@ -61,6 +63,7 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2BC41), *(void**)&create_ObjEggRotationChangeCollision);
     WRITE_FUNCTION(ASLR(0x00D2C0F4), *(void**)&create_ObjRotateLift);
     WRITE_FUNCTION(ASLR(0x00D2C1E4), *(void**)&create_ObjYoshiCoin);
+    WRITE_FUNCTION(ASLR(0x00D2C234), *(void**)&create_ObjYoshiGoal);
     WRITE_FUNCTION(ASLR(0x00D2C2D4), *(void**)&create_ObjYoshiJumpBoardBig);
     WRITE_FUNCTION(ASLR(0x00D2C324), *(void**)&create_ObjYoshiJumpBoardSmall);
     WRITE_FUNCTION(ASLR(0x00D2C284), *(void**)&create_ObjYoshiSpecialFlower);
@@ -70,6 +73,7 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2BC8F), *(void**)&createObjInfo_ObjEggBlockInfo);
     WRITE_FUNCTION(ASLR(0x00D2C0EF), *(void**)&createObjInfo_ObjRotateLiftInfo);
     WRITE_FUNCTION(ASLR(0x00D2C1DF), *(void**)&createObjInfo_ObjYoshiCoinInfo);
+    WRITE_FUNCTION(ASLR(0x00D2C22F), *(void**)&createObjInfo_ObjYoshiGoalInfo);
     WRITE_FUNCTION(ASLR(0x00D2C2CF), *(void**)&createObjInfo_ObjYoshiJumpBoard);
     WRITE_FUNCTION(ASLR(0x00D2C31F), *(void**)&createObjInfo_ObjYoshiJumpBoard);
     WRITE_FUNCTION(ASLR(0x00D2C27F), *(void**)&createObjInfo_ObjYoshiSpecialFlowerInfo);

@@ -84,11 +84,10 @@ namespace app
                 fnd::HFrame::AddChild(transformFrame, &Children[i]);
             }
 
-            int modelCount = StepCount + 1;
-
             int* gocContainer = GameObject::GetGOC(this, GOCVisual);
             if (gocContainer)
             {
+                int modelCount = StepCount + 1;
                 fnd::GOCVisualContainer::Setup(gocContainer, &modelCount);
 
                 for (size_t i = 0; i < modelCount; i++)
