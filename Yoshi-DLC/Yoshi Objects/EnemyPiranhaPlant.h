@@ -19,7 +19,7 @@ namespace app
         EnemyPiranhaPlantInfo()
         {
             PacfileName = "EnemyPackunFlower.pac";
-            animation::AnimationResContainer::__ct(&AnimationContainer, (int)pAllocator);
+            animation::AnimationResContainer::__ct(&AnimationContainer, (csl::fnd::IAllocator*)pAllocator);
         }
 
         void Initialize(GameDocument& gameDocument) override

@@ -70,13 +70,13 @@ const HMODULE MODULE_HANDLE = GetModuleHandle(NULL);
     }
 
 #define WRITE_MEMORY_WITH_TYPE(location, type, ...) \
-	{ \
-		const type data[] = { __VA_ARGS__ }; \
-		DWORD oldProtect; \
-		VirtualProtect((void*)(location), sizeof(data), PAGE_EXECUTE_READWRITE, &oldProtect); \
-		memcpy((void*)(location), data, sizeof(data)); \
-		VirtualProtect((void*)(location), sizeof(data), oldProtect, NULL); \
-	}
+    { \
+        const type data[] = { __VA_ARGS__ }; \
+        DWORD oldProtect; \
+        VirtualProtect((void*)(location), sizeof(data), PAGE_EXECUTE_READWRITE, &oldProtect); \
+        memcpy((void*)(location), data, sizeof(data)); \
+        VirtualProtect((void*)(location), sizeof(data), oldProtect, NULL); \
+    }
 
 #define WRITE_JUMP(location, function) \
     { \

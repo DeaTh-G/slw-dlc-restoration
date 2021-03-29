@@ -7,7 +7,7 @@ namespace app
 		class GOCMotor
 		{
 		public:
-			inline static FUNCTION_PTR(int, __thiscall, RequestEnable, ASLR(0x004C2500), int* This, bool a2);
+			inline static FUNCTION_PTR(int, __thiscall, RequestEnable, ASLR(0x004C1EB0), int* This, bool a2);
 		};
 	}
 }

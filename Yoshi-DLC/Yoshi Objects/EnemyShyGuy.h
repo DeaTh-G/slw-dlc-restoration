@@ -38,7 +38,7 @@ namespace app
             a1->field_00 = ASLR(0x00D93A44);
             a1->Model = 0;
             a1->Skeleton = 0;
-            animation::AnimationResContainer::__ct(&(a1->AnimationContainer), a1->field_08);
+            animation::AnimationResContainer::__ct(&(a1->AnimationContainer), (csl::fnd::IAllocator*)a1->field_08);
             a1->AnimationLeft = 0;
             a1->AnimationRight = 0;
 

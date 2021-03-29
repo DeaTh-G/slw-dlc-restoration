@@ -39,7 +39,6 @@ namespace app
     public:
         void AddCallback(GameDocument* gameDocument) override
         {
-            sizeof(ObjYoshiCoin);
             fnd::GOComponent::Create(this, GOCVisualModel);
             fnd::GOComponent::Create(this, GOCCollider);
             fnd::GOComponent::Create(this, GOCEffect);
@@ -178,7 +177,7 @@ namespace app
 
         void ProcMsgNotifyObjectEvent(xgame::MsgNotifyObjectEvent& message)
         {
-            ObjYoshiCoinData* data = (ObjYoshiCoinData*)CSetAdapter::GetData(*(int**)((char*)this + 0x31C));
+            ObjYoshiCoinData* data = (ObjYoshiCoinData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
             if (data->EventType)
             {
                 if (message.field_18 == 1)

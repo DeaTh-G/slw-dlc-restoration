@@ -2,14 +2,18 @@
 
 namespace app
 {
-	namespace xgame
-	{
-		__declspec(align(16)) struct MsgGetExternalMovePosition
-		{
-		public:
-			fnd::Message Base;
-			csl::math::Matrix34* Transform;
-		};
-	}
+    namespace xgame
+    {
+        class MsgGetExternalMovePosition : public fnd::MessageNew
+        {
+        public:
+            csl::math::Matrix34* Transform;
+
+            MsgGetExternalMovePosition() : MessageNew()
+            {
+                Type = fnd::PROC_MSG_GET_EXTERNAL_MOVE_POSITION;
+            }
+        };
+    }
 
 }

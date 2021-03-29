@@ -2,20 +2,29 @@
 
 namespace app
 {
-	namespace xgame
-	{
-		__declspec(align(16)) struct MsgCatchPlayer
-		{
-		public:
-			fnd::Message Base;
-			int field_18;
-			int field_1C;
-			csl::math::Matrix34 field_20;
-			int field_60;
-			int field_64;
-			int field_68;
-			int field_6C;
-		};
-	}
+    namespace xgame
+    {
+        class MsgCatchPlayer : public fnd::MessageNew
+        {
+        public:
+            int field_18{};
+            int field_1C{};
+            csl::math::Matrix34 field_20;
+            int field_60{};
+            int field_64{};
+            int field_68{};
+            int field_6C{};
+
+            MsgCatchPlayer() : MessageNew()
+            {
+                Type = fnd::PROC_MSG_CATCH_PLAYER;
+
+                field_20.data[0][0] = 1;
+                field_20.data[1][1] = 1;
+                field_20.data[2][2] = 1;
+                field_20.data[3][3] = 1;
+            }
+        };
+    }
 
 }

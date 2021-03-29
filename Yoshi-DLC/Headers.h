@@ -147,8 +147,6 @@
 #include "Yoshi Objects/ObjRotateLift.h"
 #include "Yoshi Objects/ObjYoshiCoin.h"
 #include "Yoshi Objects/ObjYoshiJumpBoard.h"
-#include "Yoshi Objects/ObjYoshiJumpBoardBig.h"
-#include "Yoshi Objects/ObjYoshiJumpBoardSmall.h"
 #include "Yoshi Objects/ObjYoshiSpecialFlower.h"
 
 #include "app/Objects/CSharedObjInfo.h"

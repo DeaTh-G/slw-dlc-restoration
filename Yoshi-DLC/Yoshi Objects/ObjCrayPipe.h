@@ -195,7 +195,7 @@ namespace app
 						direction = 1;
 				}
 
-				fnd::Message::__ct(&playerGetInputButtonMessage.Base, fnd::PROC_MSG_PL_GET_INPUT_BUTTON);
+				fnd::Message::__ct((fnd::Message*)&playerGetInputButtonMessage, fnd::PROC_MSG_PL_GET_INPUT_BUTTON);
 				playerGetInputButtonMessage.field_18 = direction;
 				playerGetInputButtonMessage.field_1C = 1;
 				playerGetInputButtonMessage.field_20 = 0;
@@ -208,7 +208,7 @@ namespace app
 
 					*((bool*)(this + 0x3F1)) = false;
 
-					fnd::Message::__ct(&catchPlayerMessage.Base, fnd::PROC_MSG_CATCH_PLAYER);
+					fnd::Message::__ct((fnd::Message*)&catchPlayerMessage, fnd::PROC_MSG_CATCH_PLAYER);
 					catchPlayerMessage.field_18 = 0;
 					catchPlayerMessage.field_60 = 0x12;
 					catchPlayerMessage.field_64 = 0;

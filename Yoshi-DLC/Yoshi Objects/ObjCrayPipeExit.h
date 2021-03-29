@@ -112,7 +112,7 @@ namespace app
 			if (*((int*)(this + 0x3A0)) >= 3)
 			{
 				xgame::MsgCatchPlayer catchPlayerMessage;
-				fnd::Message::__ct(&catchPlayerMessage.Base, fnd::PROC_MSG_CATCH_PLAYER);
+				fnd::Message::__ct((fnd::Message*)&catchPlayerMessage, fnd::PROC_MSG_CATCH_PLAYER);
 				catchPlayerMessage.field_18 = 0;
 				catchPlayerMessage.field_60 = 0x12;
 				catchPlayerMessage.field_64 = 0;

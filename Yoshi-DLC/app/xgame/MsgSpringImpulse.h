@@ -2,31 +2,39 @@
 
 namespace app
 {
-	namespace xgame
-	{
-		__declspec(align(16)) struct MsgSpringImpulse
-		{
-		public:
-			fnd::Message Base;
-			int field_18;
-			int field_1C;
-			csl::math::Vector3 ObjectPosition;
-			csl::math::Vector3 LaunchVector;
-			float OutOfControl;
-			float TravelTime;
-			int field_48;
-			float OutOfParkour;
-			int field_50;
-			int field_54;
-			int field_58;
-			int field_5C;
-			int field_60;
-			int field_64;
-			int field_68;
-			int field_6C;
+    namespace xgame
+    {
+        class MsgSpringImpulse : public fnd::MessageNew
+        {
+        public:
+            int field_18{};
+            int field_1C{};
+            csl::math::Vector3 ObjectPosition{};
+            csl::math::Vector3 LaunchVector{};
+            float OutOfControl{};
+            float TravelTime{};
+            float field_48{};
+            float OutOfParkour{};
+            int field_50{};
+            int field_54{};
+            int field_58{};
+            int field_5C{};
+            csl::math::Vector3 field_60{};
 
-			inline static FUNCTION_PTR(MsgSpringImpulse*, __thiscall, __ct, ASLR(0x00536CF0), MsgSpringImpulse* This, csl::math::Vector3* objectPosition, csl::math::Vector3* launchVector, float outOfControl, float travelTime);
-		};
-	}
+            MsgSpringImpulse(game::GOCLauncher::ShotInfo* shotInfo) : MessageNew()
+            {
+                Type = fnd::PROC_MSG_SPRING_IMPULSE;
+                ObjectPosition = shotInfo->StartingPosition;
+                LaunchVector = shotInfo->LaunchVector;
+                OutOfControl = shotInfo->OutOfControl;
+                TravelTime = shotInfo->TravelTime;
+                field_50 |= 44;
+            }
 
+            MsgSpringImpulse(game::GOCLauncher::ShotInfo* shotInfo, float outOfParkour) : MsgSpringImpulse(shotInfo)
+            {
+                OutOfParkour = outOfParkour;
+            }
+        };
+    }
 }

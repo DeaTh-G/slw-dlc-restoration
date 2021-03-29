@@ -1,334 +1,483 @@
 #pragma once
 
-inline static bool IsJumpBoardShadowOn;
+inline static float YJB_SIZE[] = { 1.25f, 0.75f };
+inline static float YJB_WIDTH[] = { 5, 3.5f };
+inline static float YJB_HEIGHT[] = { 4.75f, 3.75f };
+inline static float YJB_FIRSTSPEED[] = { 100, 75 };
+inline static float YJB_KEEPVELOCITYDISTANCE[] = { 10, 7.5f };
+inline static float YJB_OUTOFCONTROL[] = { 0.125f, 0.1f };
 
 namespace app
 {
-	struct ObjYoshiJumpBoardData
-	{
-		float FirstSpeed;
-		float OutOfControl;
-		float KeepVelocityDistance;
-		bool IsPathChange;
-		bool IsChangeCameraWhenPathChange;
-		bool IsUpdateYaw;
-		float OutOfParkour;
-	};
+    enum class ObjYoshiJumpBoardState : int
+    {
+        STATE_WAIT,
+        STATE_EXPANSION
+    };
 
-	class ObjYoshiJumpBoardInfo
-	{
-	public:
-		int field_00;
-		int field_04;
-		int field_08;
-		int field_0C;
-		int Model;
-		int Skeleton;
-		animation::AnimationResContainer AnimationContainer{};
+    struct ObjYoshiJumpBoardData
+    {
+        float FirstSpeed;
+        float OutOfControl;
+        float KeepVelocityDistance;
+        bool IsPathChange;
+        bool IsChangeCameraWhenPathChange;
+        bool IsUpdateYaw;
+        float OutOfParkour;
+    };
 
-		CObjInfo* __ct()
-		{
-			CObjInfo::__ct((CObjInfo*)this);
-			this->field_00 = ASLR(0x00D95038);
-			Model = 0;
-			Skeleton = 0;
-			animation::AnimationResContainer::__ct(&AnimationContainer, field_08);
-			return (CObjInfo*)this;
-		}
+    class ObjYoshiJumpBoardInfo : public CObjInfo
+    {
+    public:
+        int Model;
+        int Skeleton;
+        animation::AnimationResContainer AnimationContainer{};
 
-		void Initialize(GameDocument* gameDocument)
-		{
-			int animationScript = 0;
+        ObjYoshiJumpBoardInfo()
+        {
+            animation::AnimationResContainer::__ct(&AnimationContainer, pAllocator);
+        }
 
-			int packFile = 0;
-			ObjUtil::GetPackFile(&packFile, ObjUtil::GetStagePackName(gameDocument));
-			ObjUtil::GetModelResource(&this->Model, "zdlc02_obj_jumpboard", &packFile);
-			ObjUtil::GetSkeletonResource(&this->Skeleton, "zdlc02_obj_jumpboard", packFile);
-			ObjUtil::GetAnimationScriptResource(&animationScript, "zdlc02_obj_jumpboard", packFile);
+        void Initialize(GameDocument& gameDocument) override
+        {
+            int animationScript = 0;
+            int packFile = 0;
+            ObjUtil::GetPackFile(&packFile, ObjUtil::GetStagePackName(&gameDocument));
 
-			if (animationScript)
-				animation::AnimationResContainer::LoadFromBuffer(&this->AnimationContainer, &animationScript, packFile);
-		}
+            ObjUtil::GetModelResource(&Model, "zdlc02_obj_jumpboard", &packFile);
+            ObjUtil::GetSkeletonResource(&Skeleton, "zdlc02_obj_jumpboard", packFile);
+            ObjUtil::GetAnimationScriptResource(&animationScript, "zdlc02_obj_jumpboard", packFile);
 
-		const char* GetInfoName()
-		{
-			return "ObjYoshiJumpBoardInfo";
-		}
-	};
+            if (animationScript)
+                animation::AnimationResContainer::LoadFromBuffer(&AnimationContainer, &animationScript, packFile);
+        }
 
-	class ObjYoshiJumpBoard
-	{
-	public:
-		CSetObjectListener* __ct(int jumpBoardType)
-		{
-			CSetObjectListener::__ct((GameObject*)this);
-			*(int*)this = ASLR(0x00DE138C);
-			*((int*)this + 2) = ASLR(0x00DE1370);
+        const char* GetInfoName() override
+        {
+            return "ObjYoshiJumpBoardInfo";
+        }
+    };
 
-			/* Button Press Success */
-			*((int*)(this + 0x3A0)) = 0;
+    class ObjYoshiJumpBoard : public CSetObjectListener
+    {
+        INSERT_PADDING(16);
+        int Type{};
+        int Flags{};
+        ObjYoshiJumpBoardState State{};
+        csl::math::Vector3 Position{};
+        csl::math::Quaternion Rotation{};
+        float OutOfParkour{};
+        game::GOCLauncher::ShotInfo* DefaultShot = new game::GOCLauncher::ShotInfo();
+        game::GOCLauncher::ShotInfo* JumpShot = new game::GOCLauncher::ShotInfo();
+        xgame::MsgHitEventCollision* HitMessage = new xgame::MsgHitEventCollision();
+        xgame::MsgGetExternalMovePosition* ExternalMoveMessage = new xgame::MsgGetExternalMovePosition();
 
-			*((int*)(this + 0x3A4)) = jumpBoardType;
+    public:
+        ObjYoshiJumpBoard(int type)
+        {
+            State = ObjYoshiJumpBoardState::STATE_WAIT;
+            Type = type;
+        }
 
-			/* StateType */
-			*((int*)(this + 0x3A8)) = 0;
+        void AddCallback(GameDocument* gameDocument) override
+        {
+            fnd::GOComponent::Create(this, GOCVisualModel);
+            fnd::GOComponent::Create(this, GOCAnimationScript);
+            fnd::GOComponent::Create(this, GOCCollider);
 
-			/* MessageType */
-			*((int*)(this + 0x3AC)) = 0;
+            if (!IsConsistentShadow)
+                fnd::GOComponent::Create(this, GOCShadowSimple);
 
-			/* Default ShotInfo */
-			*((int*)(this + 0x3B0)) = 0;
+            fnd::GOComponent::Create(this, GOCSound);
 
-			/* ShotInfo */
-			*((int*)(this + 0x3E0)) = 0;
+            ObjYoshiJumpBoardInfo* info = (ObjYoshiJumpBoardInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjYoshiJumpBoardInfo");
+            ObjYoshiJumpBoardData* data = (ObjYoshiJumpBoardData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
+            if (data->IsPathChange)
+                Flags |= 1;
+            if (data->IsChangeCameraWhenPathChange)
+                Flags |= 2;
+            if (data->IsUpdateYaw)
+                Flags |= 4;
+            OutOfParkour = data->OutOfParkour;
 
-			return (CSetObjectListener*)this;
-		}
+            app::fnd::GOComponent::BeginSetup(this);
 
-		void AddCallback(GameDocument* gameDocument)
-		{
-			// Collision Offset
-			csl::math::Vector3 position { 0, 7.375f, 0 };
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+            if (gocVisual)
+            {
+                fnd::GOCVisualModel::VisualDescription visualDescriptor;
+                csl::math::Vector3 objectScale
+                    { YJB_SIZE[Type], YJB_SIZE[Type], YJB_SIZE[Type] };
 
-			game::ShadowSphereShapeCInfo shadowInfo;
-			fnd::GOCVisualModel::VisualDescription visualDescriptor;
-			game::ColliCapsuleShapeCInfo collisionInfo;
-			float jumpBoardScale = *(int*)(this + 0x3A4) ? 0.75f : 1.25f;
-			float shadowSize = *(int*)(this + 0x3A4) ? 3.75f : 6.25f;
-			int collisionUnit = 1;
-			csl::math::Vector3 objectScale;
+                fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
+                visualDescriptor.Model = info->Model;
+                visualDescriptor.Skeleton = info->Skeleton;
+                visualDescriptor.Animation |= 0x400000;
+                fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
+                fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &objectScale);
 
-			fnd::GOComponent::Create((GameObject*)this, GOCVisualModel);
-			fnd::GOComponent::Create((GameObject*)this, GOCAnimationScript);
-			fnd::GOComponent::Create((GameObject*)this, GOCCollider);
-			
-			if (IsJumpBoardShadowOn)
-				fnd::GOComponent::Create((GameObject*)this, GOCShadowSimple);
-			
-			fnd::GOComponent::Create((GameObject*)this, GOCSound);
+                int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
+                if (gocAnimation)
+                {
+                    animation::AnimationResContainer* animation = &(info->AnimationContainer);
 
-			ObjYoshiJumpBoardInfo* info = (ObjYoshiJumpBoardInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjYoshiJumpBoardInfo");
-			ObjYoshiJumpBoardData* data = (ObjYoshiJumpBoardData*)CSetAdapter::GetData(*(int**)(this + 0x324));
+                    game::GOCAnimationScript::Setup(gocAnimation, (int*)&animation);
+                    fnd::GOCVisualModel::AttachAnimation(gocVisual, gocAnimation);
+                }
+            }
 
-			app::fnd::GOComponent::BeginSetup((GameObject*)this);
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+            if (gocCollider)
+            {
+                csl::math::Vector3 position{};
+                csl::math::Vector3 upVec { 0, 1, 0 };
+                math::Vector3Scale(&upVec, (YJB_HEIGHT[Type] * 0.5f) + YJB_WIDTH[Type], &position);
 
-			int* gocVisual = GameObject::GetGOC((GameObject*)this, GOCVisual);
-			if (gocVisual)
-			{
-				fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
-				visualDescriptor.Model = info->Model;
-				visualDescriptor.Skeleton = info->Skeleton;
-				visualDescriptor.Animation |= 0x400000;
-				fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
+                int shapeCount = 1;
+                game::ColliCapsuleShapeCInfo collisionInfo;
 
-				objectScale.X = jumpBoardScale;
-				objectScale.Y = jumpBoardScale;
-				objectScale.Z = jumpBoardScale;
-				fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &objectScale);
+                game::GOCCollider::Setup(gocCollider, &shapeCount);
+                game::CollisionObjCInfo::__ct(&collisionInfo);
+                collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_CAPSULE;
+                collisionInfo.MotionType = 2;
+                collisionInfo.Radius = YJB_HEIGHT[Type];
+                collisionInfo.Height = YJB_WIDTH[Type];
+                game::CollisionObjCInfo::SetLocalPosition(&collisionInfo, &position);
+                ObjUtil::SetupCollisionFilter(0, &collisionInfo);
+                collisionInfo.field_04 |= 1;
+                collisionInfo.field_0C = 0;
 
-				int* gocAnimation = GameObject::GetGOC((GameObject*)this, GOCAnimationString);
-				if (gocAnimation)
-				{
-					animation::AnimationResContainer* animation = &(info->AnimationContainer);
+                game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
+            }
 
-					game::GOCAnimationScript::Setup(gocAnimation, (int*)&animation);
-					fnd::GOCVisualModel::AttachAnimation(gocVisual, gocAnimation);
-				}
-			}
+            int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
+            if (gocShadow)
+            {
+                game::ShadowSphereShapeCInfo shadowInfo;
 
-			int* gocCollider = GameObject::GetGOC((GameObject*)this, GOCColliderString);
-			if (gocCollider)
-			{
-				game::GOCCollider::Setup(gocCollider, &collisionUnit);
-				game::CollisionObjCInfo::__ct(&collisionInfo);
-				collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_CAPSULE;
-				collisionInfo.MotionType = 2;
-				collisionInfo.Radius = *(int*)(this + 0x3A4) ? 2.5f : 5;
-				collisionInfo.Height = *(int*)(this + 0x3A4) ? 3.7f : 4.75f;
-				collisionInfo.field_44 = 0;
-				collisionInfo.field_48 = 0;
-				game::CollisionObjCInfo::SetLocalPosition(&collisionInfo, &position);
-				ObjUtil::SetupCollisionFilter(0, &collisionInfo);
-				collisionInfo.field_0C = 0;
-				collisionInfo.field_04 |= 1;
+                game::ShadowSphereShapeCInfo::__ct(&shadowInfo, 5 * YJB_SIZE[Type]);
+                shadowInfo.field_04 = 6;
+                shadowInfo.ShadowQualityType = 0;
 
-				game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
-			}
+                game::ShadowSphereShapeCInfo* ppShadowInfo = &shadowInfo;
+                game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
+            }
 
-			int* gocShadow = GameObject::GetGOC((GameObject*)this, GOCShadowString);
-			if (gocShadow)
-			{
-				game::ShadowSphereShapeCInfo::__ct(&shadowInfo, shadowSize);
-				shadowInfo.field_04 = 6;
-				shadowInfo.field_11 = 0;
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (gocTransform)
+            {
+                game::GOCLauncher::ShotInfo shotInfo;
 
-				game::ShadowSphereShapeCInfo* ppShadowInfo = &shadowInfo;
-				game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
-			}
+                SetShotInfo(data->FirstSpeed, data->KeepVelocityDistance, data->OutOfControl,
+                    (csl::math::Matrix34*)(gocTransform + 0xC), Type, &shotInfo);
+                *DefaultShot = shotInfo;
 
-			int* gocTransform = GameObject::GetGOC((GameObject*)this, GOCTransformString);
-			if (gocTransform)
-			{
-				game::GOCLauncher::ShotInfo shotInfo;
+                SetShotInfo(YJB_FIRSTSPEED[Type], YJB_KEEPVELOCITYDISTANCE[Type], YJB_OUTOFCONTROL[Type],
+                    (csl::math::Matrix34*)(gocTransform + 0xC), Type, &shotInfo);
+                *JumpShot = shotInfo;
+            }
 
-				SetShotInfo(data->FirstSpeed, data->KeepVelocityDistance, data->OutOfControl,
-					(csl::math::Matrix34*)(gocTransform + 0xC), *(int*)(this + 0x3A4), &shotInfo);
-				*((game::GOCLauncher::ShotInfo*)(this + 0x3E0)) = shotInfo;
+            app::game::GOCSound::SimpleSetup(this, 0, 0);
 
-				SetShotInfo(
-					*(int*)(this + 0x3A4) ? 75 : 100, *(int*)(this + 0x3A4) ? 7.5f : 10,
-					*(int*)(this + 0x3A4) ? 0.1 : 0.125, (csl::math::Matrix34*)(gocTransform + 0xC),
-					*(int*)(this + 0x3A4), &shotInfo);
-				*((game::GOCLauncher::ShotInfo*)(this + 0x3B0)) = shotInfo;
-			}
+            fnd::GOComponent::EndSetup(this);
+        }
 
-			app::game::GOCSound::SimpleSetup((GameObject*)this, 0, 0);
+        bool ProcessMessage(fnd::MessageNew& message) override
+        {
+            if (PreProcessMessage(message))
+                return true;
+            
+            switch (message.Type)
+            {
+            case fnd::PROC_MSG_HIT_EVENT_COLLISION:
+                ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
+                return true;
+            case fnd::PROC_MSG_GET_EXTERNAL_MOVE_POSITION:
+                ProcMsgGetExternalMovePosition((xgame::MsgGetExternalMovePosition&)message);
+                return true;
+            default:
+                return CSetObjectListener::ProcessMessage(message);
+            }
+        }
 
-			fnd::GOComponent::EndSetup((GameObject*)this);
-			*((int*)(this + 0x3A8)) = 1;
-		}
+        void Update(const fnd::SUpdateInfo& updateInfo) override
+        {
+            StateWait();
+            StateExpansion();
+        }
 
-		bool ProcessMessage(fnd::Message* message)
-		{
-			if (message->field_04 == fnd::PROC_MSG_HIT_EVENT_COLLISION)
-			{
-				*((fnd::MessageType*)(this + 0x3A4)) = message->field_04;
-				*((int*)(this + 0x39C)) = ((int*)message)[8];
-			}
+        inline static ObjYoshiJumpBoard* Create_Small()
+        {
+            return new ObjYoshiJumpBoard(1);
+        }
 
-			switch (message->field_04)
-			{
-			case fnd::PROC_MSG_GET_EXTERNAL_MOVE_POSITION:
-			{
-				int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), ((int*)message)[2]);
-				int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
+        inline static ObjYoshiJumpBoard* Create_Big()
+        {
+            return new ObjYoshiJumpBoard(0);
+        }
 
-				int* gocAnimation = GameObject::GetGOC((GameObject*)(this - 8), GOCAnimationString);
-				int* gocTransform = GameObject::GetGOC((GameObject*)(this - 8), GOCTransformString);
+    private:
+        void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
+        {
+            *HitMessage = message;
+        }
 
-				if (gocAnimation)
-				{
-					int currentFrame = game::GOCAnimationScript::GetFrame(gocAnimation);
-					if (currentFrame < 10.0 && *(int*)(this + 0x3A0) == 3)
-					{
-						xgame::MsgPLGetInputButton playerGetInputButtonMessage;
+        void ProcMsgGetExternalMovePosition(xgame::MsgGetExternalMovePosition& message)
+        {
+            *ExternalMoveMessage = message;
+        }
 
-						xgame::MsgPLGetInputButton::__ct(&playerGetInputButtonMessage, 0, 0);
-						if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), playerNo, (int*)&playerGetInputButtonMessage))
-						{
-							if (!*(int*)(this + 0x398))
-								*(int*)(this + 0x398) = playerGetInputButtonMessage.field_20;
+        void StateWait()
+        {
+            if (State != ObjYoshiJumpBoardState::STATE_WAIT)
+                return;
 
-							if (playerGetInputButtonMessage.field_20 != 0)
-								game::GOCAnimationScript::ChangeAnimation(gocAnimation, "JUMP_BIG");
+            int playerNo = ObjUtil::GetPlayerNo(field_24[1], HitMessage->ActorID);
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], playerNo);
+            if (!playerInfo)
+                return;
 
-							xgame::MsgExtendPlayer::__dt((int*)&playerGetInputButtonMessage);
-						}
+            DefaultShot->StartingPosition = *(csl::math::Vector3*)(playerInfo + 4);
+            JumpShot->StartingPosition = *(csl::math::Vector3*)(playerInfo + 4);
 
-						int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), *(int*)(this + 0x39C));
-						int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
+            xgame::MsgCatchPlayer catchMessage{};
+            catchMessage.field_18 = 0;
+            catchMessage.field_60 = 0x12;
+            catchMessage.field_64 = 0;
+            if (ObjUtil::SendMessageImmToPlayer(this, playerNo, (int*)&catchMessage))
+            {
+                State = ObjYoshiJumpBoardState::STATE_EXPANSION;
+                Flags |= 0x1000;
+            }
+        }
 
-						csl::math::Vector3 playerPosition = *(csl::math::Vector3*)(playerInfo + 4);
-						csl::math::Vector3 targetPosition = *(csl::math::Vector3*)(gocTransform + 0x50);
+        void StateExpansion()
+        {
+            if (State != ObjYoshiJumpBoardState::STATE_EXPANSION)
+                return;
 
-						if ((std::abs(playerPosition.Y - targetPosition.Y)) > 0.55f)
-							if (app::game::GOCAnimationScript::GetFrame(gocAnimation) < 8)
-								playerPosition.Y -= 1.25f;
+            int playerNo = ObjUtil::GetPlayerNo(field_24[1], ExternalMoveMessage->field_08);
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], playerNo);
+            if (!playerInfo)
+                return;
 
-						if (app::game::GOCAnimationScript::GetFrame(gocAnimation) >= 9)
-							playerPosition.Y += 5.0f;
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
 
-						((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][0] = playerPosition.X;
-						((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][1] = playerPosition.Y;
-						((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][2] = playerPosition.Z;
-					}
-					else
-					{
-						*(int*)(this + 0x3A0) = 4;
-					}
-				}
-			}
-			default:
-				CSetObjectListener::f_ProcessMessage((CSetObjectListener*)this, message);
-				return true;
-				break;
-			}
-		}
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
+            if (!gocAnimation)
+                return;
 
-		void Update(int* sUpdateInfo)
-		{
-			StateWait();
-			StateExpansion();
-		}
+            if (Flags & 0x1000)
+            {
+                game::GOCAnimationScript::SetAnimation(gocAnimation, "JUMP_SMALL");
 
-	private:
-		void StateWait()
-		{
-			if (*((int*)(this + 0x3A0)) == 1)
-			{
-				if (*(fnd::MessageType*)(this + 0x3A4) == fnd::PROC_MSG_HIT_EVENT_COLLISION)
-				{
-					xgame::MsgCatchPlayer catchPlayerMessage;
+                int deviceTag[3];
+                int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+                if (!gocSound)
+                    return;
+                game::GOCSound::Play(gocSound, deviceTag, "obj_yossyjumpboard", 0);
 
-					int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), *(int*)(this + 0x39C));
-					int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
-					((game::GOCLauncher::ShotInfo*)(this + 0x3D8))->StartingPosition = *(csl::math::Vector3*)(playerInfo + 4);
-					((game::GOCLauncher::ShotInfo*)(this + 0x3A8))->StartingPosition = *(csl::math::Vector3*)(playerInfo + 4);
+                Flags &= ~0x1000;
+                Flags |= 0x2000;
+                return;
+            }
 
-					fnd::Message::__ct(&catchPlayerMessage.Base, fnd::PROC_MSG_CATCH_PLAYER);
-					catchPlayerMessage.field_18 = 0;
-					catchPlayerMessage.field_60 = 0x12;
-					catchPlayerMessage.field_64 = 0;
-					if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), playerNo, (int*)&catchPlayerMessage))
-					{
-						*((int*)(this + 0x3A0)) = 2;
-						xgame::MsgExtendPlayer::__dt((int*)&catchPlayerMessage);
-					}
-				}
-			}
-		}
+            int currentFrame = game::GOCAnimationScript::GetFrame(gocAnimation);
+            xgame::MsgPLGetInputButton buttonMessage{};
+            if (currentFrame < 10.0 && (Flags & 0x2000))
+            {
+                if (ObjUtil::SendMessageImmToPlayer(this, playerNo, (int*)&buttonMessage))
+                    if (buttonMessage.field_20 && !(Flags & 0x100))
+                    {
+                        Flags |= 0x100;
+                        game::GOCAnimationScript::ChangeAnimation(gocAnimation, "JUMP_BIG");
+                    }
 
-		void StateExpansion()
-		{
-			int* gocAnimation = GameObject::GetGOC((GameObject*)(this - 8), GOCAnimationString);
-			game::GOCLauncher::ShotInfo shotInfo;
+                csl::math::Vector3 playerPosition = *(csl::math::Vector3*)(playerInfo + 4);
+                csl::math::Vector3 targetPosition = *(csl::math::Vector3*)(gocTransform + 0x50);
 
-			int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), *(int*)(this + 0x39C));
-			int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
+                if ((std::abs(playerPosition.Y - targetPosition.Y)) > 0.55f)
+                    if (app::game::GOCAnimationScript::GetFrame(gocAnimation) < 8)
+                        playerPosition.Y -= 1.25f;
 
-			if (*((int*)(this + 0x3A0)) == 2)
-			{
-				int something[3];
+                if (app::game::GOCAnimationScript::GetFrame(gocAnimation) >= 9)
+                    playerPosition.Y += 5.0f;
 
-				game::GOCAnimationScript::SetAnimation(gocAnimation, "JUMP_SMALL");
+                ExternalMoveMessage->Transform->data[3][0] = playerPosition.X;
+                ExternalMoveMessage->Transform->data[3][1] = playerPosition.Y;
+                ExternalMoveMessage->Transform->data[3][2] = playerPosition.Z;
+            }
+            else
+            {
+                Flags &= ~0x3000;
+                Flags |= 0x4000;
+            }
 
-				int* gocSound = GameObject::GetGOC((GameObject*)(this - 8), GOCSoundString);
-				if (gocSound)
-					game::GOCSound::Play(gocSound, something, "obj_yossyjumpboard", 0);
+            if (Flags & 0x4000)
+            {
+                game::GOCLauncher::ShotInfo* shotInfo =
+                    (Flags & 0x100) ? DefaultShot : JumpShot;
 
-				*((int*)(this + 0x3A0)) = 3;
-			}
+                ObjYoshiJumpBoardData* data = (ObjYoshiJumpBoardData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
+                xgame::MsgSpringImpulse impulseMessage { shotInfo, data->OutOfParkour };
+                if (ObjUtil::SendMessageImmToPlayer(this, playerNo, &impulseMessage))
+                {
+                    State = ObjYoshiJumpBoardState::STATE_WAIT;
+                    Flags &= ~0x7100;
+                    HitMessage = new xgame::MsgHitEventCollision();
+                    ExternalMoveMessage = new xgame::MsgGetExternalMovePosition();
+                    return;
+                }
+            }
+        }
+    };
 
-			if (*(int*)(this + 0x3A0) == 4)
-			{
-				shotInfo = *(int*)(this + 0x398) ? *(game::GOCLauncher::ShotInfo*)(this + 0x3D8) :
-					*(game::GOCLauncher::ShotInfo*)(this + 0x3A8);
-
-				xgame::MsgSpringImpulse springImpulseMessage;
-				xgame::MsgSpringImpulse::__ct(&springImpulseMessage,
-					&shotInfo.StartingPosition, &shotInfo.LaunchVector,
-					shotInfo.OutOfControl, shotInfo.TravelTime);
-				
-				ObjYoshiJumpBoardData* setData = (ObjYoshiJumpBoardData*)CSetAdapter::GetData(*(int**)(this + 0x31C));
-				springImpulseMessage.OutOfParkour = setData->OutOfParkour;
-				if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), playerNo, (int*)&springImpulseMessage))
-				{
-					*(int*)(this + 0x398) = 0;
-					*(int*)(this + 0x3A0) = 1;
-					*(int*)(this + 0x3A4) = 0;
-					*(int*)(this + 0x39C) = 0;
-				}
-			}
-		}
-	};
+    inline static ObjYoshiJumpBoardInfo* createObjInfo_ObjYoshiJumpBoard(csl::fnd::IAllocator* pAllocator)
+    {
+        return new(pAllocator) ObjYoshiJumpBoardInfo();
+    }
 }
+        /*bool ProcessMessage(fnd::Message* message)
+        {
+            if (message->field_04 == fnd::PROC_MSG_HIT_EVENT_COLLISION)
+            {
+                *((fnd::MessageType*)(this + 0x3A4)) = message->field_04;
+                *((int*)(this + 0x39C)) = ((int*)message)[8];
+            }
+
+            switch (message->field_04)
+            {
+            case fnd::PROC_MSG_GET_EXTERNAL_MOVE_POSITION:
+            {
+                int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), ((int*)message)[2]);
+                int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
+
+                int* gocAnimation = GameObject::GetGOC((GameObject*)(this - 8), GOCAnimationString);
+                int* gocTransform = GameObject::GetGOC((GameObject*)(this - 8), GOCTransformString);
+
+                if (gocAnimation)
+                {
+                    int currentFrame = game::GOCAnimationScript::GetFrame(gocAnimation);
+                    if (currentFrame < 10.0 && *(int*)(this + 0x3A0) == 3)
+                    {
+                        xgame::MsgPLGetInputButton playerGetInputButtonMessage;
+
+                        xgame::MsgPLGetInputButton::__ct(&playerGetInputButtonMessage, 0, 0);
+                        if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), playerNo, (int*)&playerGetInputButtonMessage))
+                        {
+                            if (!*(int*)(this + 0x398))
+                                *(int*)(this + 0x398) = playerGetInputButtonMessage.field_20;
+
+                            if (playerGetInputButtonMessage.field_20 != 0)
+                                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "JUMP_BIG");
+
+                            xgame::MsgExtendPlayer::__dt((int*)&playerGetInputButtonMessage);
+                        }
+
+                        int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), *(int*)(this + 0x39C));
+                        int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
+
+                        csl::math::Vector3 playerPosition = *(csl::math::Vector3*)(playerInfo + 4);
+                        csl::math::Vector3 targetPosition = *(csl::math::Vector3*)(gocTransform + 0x50);
+
+                        if ((std::abs(playerPosition.Y - targetPosition.Y)) > 0.55f)
+                            if (app::game::GOCAnimationScript::GetFrame(gocAnimation) < 8)
+                                playerPosition.Y -= 1.25f;
+
+                        if (app::game::GOCAnimationScript::GetFrame(gocAnimation) >= 9)
+                            playerPosition.Y += 5.0f;
+
+                        ((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][0] = playerPosition.X;
+                        ((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][1] = playerPosition.Y;
+                        ((xgame::MsgGetExternalMovePosition*)message)->Transform->data[3][2] = playerPosition.Z;
+                    }
+                    else
+                    {
+                        *(int*)(this + 0x3A0) = 4;
+                    }
+                }
+            }
+            default:
+                CSetObjectListener::f_ProcessMessage((CSetObjectListener*)this, message);
+                return true;
+                break;
+            }
+        }
+
+        void Update(const fnd::SUpdateInfo& sUpdateInfo)
+        {
+            StateWait();
+            StateExpansion();
+        }
+
+    private:
+        void StateWait()
+        {
+            if (*((int*)(this + 0x3A0)) == 1)
+            {
+                if (*(fnd::MessageType*)(this + 0x3A4) == fnd::PROC_MSG_HIT_EVENT_COLLISION)
+                {
+                    xgame::MsgCatchPlayer catchPlayerMessage;
+
+                    int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), *(int*)(this + 0x39C));
+                    int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
+                    ((game::GOCLauncher::ShotInfo*)(this + 0x3D8))->StartingPosition = *(csl::math::Vector3*)(playerInfo + 4);
+                    ((game::GOCLauncher::ShotInfo*)(this + 0x3A8))->StartingPosition = *(csl::math::Vector3*)(playerInfo + 4);
+
+                    fnd::Message::__ct(&catchPlayerMessage.Base, fnd::PROC_MSG_CATCH_PLAYER);
+                    catchPlayerMessage.field_18 = 0;
+                    catchPlayerMessage.field_60 = 0x12;
+                    catchPlayerMessage.field_64 = 0;
+                    if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), playerNo, (int*)&catchPlayerMessage))
+                    {
+                        *((int*)(this + 0x3A0)) = 2;
+                        xgame::MsgExtendPlayer::__dt((int*)&catchPlayerMessage);
+                    }
+                }
+            }
+        }
+
+        void StateExpansion()
+        {
+            int* gocAnimation = GameObject::GetGOC((GameObject*)(this - 8), GOCAnimationString);
+            game::GOCLauncher::ShotInfo shotInfo;
+
+            int playerNo = ObjUtil::GetPlayerNo(*(int*)(this + 32), *(int*)(this + 0x39C));
+            int* playerInfo = ObjUtil::GetPlayerInformation(*Document, playerNo);
+
+            if (*((int*)(this + 0x3A0)) == 2)
+            {
+                int something[3];
+
+                game::GOCAnimationScript::SetAnimation(gocAnimation, "JUMP_SMALL");
+
+                int* gocSound = GameObject::GetGOC((GameObject*)(this - 8), GOCSoundString);
+                if (gocSound)
+                    game::GOCSound::Play(gocSound, something, "obj_yossyjumpboard", 0);
+
+                *((int*)(this + 0x3A0)) = 3;
+            }
+
+            if (*(int*)(this + 0x3A0) == 4)
+            {
+                shotInfo = *(int*)(this + 0x398) ? *(game::GOCLauncher::ShotInfo*)(this + 0x3D8) :
+                    *(game::GOCLauncher::ShotInfo*)(this + 0x3A8);
+
+                xgame::MsgSpringImpulse springImpulseMessage;
+                xgame::MsgSpringImpulse::__ct(&springImpulseMessage,
+                    &shotInfo.StartingPosition, &shotInfo.LaunchVector,
+                    shotInfo.OutOfControl, shotInfo.TravelTime);
+                
+                ObjYoshiJumpBoardData* setData = (ObjYoshiJumpBoardData*)CSetAdapter::GetData(*(int**)(this + 0x31C));
+                springImpulseMessage.OutOfParkour = setData->OutOfParkour;
+                if (ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), playerNo, (int*)&springImpulseMessage))
+                {
+                    *(int*)(this + 0x398) = 0;
+                    *(int*)(this + 0x3A0) = 1;
+                    *(int*)(this + 0x3A4) = 0;
+                    *(int*)(this + 0x39C) = 0;
+                }
+            }
+        }*/
