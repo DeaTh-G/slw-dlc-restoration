@@ -24,7 +24,7 @@ namespace app
             int field_6C;
 
             inline static FUNCTION_PTR(int, __thiscall, __ct, ASLR(0x00728470), DeadEffectCInfo* This);
-            inline static FUNCTION_PTR(int, __thiscall, SetMsgDamage, ASLR(0x00728400), DeadEffectCInfo* This, fnd::Message* message);
+            inline static FUNCTION_PTR(int, __thiscall, SetMsgDamage, ASLR(0x00728400), DeadEffectCInfo* This, fnd::MessageNew* message);
             inline static FUNCTION_PTR(int, __thiscall, SetTransform, ASLR(0x007284D0), DeadEffectCInfo* This, csl::math::Matrix34* transform);
 
             static char* SetYoshiIsland(DeadEffectCInfo* This)

@@ -121,7 +121,7 @@ namespace app
                 {
                     animation::AnimationResContainer* animation = &(info->AnimationContainer);
 
-                    game::GOCAnimationScript::Setup(gocAnimation, (int*)&animation);
+                    game::GOCAnimationScript::Setup(gocAnimation, &animation);
                     fnd::GOCVisualModel::AttachAnimation(gocVisual, gocAnimation);
                 }
             }

@@ -4,10 +4,14 @@ namespace app
 {
     namespace xgame
     {
-        class MsgKick
+        class MsgKick : public fnd::MessageNew
         {
         public:
-            inline static FUNCTION_PTR(int, __thiscall, SetReplyForSucceed, ASLR(0x004D8800), fnd::Message* message);
+            INSERT_PADDING(104);
+
+            MsgKick() : MessageNew() {}
+
+            inline static FUNCTION_PTR(int, __thiscall, SetReplyForSucceed, ASLR(0x004D8800), xgame::MsgKick* message);
         };
     }
 }

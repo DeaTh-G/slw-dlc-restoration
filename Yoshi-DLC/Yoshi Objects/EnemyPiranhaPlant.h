@@ -90,11 +90,12 @@ namespace app
             fnd::GOComponent::Create(this, GOCCollider);
             fnd::GOComponent::Create(this, EnemyTargetGOC);
             fnd::GOComponent::Create(this, GOCEnemyHSM);
-            fnd::GOComponent::BeginSetup(this);
             
-            EnemyPiranhaPlantData* data = (EnemyPiranhaPlantData*)CSetAdapter::GetData(*(int**)&(field_031C[0xC]));
+            EnemyPiranhaPlantData* data = (EnemyPiranhaPlantData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
             EnemyPiranhaPlantInfo* info = (EnemyPiranhaPlantInfo*)ObjUtil::GetObjectInfo(gameDocument, "EnemyPiranhaPlantInfo");
             Direction |= !data->Direction;
+
+            fnd::GOComponent::BeginSetup(this);
 
             fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
             if (!gocTransform)
@@ -131,7 +132,7 @@ namespace app
                     texSrtAnimation[0] = info->TexSrtAnimation;
                     texSrtAnimation[1] = 1;
 
-                    game::GOCAnimationScript::Setup(gocAnimation, (int*)&animation);
+                    game::GOCAnimationScript::Setup(gocAnimation, &animation);
                     fnd::GOCVisualModel::AttachAnimation(gocVisual, gocAnimation);
                     TexSrtControl = fnd::GOCVisualModel::SetTexSrtAnimation(gocVisual, texSrtAnimation);
                     fnd::TexSrtControlHH::SetSpeed(TexSrtControl, 0);
@@ -678,10 +679,10 @@ namespace app
 
                         fnd::HFrame* center = EnemyBase::GetCenterPositionFrame(obj);
                         csl::math::Vector3 position = *(csl::math::Vector3*)&center->Transform.data[3][0];
-                        ObjUtil::AddScore(obj, "PIRANHAPLANT", (fnd::Message*)obj->Message);
+                        ObjUtil::AddScore(obj, "PIRANHAPLANT", obj->Message);
                         
                         enemy::DeadEffectCInfo::__ct(&effectInfo);
-                        enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, (fnd::Message*)obj->Message);
+                        enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, obj->Message);
                         enemy::DeadEffectCInfo::SetYoshiIsland(&effectInfo);
 
                         int* gocVisual = GameObject::GetGOC(obj, GOCVisual);
@@ -700,7 +701,7 @@ namespace app
 
                         void* enemyManager = EnemyManager::GetService((GameDocument*)obj->field_24[1]);
                         EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
-                        EnemyBase::ProcMission(obj, (fnd::Message*)obj->Message);
+                        EnemyBase::ProcMission(obj, obj->Message);
                         CSetObjectListener::SetStatusRetire(obj);
                         GameObject::Kill(obj);
                         
@@ -761,167 +762,167 @@ namespace app
                 }
             }
         };
-        private:
-            void ProcMsgDamage(xgame::MsgDamage& message)
-            {
-                int* gocEnemyHsm = GameObject::GetGOC(this, GOCEnemyHsmString);
-                if (!gocEnemyHsm)
-                    return;
+     private:
+         void ProcMsgDamage(xgame::MsgDamage& message)
+         {
+             int* gocEnemyHsm = GameObject::GetGOC(this, GOCEnemyHsmString);
+             if (!gocEnemyHsm)
+                 return;
 
-                if (message.field_28 == 3)
-                    GOCEnemyHsm::Dispatch(gocEnemyHsm, (fnd::MessageNew*)&message);
-                else if (message.field_54 == 3)
-                    if (ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0) &&
-                        Transform.Data[0x24] == 7)
-                        GOCEnemyHsm::Dispatch(gocEnemyHsm, (fnd::MessageNew*)&message);
-            }
+             if (message.field_28 == 3)
+                 GOCEnemyHsm::Dispatch(gocEnemyHsm, (fnd::MessageNew*) & message);
+             else if (message.field_54 == 3)
+                 if (ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0) &&
+                     Transform.Data[0x24] == 7)
+                     GOCEnemyHsm::Dispatch(gocEnemyHsm, (fnd::MessageNew*) & message);
+         }
 
-            void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
-            {
-                if (Direction & 8 && !ObjUtil::CheckShapeUserID(message.field_18, 0))
-                {
-                    csl::math::Vector3 position{};
-                    xgame::MsgDamage msgDamage{ 3, 8, 3, &message, &position };
-                    SendMessageImm(message.ActorID, &msgDamage);
-                }
-            }
+         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
+         {
+             if (Direction & 8 && !ObjUtil::CheckShapeUserID(message.field_18, 0))
+             {
+                 csl::math::Vector3 position{};
+                 xgame::MsgDamage msgDamage{ 3, 8, 3, &message, &position };
+                 SendMessageImm(message.ActorID, &msgDamage);
+             }
+         }
 
-            void SetEnableCollision(int isEnable)
-            {
-                int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
-                if (!gocCollider)
-                    return;
-            
-                ObjUtil::SetEnableColliShape(gocCollider, 2, isEnable);
-                ObjUtil::SetEnableColliShape(gocCollider, 1, isEnable);
-            }
+         void SetEnableCollision(int isEnable)
+         {
+             int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+             if (!gocCollider)
+                 return;
 
-            void SetEnableDamageCollision(bool isEnable)
-            {
-                int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
-                if (!gocCollider)
-                    return;
+             ObjUtil::SetEnableColliShape(gocCollider, 2, isEnable);
+             ObjUtil::SetEnableColliShape(gocCollider, 1, isEnable);
+         }
 
-                if (isEnable)
-                    Direction |= 8;
-                else
-                    Direction &= ~8;
-                
-                ObjUtil::SetEnableColliShape(gocCollider, 2, isEnable);
-            }
+         void SetEnableDamageCollision(bool isEnable)
+         {
+             int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+             if (!gocCollider)
+                 return;
 
-            void SetScale(float scale)
-            {
-                int* gocVisual = GameObject::GetGOC(this, GOCVisual);
-                if (!gocVisual)
-                    return;
+             if (isEnable)
+                 Direction |= 8;
+             else
+                 Direction &= ~8;
 
-                Scale = scale;
+             ObjUtil::SetEnableColliShape(gocCollider, 2, isEnable);
+         }
 
-                csl::math::Vector3 visualScale { scale, scale, scale };
-                fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &visualScale);
+         void SetScale(float scale)
+         {
+             int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+             if (!gocVisual)
+                 return;
 
-                int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
-                if (!gocShadow)
-                    return;
+             Scale = scale;
 
-                game::GOCShadowSimple::SetScale(gocShadow, &visualScale);
-            }
+             csl::math::Vector3 visualScale{ scale, scale, scale };
+             fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &visualScale);
 
-            void SoundCallback(int a1, int a2, int a3)
-            {
-                int deviceTag[3]{};
+             int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
+             if (!gocShadow)
+                 return;
 
-                if (a2 || a3)
-                    return;
+             game::GOCShadowSimple::SetScale(gocShadow, &visualScale);
+         }
 
-                int* gocSound = GameObject::GetGOC((GameObject*)((char*)this + 1), GOCSoundString);
-                if (!gocSound)
-                    return;
+         void SoundCallback(int a1, int a2, int a3)
+         {
+             int deviceTag[3]{};
 
-                game::GOCSound::Play3D(gocSound, deviceTag, "enm_pakkunflower_bite", 0);
-            }
+             if (a2 || a3)
+                 return;
 
-            void AfterUpdatePoseCallback()
-            {
-                int* gocVisual = GameObject::GetGOC(this, GOCVisual);
-                if (!gocVisual)
-                    return;
+             int* gocSound = GameObject::GetGOC((GameObject*)((char*)this + 1), GOCSoundString);
+             if (!gocSound)
+                 return;
 
-                float multiplier = HeadRotation * 0.25f;
-                if (!(Direction & 4))
-                    fabs(multiplier);
+             game::GOCSound::Play3D(gocSound, deviceTag, "enm_pakkunflower_bite", 0);
+         }
 
-                for (size_t i = 2; i <= 5; i++)
-                {
-                    math::Transform transform{};
-                    char buffer[8]{};
+         void AfterUpdatePoseCallback()
+         {
+             int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+             if (!gocVisual)
+                 return;
 
-                    snprintf(buffer, 8, "Body%d", i);
-                    fnd::GOCVisualModel::GetNodeTransform(gocVisual, 2, buffer, &transform);
+             float multiplier = HeadRotation * 0.25f;
+             if (!(Direction & 4))
+                 fabs(multiplier);
 
-                    Eigen::Quaternion<float> q;
-                    q = Eigen::AngleAxis<float>(multiplier, Eigen::Vector3f(0, 1, 0));
-                    csl::math::Quaternion rotation{ q.x(), q.y(), q.z(), q.w() };
-                    transform.Rotation = rotation;
+             for (size_t i = 2; i <= 5; i++)
+             {
+                 math::Transform transform{};
+                 char buffer[8]{};
 
-                    fnd::GOCVisualModel::SetNodeTransform(gocVisual, 2, buffer, &transform);
-                }
+                 snprintf(buffer, 8, "Body%d", i);
+                 fnd::GOCVisualModel::GetNodeTransform(gocVisual, 2, buffer, &transform);
 
-                math::Transform transform{};
-                fnd::GOCVisualModel::GetNodeTransform(gocVisual, 1, "Head", &transform);
-                csl::math::Matrix34 transformMatrix{};
-                math::Transform::GetTransformMatrix(&transform, &transformMatrix);
-                fnd::HFrame::SetLocalTransform(&Parent, &transformMatrix);
-            }
+                 Eigen::Quaternion<float> q;
+                 q = Eigen::AngleAxis<float>(multiplier, Eigen::Vector3f(0, 1, 0));
+                 csl::math::Quaternion rotation{ q.x(), q.y(), q.z(), q.w() };
+                 transform.Rotation = rotation;
 
-            inline static void* AnimCallbackBridge_Initialize(csl::fnd::IAllocator* pAllocator)
-            {
-                return new animation::AnimCallbackBridge<EnemyPiranhaPlant>();
-            }
+                 fnd::GOCVisualModel::SetNodeTransform(gocVisual, 2, buffer, &transform);
+             }
 
-            inline static void* Idle_Initialize(csl::fnd::IAllocator* pAllocator)
-            {
-                return new EnemyPiranhaPlant::State::Idle();
-            }
+             math::Transform transform{};
+             fnd::GOCVisualModel::GetNodeTransform(gocVisual, 1, "Head", &transform);
+             csl::math::Matrix34 transformMatrix{};
+             math::Transform::GetTransformMatrix(&transform, &transformMatrix);
+             fnd::HFrame::SetLocalTransform(&Parent, &transformMatrix);
+         }
 
-            inline static void* Attack_Initialize(csl::fnd::IAllocator* pAllocator)
-            {
-                return new EnemyPiranhaPlant::State::Attack();
-            }
+         inline static void* AnimCallbackBridge_Initialize(csl::fnd::IAllocator* pAllocator)
+         {
+             return new animation::AnimCallbackBridge<EnemyPiranhaPlant>();
+         }
 
-            inline static void* ShiftAttack_Initialize(csl::fnd::IAllocator* pAllocator)
-            {
-                return new EnemyPiranhaPlant::State::ShiftAttack();
-            }
+         inline static void* Idle_Initialize(csl::fnd::IAllocator* pAllocator)
+         {
+             return new EnemyPiranhaPlant::State::Idle();
+         }
 
-            inline static void* ShiftIdle_Initialize(csl::fnd::IAllocator* pAllocator)
-            {
-                return new EnemyPiranhaPlant::State::ShiftIdle();
-            }
+         inline static void* Attack_Initialize(csl::fnd::IAllocator* pAllocator)
+         {
+             return new EnemyPiranhaPlant::State::Attack();
+         }
 
-            inline static void* Dead_Initialize(csl::fnd::IAllocator* pAllocator)
-            {
-                return new EnemyPiranhaPlant::State::Dead();
-            }
+         inline static void* ShiftAttack_Initialize(csl::fnd::IAllocator* pAllocator)
+         {
+             return new EnemyPiranhaPlant::State::ShiftAttack();
+         }
 
-            inline static ut::internal::StateDescImpl States[] =
-            {
-                { "Idle", &Idle_Initialize, -1 },
-                { "ShiftAttack", &ShiftAttack_Initialize, -1 },
-                { "Attack", &Attack_Initialize, -1 },
-                { "ShiftIdle", &ShiftIdle_Initialize, -1 },
-                { "Dead", &Dead_Initialize, -1 }
-            };
+         inline static void* ShiftIdle_Initialize(csl::fnd::IAllocator* pAllocator)
+         {
+             return new EnemyPiranhaPlant::State::ShiftIdle();
+         }
 
-            inline static app::GOCEnemyHsm::StateDesc StateDescriptors[] =
-            {
-                {0, &States[0]},
-                {1, &States[1]},
-                {2, &States[2]},
-                {3, &States[3]},
-                {4, &States[4]},
-            };
+         inline static void* Dead_Initialize(csl::fnd::IAllocator* pAllocator)
+         {
+             return new EnemyPiranhaPlant::State::Dead();
+         }
+
+         inline static ut::internal::StateDescImpl States[] =
+         {
+             { "Idle", &Idle_Initialize, -1 },
+             { "ShiftAttack", &ShiftAttack_Initialize, -1 },
+             { "Attack", &Attack_Initialize, -1 },
+             { "ShiftIdle", &ShiftIdle_Initialize, -1 },
+             { "Dead", &Dead_Initialize, -1 }
+         };
+
+         inline static app::GOCEnemyHsm::StateDesc StateDescriptors[] =
+         {
+             {0, &States[0]},
+             {1, &States[1]},
+             {2, &States[2]},
+             {3, &States[3]},
+             {4, &States[4]},
+         };
     };
 
     inline static EnemyPiranhaPlant* create_EnemyPiranhaPlant()
@@ -929,7 +930,7 @@ namespace app
         return new EnemyPiranhaPlant();
     }
 
-    inline static EnemyPiranhaPlantInfo* create_EnemyPiranhaPlantInfo(csl::fnd::IAllocator* pAllocator)
+    inline static EnemyPiranhaPlantInfo* createObjInfo_EnemyPiranhaPlantInfo(csl::fnd::IAllocator* pAllocator)
     {
         return new(pAllocator) EnemyPiranhaPlantInfo();
     }

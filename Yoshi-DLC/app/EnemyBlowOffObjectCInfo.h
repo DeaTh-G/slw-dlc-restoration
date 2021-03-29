@@ -22,7 +22,7 @@ namespace app
 		int field_8C;
 
 		inline static FUNCTION_PTR(int*, __thiscall, __ct, ASLR(0x0072B840), EnemyBlowOffObjectCInfo* This);
-		inline static FUNCTION_PTR(int*, __thiscall, SetParamByMessage, ASLR(0x0072B8D0), EnemyBlowOffObjectCInfo* This, fnd::Message* message);
+		inline static FUNCTION_PTR(int*, __thiscall, SetParamByMessage, ASLR(0x0072B8D0), EnemyBlowOffObjectCInfo* This, fnd::MessageNew* message);
 
 	};
 }

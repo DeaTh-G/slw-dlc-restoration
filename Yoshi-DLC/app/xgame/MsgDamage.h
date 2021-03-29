@@ -43,9 +43,8 @@ namespace app
             int field_98{};
             int field_9C{};
 
-            MsgDamage(int a1, int a2, int a3, xgame::MsgHitEventCollision* hitMessage, csl::math::Vector3* position)
+            MsgDamage(int a1, int a2, int a3, xgame::MsgHitEventCollision* hitMessage, csl::math::Vector3* position) : MessageNew()
             {
-                sizeof(MsgDamage);
                 __ct(this, a1, a2, a3, hitMessage, position);
             }
 

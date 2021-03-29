@@ -33,6 +33,7 @@ void Initialize()
     WriteCall((void*)ASLR(0x00915A16), &IsYoshiIslandStage);
     WriteCall((void*)ASLR(0x00916EED), &IsYoshiIslandStage);
 
+    auto create_EnemyShyGuy = &app::create_EnemyShyGuy;
     auto create_EnemyPiranhaPlant = &app::create_EnemyPiranhaPlant;
     auto create_ObjCrayPipe = &app::create_ObjCrayPipe;
     auto create_ObjCrayPipeExit = &app::create_ObjCrayPipeExit;
@@ -44,22 +45,15 @@ void Initialize()
     auto create_ObjYoshiJumpBoardSmall = &app::ObjYoshiJumpBoard::Create_Small;
     auto create_ObjYoshiSpecialFlower = &app::create_ObjYoshiSpecialFlower;
 
-    auto createEnemyInfo_EnemyPiranhaPlantInfo = &app::create_EnemyPiranhaPlantInfo;
+    auto createObjInfo_EnemyShyGuyInfo = &app::createObjInfo_EnemyShyGuyInfo;
+    auto createObjInfo_EnemyPiranhaPlantInfo = &app::createObjInfo_EnemyPiranhaPlantInfo;
     auto createObjInfo_ObjEggBlockInfo = &app::createObjInfo_ObjEggBlockInfo;
     auto createObjInfo_ObjRotateLiftInfo = &app::createObjInfo_ObjRotateLiftInfo;
     auto createObjInfo_ObjYoshiCoinInfo = &app::createObjInfo_ObjYoshiCoinInfo;
     auto createObjInfo_ObjYoshiJumpBoard = &app::createObjInfo_ObjYoshiJumpBoard;
     auto createObjInfo_ObjYoshiSpecialFlowerInfo = &app::createObjInfo_ObjYoshiSpecialFlowerInfo;
 
-
-    auto EnemyShyGuyInfo__Initialize = &app::EnemyShyGuyInfo::Initialize;
-    auto EnemyShyGuyInfo__GetInfoName = &app::EnemyShyGuyInfo::GetInfoName;
-    auto create_EnemyShyGuy = &app::create_EnemyShyGuy;
-    auto create_EnemyShyGuyInfo = &app::create_EnemyShyGuy_EnemyShyGuyInfo;
-    auto EnemyShyGuy__AddCallback = &app::EnemyShyGuy::AddCallback;
-    auto EnemyShyGuy__ProcessMessage = &app::EnemyShyGuy::ProcessMessage;
-
-
+    WRITE_FUNCTION(ASLR(0x00D2A654), *(void**)&create_EnemyShyGuy);
     WRITE_FUNCTION(ASLR(0x00D2A2E4), *(void**)&create_EnemyPiranhaPlant);
     WRITE_FUNCTION(ASLR(0x00D2BB51), *(void**)&create_ObjCrayPipe);
     WRITE_FUNCTION(ASLR(0x00D2BBA1), *(void**)&create_ObjCrayPipeExit);
@@ -71,22 +65,14 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2C324), *(void**)&create_ObjYoshiJumpBoardSmall);
     WRITE_FUNCTION(ASLR(0x00D2C284), *(void**)&create_ObjYoshiSpecialFlower);
 
-    WRITE_FUNCTION(ASLR(0x00D2A2DF), *(void**)&createEnemyInfo_EnemyPiranhaPlantInfo);
+    WRITE_FUNCTION(ASLR(0x00D2A64F), *(void**)&createObjInfo_EnemyShyGuyInfo);
+    WRITE_FUNCTION(ASLR(0x00D2A2DF), *(void**)&createObjInfo_EnemyPiranhaPlantInfo);
     WRITE_FUNCTION(ASLR(0x00D2BC8F), *(void**)&createObjInfo_ObjEggBlockInfo);
     WRITE_FUNCTION(ASLR(0x00D2C0EF), *(void**)&createObjInfo_ObjRotateLiftInfo);
     WRITE_FUNCTION(ASLR(0x00D2C1DF), *(void**)&createObjInfo_ObjYoshiCoinInfo);
     WRITE_FUNCTION(ASLR(0x00D2C2CF), *(void**)&createObjInfo_ObjYoshiJumpBoard);
     WRITE_FUNCTION(ASLR(0x00D2C31F), *(void**)&createObjInfo_ObjYoshiJumpBoard);
     WRITE_FUNCTION(ASLR(0x00D2C27F), *(void**)&createObjInfo_ObjYoshiSpecialFlowerInfo);
-
-    
-    WRITE_FUNCTION(ASLR(0x00D93A4C), *(void**)&EnemyShyGuyInfo__Initialize);
-    WRITE_FUNCTION(ASLR(0x00D93A54), *(void**)&EnemyShyGuyInfo__GetInfoName);
-    WRITE_FUNCTION(ASLR(0x00D93A18), *(void**)&EnemyShyGuy__AddCallback);
-    WRITE_FUNCTION(ASLR(0x00D93A04), *(void**)&EnemyShyGuy__ProcessMessage);
-    WRITE_FUNCTION(ASLR(0x00D2A64F), *(void**)&create_EnemyShyGuyInfo);
-    WRITE_FUNCTION(ASLR(0x00D2A654), *(void**)&create_EnemyShyGuy);
-    WRITE_FUNCTION(ASLR(0x00D93A48), ASLR(0x00671D90));
 
     // Install Hooks
     app::xgame::IsDLCStagePurchase::Func();
