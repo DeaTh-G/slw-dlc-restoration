@@ -125,9 +125,28 @@ namespace app
                         fnd::GOCVisualContainer::Add(gocContainer, gocVisual);
                     }
                 }
-
-                fnd::GOComponent::EndSetup(this);
             }
+
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+            if (gocCollider)
+            {
+                int shapeCount = 1;
+                game::ColliBoxShapeCInfo collisionInfo{};
+
+                game::GOCCollider::Setup(gocCollider, &shapeCount);
+                game::CollisionObjCInfo::__ct(&collisionInfo);
+                collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_BOX;
+                collisionInfo.MotionType = 2;
+                collisionInfo.Size = csl::math::Vector3(20, 20, 1);
+                ObjUtil::SetupCollisionFilter(7, &collisionInfo);
+
+                game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
+            }
+
+            game::GOCEffect::SimpleSetup(this);
+            game::GOCSound::SimpleSetup(this, 0, 0);
+
+            fnd::GOComponent::EndSetup(this);
         }
 
     private:
