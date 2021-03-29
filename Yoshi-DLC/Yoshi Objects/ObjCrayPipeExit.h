@@ -91,7 +91,7 @@ namespace app
                 xgame::MsgExtendPlayer::__dt((int*)&catchEndPlayerMessage);
 
                 xgame::MsgPLVisibleItemEffect playerVisibleItemEffectMessage;
-                fnd::Message::__ct(&playerVisibleItemEffectMessage.Base, fnd::PROC_MSG_PL_VISIBLE_ITEM_EFFECT);
+                fnd::Message::__ct((fnd::Message*)&playerVisibleItemEffectMessage, fnd::PROC_MSG_PL_VISIBLE_ITEM_EFFECT);
                 playerVisibleItemEffectMessage.field_18 = 1;
                 ObjUtil::SendMessageImmToPlayer((GameObject*)(this - 8), *(int*)(this + 0x398), (int*)&playerVisibleItemEffectMessage);
                 xgame::MsgExtendPlayer::__dt((int*)&playerVisibleItemEffectMessage);
@@ -220,7 +220,7 @@ namespace app
 
                                 // Resuming Game Timer
                                 fnd::Message::__ct(&resumeGameTimerMessage.Base, fnd::PROC_MSG_RESUME_GAME_TIMER);
-                                if (ObjUtil::SendMessageImmToGameActor((GameObject*)(this - 8), (int*)&resumeGameTimerMessage))
+                                if (ObjUtil::SendMessageImmToGameActor((GameObject*)(this - 8), (fnd::MessageNew*)&resumeGameTimerMessage))
                                 {
                                     EggManager* eggManager = EggManager::GetService(*Document);
                                     if (eggManager)

@@ -34,6 +34,7 @@ void Initialize()
     WriteCall((void*)ASLR(0x00916EED), &IsYoshiIslandStage);
 
     auto create_EnemyPiranhaPlant = &app::create_EnemyPiranhaPlant;
+    auto create_ObjCrayPipe = &app::create_ObjCrayPipe;
     auto create_ObjEggBlock = &app::create_ObjEggBlock;
     auto create_ObjEggRotationChangeCollision = &app::create_ObjEggRotationChangeCollision;
     auto create_ObjRotateLift = &app::create_ObjRotateLift;
@@ -49,9 +50,6 @@ void Initialize()
     auto createObjInfo_ObjYoshiJumpBoard = &app::createObjInfo_ObjYoshiJumpBoard;
     auto createObjInfo_ObjYoshiSpecialFlowerInfo = &app::createObjInfo_ObjYoshiSpecialFlowerInfo;
 
-    auto create_ObjCrayPipe = &app::create_ObjCrayPipe;
-    auto ObjCrayPipe__ProcessMessage = &app::ObjCrayPipe::ProcessMessage;
-    auto ObjCrayPipe__AddCallback = &app::ObjCrayPipe::AddCallback;
 
     auto create_ObjCrayPipeExit = &app::create_ObjCrayPipeExit;
     auto ObjCrayPipeExit__ProcessMessage = &app::ObjCrayPipeExit::ProcessMessage;
@@ -67,6 +65,7 @@ void Initialize()
 
 
     WRITE_FUNCTION(ASLR(0x00D2A2E4), *(void**)&create_EnemyPiranhaPlant);
+    WRITE_FUNCTION(ASLR(0x00D2BB51), *(void**)&create_ObjCrayPipe);
     WRITE_FUNCTION(ASLR(0x00D2BC94), *(void**)&create_ObjEggBlock);
     WRITE_FUNCTION(ASLR(0x00D2BC41), *(void**)&create_ObjEggRotationChangeCollision);
     WRITE_FUNCTION(ASLR(0x00D2C0F4), *(void**)&create_ObjRotateLift);
@@ -82,10 +81,6 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2C2CF), *(void**)&createObjInfo_ObjYoshiJumpBoard);
     WRITE_FUNCTION(ASLR(0x00D2C31F), *(void**)&createObjInfo_ObjYoshiJumpBoard);
     WRITE_FUNCTION(ASLR(0x00D2C27F), *(void**)&createObjInfo_ObjYoshiSpecialFlowerInfo);
-
-    WRITE_FUNCTION(ASLR(0x00D94730), *(void**)&ObjCrayPipe__ProcessMessage);
-    WRITE_FUNCTION(ASLR(0x00D94744), *(void**)&ObjCrayPipe__AddCallback);
-    WRITE_FUNCTION(ASLR(0x00D2BB51), *(void**)&create_ObjCrayPipe);
 
     WRITE_FUNCTION(ASLR(0x00D947B0), *(void**)&ObjCrayPipeExit__ProcessMessage);
     WRITE_FUNCTION(ASLR(0x00D947B4), *(void**)&ObjCrayPipeExit__Update);

@@ -4,11 +4,15 @@ namespace app
 {
     namespace xgame
     {
-        __declspec(align(16)) struct MsgPLVisibleItemEffect
+        class MsgPLVisibleItemEffect : public fnd::MessageNew
         {
         public:
-            fnd::Message Base;
-            int field_18;
+            int field_18{};
+
+            MsgPLVisibleItemEffect() : MessageNew()
+            {
+                Type = fnd::PROC_MSG_PL_VISIBLE_ITEM_EFFECT;
+            }
         };
     }
 

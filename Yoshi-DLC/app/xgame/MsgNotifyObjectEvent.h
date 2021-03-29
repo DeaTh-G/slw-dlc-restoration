@@ -13,6 +13,11 @@ namespace app
             {
                 Type = fnd::PROC_MSG_NOTIFY_OBJECT_EVENT;
             }
+
+            MsgNotifyObjectEvent(int a1) : MsgNotifyObjectEvent()
+            {
+                field_18 = a1;
+            }
         };
     }
 

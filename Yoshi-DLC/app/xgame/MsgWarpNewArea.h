@@ -4,20 +4,34 @@ namespace app
 {
     namespace xgame
     {
-        __declspec(align(16)) struct MsgWarpNewArea
+        class MsgWarpNewArea : public fnd::MessageNew
         {
         public:
-            fnd::Message Base;
-            int field_18;
-            bool IsDestination2D;
-            csl::math::Vector3 TargetPosition;
-            csl::math::Quaternion TargetRotation;
-            int field_40;
-            char field_44;
-            char field_45;
-            short field_46;
-            int field_48;
-            int field_4C;
+            int PlayerNumber{};
+            bool IsDestination2D{};
+            csl::math::Vector3 TargetPosition{};
+            csl::math::Quaternion TargetRotation{};
+            int field_40{};
+            char field_44{};
+            char field_45{};
+            short field_46{};
+            int field_48{};
+            int field_4C{};
+
+            MsgWarpNewArea() : MessageNew()
+            {
+                Type = fnd::PROC_MSG_WARP_NEW_AREA;
+            }
+
+            MsgWarpNewArea(int playerNo, bool isDest2D, csl::math::Vector3 targetPos, csl::math::Quaternion targetRot, int a4, char a5) : MsgWarpNewArea()
+            {
+                PlayerNumber = playerNo;
+                IsDestination2D = isDest2D;
+                TargetPosition = targetPos;
+                TargetRotation = targetRot;
+                field_40 = a4;
+                field_45 = a5;
+            }
         };
     }
 

@@ -9,11 +9,17 @@ namespace app
         public:
             int field_18{};
             int field_1C{};
-            bool field_20{};
+            bool IsPressed{};
 
             MsgPLGetInputButton() : MessageNew()
             {
                 Type = fnd::PROC_MSG_PL_GET_INPUT_BUTTON;
+            }
+
+            MsgPLGetInputButton(int a1, int a2) : MsgPLGetInputButton()
+            {
+                field_18 = a1;
+                field_1C = a2;
             }
         };
     }

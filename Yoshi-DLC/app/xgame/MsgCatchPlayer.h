@@ -24,6 +24,11 @@ namespace app
                 field_20.data[2][2] = 1;
                 field_20.data[3][3] = 1;
             }
+
+            MsgCatchPlayer(int a1) : MsgCatchPlayer()
+            {
+                field_60 = a1;
+            }
         };
     }
 

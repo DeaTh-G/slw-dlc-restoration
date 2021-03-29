@@ -61,16 +61,16 @@ namespace app
     class ObjYoshiJumpBoard : public CSetObjectListener
     {
         INSERT_PADDING(16);
+        ObjYoshiJumpBoardState State{};
+        xgame::MsgHitEventCollision* HitMessage = new xgame::MsgHitEventCollision();
+        xgame::MsgGetExternalMovePosition* ExternalMoveMessage = new xgame::MsgGetExternalMovePosition();
         int Type{};
         int Flags{};
-        ObjYoshiJumpBoardState State{};
         csl::math::Vector3 Position{};
         csl::math::Quaternion Rotation{};
         float OutOfParkour{};
         game::GOCLauncher::ShotInfo* DefaultShot = new game::GOCLauncher::ShotInfo();
         game::GOCLauncher::ShotInfo* JumpShot = new game::GOCLauncher::ShotInfo();
-        xgame::MsgHitEventCollision* HitMessage = new xgame::MsgHitEventCollision();
-        xgame::MsgGetExternalMovePosition* ExternalMoveMessage = new xgame::MsgGetExternalMovePosition();
 
     public:
         ObjYoshiJumpBoard(int type)
@@ -240,11 +240,8 @@ namespace app
             DefaultShot->StartingPosition = *(csl::math::Vector3*)(playerInfo + 4);
             JumpShot->StartingPosition = *(csl::math::Vector3*)(playerInfo + 4);
 
-            xgame::MsgCatchPlayer catchMessage{};
-            catchMessage.field_18 = 0;
-            catchMessage.field_60 = 0x12;
-            catchMessage.field_64 = 0;
-            if (ObjUtil::SendMessageImmToPlayer(this, playerNo, (int*)&catchMessage))
+            xgame::MsgCatchPlayer catchMessage { 18 };
+            if (ObjUtil::SendMessageImmToPlayer(this, playerNo, &catchMessage))
             {
                 State = ObjYoshiJumpBoardState::STATE_EXPANSION;
                 Flags |= 0x1000;
@@ -288,8 +285,8 @@ namespace app
             xgame::MsgPLGetInputButton buttonMessage{};
             if (currentFrame < 10.0 && (Flags & 0x2000))
             {
-                if (ObjUtil::SendMessageImmToPlayer(this, playerNo, (int*)&buttonMessage))
-                    if (buttonMessage.field_20 && !(Flags & 0x100))
+                if (ObjUtil::SendMessageImmToPlayer(this, playerNo, &buttonMessage))
+                    if (buttonMessage.IsPressed && !(Flags & 0x100))
                     {
                         Flags |= 0x100;
                         game::GOCAnimationScript::ChangeAnimation(gocAnimation, "JUMP_BIG");

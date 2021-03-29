@@ -4,11 +4,13 @@ namespace app
 {
     namespace xgame
     {
-        __declspec(align(16)) struct MsgStopGameTimer
+        class MsgStopGameTimer : public fnd::MessageNew
         {
         public:
-            fnd::Message Base;
+            MsgStopGameTimer() : MessageNew()
+            {
+                Type = fnd::PROC_MSG_STOP_GAME_TIMER;
+            }
         };
     }
-
 }
