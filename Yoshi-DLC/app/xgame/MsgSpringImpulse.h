@@ -4,7 +4,7 @@ namespace app
 {
     namespace xgame
     {
-        class MsgSpringImpulse : public fnd::MessageNew
+        class MsgSpringImpulse : public fnd::Message
         {
         public:
             int field_18{};
@@ -21,7 +21,7 @@ namespace app
             int field_5C{};
             csl::math::Vector3 field_60{};
 
-            MsgSpringImpulse(game::GOCLauncher::ShotInfo* shotInfo) : MessageNew()
+            MsgSpringImpulse(game::GOCLauncher::ShotInfo* shotInfo) : Message()
             {
                 Type = fnd::PROC_MSG_SPRING_IMPULSE;
                 ObjectPosition = shotInfo->StartingPosition;

@@ -243,7 +243,7 @@ namespace app
             fnd::GOComponent::EndSetup(this);
         }
 
-        bool ProcessMessage(fnd::MessageNew& message) override
+        bool ProcessMessage(fnd::Message& message) override
         {
             if (PreProcessMessage(message))
                 return true;
@@ -276,7 +276,7 @@ namespace app
                 virtual int Leave(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyPiranhaPlant* obj, float a2) { return EnemyState::Update(this, obj, a2); };
 
-                virtual bool ProcessMessage(EnemyPiranhaPlant* obj, fnd::MessageNew& message)
+                virtual bool ProcessMessage(EnemyPiranhaPlant* obj, fnd::Message& message)
                 {
                     if (message.Type == fnd::PROC_MSG_DAMAGE)
                         return ProcMsgDamage(obj, (xgame::MsgDamage&)message);
@@ -354,7 +354,7 @@ namespace app
                 virtual int Enter(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
                 virtual int Leave(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyPiranhaPlant* obj, float a2) { return EnemyState::Update(this, obj, a2); };
-                virtual bool ProcessMessage(EnemyPiranhaPlant* obj, fnd::MessageNew& message)
+                virtual bool ProcessMessage(EnemyPiranhaPlant* obj, fnd::Message& message)
                 {
                     if (message.Type == fnd::PROC_MSG_DAMAGE)
                         return ProcMsgDamage(obj, (xgame::MsgDamage&)message);
@@ -423,7 +423,7 @@ namespace app
                 virtual int Leave(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyPiranhaPlant* obj, float a2) { return EnemyState::Update(this, obj, a2); };
 
-                virtual bool ProcessMessage(EnemyPiranhaPlant* obj, fnd::MessageNew& message)
+                virtual bool ProcessMessage(EnemyPiranhaPlant* obj, fnd::Message& message)
                 {
                     if (message.Type == fnd::PROC_MSG_DAMAGE)
                         return ProcMsgDamage(obj, (xgame::MsgDamage&)message);
@@ -488,7 +488,7 @@ namespace app
                     math::Vector3Subtract(&playerPos, &objectPos, &playerPos);
                     csl::math::Vector3NormalizeZero(&playerPos, &playerPos);
                     float xDot = math::Vector3DotProduct(&rotX, &playerPos);
-                    xDot = math::Clamp(xDot, -1, 1);
+                    xDot = csl::math::Clamp(xDot, -1, 1);
                     float xMin = csl::math::Min(acosf(xDot), 1.2217305f);
                     float yDot = math::Vector3DotProduct(&rotY, &playerPos);
                     obj->HeadRotation = csl::math::Lerp(obj->HeadRotation, csl::math::Select(yDot, abs(xMin), -abs(xMin)), (deltaTime * 5));
@@ -528,7 +528,7 @@ namespace app
                 virtual int Enter(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
                 virtual int Leave(EnemyPiranhaPlant* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyPiranhaPlant* obj, float a2) { return EnemyState::Update(this, obj, a2); };
-                virtual bool ProcessMessage(EnemyPiranhaPlant* obj, fnd::MessageNew& message)
+                virtual bool ProcessMessage(EnemyPiranhaPlant* obj, fnd::Message& message)
                 {
                     if (message.Type == fnd::PROC_MSG_DAMAGE)
                         return ProcMsgDamage(obj, (xgame::MsgDamage&)message);
@@ -631,9 +631,9 @@ namespace app
 
                     if (!State)
                     {
-                        float multiplier = math::Clamp(Time / 0.2, 0, 1);
+                        float multiplier = csl::math::Clamp(Time / 0.2, 0, 1);
                         obj->HeadRotation = (-0.34906584 - AbsoluteRotation) *
-                            math::Clamp(sinf(multiplier * 1.5707964), 0, 1) + AbsoluteRotation;
+                            csl::math::Clamp(sinf(multiplier * 1.5707964), 0, 1) + AbsoluteRotation;
 
                         if (multiplier >= 1)
                         {
@@ -664,7 +664,7 @@ namespace app
                     }
                     else if (State == 2)
                     {
-                        float multiplier = math::Clamp(Time / 0.6f, 0, 1);
+                        float multiplier = csl::math::Clamp(Time / 0.6f, 0, 1);
                         obj->SetScale(((0.2 - obj->Scale) * multiplier) + obj->Scale);
                         if (multiplier >= 1)
                         {
@@ -770,11 +770,11 @@ namespace app
                  return;
 
              if (message.field_28 == 3)
-                 GOCEnemyHsm::Dispatch(gocEnemyHsm, (fnd::MessageNew*) & message);
+                 GOCEnemyHsm::Dispatch(gocEnemyHsm, (fnd::Message*) & message);
              else if (message.field_54 == 3)
                  if (ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0) &&
                      Transform.Data[0x24] == 7)
-                     GOCEnemyHsm::Dispatch(gocEnemyHsm, (fnd::MessageNew*) & message);
+                     GOCEnemyHsm::Dispatch(gocEnemyHsm, (fnd::Message*) & message);
          }
 
          void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)

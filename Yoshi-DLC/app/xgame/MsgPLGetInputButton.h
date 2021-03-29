@@ -4,14 +4,14 @@ namespace app
 {
     namespace xgame
     {
-        class MsgPLGetInputButton : public fnd::MessageNew
+        class MsgPLGetInputButton : public fnd::Message
         {
         public:
             int field_18{};
             int field_1C{};
             bool IsPressed{};
 
-            MsgPLGetInputButton() : MessageNew()
+            MsgPLGetInputButton() : Message()
             {
                 Type = fnd::PROC_MSG_PL_GET_INPUT_BUTTON;
             }

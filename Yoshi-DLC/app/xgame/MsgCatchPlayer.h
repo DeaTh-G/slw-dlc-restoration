@@ -4,7 +4,7 @@ namespace app
 {
     namespace xgame
     {
-        class MsgCatchPlayer : public fnd::MessageNew
+        class MsgCatchPlayer : public fnd::Message
         {
         public:
             int field_18{};
@@ -15,7 +15,7 @@ namespace app
             int field_68{};
             int field_6C{};
 
-            MsgCatchPlayer() : MessageNew()
+            MsgCatchPlayer() : Message()
             {
                 Type = fnd::PROC_MSG_CATCH_PLAYER;
 

@@ -150,7 +150,7 @@ namespace app
                 ObjUtil::SetupCollisionFilter(9, &collisionInfo);
                 collisionInfo.field_08 = 0x20000;
                 collisionInfo.field_04 |= 1;
-                collisionInfo.Parent = EnmBase::GetCenterPositionFrame(this);
+                collisionInfo.Parent = EnemyBase::GetCenterPositionFrame(this);
 
                 game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
             }
@@ -209,7 +209,7 @@ namespace app
             fnd::GOComponent::EndSetup(this);
         }
 
-        bool ProcessMessage(fnd::MessageNew& message) override
+        bool ProcessMessage(fnd::Message& message) override
         {
             if (PreProcessMessage(message))
                 return true;
@@ -306,7 +306,7 @@ namespace app
 
                 virtual int ProcessMessage(EnemyShyGuy* obj, fnd::Message* message)
                 {
-                    if (message->field_04 == fnd::PROC_MSG_NOTIFY_OBJECT_EVENT)
+                    if (message->Type == fnd::PROC_MSG_NOTIFY_OBJECT_EVENT)
                         return ProcMsgNotifyObjectEvent(obj, 0);
                     else
                         return 0;
@@ -571,7 +571,7 @@ namespace app
             blowOffInfo.field_50.Y = 5;
             blowOffInfo.field_60 = 4;
             blowOffInfo.field_6C = 3;
-            EnmBase::CreateEnemyBlowOffObject(this, &blowOffInfo);
+            EnemyBase::CreateEnemyBlowOffObject(this, &blowOffInfo);
             xgame::MsgKick::SetReplyForSucceed(&message);
             ObjUtil::AddScore(this, "SHYGUY", &message);
             CSetObjectListener::SetStatusRetire(this);

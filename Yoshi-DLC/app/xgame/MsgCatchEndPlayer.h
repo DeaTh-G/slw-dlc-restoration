@@ -4,7 +4,7 @@ namespace app
 {
     namespace xgame
     {
-        class MsgCatchEndPlayer : public fnd::MessageNew
+        class MsgCatchEndPlayer : public fnd::Message
         {
         public:
             bool field_18{};
@@ -12,7 +12,7 @@ namespace app
             char field_1A{};
             char field_1B{};
 
-            MsgCatchEndPlayer() : MessageNew()
+            MsgCatchEndPlayer() : Message()
             {
                 Type = fnd::PROC_MSG_CATCH_END_PLAYER;
             }

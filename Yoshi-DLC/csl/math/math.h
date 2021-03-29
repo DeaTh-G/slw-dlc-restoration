@@ -20,6 +20,16 @@ namespace csl
             return value;
         }
 
+        static float Clamp(float result, float min, float max)
+        {
+            if (result < min)
+                result = min;
+            if (result > max)
+                result = max;
+
+            return result;
+        }
+
         inline static float Lerp(float a1, float a2, float a3)
         {
             return (a3 * (a2 - a1)) + a1;

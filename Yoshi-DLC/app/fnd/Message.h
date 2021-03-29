@@ -419,12 +419,11 @@ namespace app
             PROC_MSG_CHANGE_BGM_VOLUME							= 0xD007,
         } MessageType;
 
-        /* Change new Message after Refactor*/
-        class MessageNew
+        class Message
         {
         private:
-            inline static FUNCTION_PTR(MessageNew*, __thiscall, f_Clone, ASLR(0x0049A630), MessageNew* This);
-            inline static FUNCTION_PTR(MessageNew*, __thiscall, __dt, ASLR(0x004AC6A0), MessageNew* This, int a2);
+            inline static FUNCTION_PTR(Message*, __thiscall, f_Clone, ASLR(0x0049A630), Message* This);
+            inline static FUNCTION_PTR(Message*, __thiscall, __dt, ASLR(0x004AC6A0), Message* This, int a2);
 
         public:
             MessageType Type;
@@ -434,16 +433,16 @@ namespace app
             short field_12;
             unsigned int field_14;
 
-            inline static FUNCTION_PTR(MessageNew*, __thiscall, __ct, ASLR(0x0049A5F0), MessageNew* This, MessageType type);
+            inline static FUNCTION_PTR(Message*, __thiscall, __ct, ASLR(0x0049A5F0), Message* This, MessageType type);
 
             virtual void Clone() { f_Clone(this); }
-            virtual ~MessageNew()
+            virtual ~Message()
             {
                 __dt(this, 0);
                 FORCE_RET;
             }
 
-            MessageNew()
+            Message()
             {
                 Type = (fnd::MessageType)0;
                 field_08 = 0;
@@ -452,24 +451,6 @@ namespace app
                 field_12 = 0;
                 field_14 = -1;
             }
-        };
-
-        __declspec(align(4)) class Message
-        {
-        private:
-            //inline static FUNCTION_PTR(Message*, __thiscall, f_Clone, ASLR(0x0049A630), Message* This);
-            //inline static FUNCTION_PTR(Message*, __thiscall, __dt, ASLR(0x0049A630), Message* This, int a2);
-
-        public:
-            int* field_00;
-            MessageType field_04;
-            int field_08;
-            int field_0C;
-            short field_10;
-            short field_12;
-            int field_14;
-
-            inline static FUNCTION_PTR(int*, __thiscall, __ct, ASLR(0x0049A5F0), Message* This, MessageType type);
         };
     }
 }

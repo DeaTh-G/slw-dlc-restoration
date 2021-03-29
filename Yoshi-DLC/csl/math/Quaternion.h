@@ -4,7 +4,7 @@ namespace csl
 {
     namespace math
     {
-        __declspec(align(16)) class Quaternion
+        class alignas(16) Quaternion
         {
         public:
             float X;

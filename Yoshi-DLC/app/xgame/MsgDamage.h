@@ -9,7 +9,7 @@ namespace app
 
     namespace xgame
     {
-        class MsgDamage : public fnd::MessageNew
+        class MsgDamage : public fnd::Message
         {
         private:
             inline static FUNCTION_PTR(bool, __thiscall, __ct, ASLR(0x004D8580), MsgDamage* This, int a1, int a2, int a3, xgame::MsgHitEventCollision* hitMessage, csl::math::Vector3* position);
@@ -43,7 +43,7 @@ namespace app
             int field_98{};
             int field_9C{};
 
-            MsgDamage(int a1, int a2, int a3, xgame::MsgHitEventCollision* hitMessage, csl::math::Vector3* position) : MessageNew()
+            MsgDamage(int a1, int a2, int a3, xgame::MsgHitEventCollision* hitMessage, csl::math::Vector3* position) : Message()
             {
                 __ct(this, a1, a2, a3, hitMessage, position);
             }

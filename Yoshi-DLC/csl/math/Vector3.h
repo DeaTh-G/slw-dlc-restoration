@@ -4,7 +4,7 @@ namespace csl
 {
     namespace math
     {
-        __declspec(align(16)) struct Vector3
+        struct alignas(16) Vector3
         {
             float X;
             float Y;

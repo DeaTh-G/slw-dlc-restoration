@@ -55,7 +55,7 @@ namespace app
             fnd::GOComponent::EndSetup(this);
         }
 
-        bool ProcessMessage(fnd::MessageNew& message) override
+        bool ProcessMessage(fnd::Message& message) override
         {
             if (PreProcessMessage(message))
                 return true;

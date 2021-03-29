@@ -4,12 +4,12 @@ namespace app
 {
     namespace xgame
     {
-        class MsgPLVisibleItemEffect : public fnd::MessageNew
+        class MsgPLVisibleItemEffect : public fnd::Message
         {
         public:
             int field_18{};
 
-            MsgPLVisibleItemEffect() : MessageNew()
+            MsgPLVisibleItemEffect() : Message()
             {
                 Type = fnd::PROC_MSG_PL_VISIBLE_ITEM_EFFECT;
             }

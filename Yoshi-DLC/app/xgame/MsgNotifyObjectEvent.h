@@ -4,12 +4,12 @@ namespace app
 {
     namespace xgame
     {
-        class MsgNotifyObjectEvent : public fnd::MessageNew
+        class MsgNotifyObjectEvent : public fnd::Message
         {
         public:
             int field_18{};
 
-            MsgNotifyObjectEvent() : MessageNew()
+            MsgNotifyObjectEvent() : Message()
             {
                 Type = fnd::PROC_MSG_NOTIFY_OBJECT_EVENT;
             }

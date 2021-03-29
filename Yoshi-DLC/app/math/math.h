@@ -57,23 +57,6 @@ namespace app
             *length = pow(a->X, 2) + pow(a->Y, 2) + pow(a->Z, 2);
         }
 
-        static void Vector3MultiplyByScalar(Vector3* a, float scalar)
-        {
-            a->X *= scalar;
-            a->Y *= scalar;
-            a->Z *= scalar;
-        }
-
-        static float Clamp(float result, float min, float max)
-        {
-            if (result < min)
-                result = min;
-            if (result > max)
-                result = max;
-
-            return result;
-        }
-
         static void MatrixConcat(Matrix34* a, Matrix34* b, Matrix34* ab)
         {
             for (size_t i = 0; i < 4; i++)

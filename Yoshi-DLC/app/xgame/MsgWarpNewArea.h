@@ -4,7 +4,7 @@ namespace app
 {
     namespace xgame
     {
-        class MsgWarpNewArea : public fnd::MessageNew
+        class MsgWarpNewArea : public fnd::Message
         {
         public:
             int PlayerNumber{};
@@ -18,7 +18,7 @@ namespace app
             int field_48{};
             int field_4C{};
 
-            MsgWarpNewArea() : MessageNew()
+            MsgWarpNewArea() : Message()
             {
                 Type = fnd::PROC_MSG_WARP_NEW_AREA;
             }

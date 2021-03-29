@@ -4,7 +4,7 @@ namespace app
 {
     namespace xgame
     {
-        class MsgLeaveEventCollision : public fnd::MessageNew
+        class MsgLeaveEventCollision : public fnd::Message
         {
         public:
             int field_18;

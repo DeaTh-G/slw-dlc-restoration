@@ -4,10 +4,10 @@ namespace app
 {
     namespace xgame
     {
-        class MsgResumeGameTimer : public fnd::MessageNew
+        class MsgResumeGameTimer : public fnd::Message
         {
         public:
-            MsgResumeGameTimer() : MessageNew()
+            MsgResumeGameTimer() : Message()
             {
                 Type = fnd::PROC_MSG_RESUME_GAME_TIMER;
             }

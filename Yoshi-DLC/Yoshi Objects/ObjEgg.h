@@ -85,7 +85,7 @@ namespace app
             if (RotationTime > 0)
             {
                 float interpolationAmount = 1 - (RotationTime / 0.3f);
-                math::Clamp(interpolationAmount, 0, 1);
+                csl::math::Clamp(interpolationAmount, 0, 1);
                 Eigen::Quaternionf oR(objectRotation.X, objectRotation.Y, objectRotation.Z, objectRotation.W);
                 Eigen::Quaternionf nR(normalizedRotation.X, normalizedRotation.Y, normalizedRotation.Z, normalizedRotation.W);
                 oR.slerp(interpolationAmount, nR);
@@ -262,11 +262,11 @@ namespace app
 
             bool isMoving = false;
             eggManager->GetTargetDataFromLocusIndex(&locusData, 0, &isMoving, nullptr, PlayerNo);
-            Time = math::Clamp(Time, 0, 1);
+            Time = csl::math::Clamp(Time, 0, 1);
                 
             math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
             math::Vector3Subtract(&locusData.Position, &translation, &posDifference);
-            math::Vector3MultiplyByScalar(&posDifference, Time);
+            math::Vector3Scale(&posDifference, Time, &posDifference);
             math::Vector3Add(&posDifference, &translation, &posDifference);
             fnd::GOCTransform::SetLocalTranslation(gocTransform, &posDifference);
             
@@ -503,7 +503,7 @@ namespace app
             }
         }
 
-        bool ProcessMessage(fnd::MessageNew& message) override
+        bool ProcessMessage(fnd::Message& message) override
         {
             if (PreProcessMessage(message))
                 return true;

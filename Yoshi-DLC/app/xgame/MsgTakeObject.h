@@ -4,7 +4,7 @@ namespace app
 {
     namespace xgame
     {
-        class MsgTakeObject : public fnd::MessageNew
+        class MsgTakeObject : public fnd::Message
         {
             // Make this private
         public:
@@ -18,7 +18,7 @@ namespace app
             short field_22;
             int ShapeID;
 
-            MsgTakeObject(int a1) : MessageNew()
+            MsgTakeObject(int a1) : Message()
             {
                 Type = fnd::PROC_MSG_TAKE_OBJECT;
                 EType = a1;

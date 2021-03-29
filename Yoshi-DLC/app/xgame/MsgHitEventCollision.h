@@ -4,14 +4,14 @@ namespace app
 {
     namespace xgame
     {
-        class MsgHitEventCollision : public fnd::MessageNew
+        class MsgHitEventCollision : public fnd::Message
         {
         public:
             int field_18{};
             int* field_1C;
             int ActorID{};
 
-            MsgHitEventCollision() : MessageNew()
+            MsgHitEventCollision() : Message()
             {
                 Type = fnd::PROC_MSG_HIT_EVENT_COLLISION;
             }

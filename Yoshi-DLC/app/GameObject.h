@@ -6,7 +6,7 @@ namespace app
     {
     private:
         inline static FUNCTION_PTR(bool, __thiscall, f_ActorProc, ASLR(0x0049D0A0), CActor* This, int id, void* data);
-        inline static FUNCTION_PTR(bool, __thiscall, f_ProcessMessage, ASLR(0x0049CD10), CActor* This, fnd::MessageNew& message);
+        inline static FUNCTION_PTR(bool, __thiscall, f_ProcessMessage, ASLR(0x0049CD10), CActor* This, fnd::Message& message);
         inline static FUNCTION_PTR(void, __thiscall, __ct, ASLR(0x0049CD60), GameObject* This);
         inline static FUNCTION_PTR(void, __thiscall, __dt, ASLR(0x0049CE70), GameObject* This);
 
@@ -39,7 +39,7 @@ namespace app
         virtual void RemoveCallback(GameDocument* gameDocument) {};
         virtual void UpdatePhase(const int& updateInfo, int phase) {};
         bool ActorProc(int id, void* data) override { return f_ActorProc(this, id, data); }
-        bool ProcessMessage(fnd::MessageNew& message) override { return f_ProcessMessage(this, message); };
+        bool ProcessMessage(fnd::Message& message) override { return f_ProcessMessage(this, message); };
 
         void* operator new(size_t size)
         {
