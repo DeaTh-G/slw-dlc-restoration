@@ -2,6 +2,17 @@
 
 namespace app
 {
+    enum class ObjYoshiGoalState : int
+    {
+        STATE_WAIT,
+        STATE_WAIT_START_ROULETTE,
+        STATE_ROULETTE,
+        STATE_CHECK_HIT_FLOWER,
+        STATE_DISAPPEAR_MODEL,
+        STATE_WAIT_YOSHI_EXTRICATION,
+        STATE_RESULT
+    };
+
     struct ObjYoshiGoalData
     {
         int Locator;
@@ -35,20 +46,22 @@ namespace app
 
     class ObjYoshiGoal : public CSetObjectListener
     {
-        INSERT_PADDING(20);
-        int field_3B4;
-        int field_3B8;
-        float field_3BC;
-        float field_3C0;
-        int field_3C4;
-        int field_3C8;
-        int field_3CC;
-        float field_3D0;
-        int field_3D4;
+        INSERT_PADDING(12);
+        ObjYoshiGoalState State{};
+        xgame::MsgHitEventCollision* HitMessage = new xgame::MsgHitEventCollision();
+        int ModelID{};
+        int field_3B8{};
+        float field_3BC = 0.05f;
+        float Time = 0.05f;
+        int PlayerActorID{};
+        int field_3C8{};
+        int field_3CC{};
+        float field_3D0{};
+        int field_3D4{};
         int SoundHandle[3]{};
-        int field_3E4;
-        int field_3E8;
-        int field_3EC;
+        int field_3E4{};
+        int field_3E8{};
+        int field_3EC{};
 
     public:
         void AddCallback(GameDocument* gameDocument) override
@@ -59,7 +72,6 @@ namespace app
             fnd::GOComponent::Create(this, GOCSound);
 
             ObjYoshiGoalInfo* info = (ObjYoshiGoalInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjYoshiGoalInfo");
-            ObjYoshiGoalData* data = (ObjYoshiGoalData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
 
             fnd::GOComponent::BeginSetup(this);
 
@@ -149,7 +161,48 @@ namespace app
             fnd::GOComponent::EndSetup(this);
         }
 
+        bool ProcessMessage(fnd::Message& message) override
+        {
+            if (PreProcessMessage(message))
+                return true;
+
+            if (message.Type != fnd::PROC_MSG_HIT_EVENT_COLLISION)
+                return CSetObjectListener::ProcessMessage(message);
+
+            ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
+            return true;
+        }
+
+        void Update(const fnd::SUpdateInfo& updateInfo) override
+        {
+            if (State == ObjYoshiGoalState::STATE_WAIT)
+                StateWait(updateInfo);
+
+            if (State == ObjYoshiGoalState::STATE_WAIT_START_ROULETTE)
+                StateWaitStartRoulette();
+
+            if (State == ObjYoshiGoalState::STATE_ROULETTE)
+                StateRoulette();
+
+            if (State == ObjYoshiGoalState::STATE_CHECK_HIT_FLOWER)
+                StateCheckHitFlower();
+
+            if (State == ObjYoshiGoalState::STATE_DISAPPEAR_MODEL)
+                StateDisappear();
+
+            if (State == ObjYoshiGoalState::STATE_WAIT_YOSHI_EXTRICATION)
+                StateWaitYoshiExtrication();
+
+            if (State == ObjYoshiGoalState::STATE_RESULT)
+                StateResult();
+        }
+
     private:
+        void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
+        {
+            *HitMessage = message;
+        }
+
         bool GetModelType(int flowerID)
         {
             EggManager* eggManager = EggManager::GetService((GameDocument*)field_24[1]);
@@ -157,6 +210,83 @@ namespace app
                 return eggManager->IsYoshiSpecialFlowerTaked(flowerID >> 1);
 
             return false;
+        }
+
+        void UpdateSelectModel(const fnd::SUpdateInfo& updateInfo)
+        {
+            Time -= updateInfo.deltaTime;
+            if (Time > 0)
+                return;
+
+            int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
+            if (!gocContainer)
+                return;
+
+            int* offModel = *(int**)(*gocContainer + 4 * ModelID);
+            fnd::GOCVisual::SetVisible(offModel, false);
+            int* onModel = *(int**)(*gocContainer + 4 * (ModelID + 10));
+            fnd::GOCVisual::SetVisible(onModel, true);
+
+            ModelID++;
+            if (ModelID >= 10)
+                ModelID = 0;
+
+            int* nextModel = *(int**)(*gocContainer + 4 * ModelID);
+            fnd::GOCVisual::SetVisible(nextModel, true);
+
+            Time = field_3BC;
+        }
+
+        void StateWait(const fnd::SUpdateInfo& updateInfo)
+        {
+            UpdateSelectModel(updateInfo);
+
+            int playerNo = ObjUtil::GetPlayerNo(field_24[1], HitMessage->ActorID);
+            if (playerNo < 0)
+                return;
+            
+            ObjYoshiGoalData* data = (ObjYoshiGoalData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
+            PlayerActorID = HitMessage->ActorID;
+            xgame::MsgPLHoldOn holdOnMessage { 1 };
+            SendMessageImm(PlayerActorID, &holdOnMessage);
+
+            csl::math::Vector3 targetPosition;
+            csl::math::Quaternion targetRotation;
+            if (!ObjUtil::GetSetObjectTransform(*Document, &data->Locator,
+                &targetPosition, &targetRotation))
+                return;
+
+
+        }
+
+        void StateWaitStartRoulette()
+        {
+
+        }
+
+        void StateRoulette()
+        {
+
+        }
+
+        void StateCheckHitFlower()
+        {
+
+        }
+
+        void StateDisappear()
+        {
+
+        }
+
+        void StateWaitYoshiExtrication()
+        {
+
+        }
+
+        void StateResult()
+        {
+
         }
     };
 

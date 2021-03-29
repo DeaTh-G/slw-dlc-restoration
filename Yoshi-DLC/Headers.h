@@ -46,6 +46,7 @@
 #include "app/EnemyBlowOffObjectCInfo.h"
 #include "app/xgame/MsgHitEventCollision.h"
 #include "app/xgame/MsgDamage.h"
+#include "app/xgame/MsgPLHoldOn.h"
 #include "app/EnemyBase.h"
 #include "app/EnemyManager.h"
 #include "app/game/CollisionObjCInfo.h"
@@ -119,6 +120,7 @@
 #include "app/xgame/MsgWarpNewArea.h"
 #include "app/xgame/MsgLeaveEventCollision.h"
 #include "app/xgame/MsgDlcChangeEggRotation.h"
+#include "app/xgame/MsgPLJumpToTargetPosition.h"
 
 #include "SonicUSA/System/Random.h"
 
