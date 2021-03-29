@@ -2,9 +2,9 @@
 
 namespace app
 {
-	class GameModeStage
-	{
-	public:
-		static void StateWarp();
-	};
+    class GameModeStage
+    {
+    public:
+        static void StateWarp();
+    };
 }

@@ -2,11 +2,11 @@
 
 namespace csl
 {
-	namespace ut
-	{
-		class NonCopyable
-		{
+    namespace ut
+    {
+        class NonCopyable
+        {
 
-		};
-	}
+        };
+    }
 }

@@ -2,12 +2,12 @@
 
 namespace app
 {
-	namespace fnd
-	{
-		class BaseObject
-		{
-		public:
-			virtual ~BaseObject() {};
-		};
-	}
+    namespace fnd
+    {
+        class BaseObject
+        {
+        public:
+            virtual ~BaseObject() {};
+        };
+    }
 }

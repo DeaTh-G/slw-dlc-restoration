@@ -2,15 +2,15 @@
 
 namespace csl
 {
-	namespace fnd
-	{
-		class IAllocator
-		{
-		public:			
-			virtual ~IAllocator() = default;
+    namespace fnd
+    {
+        class IAllocator
+        {
+        public:			
+            virtual ~IAllocator() = default;
 
-			virtual void* Alloc(size_t size, int alignment) = 0;
-			virtual void Free(void* loc) = 0;
-		};
-	}
+            virtual void* Alloc(size_t size, int alignment) = 0;
+            virtual void Free(void* loc) = 0;
+        };
+    }
 }

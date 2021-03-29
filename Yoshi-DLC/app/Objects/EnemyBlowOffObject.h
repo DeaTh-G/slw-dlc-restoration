@@ -2,9 +2,9 @@
 
 namespace app
 {
-	class EnemyBlowOffObject
-	{
-	public:
-		static void OnDead();
-	};
+    class EnemyBlowOffObject
+    {
+    public:
+        static void OnDead();
+    };
 }

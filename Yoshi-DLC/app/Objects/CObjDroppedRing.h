@@ -2,9 +2,9 @@
 
 namespace app
 {
-	class CObjDroppedRing
-	{
-	public:
-		static void ProcMsgHitEventCollision();
-	};
+    class CObjDroppedRing
+    {
+    public:
+        static void ProcMsgHitEventCollision();
+    };
 }

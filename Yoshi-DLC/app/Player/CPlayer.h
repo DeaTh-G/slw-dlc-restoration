@@ -2,12 +2,12 @@
 
 namespace app
 {
-	namespace Player
-	{
-		class CPlayer
-		{
-		public:
-			static void UpdatePlayerInformation();
-		};
-	}
+    namespace Player
+    {
+        class CPlayer
+        {
+        public:
+            static void UpdatePlayerInformation();
+        };
+    }
 }

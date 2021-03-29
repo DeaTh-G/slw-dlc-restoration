@@ -2,9 +2,9 @@
 
 namespace app
 {
-	class CSharedObjInfo
-	{
-	public:
-		static void Initialize();
-	};
+    class CSharedObjInfo
+    {
+    public:
+        static void Initialize();
+    };
 }
