@@ -121,6 +121,9 @@
 #include "app/xgame/MsgLeaveEventCollision.h"
 #include "app/xgame/MsgDlcChangeEggRotation.h"
 #include "app/xgame/MsgPLJumpToTargetPosition.h"
+#include "app/xgame/MsgCameraOn.h"
+#include "app/xgame/MsgDisableItemBag.h"
+#include "app/xgame/MsgStopBgm.h"
 
 #include "SonicUSA/System/Random.h"
 

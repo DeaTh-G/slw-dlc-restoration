@@ -16,7 +16,7 @@ namespace app
 
             MsgPLJumpToTargetPosition() : Message()
             {
-                Type = fnd::PROC_MSG_PL_HOLD_ON;
+                Type = fnd::PROC_MSG_PL_JUMP_TO_TARGET_POSITION;
             }
 
             MsgPLJumpToTargetPosition(float a1, float a2, csl::math::Vector3 targetPos,

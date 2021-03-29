@@ -54,7 +54,7 @@ namespace app
         float field_3BC = 0.05f;
         float Time = 0.05f;
         int PlayerActorID{};
-        int field_3C8{};
+        int Camera{};
         int field_3CC{};
         float field_3D0{};
         int field_3D4{};
@@ -151,6 +151,7 @@ namespace app
                 collisionInfo.MotionType = 2;
                 collisionInfo.Size = csl::math::Vector3(20, 20, 1);
                 ObjUtil::SetupCollisionFilter(7, &collisionInfo);
+                collisionInfo.field_04 |= 1;
 
                 game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
             }
@@ -252,11 +253,34 @@ namespace app
 
             csl::math::Vector3 targetPosition;
             csl::math::Quaternion targetRotation;
-            if (!ObjUtil::GetSetObjectTransform(*Document, &data->Locator,
+            if (ObjUtil::GetSetObjectTransform(*Document, &data->Locator,
                 &targetPosition, &targetRotation))
-                return;
+            {
+                xgame::MsgPLJumpToTargetPosition jumpTargetMessage{ 100, 200, targetPosition, targetRotation, 1 };
+                SendMessageImm(PlayerActorID, &jumpTargetMessage);
+            }
 
+            xgame::MsgCameraOn cameraMessage { 0, 3001, 1, playerNo, 0, 0.5f };
+            if (ObjUtil::SendMessageImmToSetObject(this, &data->FixCamera, &cameraMessage, 0))
+                Camera = data->FixCamera;
 
+            EggManager* eggManager = EggManager::GetService((GameDocument*)field_24[1]);
+            if (eggManager)
+                eggManager->StartExtrication();
+
+            xgame::MsgStopGameTimer stopTimerMessage{};
+            ObjUtil::SendMessageImmToGameActor(this, &stopTimerMessage);
+
+            xgame::MsgDisableItemBag disableBagMessage{};
+            ObjUtil::SendMessageImmToGameActor(this, &disableBagMessage);
+
+            for (size_t i = 0; i < 3; i++)
+            {
+                xgame::MsgStopBgm stopBgmMessage{ 0, i };
+                ObjUtil::SendMessageImmToGameActor(this, &stopBgmMessage);
+            }
+
+            State = ObjYoshiGoalState::STATE_WAIT_START_ROULETTE;
         }
 
         void StateWaitStartRoulette()

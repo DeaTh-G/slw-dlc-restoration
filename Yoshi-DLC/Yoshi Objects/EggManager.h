@@ -263,6 +263,11 @@ namespace app
                 IsSpaceShrink &= ~1;
         }
 
+        void StartExtrication()
+        {
+
+        }
+
         void TakeYoshiSpecialFlower(char flowerID) { FlowerCount |= 1 << flowerID; }
         bool IsYoshiSpecialFlowerTaked(char flowerID) { return (FlowerCount >> flowerID) & 1; }
 
