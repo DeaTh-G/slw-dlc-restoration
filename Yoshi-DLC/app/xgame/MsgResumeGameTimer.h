@@ -4,10 +4,13 @@ namespace app
 {
     namespace xgame
     {
-        __declspec(align(16)) struct MsgResumeGameTimer
+        class MsgResumeGameTimer : public fnd::MessageNew
         {
         public:
-            fnd::Message Base;
+            MsgResumeGameTimer() : MessageNew()
+            {
+                Type = fnd::PROC_MSG_RESUME_GAME_TIMER;
+            }
         };
     }
 

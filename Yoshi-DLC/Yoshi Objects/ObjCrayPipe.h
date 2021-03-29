@@ -196,19 +196,19 @@ namespace app
                     ExternalMoveMessage->Transform->data[3][1] = playerPosition.Y;
                     ExternalMoveMessage->Transform->data[3][2] = playerPosition.Z;
 
-                    if (!IsAudioPlaying)
-                    {
-                        xgame::MsgPLVisibleItemEffect visibleEffectMessage{};
-                        ObjUtil::SendMessageImmToPlayer(this, playerNo, &visibleEffectMessage);
+                    if (IsAudioPlaying)
+                        return;
 
-                        int* gocSound = GameObject::GetGOC(this, GOCSoundString);
-                        if (!gocSound)
-                            return;
+                    xgame::MsgPLVisibleItemEffect visibleEffectMessage{};
+                    ObjUtil::SendMessageImmToPlayer(this, playerNo, &visibleEffectMessage);
 
-                        int deviceTag[3]{};
-                        app::game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossypipe_in_out", 0);
-                        IsAudioPlaying = true;
-                    }
+                    int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+                    if (!gocSound)
+                        return;
+
+                    int deviceTag[3]{};
+                    app::game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossypipe_in_out", 0);
+                    IsAudioPlaying = true;
                 }
                 else
                 {
@@ -224,18 +224,17 @@ namespace app
 
             ObjCrayPipeData* data = (ObjCrayPipeData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
 
-
             csl::math::Vector3 targetPosition;
             csl::math::Quaternion targetRotation;
-            if (ObjUtil::GetSetObjectTransform(*Document, &data->TargetID,
+            if (!ObjUtil::GetSetObjectTransform(*Document, &data->TargetID,
                 &targetPosition, &targetRotation))
-            {
-                xgame::MsgNotifyObjectEvent notifyMessage { 1 };
-                ObjUtil::SendMessageImmToSetObject(this, &data->TargetID, &notifyMessage, 0);
+                return;
 
-                xgame::MsgWarpNewArea warpMessage { PlayerNumber, true, targetPosition, targetRotation, 5, 1 };
-                ObjUtil::SendMessageImmToGameActor(this, &warpMessage);
-            }
+            xgame::MsgNotifyObjectEvent notifyMessage{ 1 };
+            ObjUtil::SendMessageImmToSetObject(this, &data->TargetID, &notifyMessage, 0);
+
+            xgame::MsgWarpNewArea warpMessage{ PlayerNumber, true, targetPosition, targetRotation, 5, 1 };
+            ObjUtil::SendMessageImmToGameActor(this, &warpMessage);
         }
     };
 

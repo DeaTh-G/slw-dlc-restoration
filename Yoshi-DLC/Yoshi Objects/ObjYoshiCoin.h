@@ -178,18 +178,18 @@ namespace app
         void ProcMsgNotifyObjectEvent(xgame::MsgNotifyObjectEvent& message)
         {
             ObjYoshiCoinData* data = (ObjYoshiCoinData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
-            if (data->EventType)
+            if (!data->EventType)
+                return;
+
+            if (message.field_18 == 1)
             {
-                if (message.field_18 == 1)
-                {
-                    SetActivate(true);
-                    SetExtUserData(0, 2);
-                }
-                else if (message.field_18 == 2)
-                {
-                    SetActivate(false);
-                    SetExtUserData(0, 1);
-                }
+                SetActivate(true);
+                SetExtUserData(0, 2);
+            }
+            else if (message.field_18 == 2)
+            {
+                SetActivate(false);
+                SetExtUserData(0, 1);
             }
         }
 

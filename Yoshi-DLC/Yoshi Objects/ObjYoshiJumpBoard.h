@@ -1,8 +1,8 @@
 #pragma once
 
 inline static float YJB_SIZE[] = { 1.25f, 0.75f };
-inline static float YJB_WIDTH[] = { 5, 3.5f };
-inline static float YJB_HEIGHT[] = { 4.75f, 3.75f };
+inline static float YJB_WIDTH[] = { 5, 4 };
+inline static float YJB_HEIGHT[] = { 4.75f, 4.25f };
 inline static float YJB_FIRSTSPEED[] = { 100, 75 };
 inline static float YJB_KEEPVELOCITYDISTANCE[] = { 10, 7.5f };
 inline static float YJB_OUTOFCONTROL[] = { 0.125f, 0.1f };

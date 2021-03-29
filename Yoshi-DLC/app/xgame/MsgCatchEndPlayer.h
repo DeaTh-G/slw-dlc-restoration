@@ -4,14 +4,23 @@ namespace app
 {
     namespace xgame
     {
-        __declspec(align(16)) struct MsgCatchEndPlayer
+        class MsgCatchEndPlayer : public fnd::MessageNew
         {
         public:
-            fnd::Message Base;
-            bool field_18;
-            int8_t field_19;
-            int8_t field_20;
-            int8_t field_21;
+            bool field_18{};
+            char field_19{};
+            char field_1A{};
+            char field_1B{};
+
+            MsgCatchEndPlayer() : MessageNew()
+            {
+                Type = fnd::PROC_MSG_CATCH_END_PLAYER;
+            }
+
+            MsgCatchEndPlayer(bool a1) : MsgCatchEndPlayer()
+            {
+                field_18 = a1;
+            }
         };
     }
 

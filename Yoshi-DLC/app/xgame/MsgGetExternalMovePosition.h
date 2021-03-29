@@ -7,7 +7,7 @@ namespace app
         class MsgGetExternalMovePosition : public fnd::MessageNew
         {
         public:
-            csl::math::Matrix34* Transform;
+            csl::math::Matrix34* Transform = new csl::math::Matrix34();
 
             MsgGetExternalMovePosition() : MessageNew()
             {

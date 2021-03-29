@@ -35,6 +35,7 @@ void Initialize()
 
     auto create_EnemyPiranhaPlant = &app::create_EnemyPiranhaPlant;
     auto create_ObjCrayPipe = &app::create_ObjCrayPipe;
+    auto create_ObjCrayPipeExit = &app::create_ObjCrayPipeExit;
     auto create_ObjEggBlock = &app::create_ObjEggBlock;
     auto create_ObjEggRotationChangeCollision = &app::create_ObjEggRotationChangeCollision;
     auto create_ObjRotateLift = &app::create_ObjRotateLift;
@@ -51,11 +52,6 @@ void Initialize()
     auto createObjInfo_ObjYoshiSpecialFlowerInfo = &app::createObjInfo_ObjYoshiSpecialFlowerInfo;
 
 
-    auto create_ObjCrayPipeExit = &app::create_ObjCrayPipeExit;
-    auto ObjCrayPipeExit__ProcessMessage = &app::ObjCrayPipeExit::ProcessMessage;
-    auto ObjCrayPipeExit__Update = &app::ObjCrayPipeExit::Update;
-    auto ObjCrayPipeExit__AddCallback = &app::ObjCrayPipeExit::AddCallback;
-
     auto EnemyShyGuyInfo__Initialize = &app::EnemyShyGuyInfo::Initialize;
     auto EnemyShyGuyInfo__GetInfoName = &app::EnemyShyGuyInfo::GetInfoName;
     auto create_EnemyShyGuy = &app::create_EnemyShyGuy;
@@ -66,6 +62,7 @@ void Initialize()
 
     WRITE_FUNCTION(ASLR(0x00D2A2E4), *(void**)&create_EnemyPiranhaPlant);
     WRITE_FUNCTION(ASLR(0x00D2BB51), *(void**)&create_ObjCrayPipe);
+    WRITE_FUNCTION(ASLR(0x00D2BBA1), *(void**)&create_ObjCrayPipeExit);
     WRITE_FUNCTION(ASLR(0x00D2BC94), *(void**)&create_ObjEggBlock);
     WRITE_FUNCTION(ASLR(0x00D2BC41), *(void**)&create_ObjEggRotationChangeCollision);
     WRITE_FUNCTION(ASLR(0x00D2C0F4), *(void**)&create_ObjRotateLift);
@@ -82,10 +79,6 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2C31F), *(void**)&createObjInfo_ObjYoshiJumpBoard);
     WRITE_FUNCTION(ASLR(0x00D2C27F), *(void**)&createObjInfo_ObjYoshiSpecialFlowerInfo);
 
-    WRITE_FUNCTION(ASLR(0x00D947B0), *(void**)&ObjCrayPipeExit__ProcessMessage);
-    WRITE_FUNCTION(ASLR(0x00D947B4), *(void**)&ObjCrayPipeExit__Update);
-    WRITE_FUNCTION(ASLR(0x00D947C4), *(void**)&ObjCrayPipeExit__AddCallback);
-    WRITE_FUNCTION(ASLR(0x00D2BBA1), *(void**)&create_ObjCrayPipeExit);
     
     WRITE_FUNCTION(ASLR(0x00D93A4C), *(void**)&EnemyShyGuyInfo__Initialize);
     WRITE_FUNCTION(ASLR(0x00D93A54), *(void**)&EnemyShyGuyInfo__GetInfoName);
