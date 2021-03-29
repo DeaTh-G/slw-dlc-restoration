@@ -50,14 +50,14 @@ namespace app
         ObjYoshiGoalState State{};
         xgame::MsgHitEventCollision* HitMessage = new xgame::MsgHitEventCollision();
         int ModelID{};
-        int field_3B8{};
-        float field_3BC = 0.05f;
+        int RouletteCount{};
+        float DefaultTime = 0.05f;
         float Time = 0.05f;
         int PlayerActorID{};
         int Camera{};
         int field_3CC{};
-        float field_3D0{};
-        int field_3D4{};
+        float RouletteTime{};
+        int Flags{};
         int SoundHandle[3]{};
         int field_3E4{};
         int field_3E8{};
@@ -180,13 +180,13 @@ namespace app
                 StateWait(updateInfo);
 
             if (State == ObjYoshiGoalState::STATE_WAIT_START_ROULETTE)
-                StateWaitStartRoulette();
+                StateWaitStartRoulette(updateInfo);
 
             if (State == ObjYoshiGoalState::STATE_ROULETTE)
-                StateRoulette();
+                StateRoulette(updateInfo);
 
             if (State == ObjYoshiGoalState::STATE_CHECK_HIT_FLOWER)
-                StateCheckHitFlower();
+                StateCheckHitFlower(updateInfo);
 
             if (State == ObjYoshiGoalState::STATE_DISAPPEAR_MODEL)
                 StateDisappear();
@@ -213,15 +213,15 @@ namespace app
             return false;
         }
 
-        void UpdateSelectModel(const fnd::SUpdateInfo& updateInfo)
+        bool UpdateSelectModel(const fnd::SUpdateInfo& updateInfo)
         {
             Time -= updateInfo.deltaTime;
             if (Time > 0)
-                return;
+                return false;
 
             int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
             if (!gocContainer)
-                return;
+                return false;
 
             int* offModel = *(int**)(*gocContainer + 4 * ModelID);
             fnd::GOCVisual::SetVisible(offModel, false);
@@ -235,7 +235,8 @@ namespace app
             int* nextModel = *(int**)(*gocContainer + 4 * ModelID);
             fnd::GOCVisual::SetVisible(nextModel, true);
 
-            Time = field_3BC;
+            Time = DefaultTime;
+            return true;
         }
 
         void StateWait(const fnd::SUpdateInfo& updateInfo)
@@ -283,19 +284,72 @@ namespace app
             State = ObjYoshiGoalState::STATE_WAIT_START_ROULETTE;
         }
 
-        void StateWaitStartRoulette()
+        void StateWaitStartRoulette(const fnd::SUpdateInfo& updateInfo)
         {
+            if (RouletteTime <= 0.000001f)
+            {
 
+            }
+
+            if (UpdateSelectModel(updateInfo))
+            {
+                int deviceTag[3]{};
+                int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+                if (gocSound)
+                    app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette", 0);
+            }
+
+            RouletteTime += updateInfo.deltaTime;
+            if (RouletteTime > 1.5)
+                State = ObjYoshiGoalState::STATE_ROULETTE;
         }
 
-        void StateRoulette()
+        void StateRoulette(const fnd::SUpdateInfo& updateInfo)
         {
+            if (!UpdateSelectModel(updateInfo))
+                return;
 
+            int deviceTag[3]{};
+            int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+            if (gocSound)
+                app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette", 0);
+
+            RouletteCount++;
+            DefaultTime += 0.05f;
+            if (RouletteCount >= 12)
+                State = ObjYoshiGoalState::STATE_CHECK_HIT_FLOWER;
         }
 
-        void StateCheckHitFlower()
+        void StateCheckHitFlower(const fnd::SUpdateInfo& updateInfo)
         {
+            RouletteTime += updateInfo.deltaTime;
+            if (RouletteTime <= 1.5f)
+                return;
 
+            int deviceTag[3]{};
+            int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+            if (!gocSound)
+                return;
+
+            bool modelType = GetModelType(ModelID);
+            Flags |= (modelType == 0);
+            if (modelType & 1)
+            {
+                for (size_t i = 0; i < 10; i++)
+                {
+                    xgame::MsgTakeObject takeMessage { 3 };
+                    SendMessageImm(PlayerActorID, &takeMessage);
+                }
+
+                Flags |= 2;
+                app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette_success", 0);
+                State = ObjYoshiGoalState::STATE_DISAPPEAR_MODEL;
+            }
+            else
+            {
+                app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette_miss", 0);
+                State = ObjYoshiGoalState::STATE_DISAPPEAR_MODEL;
+            }
         }
 
         void StateDisappear()
