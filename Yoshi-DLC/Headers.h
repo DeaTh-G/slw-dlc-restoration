@@ -124,6 +124,8 @@
 #include "app/xgame/MsgCameraOn.h"
 #include "app/xgame/MsgDisableItemBag.h"
 #include "app/xgame/MsgStopBgm.h"
+#include "app/xgame/MsgPlayerReachGoal.h"
+#include "app/xgame/MsgGoalForBattle.h"
 
 #include "SonicUSA/System/Random.h"
 

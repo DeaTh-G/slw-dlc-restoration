@@ -55,7 +55,7 @@ namespace app
         float Time = 0.05f;
         int PlayerActorID{};
         int Camera{};
-        int field_3CC{};
+        int DisappearModelID{};
         float RouletteTime{};
         int Flags{};
         int SoundHandle[3]{};
@@ -189,7 +189,7 @@ namespace app
                 StateCheckHitFlower(updateInfo);
 
             if (State == ObjYoshiGoalState::STATE_DISAPPEAR_MODEL)
-                StateDisappear();
+                StateDisappear(updateInfo);
 
             if (State == ObjYoshiGoalState::STATE_WAIT_YOSHI_EXTRICATION)
                 StateWaitYoshiExtrication();
@@ -237,6 +237,15 @@ namespace app
 
             Time = DefaultTime;
             return true;
+        }
+
+        void DoCheckPlayResultBGM()
+        {
+            if (!(Flags & 2))
+                return;
+            
+            if (fnd::HandleBase::IsValid((fnd::HandleBase*)SoundHandle))
+                return;
         }
 
         void StateWait(const fnd::SUpdateInfo& updateInfo)
@@ -350,21 +359,96 @@ namespace app
                 app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette_miss", 0);
                 State = ObjYoshiGoalState::STATE_DISAPPEAR_MODEL;
             }
+            DisappearModelID = ModelID;
         }
 
-        void StateDisappear()
+        void StateDisappear(const fnd::SUpdateInfo& updateInfo)
         {
+            RouletteTime -= updateInfo.deltaTime;
+            if (RouletteTime > 0)
+                return;
 
+            DisappearModelID += 1;
+            RouletteTime = 0.1f;
+            if (DisappearModelID >= 10)
+                DisappearModelID = 0;
+            
+            int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
+            if (!gocContainer)
+                return;
+
+            int* offModel = *(int**)(*gocContainer + 4 * DisappearModelID);
+            fnd::GOCVisual::SetVisible(offModel, false);
+            int* onModel = *(int**)(*gocContainer + 4 * (DisappearModelID + 10));
+            fnd::GOCVisual::SetVisible(onModel, false);
+
+            int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
+            if (gocEffect)
+            {
+                game::EffectCreateInfo effectInfo;
+                game::EffectCreateInfo::__ct(&effectInfo);
+                effectInfo.Name = "ef_dl2_goal_vanish";
+                effectInfo.field_04 = 1;
+                effectInfo.field_08 = 1;
+                effectInfo.field_40 = *(int**)(*gocContainer + 4 * DisappearModelID);
+                if ((DisappearModelID == ModelID) && (Flags & 1))
+                    effectInfo.field_04 = 2;
+
+                game::GOCEffect::CreateEffectEx(gocEffect, &effectInfo);
+            
+                if (Flags & 1)
+                {
+                    DoCheckPlayResultBGM();
+                    if (DisappearModelID == ModelID)
+                        State = ObjYoshiGoalState::STATE_WAIT_YOSHI_EXTRICATION;
+                }
+                else
+                {
+                    int deviceTag[3]{};
+                    int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+                    if (!gocSound)
+                        return;
+
+                    app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette_disappear", 0);
+                    if (DisappearModelID == ModelID)
+                    {
+                        Flags |= 2;
+                        State = ObjYoshiGoalState::STATE_WAIT_YOSHI_EXTRICATION;
+                    }
+                }
+            }
         }
 
         void StateWaitYoshiExtrication()
         {
+            EggManager* eggManager = EggManager::GetService((GameDocument*)field_24[1]);
+            if (!eggManager)
+                return;
+
+            if (!eggManager->IsEndExtrication())
+                return;
+
+            /* Send Battle Goal Message if a second player exists */
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 1);
+            if (playerInfo)
+            {
+                int playerNo = ObjUtil::GetPlayerNo(field_24[1], HitMessage->ActorID);
+                xgame::MsgGoalForBattle goalMessage{ playerNo };
+                SendMessageImm(*(int*)(field_24[1] + 0x10), &goalMessage);
+            }
+            else
+            {
+                xgame::MsgPlayerReachGoal goalMessage{};
+                SendMessageImm(PlayerActorID, &goalMessage);
+            }
+            DoCheckPlayResultBGM();
+            State == ObjYoshiGoalState::STATE_RESULT;
 
         }
 
         void StateResult()
-        {
-
+        {   
+            DoCheckPlayResultBGM();
         }
     };
 

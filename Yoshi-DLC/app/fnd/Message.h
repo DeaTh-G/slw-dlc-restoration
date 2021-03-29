@@ -22,6 +22,7 @@ namespace app
             PROC_MSG_RESTART									= 0x3006,
             PROC_MSG_LEVEL_STARTED								= 0x3007,
             PROC_MSG_LEVEL_ENDED								= 0x3008,
+            PROC_MSG_GOAL_FOR_BATTLE                            = 0x300B,
             PROC_MSG_SWITCH_DISPLAY								= 0x301C,
             PROC_MSG_ABORT_GAME_SPEED_RC						= 0x3020,
             PROC_MSG_SHOW_HINT_ICON								= 0x3022,
