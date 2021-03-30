@@ -189,7 +189,7 @@ namespace app
                 StateCheckHitFlower(updateInfo);
 
             if (State == ObjYoshiGoalState::STATE_DISAPPEAR_MODEL)
-                StateDisappear(updateInfo);
+                StateDisappearModel(updateInfo);
 
             if (State == ObjYoshiGoalState::STATE_WAIT_YOSHI_EXTRICATION)
                 StateWaitYoshiExtrication();
@@ -362,7 +362,7 @@ namespace app
             DisappearModelID = ModelID;
         }
 
-        void StateDisappear(const fnd::SUpdateInfo& updateInfo)
+        void StateDisappearModel(const fnd::SUpdateInfo& updateInfo)
         {
             RouletteTime -= updateInfo.deltaTime;
             if (RouletteTime > 0)
@@ -389,7 +389,8 @@ namespace app
                 game::EffectCreateInfo::__ct(&effectInfo);
                 effectInfo.Name = "ef_dl2_goal_vanish";
                 effectInfo.field_04 = 1;
-                effectInfo.field_08 = 1;
+                effectInfo.field_08 = 3;
+                effectInfo.field_30 = true;
                 effectInfo.field_40 = *(int**)(*gocContainer + 4 * DisappearModelID);
                 if ((DisappearModelID == ModelID) && (Flags & 1))
                     effectInfo.field_04 = 2;
@@ -433,7 +434,7 @@ namespace app
             if (playerInfo)
             {
                 int playerNo = ObjUtil::GetPlayerNo(field_24[1], HitMessage->ActorID);
-                xgame::MsgGoalForBattle goalMessage{ playerNo };
+                xgame::MsgGoalForBattle goalMessage { playerNo };
                 SendMessageImm(*(int*)(field_24[1] + 0x10), &goalMessage);
             }
             else

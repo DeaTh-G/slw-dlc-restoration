@@ -9,8 +9,8 @@ namespace app
         public:
             int WinnerNumber{};
             int field_1C{};
-            csl::math::Matrix34 field_20{};
-            csl::math::Matrix34 field_60{};
+            csl::math::Matrix34 MatrixP1{};
+            csl::math::Matrix34 MatrixP2{};
 
             MsgGoalForBattle() : Message()
             {
