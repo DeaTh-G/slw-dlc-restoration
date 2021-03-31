@@ -193,9 +193,6 @@ namespace app
 
             if (State == ObjYoshiGoalState::STATE_WAIT_YOSHI_EXTRICATION)
                 StateWaitYoshiExtrication();
-
-            if (State == ObjYoshiGoalState::STATE_RESULT)
-                StateResult();
         }
 
     private:
@@ -237,15 +234,6 @@ namespace app
 
             Time = DefaultTime;
             return true;
-        }
-
-        void DoCheckPlayResultBGM()
-        {
-            if (!(Flags & 2))
-                return;
-            
-            if (fnd::HandleBase::IsValid((fnd::HandleBase*)SoundHandle))
-                return;
         }
 
         void StateWait(const fnd::SUpdateInfo& updateInfo)
@@ -297,7 +285,15 @@ namespace app
         {
             if (RouletteTime <= 0.000001f)
             {
-
+                int deviceTag[3]{};
+                void* soundPlayer = *(void**)ASLR(0x00FD3CB8);
+                if (!soundPlayer)
+                    return;
+            
+                fnd::SoundParam soundParam { 1, 0, 0, 0x80000000, 0, 0, 0 };
+                fnd::SoundPlayerCri::Play(soundPlayer, deviceTag, 0, "jingle_stg_clear_zdlc02", soundParam);
+                fnd::HandleBase::__as(SoundHandle, deviceTag);
+                SoundHandle[2] = deviceTag[2];
             }
 
             if (UpdateSelectModel(updateInfo))
@@ -341,7 +337,7 @@ namespace app
                 return;
 
             bool modelType = GetModelType(ModelID);
-            Flags |= (modelType == 0);
+            Flags |= (modelType != 0);
             if (modelType & 1)
             {
                 for (size_t i = 0; i < 10; i++)
@@ -352,6 +348,8 @@ namespace app
 
                 Flags |= 2;
                 app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette_success", 0);
+                fnd::HandleBase::__as(SoundHandle, deviceTag);
+                SoundHandle[2] = deviceTag[2];
                 State = ObjYoshiGoalState::STATE_DISAPPEAR_MODEL;
             }
             else
@@ -399,7 +397,6 @@ namespace app
             
                 if (Flags & 1)
                 {
-                    DoCheckPlayResultBGM();
                     if (DisappearModelID == ModelID)
                         State = ObjYoshiGoalState::STATE_WAIT_YOSHI_EXTRICATION;
                 }
@@ -411,6 +408,9 @@ namespace app
                         return;
 
                     app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette_disappear", 0);
+                    fnd::HandleBase::__as(SoundHandle, deviceTag);
+                    SoundHandle[2] = deviceTag[2];
+
                     if (DisappearModelID == ModelID)
                     {
                         Flags |= 2;
@@ -442,14 +442,7 @@ namespace app
                 xgame::MsgPlayerReachGoal goalMessage{};
                 SendMessageImm(PlayerActorID, &goalMessage);
             }
-            DoCheckPlayResultBGM();
             State == ObjYoshiGoalState::STATE_RESULT;
-
-        }
-
-        void StateResult()
-        {   
-            DoCheckPlayResultBGM();
         }
     };
 
