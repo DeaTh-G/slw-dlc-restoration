@@ -112,7 +112,7 @@ namespace app
 
                 game::ShadowHemisphereShapeCInfo* ppShadowInfo = &shadowInfo;
                 game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
-                app::game::GOCShadowSimple::SetLocalOffsetPosition(gocShadow, &position);
+                game::GOCShadowSimple::SetLocalOffsetPosition(gocShadow, &position);
             }
 
             game::GOCEffect::SimpleSetup(this);

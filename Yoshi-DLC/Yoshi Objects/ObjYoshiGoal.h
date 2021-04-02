@@ -264,7 +264,7 @@ namespace app
 
             EggManager* eggManager = EggManager::GetService((GameDocument*)field_24[1]);
             if (eggManager)
-                eggManager->StartExtrication();
+                eggManager->StartExtrication(playerNo);
 
             xgame::MsgStopGameTimer stopTimerMessage{};
             ObjUtil::SendMessageImmToGameActor(this, &stopTimerMessage);
@@ -301,7 +301,7 @@ namespace app
                 int deviceTag[3]{};
                 int* gocSound = GameObject::GetGOC(this, GOCSoundString);
                 if (gocSound)
-                    app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette", 0);
+                    game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette", 0);
             }
 
             RouletteTime += updateInfo.deltaTime;
@@ -317,7 +317,7 @@ namespace app
             int deviceTag[3]{};
             int* gocSound = GameObject::GetGOC(this, GOCSoundString);
             if (gocSound)
-                app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette", 0);
+                game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette", 0);
 
             RouletteCount++;
             DefaultTime += 0.05f;
@@ -347,14 +347,14 @@ namespace app
                 }
 
                 Flags |= 2;
-                app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette_success", 0);
+                game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette_success", 0);
                 fnd::HandleBase::__as(SoundHandle, deviceTag);
                 SoundHandle[2] = deviceTag[2];
                 State = ObjYoshiGoalState::STATE_DISAPPEAR_MODEL;
             }
             else
             {
-                app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette_miss", 0);
+                game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette_miss", 0);
                 State = ObjYoshiGoalState::STATE_DISAPPEAR_MODEL;
             }
             DisappearModelID = ModelID;
@@ -407,7 +407,7 @@ namespace app
                     if (!gocSound)
                         return;
 
-                    app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette_disappear", 0);
+                    game::GOCSound::Play(gocSound, deviceTag, "obj_yossygoal_roulette_disappear", 0);
                     fnd::HandleBase::__as(SoundHandle, deviceTag);
                     SoundHandle[2] = deviceTag[2];
 
@@ -426,7 +426,8 @@ namespace app
             if (!eggManager)
                 return;
 
-            if (!eggManager->IsEndExtrication())
+            int winnerNo = ObjUtil::GetPlayerNo(field_24[1], HitMessage->ActorID);
+            if (!eggManager->IsEndExtrication(winnerNo))
                 return;
 
             /* Send Battle Goal Message if a second player exists */

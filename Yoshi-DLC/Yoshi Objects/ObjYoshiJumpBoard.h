@@ -100,7 +100,7 @@ namespace app
                 Flags |= 4;
             OutOfParkour = data->OutOfParkour;
 
-            app::fnd::GOComponent::BeginSetup(this);
+            fnd::GOComponent::BeginSetup(this);
 
             int* gocVisual = GameObject::GetGOC(this, GOCVisual);
             if (gocVisual)
@@ -177,7 +177,7 @@ namespace app
                 *JumpShot = shotInfo;
             }
 
-            app::game::GOCSound::SimpleSetup(this, 0, 0);
+            game::GOCSound::SimpleSetup(this, 0, 0);
 
             fnd::GOComponent::EndSetup(this);
         }
@@ -296,10 +296,10 @@ namespace app
                 csl::math::Vector3 targetPosition = *(csl::math::Vector3*)(gocTransform + 0x50);
 
                 if ((std::abs(playerPosition.Y - targetPosition.Y)) > 0.55f)
-                    if (app::game::GOCAnimationScript::GetFrame(gocAnimation) < 8)
+                    if (game::GOCAnimationScript::GetFrame(gocAnimation) < 8)
                         playerPosition.Y -= 1.25f;
 
-                if (app::game::GOCAnimationScript::GetFrame(gocAnimation) >= 9)
+                if (game::GOCAnimationScript::GetFrame(gocAnimation) >= 9)
                     playerPosition.Y += 5.0f;
 
                 ExternalMoveMessage->Transform->data[3][0] = playerPosition.X;

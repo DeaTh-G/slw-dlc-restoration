@@ -55,21 +55,21 @@ namespace app
 
             fnd::GOComponent::BeginSetup(this);
             
-            int* gocCollider = app::GameObject::GetGOC(this, GOCColliderString);
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
             if (gocCollider)
             {
                 int shapeCount = 1;
-                app::game::ColliSphereShapeCInfo collisionInfo;
+                game::ColliSphereShapeCInfo collisionInfo;
 
-                app::game::GOCCollider::Setup(gocCollider, &shapeCount);
-                app::game::CollisionObjCInfo::__ct(&collisionInfo);
+                game::GOCCollider::Setup(gocCollider, &shapeCount);
+                game::CollisionObjCInfo::__ct(&collisionInfo);
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
                 collisionInfo.MotionType = 2;
                 collisionInfo.Radius = data->CollisionRadius;
-                app::ObjUtil::SetupCollisionFilter(7, &collisionInfo);
+                ObjUtil::SetupCollisionFilter(7, &collisionInfo);
                 collisionInfo.field_04 |= 4;
 
-                app::game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
+                game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
             }
 
             game::GOCSound::SimpleSetup(this, 0, 0);
@@ -207,7 +207,7 @@ namespace app
                         return;
 
                     int deviceTag[3]{};
-                    app::game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossypipe_in_out", 0);
+                    game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossypipe_in_out", 0);
                     IsAudioPlaying = true;
                 }
                 else

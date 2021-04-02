@@ -37,7 +37,7 @@ namespace app
 
             fnd::GOComponent::BeginSetup(this);
 
-            int* gocCollider = app::GameObject::GetGOC(this, GOCColliderString);
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
             if (gocCollider)
             {
                 int shapeCount = 1;
@@ -48,10 +48,10 @@ namespace app
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
                 collisionInfo.MotionType = 2;
                 collisionInfo.Radius = 3;
-                app::ObjUtil::SetupCollisionFilter(7, &collisionInfo);
+                ObjUtil::SetupCollisionFilter(7, &collisionInfo);
                 collisionInfo.field_04 |= 4;
 
-                app::game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
+                game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 
                 uint32_t extUserData = GetExtUserData(0);
                 if (!extUserData)
@@ -239,7 +239,7 @@ namespace app
 
                 int deviceTag[3]{};
 
-                app::game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossypipe_in_out", 0);
+                game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossypipe_in_out", 0);
                 IsNotMoving = true;
             }
 

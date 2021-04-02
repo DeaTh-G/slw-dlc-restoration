@@ -1,5 +1,17 @@
 #include "pch.h"
 
+void app::EggManager::StartExtrication(int playerNo)
+{
+    if (!playerNo)
+        for (app::ObjEgg* egg : EggsP1)
+            egg->StartExtrication();
+    else
+        for (app::ObjEgg* egg : EggsP2)
+            egg->StartExtrication();
+
+    IsSpaceShrink |= 2;
+}
+
 char app::EggManager::SubSpaceCount(int playerNo)
 {
     if (!playerNo)
@@ -90,6 +102,43 @@ void app::EggManager::DoCheckReleaseAllEgg(const fnd::SUpdateInfo updateInfo, in
     else
     {
         IsSpaceShrink &= ~8;
+    }
+}
+
+void app::EggManager::DoCheckClearAllEggEndExtrication(int playerNo)
+{
+    if (!(IsSpaceShrink & 2))
+        return;
+    
+    if (!playerNo)
+    {
+        if (EggsP1.empty())
+            return;
+
+        for (app::ObjEgg* egg : EggsP1)
+            if (!egg->IsEndExtrication())
+                return;
+
+        for (app::ObjEgg* egg : EggsP1)
+            GameObject::Kill(egg);
+        
+        EggsP1.clear();
+        IsSpaceShrink &= ~2;
+    }
+    else
+    {
+        if (EggsP2.empty())
+            return;
+
+        for (app::ObjEgg* egg : EggsP2)
+            if (!egg->IsEndExtrication())
+                break;
+
+        for (app::ObjEgg* egg : EggsP2)
+            GameObject::Kill(egg);
+
+        EggsP2.clear();
+        IsSpaceShrink &= ~2;
     }
 }
 

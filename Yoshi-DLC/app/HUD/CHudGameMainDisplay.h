@@ -7,7 +7,7 @@ namespace app
         inline static int* SetSpecialFlower(int* This)
         {
             char DstBuf[32]{};
-            EggManager* eggManager = app::EggManager::GetService(*(app::GameDocument**)(This + 0xA));
+            EggManager* eggManager = EggManager::GetService(*(GameDocument**)(This + 0xA));
             if (This[0x52])
             {
                 int FlowerFlag = 0;
@@ -31,7 +31,7 @@ namespace app
                         }
                         if (!*(This + 0x228))
                         {
-                            app::HUD::SRUtility::SetAnimation(This + 0x52, "Display_2_Anim", 0, -1, 0, 0);
+                            HUD::SRUtility::SetAnimation(This + 0x52, "Display_2_Anim", 0, -1, 0, 0);
                             This[0x3F] = 0x40000000;
                             This[0x39] |= 0x20;
                         }
@@ -68,9 +68,9 @@ namespace app
                     if (timeDown <= 0.0)
                     {
                         if ((This[0x39] & 0x20) != 0)
-                            app::HUD::SRUtility::SetAnimation(This + 0x52, "Hide_Anim", 0, -1.0, 0, 0);
+                            HUD::SRUtility::SetAnimation(This + 0x52, "Hide_Anim", 0, -1.0, 0, 0);
                         else
-                            app::HUD::SRUtility::SetAnimation(This + 0x52, "Display_2_Anim", 0, -1.0, 0, 0);
+                            HUD::SRUtility::SetAnimation(This + 0x52, "Display_2_Anim", 0, -1.0, 0, 0);
                         This[0x39] ^= 0x20;
                     }
                 }

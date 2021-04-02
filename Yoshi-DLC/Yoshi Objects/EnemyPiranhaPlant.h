@@ -175,7 +175,7 @@ namespace app
             if (gocCollider)
             {
                 int shapeCount = 3;
-                app::game::ColliSphereShapeCInfo collisionInfo{};
+                game::ColliSphereShapeCInfo collisionInfo{};
                 game::GOCCollider::Setup(gocCollider, &shapeCount);
 
                 // Search Collider
@@ -377,8 +377,8 @@ namespace app
                     Time += deltaTime;
                     if (Time < 0.1f)
                     {
-                        float multiplier = sinf(1.5707964f * (Time / 0.1));
-                        obj->SetScale((0.60000002 * multiplier) + 0.40000001);
+                        float multiplier = sinf(1.5707964f * (Time / 0.1f));
+                        obj->SetScale((0.60000002f * multiplier) + 0.40000001f);
                     }
                     else
                     {
@@ -631,9 +631,9 @@ namespace app
 
                     if (!State)
                     {
-                        float multiplier = csl::math::Clamp(Time / 0.2, 0, 1);
-                        obj->HeadRotation = (-0.34906584 - AbsoluteRotation) *
-                            csl::math::Clamp(sinf(multiplier * 1.5707964), 0, 1) + AbsoluteRotation;
+                        float multiplier = csl::math::Clamp(Time / 0.2f, 0, 1);
+                        obj->HeadRotation = (-0.34906584f - AbsoluteRotation) *
+                            csl::math::Clamp(sinf(multiplier * 1.5707964f), 0, 1) + AbsoluteRotation;
 
                         if (multiplier >= 1)
                         {
@@ -665,7 +665,7 @@ namespace app
                     else if (State == 2)
                     {
                         float multiplier = csl::math::Clamp(Time / 0.6f, 0, 1);
-                        obj->SetScale(((0.2 - obj->Scale) * multiplier) + obj->Scale);
+                        obj->SetScale(((0.2f - obj->Scale) * multiplier) + obj->Scale);
                         if (multiplier >= 1)
                         {
                             ChangeSubState(3);
@@ -690,7 +690,7 @@ namespace app
                             return 0;
 
                         fnd::GOCVisualModel::GetNodeTransform(gocVisual, 1, "Mouth", &transform);
-                        math::Vector3Scale(&transform.Position, 0.2, &transform.Position);
+                        math::Vector3Scale(&transform.Position, 0.2f, &transform.Position);
                         math::Vector3Add(&transform.Position, (csl::math::Vector3*) & center->Transform.data[3][0], &transform.Position);
                         transform.SetFlag(1);
 
@@ -915,7 +915,7 @@ namespace app
              { "Dead", &Dead_Initialize, -1 }
          };
 
-         inline static app::GOCEnemyHsm::StateDesc StateDescriptors[] =
+         inline static GOCEnemyHsm::StateDesc StateDescriptors[] =
          {
              {0, &States[0]},
              {1, &States[1]},

@@ -133,7 +133,7 @@ namespace app
         float Time{};
         game::MoveBound* Movement = new game::MoveBound();
         INSERT_PADDING(0x4);	// BoundListener
-        ObjDroppedEgg* field_348;
+        ObjDroppedEgg* Instance;
         fnd::HandleBase Handle{};
         INSERT_PADDING(0xC);
         csl::math::Vector3 field_360{};
@@ -173,7 +173,7 @@ namespace app
 
                 visualDescriptor.Model = info->Models[ModelType];
                 visualDescriptor.Animation |= 0x400000;
-                visualDescriptor.ZIndex = -0.2 * CInfo->ZIndex;
+                visualDescriptor.ZIndex = -0.2f * CInfo->ZIndex;
                 fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
                 fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, &visualOffset);
             }
@@ -222,7 +222,7 @@ namespace app
                 return true;
 
             if (message.Type != fnd::PROC_MSG_HIT_EVENT_COLLISION)
-                return app::GameObject::ProcessMessage(message);
+                return GameObject::ProcessMessage(message);
 
             ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
             return true;

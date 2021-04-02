@@ -13,7 +13,7 @@ namespace app
         inline static FUNCTION_PTR(int*, __cdecl, GetAnimationResource, ASLR(0x0073D630), void* dataPtr, const char* name, int* packFile);
         inline static FUNCTION_PTR(int*, __cdecl, GetAnimationScriptResource, ASLR(0x0073D7B0), void* dataPtr, const char* name, int packFile);
         inline static FUNCTION_PTR(int*, __cdecl, GetTexSrtAnimationResource, ASLR(0x0073D730), void* dataPtr, const char* name, int packFile);
-        inline static FUNCTION_PTR(void, __cdecl, SetupCollisionFilter, ASLR(0x0073D260), int filter, app::game::CollisionObjCInfo* collision);
+        inline static FUNCTION_PTR(void, __cdecl, SetupCollisionFilter, ASLR(0x0073D260), int filter, game::CollisionObjCInfo* collision);
         inline static FUNCTION_PTR(int, __cdecl, GetPlayerNo, ASLR(0x0073DDD0), int a1, int a2);
         inline static FUNCTION_PTR(int*, __cdecl, GetPlayerInformation, ASLR(0x0073DE10), GameDocument* a1, int PlayerNumber);
         inline static FUNCTION_PTR(int, __cdecl, AddScorePlayerAction, ASLR(0x0073EA60), GameObject* Object, const char* name, int playerNo);
@@ -24,6 +24,8 @@ namespace app
         inline static FUNCTION_PTR(int, __cdecl, SetPropertyLockonTarget, ASLR(0x0073D280), GameObject* This);
         inline static FUNCTION_PTR(int, __cdecl, SetEnableColliShape, ASLR(0x0073D8D0), int* This, int colliNo, bool isEnable);
         inline static FUNCTION_PTR(bool, __cdecl, CheckShapeUserID, ASLR(0x0073D8B0), int a1, int a2);
+        inline static FUNCTION_PTR(int*, __cdecl, GetSVPath, ASLR(0x0073E6C0), GameDocument* gameDocumnet, csl::math::Vector3* a1, csl::math::Vector3* a2);
+        inline static FUNCTION_PTR(int*, __cdecl, RaycastHitCollision, ASLR(0x0073D980), GameDocument* gameDocumnet, csl::math::Vector3* a1, csl::math::Vector3* a2, int a3);
 
         static int SendMessageImmToPlayer(GameObject* gameObject, int playerNo, void* message)
         {

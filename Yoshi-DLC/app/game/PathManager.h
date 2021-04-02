@@ -15,7 +15,7 @@ namespace app
 
         struct alignas(16) PathRaycastOutput
         {
-            int PathObject;
+            int* PathObject;
             float Distance;
             float field_08;
             float field_0C;

@@ -2,6 +2,16 @@
 
 namespace app
 {
+    enum class ObjEggState : int
+    {
+        STATE_TO_FIRST_LOCUS,
+        STATE_TO_INDEX_LOCUS,
+        STATE_MOVE_INDEX_LOCUS,
+        STATE_DROP,
+        STATE_MOVE_TO_EXTRICATION,
+        STATE_AFTER_EXTRICATION
+    };
+
     class ObjEgg;
     struct EggCInfo;
     namespace egg
@@ -36,15 +46,185 @@ namespace app
 
     class ObjEgg : public GameObject3D
     {
-        typedef enum EggState
+    public:
+        ObjEggState State{};
+        float Time{};
+        INSERT_PADDING(0x14); // TinyFsm
+        EggCInfo* CInfo = new EggCInfo();
+        int ModelType{};
+        int Index = -1;
+        int SpaceCount = 10;
+        int Frame{};
+        float RotationTime{};
+        bool DoRotate{};
+        char PlayerNo{};
+        INSERT_PADDING(2);
+        csl::math::Vector3 DropPosition{ 0, 34.732917f, 35.966991f };
+        float ScaleTime{};
+        float ScaleX = 1;
+        float ScaleY = 1;
+        float ScaleZ = 1;
+        int SlipperyType = 1;
+        int field_374{};
+        INSERT_PADDING(8);
+
+        ObjEgg(GameDocument& gameDocument, EggCInfo* cInfo)
         {
-            STATE_TO_FIRST_LOCUS,
-            STATE_TO_INDEX_LOCUS,
-            STATE_MOVE_INDEX_LOCUS,
-            STATE_DROP,
-            STATE_MOVE_TO_EXTRICATION,
-            STATE_AFTER_EXTRICATION
-        };
+            CInfo = cInfo;
+            ModelType = cInfo->ModelType;
+            PlayerNo = cInfo->PlayerNo;
+        }
+
+        void AddCallback(GameDocument* gameDocument) override
+        {
+            fnd::GOComponent::Create(this, GOCVisualModel);
+            fnd::GOComponent::Create(this, GOCCollider);
+            fnd::GOComponent::Create(this, GOCGravity);
+            fnd::GOComponent::Create(this, GOCEffect);
+            fnd::GOComponent::Create(this, GOCSound);
+
+            EggManager* eggManager = EggManager::GetService(gameDocument);
+            if (!eggManager)
+                return;
+
+            if (!PlayerNo)
+                Index = eggManager->EggsP1.size();
+            else
+                Index = eggManager->EggsP2.size();
+            bool isEggStored = eggManager->AddEgg(this);
+
+            fnd::GOComponent::BeginSetup(this);
+
+            csl::math::Vector3 position = *(csl::math::Vector3*) & CInfo->Transform->data[3][0];
+            csl::math::Quaternion rotation = GetRotationFromMatrix(CInfo->Transform);
+
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (gocTransform)
+            {
+                fnd::GOCTransform::SetLocalTranslation(gocTransform, &position);
+                fnd::GOCTransform::SetLocalRotation(gocTransform, &rotation);
+            }
+
+            ObjEggInfo* info = (ObjEggInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjEggInfo");
+
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+            if (gocVisual)
+            {
+                fnd::GOCVisualModel::VisualDescription visualDescriptor{};
+
+                fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
+                visualDescriptor.Model = info->Models[ModelType];
+                visualDescriptor.Animation |= 0x400000;
+                visualDescriptor.ZIndex = (-0.2f * Index) - 2;
+                fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
+
+                Eigen::Quaternion<float> q;
+                q = Eigen::AngleAxis<float>((3.1415927f / 2), Eigen::Vector3f(0, 1, 0));
+                q.normalize();
+                csl::math::Quaternion visualRotation{ q.x(), q.y(), q.z(), q.w() };
+                fnd::GOCVisualTransformed::SetLocalRotation(gocVisual, &visualRotation);
+            }
+
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+            if (gocCollider)
+            {
+                int shapeCount = 1;
+
+                game::ColliSphereShapeCInfo collisionInfo{};
+
+                game::GOCCollider::Setup(gocCollider, &shapeCount);
+                game::CollisionObjCInfo::__ct(&collisionInfo);
+                collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
+                collisionInfo.MotionType = 2;
+                collisionInfo.Radius = 3;
+                collisionInfo.field_44 = 0;
+                collisionInfo.field_48 = 0;
+                collisionInfo.field_54 = 0;
+                ObjUtil::SetupCollisionFilter(2, &collisionInfo);
+                game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
+            }
+
+            game::GOCGravity::SimpleSetup(this, 1);
+            game::GOCEffect::SimpleSetup(this);
+            game::GOCSound::SimpleSetup(this, 0, 0);
+
+            fnd::GOComponent::EndSetup(this);
+
+            int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+            if (gocSound)
+            {
+                int deviceTag[3];
+
+                if (isEggStored)
+                    game::GOCSound::Play(gocSound, deviceTag, "obj_yossyegg_get", 0);
+                else
+                {
+                    xgame::MsgTakeObject msg { 3 };
+                    ObjUtil::SendMessageImmToPlayer(this, CInfo->PlayerNo, &msg);
+                    int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
+                    if (msg.field_20 && gocEffect)
+                    {
+                        game::GOCEffect::CreateEffect(gocEffect, "ef_dl2_yossi_birth");
+                        game::GOCSound::Play(gocSound, deviceTag, "obj_yossy_1up", 0);
+                    }
+                    GameObject::Kill(this);
+                }
+            }
+        }
+
+        bool ProcessMessage(fnd::Message& message) override
+        {
+            if (PreProcessMessage(message))
+                return true;
+
+            if (message.Type != fnd::PROC_MSG_DLC_CHANGE_EGG_ROTATION)
+                return GameObject::ProcessMessage(message);
+
+            ProcMsgDlcChangeEggRotation((xgame::MsgDlcChangeEggRotation&)message);
+            return true;
+        }
+
+        void Update(const fnd::SUpdateInfo& updateInfo) override
+        {
+            if (State == ObjEggState::STATE_TO_FIRST_LOCUS)
+                StateFirstToLocus(updateInfo);
+
+            if (State == ObjEggState::STATE_TO_INDEX_LOCUS)
+                StateToIndexLocus(updateInfo);
+
+            if (State == ObjEggState::STATE_MOVE_INDEX_LOCUS)
+                StateMoveIndexLocus(updateInfo);
+
+            if (State == ObjEggState::STATE_DROP)
+                StateDrop();
+
+            if (State == ObjEggState::STATE_MOVE_TO_EXTRICATION)
+                StateMoveToExtrication(updateInfo);
+        }
+
+        void StartExtrication() { State = ObjEggState::STATE_MOVE_TO_EXTRICATION; }
+
+        bool IsEndExtrication() { return State == ObjEggState::STATE_AFTER_EXTRICATION; }
+
+        void StartDrop() { State = ObjEggState::STATE_DROP; }
+
+        bool SubSpaceOffset()
+        {
+            if (!SpaceCount)
+                return false;
+
+            SpaceCount -= 1;
+            return true;
+        }
+
+        bool AddSpaceOffset()
+        {
+            if (SpaceCount >= 0xA)
+                return false;
+
+            SpaceCount += 1;
+            return true;
+        }
 
     private:
         void ProcMsgDlcChangeEggRotation(xgame::MsgDlcChangeEggRotation& message)
@@ -62,6 +242,25 @@ namespace app
                 DoRotate = false;
                 RotationTime = 0.3f;
             }
+        }
+
+        void SlipperyInterpolate(float a1, float scalarX, float scalarY, float scalarZ)
+        {
+            if ((ScaleTime / (a1 * 0.5)) > 1)
+                field_374 &= ~2;
+
+            ScaleX = csl::math::Lerp(ScaleX, scalarX, ScaleTime / (a1 * 0.5f));
+
+            ScaleY = csl::math::Lerp(ScaleY, scalarY, ScaleTime / (a1 * 0.5f));
+
+            ScaleZ = csl::math::Lerp(ScaleZ, scalarZ, ScaleTime / (a1 * 0.5f));
+        }
+
+        void SetSlipperyHeightScale(float scalarX, float scalarY, float scalarZ)
+        {
+            ScaleX = scalarX;
+            ScaleY = scalarY;
+            ScaleZ = scalarZ;
         }
 
         void UpdateRotation(csl::math::Quaternion* rotation, const fnd::SUpdateInfo updateInfo, int playerNo)
@@ -94,25 +293,6 @@ namespace app
             }
 
             fnd::GOCTransform::SetLocalRotation(gocTransform, &normalizedRotation);
-        }
-
-        void SlipperyInterpolate(float a1, float scalarX, float scalarY, float scalarZ)
-        {
-            if ((ScaleTime / (a1 * 0.5)) > 1)
-                field_374 &= ~2;
-
-            ScaleX = csl::math::Lerp(ScaleX, scalarX, ScaleTime / (a1 * 0.5));
-
-            ScaleY = csl::math::Lerp(ScaleY, scalarY, ScaleTime / (a1 * 0.5));
-
-            ScaleZ = csl::math::Lerp(ScaleZ, scalarZ, ScaleTime / (a1 * 0.5));
-        }
-
-        void SetSlipperyHeightScale(float scalarX, float scalarY, float scalarZ)
-        {
-            ScaleX = scalarX;
-            ScaleY = scalarY;
-            ScaleZ = scalarZ;
         }
 
         void UpdateSlippery(bool isInAir, bool a3, const fnd::SUpdateInfo updateInfo)
@@ -179,8 +359,8 @@ namespace app
                 }
 
                 SetSlipperyHeightScale(scalarX, scalarY, scalarZ);
-                int flag = (((60.0f * updateInfo.deltaTime < 0) << 2) << 0x1C) >> 0x1E;
-                if (flag != field_374 & 1)
+                int flag = (((60 * updateInfo.deltaTime < 0) << 2) << 0x1C) >> 0x1E;
+                if (flag != (field_374 & 1))
                 {
                     if (flag == 0)
                         multiplier = 0.18f;
@@ -246,6 +426,64 @@ namespace app
             return;
         }
 
+        void Extrication()
+        {
+            int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
+            if (gocEffect)
+                game::GOCEffect::CreateEffect(gocEffect, "ef_dl2_yossi_birth");
+
+            int deviceTag[3];
+            int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+            if (gocSound) 
+                game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggitem_break", 0);
+
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+            if (gocVisual)
+                fnd::GOCVisual::SetVisible(gocVisual, false);
+
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            csl::math::Matrix34 matrix = *(csl::math::Matrix34*)(gocTransform + 0x44);
+            Eigen::Vector3f upVector(0, 10, 0);
+            Eigen::Vector3f tVec(matrix.data[3][0], matrix.data[3][1], matrix.data[3][2]);
+            Eigen::Vector3f rVec(matrix.data[1][0], matrix.data[1][1], matrix.data[1][2]);
+            csl::math::Vector3 transVector { tVec.x() * upVector.x(), tVec.y() * upVector.y(), tVec.z() * upVector.z() };
+            csl::math::Vector3 rotationVector { -rVec.x(), -rVec.y(), -rVec.z() };
+            
+            csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
+            int* path = ObjUtil::GetSVPath((GameDocument*)field_24[1], &transVector, &rotationVector);
+            if (path)
+            {
+                game::PathEvaluator pathEvaluator{};
+                game::PathEvaluator::__ct(&pathEvaluator);
+                game::PathEvaluator::SetPathObject(&pathEvaluator, path);
+                if (fnd::HandleBase::IsValid(&pathEvaluator))
+                {
+                    csl::math::Vector3 splinePoint{};
+                    csl::math::Vector3 someVector{};
+                    csl::math::Vector3 someVector2{};
+
+                    csl::math::Vector3 objectPosition = *(csl::math::Vector3*)(gocTransform + 0x50);
+                    float length = game::PathEvaluator::GetLength(&pathEvaluator);
+                    game::PathEvaluator::GetClosestPositionAlongSpline(&pathEvaluator, &objectPosition, &splinePoint, 0, &length);
+                    game::PathEvaluator::SetDistance(&pathEvaluator, splinePoint.X);
+                    game::PathEvaluator::GetPNT(&pathEvaluator, &pathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
+                    math::Vector3CrossProduct(&someVector, &someVector2, &objectPosition);
+                    csl::math::Matrix34 pointMatrix{};
+                    *(csl::math::Vector3*)&pointMatrix.data[0][0] = objectPosition;
+                    *(csl::math::Vector3*)&pointMatrix.data[1][0] = someVector;
+                    *(csl::math::Vector3*)&pointMatrix.data[2][0] = someVector2;
+                    rotation = GetRotationFromMatrix(&pointMatrix);
+                }
+            }
+
+            csl::math::Vector3 objectPosition = *(csl::math::Vector3*)(gocTransform + 0x50);
+            ObjYoshi::CInfo* yoshiInfo = new ObjYoshi::CInfo(ModelType, &objectPosition, &rotation, Index);
+            ObjYoshi::Create(*(GameDocument*)field_24[1], *yoshiInfo);
+        }
+
         void StateFirstToLocus(const fnd::SUpdateInfo& updateInfo)
         {
             EggManager::LocusData locusData{};
@@ -279,7 +517,7 @@ namespace app
             if (Frame == 60)
             {
                 Frame = 0;
-                State = STATE_TO_INDEX_LOCUS;
+                State = ObjEggState::STATE_TO_INDEX_LOCUS;
             }
         }
 
@@ -308,7 +546,7 @@ namespace app
 
             Frame++;
             if (locusIndex < Frame)
-                State = STATE_MOVE_INDEX_LOCUS;
+                State = ObjEggState::STATE_MOVE_INDEX_LOCUS;
         }
 
         void StateMoveIndexLocus(const fnd::SUpdateInfo& updateInfo)
@@ -367,202 +605,54 @@ namespace app
                 Kill(this);
         }
 
-        void StateMoveToExtrication()
+        void StateMoveToExtrication(const fnd::SUpdateInfo& updateInfo)
         {
-
-        }
-
-        void StateAfterExtrication()
-        {
-
-        }
-
-    public:
-        EggState State{};
-        float Time{};
-        INSERT_PADDING(0x14); // TinyFsm
-        EggCInfo* CInfo = new EggCInfo();
-        int ModelType{};
-        int Index = -1;
-        int SpaceCount = 10;
-        int Frame{};
-        float RotationTime{};
-        bool DoRotate{};
-        char PlayerNo{};
-        INSERT_PADDING(2);
-        csl::math::Vector3 DropPosition {0, 34.732917f, 35.966991f };
-        float ScaleTime{};
-        float ScaleX = 1;
-        float ScaleY = 1;
-        float ScaleZ = 1;
-        int SlipperyType = 1;
-        int field_374{};
-        INSERT_PADDING(8);
-
-        ObjEgg(GameDocument& gameDocument, EggCInfo* cInfo)
-        {
-            CInfo = cInfo;
-            ModelType = cInfo->ModelType;
-            PlayerNo = cInfo->PlayerNo;
-        }
-
-        void AddCallback(GameDocument* gameDocument) override
-        {
-            fnd::GOComponent::Create(this, GOCVisualModel);
-            fnd::GOComponent::Create(this, GOCCollider);
-            fnd::GOComponent::Create(this, GOCGravity);
-            fnd::GOComponent::Create(this, GOCEffect);
-            fnd::GOComponent::Create(this, GOCSound);
-
-            EggManager* eggManager = EggManager::GetService(gameDocument);
+            EggManager* eggManager = EggManager::GetService((GameDocument*)field_24[1]);
             if (!eggManager)
                 return;
 
-            if (!PlayerNo)
-                Index = eggManager->EggsP1.size();
-            else
-                Index = eggManager->EggsP2.size();
-            bool isEggStored = eggManager->AddEgg(this);
-
-            fnd::GOComponent::BeginSetup(this);
-            
-            csl::math::Vector3 position = *(csl::math::Vector3*)&CInfo->Transform->data[3][0];
-            csl::math::Quaternion rotation = GetRotationFromMatrix(CInfo->Transform);
-
-            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
-            if (gocTransform)
+            EggManager::LocusData locusData{};
+            EggManager::LocusData nextLocusData{};
+            EggManager::LocusData currentLocus{};
+            int locusIndex = eggManager->GetTargetLocusIndex(Index, PlayerNo);
+            if (locusIndex)
             {
-                fnd::GOCTransform::SetLocalTranslation(gocTransform, &position);
-                fnd::GOCTransform::SetLocalRotation(gocTransform, &rotation);
-            }
-
-            ObjEggInfo* info = (ObjEggInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjEggInfo");
-
-            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
-            if (gocVisual)
-            {
-                fnd::GOCVisualModel::VisualDescription visualDescriptor{};
-
-                fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
-                visualDescriptor.Model = info->Models[ModelType];
-                visualDescriptor.Animation |= 0x400000;
-                visualDescriptor.ZIndex = (-0.2 * Index) - 2;
-                fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
-
-                Eigen::Quaternion<float> q;
-                q = Eigen::AngleAxis<float>((3.1415927 / 2), Eigen::Vector3f(0, 1, 0));
-                q.normalize();
-                csl::math::Quaternion visualRotation{ q.x(), q.y(), q.z(), q.w() };
-                fnd::GOCVisualTransformed::SetLocalRotation(gocVisual, &visualRotation);
-            }
-
-            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
-            if (gocCollider)
-            {
-                int shapeCount = 1;
-
-                game::ColliSphereShapeCInfo collisionInfo{};
-
-                game::GOCCollider::Setup(gocCollider, &shapeCount);
-                game::CollisionObjCInfo::__ct(&collisionInfo);
-                collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
-                collisionInfo.MotionType = 2;
-                collisionInfo.Radius = 3;
-                collisionInfo.field_44 = 0;
-                collisionInfo.field_48 = 0;
-                collisionInfo.field_54 = 0;
-                ObjUtil::SetupCollisionFilter(2, &collisionInfo);
-                game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
-            }
-
-            game::GOCGravity::SimpleSetup(this, 1);
-            game::GOCEffect::SimpleSetup(this);
-            game::GOCSound::SimpleSetup(this, 0, 0);
-
-            fnd::GOComponent::EndSetup(this);
-
-            int* gocSound = GameObject::GetGOC(this, GOCSoundString);
-            if (gocSound)
-            {
-                int deviceTag[3];
-
-                if (isEggStored)
-                    game::GOCSound::Play(gocSound, deviceTag, "obj_yossyegg_get", 0);
-                else
+                for (size_t i = 0; i < locusIndex; i++)
                 {
-                    xgame::MsgTakeObject msg { 3 };
-                    ObjUtil::SendMessageImmToPlayer(this, CInfo->PlayerNo, &msg);
-                    int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
-                    if (msg.field_20 && gocEffect)
-                    {
-                        game::GOCEffect::CreateEffect(gocEffect, "ef_dl2_yossi_birth");
-                        game::GOCSound::Play(gocSound, deviceTag, "obj_yossy_1up", 0);
-                    }
-                    app::GameObject::Kill(this);
+                    bool isMoving = false;
+                    eggManager->GetTargetDataFromLocusIndex(&locusData, i, &isMoving, nullptr, PlayerNo);
                 }
             }
+
+            bool isMoving = false;
+            eggManager->GetTargetDataFromLocusIndex(&currentLocus, 0, &isMoving, nullptr, PlayerNo);
+            eggManager->GetTargetDataFromLocusIndex(&nextLocusData, locusIndex, &isMoving, nullptr, PlayerNo);
+
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            fnd::GOCTransform::SetLocalTranslation(gocTransform, &nextLocusData.Position);
+            UpdateRotation(&nextLocusData.Rotation, updateInfo, PlayerNo);
+            UpdateSlippery(nextLocusData.IsInAir, 1, updateInfo);
+            if (!nextLocusData.IsInAir)
+            {
+                float posDiff = nextLocusData.Position.X - currentLocus.Position.X;
+                if (abs(posDiff) > 0.35f || isMoving)
+                    return;
+
+                Extrication();
+                State = ObjEggState::STATE_AFTER_EXTRICATION;
+            }
         }
-
-        bool ProcessMessage(fnd::Message& message) override
-        {
-            if (PreProcessMessage(message))
-                return true;
-
-            if (message.Type != fnd::PROC_MSG_DLC_CHANGE_EGG_ROTATION)
-                return GameObject::ProcessMessage(message);
-
-            ProcMsgDlcChangeEggRotation((xgame::MsgDlcChangeEggRotation&)message);
-            return true;
-        }
-
-        void Update(const fnd::SUpdateInfo& updateInfo) override
-        {
-            if (State == STATE_TO_FIRST_LOCUS)
-                StateFirstToLocus(updateInfo);
-                
-            if (State == STATE_TO_INDEX_LOCUS)
-                StateToIndexLocus(updateInfo);
-
-            if (State == STATE_MOVE_INDEX_LOCUS)
-                StateMoveIndexLocus(updateInfo);
-
-            if (State == STATE_DROP)
-                StateDrop();
-
-            if (State == STATE_MOVE_TO_EXTRICATION)
-                StateMoveToExtrication();
-
-            if (State == STATE_AFTER_EXTRICATION)
-                StateAfterExtrication();
-        }
-
-        bool SubSpaceOffset()
-        {
-            if (!SpaceCount)
-                return false;
-
-            SpaceCount -= 1;
-            return true;
-        }
-
-        bool AddSpaceOffset()
-        {
-            if (SpaceCount >= 0xA)
-                return false;
-
-            SpaceCount += 1;
-            return true;
-        }
-
-        void StartDrop() { State = STATE_DROP; }
     };
 }
 
 inline static app::ObjEgg* app::egg::CreateEgg(GameDocument& gameDocument, EggCInfo* cInfo)
 {
     ObjEgg* object = new ObjEgg(gameDocument, cInfo);
-    if (!object)
-        return 0;
-    GameDocument::AddGameObject(*(GameDocument**)&gameDocument, object);
+    if (object)
+        GameDocument::AddGameObject(*(GameDocument**)&gameDocument, object);
+    
     return object;
 }

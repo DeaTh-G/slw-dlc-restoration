@@ -42,10 +42,9 @@ namespace app
             if (eggObject)
                 CObjInfoContainer::Register(&container, eggObject->GetInfoName(), eggObject);
 
-            ObjYoshiInfo* yoshiObject = (ObjYoshiInfo*)fnd::ReferencedObject::f_new(sizeof(ObjYoshiInfo), pAllocator);
+            ObjYoshiInfo* yoshiObject = new(pAllocator) ObjYoshiInfo();
             if (yoshiObject)
-                new (yoshiObject)ObjYoshiInfo();
-            CObjInfoContainer::Register(&container, yoshiObject->GetInfoName(), yoshiObject);
+                CObjInfoContainer::Register(&container, yoshiObject->GetInfoName(), yoshiObject);
         }
     };
 
@@ -138,7 +137,7 @@ namespace app
                                 csl::math::Vector3 translation{};
                                 int deviceTag[3];
 
-                                app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggblock_hit", 0);
+                                game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggblock_hit", 0);
                                 math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
                                 xgame::MsgDamage::SetReply(&message, &translation, 0);
                                 State = STATE_DAMAGE;
@@ -149,7 +148,7 @@ namespace app
                             (message.AttackType & 0x20 || message.AttackType & 0x40))
                         {
                             if (math::Vector3NormalizeIfNotZero(&localPosition, &localPosition)
-                                && acosf(math::Vector3DotProduct(&localPosition, &localPosition)) < 1.3962634f);
+                                && acosf(math::Vector3DotProduct(&localPosition, &localPosition)) < 1.3962634f)
                             {
                                 csl::math::Vector3 crossVector{};
                                 csl::math::Vector3 upVec = csl::math::Vector3(0, 1, 0);
@@ -167,7 +166,7 @@ namespace app
                                         csl::math::Vector3 translation{};
                                         int deviceTag[3];
 
-                                        app::game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggblock_hit", 0);
+                                        game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggblock_hit", 0);
                                         math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
                                         xgame::MsgDamage::SetReply(&message, &translation, 0);
                                         State = STATE_DAMAGE;
@@ -207,7 +206,7 @@ namespace app
             csl::math::Quaternion objectRotation{};
             math::CalculatedTransform::GetQuaternionRotation((csl::math::Matrix34*)(gocTransform + 0x44), &objectRotation);
             unsigned int random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
-            random = floorf((random * 2.328306436538696e-10) * 100);
+            random = floorf((random * 2.328306436538696e-10f) * 100);
 
             int ModelType = 0;
             for (size_t i = 0; i < 4; i++)
@@ -215,7 +214,7 @@ namespace app
                 if (random < 40)
                 {
                     random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
-                    random = floorf((random * 2.328306436538696e-10) * 100);
+                    random = floorf((random * 2.328306436538696e-10f) * 100);
                     ModelType++;
                     continue;
                 }
@@ -232,7 +231,7 @@ namespace app
                 eggInfo.ZIndex = PopEggNum;
 
                 unsigned int randomEgg = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
-                randomEgg = floorf((randomEgg * 2.328306436538696e-10) * 3);
+                randomEgg = floorf((randomEgg * 2.328306436538696e-10f) * 3);
                 if (random >= INT_MAX - 47)
                     continue;
 
@@ -250,7 +249,7 @@ namespace app
                     continue;
 
                 int deviceTag[3];
-                app::game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossyegg_appear", 0);
+                game::GOCSound::Play3D(gocSound, deviceTag, "obj_yossyegg_appear", 0);
                 return;
             }
         }

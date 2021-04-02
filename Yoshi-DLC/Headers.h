@@ -74,6 +74,8 @@
 #include "app/game/GOCMotor.h"
 #include "app/game/GOCMotorRotate.h"
 #include "app/game/GOCShadowSimple.h"
+#include "app/game/GOCShadow.h"
+#include "app/game/ShadowShape.h"
 #include "app/game/GOCSound.h"
 #include "app/game/GOCVisual.h"
 #include "app/math/Transform.h"
@@ -138,6 +140,12 @@
 
 #include "Helpers.h"
 
+#include "app/CObjOneUp.h"
+#include "app/Objects/CSharedObjInfo.h"
+#include "app/Objects/EnemyBlowOffObject.h"
+#include "app/Objects/CObjDroppedRing.h"
+
+
 // Yoshi Objects
 #include "app/egg.h"
 
@@ -145,8 +153,10 @@
 #include "Yoshi Objects/EnemyPiranhaPlant.h"
 #include "Yoshi Objects/EnemyShyGuy.h"
 #include "Yoshi Objects/EggManager.h"
-#include "Yoshi Objects/ObjEgg.h"
+#include "app/HUD/CHudGameMainDisplay.h"
+#include "Yoshi Objects/ObjYoshiOneUp.h"
 #include "Yoshi Objects/ObjYoshi.h"
+#include "Yoshi Objects/ObjEgg.h"
 #include "Yoshi Objects/ObjDroppedEgg.h"
 #include "Yoshi Objects/ObjEggBlock.h"
 #include "Yoshi Objects/ObjEggRotationChangeCollision.h"
@@ -157,9 +167,3 @@
 #include "Yoshi Objects/ObjYoshiJumpBoard.h"
 #include "Yoshi Objects/ObjYoshiSpecialFlower.h"
 #include "Yoshi Objects/ObjYoshiGoal.h"
-
-#include "app/Objects/CSharedObjInfo.h"
-#include "app/Objects/EnemyBlowOffObject.h"
-#include "app/Objects/CObjDroppedRing.h"
-
-#include "app/HUD/CHudGameMainDisplay.h"

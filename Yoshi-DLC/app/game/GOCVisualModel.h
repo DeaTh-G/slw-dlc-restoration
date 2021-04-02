@@ -31,8 +31,8 @@ namespace app
 
             inline static FUNCTION_PTR(void, __thiscall, Setup, ASLR(0x00495850), int* This, VisualDescription* visualDescriptor);
             inline static FUNCTION_PTR(void, __thiscall, AttachAnimation, ASLR(0x004951B0), int* This, int* gocAnimation);
-            inline static FUNCTION_PTR(void, __thiscall, GetNodeTransform, ASLR(0x004951F0), int* This, int a2, const char* nodeName, app::math::Transform* transform);
-            inline static FUNCTION_PTR(void, __thiscall, SetNodeTransform, ASLR(0x00495240), int* This, int a2, const char* nodeName, app::math::Transform* transform);
+            inline static FUNCTION_PTR(void, __thiscall, GetNodeTransform, ASLR(0x004951F0), int* This, int a2, const char* nodeName, math::Transform* transform);
+            inline static FUNCTION_PTR(void, __thiscall, SetNodeTransform, ASLR(0x00495240), int* This, int a2, const char* nodeName, math::Transform* transform);
             inline static FUNCTION_PTR(void*, __thiscall, SetTexSrtAnimation, ASLR(0x00495890), int* This, void* animation);
             inline static FUNCTION_PTR(void*, __thiscall, GetTexSrtControl, ASLR(0x004954E0), int* This);
         };

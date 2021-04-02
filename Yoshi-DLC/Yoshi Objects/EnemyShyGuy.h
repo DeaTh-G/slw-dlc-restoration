@@ -138,7 +138,7 @@ namespace app
             if (gocCollider)
             {
                 int shapeCount = 1;
-                app::game::ColliSphereShapeCInfo collisionInfo;
+                game::ColliSphereShapeCInfo collisionInfo;
 
                 game::GOCCollider::Setup(gocCollider, &shapeCount);
                 game::CollisionObjCInfo::__ct(&collisionInfo);
@@ -647,7 +647,7 @@ namespace app
             { "Stop",& Stop_Initialize, -1 }
         };
         
-        inline static app::GOCEnemyHsm::StateDesc StateDescriptors[] =
+        inline static GOCEnemyHsm::StateDesc StateDescriptors[] =
         {
             {0, &States[0]},
             {1, &States[1]},

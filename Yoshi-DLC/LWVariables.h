@@ -29,6 +29,7 @@ inline static int* GOCAnimationSimple = (int*)ASLR(0x00FD7534);
 inline static int* GOCGravity = (int*)ASLR(0x00FD76D8);
 inline static int* GOCCollider = (int*)ASLR(0x00FD75A4);
 inline static int* GOCSound = (int*)ASLR(0x00FD7908);
+inline static int* GOCShadow = (int*)ASLR(0x00FD78D0);
 inline static int* GOCShadowSimple = (int*)ASLR(0x00FD78EC);
 inline static int* EnemyTargetGOC = (int*)ASLR(0x00FE7608);
 inline static int* GOCEffect = (int*)ASLR(0x00FD7630);

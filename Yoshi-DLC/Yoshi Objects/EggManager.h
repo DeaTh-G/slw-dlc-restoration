@@ -27,10 +27,13 @@ namespace app
 
         EggManager() {}
 
+        void StartExtrication(int playerNo);
+
     private:
         static void* staticClass() { return (void*)ASLR(0x00FEE764); }
 
-        void DoCheckReleaseAllEgg(const fnd::SUpdateInfo updateInfom, int playerNo);
+        void DoCheckReleaseAllEgg(const fnd::SUpdateInfo updateInfo, int playerNo);
+        void DoCheckClearAllEggEndExtrication(int playerNo);
 
         bool IsLocusDataInGroundToAir(int playerNo)
         {
@@ -263,14 +266,12 @@ namespace app
                 IsSpaceShrink &= ~1;
         }
 
-        void StartExtrication()
+        bool IsEndExtrication(int playerNo)
         {
-
-        }
-
-        bool IsEndExtrication()
-        {
-            return true;
+            if (!playerNo)
+                return EggsP1.empty();
+            else
+                return EggsP2.empty();
         }
 
         void TakeYoshiSpecialFlower(char flowerID) { FlowerCount |= 1 << flowerID; }
@@ -308,6 +309,8 @@ namespace app
             UpdateEggSpace(1);
             DoCheckReleaseAllEgg(updateInfo, 0);
             DoCheckReleaseAllEgg(updateInfo, 1);
+            DoCheckClearAllEggEndExtrication(0);
+            DoCheckClearAllEggEndExtrication(1);
         }
     };
     
