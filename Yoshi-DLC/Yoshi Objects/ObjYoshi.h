@@ -1,4 +1,7 @@
 #pragma once
+#include <random>
+
+inline static const char* Y_ANIM_NAME[] = { "RESULT1", "RESULT2", "RESULT3", "RESULT4", "RESULT5", "RESULT6" };
 
 namespace app
 {
@@ -6,6 +9,7 @@ namespace app
     {
         STATE_RELEASE,
         STATE_POSE,
+        STATE_END
     };
 
     class ObjYoshiInfo : public CObjInfo
@@ -14,7 +18,7 @@ namespace app
         int Models[4]{};
         int Skeleton{};
         animation::AnimationResContainer AnimationContainer{};
-        int field_60[12]{};
+        std::vector<int> AnimationID{};
         int TexSrtAnimContainer[24]{};
 
         ObjYoshiInfo()
@@ -68,7 +72,7 @@ namespace app
                 animation::AnimationResContainer::LoadFromBuffer(&AnimationContainer, animationScript, packFile);
 
             for (size_t i = 0; i < 12; i++)
-                field_60[i] = i % 6;
+                AnimationID.push_back(i % 6);
 
             for (size_t i = 0; i < 24; i++)
                 ObjUtil::GetTexSrtAnimationResource(&TexSrtAnimContainer[i], texSrtAnimNames[i], packFile);
@@ -133,7 +137,7 @@ namespace app
         int field_3A8{};
         int field_3AC{};
         int field_3B0{};
-        float field_3B4{};
+        float Time{};
         float field_3B8{};
         char field_3BC{};
         char IsGrounded{};
@@ -156,9 +160,6 @@ namespace app
             fnd::GOComponent::Create(this, GOCEffect);
             fnd::GOComponent::Create(this, GOCSound);
             fnd::GOComponent::Create(this, GOCMovementComplex);
-
-            if (IsConsistentShadow)
-                fnd::GOComponent::Create(this, GOCShadowSimple);
 
             ObjYoshiInfo* info = (ObjYoshiInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjYoshiInfo");
 
@@ -192,7 +193,7 @@ namespace app
                 fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
 
                 csl::math::Vector3 scale{ 0.55f, 0.55f, 0.55f };
-                csl::math::Vector3 localPos { 0, -3.5f, 0 };
+                csl::math::Vector3 localPos { 0, -3, 0 };
                 fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
                 fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, &localPos);
 
@@ -259,20 +260,6 @@ namespace app
                 *(csl::math::Vector3*)(contextParam + 8) = negXRot;
             }
 
-            int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
-            if (gocShadow)
-            {
-                csl::math::Vector3 position{ 0, 5.0f, 0 };
-                game::ShadowHemisphereShapeCInfo shadowInfo;
-
-                game::ShadowHemisphereShapeCInfo::__ct(&shadowInfo, 3);
-                    shadowInfo.field_04 = 6;
-
-                game::ShadowHemisphereShapeCInfo* ppShadowInfo = &shadowInfo;
-                game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
-                game::GOCShadowSimple::SetLocalOffsetPosition(gocShadow, &position);
-            }
-
             game::GOCEffect::SimpleSetup(this);
             game::GOCSound::SimpleSetup(this, 0, 0);
             game::GOCGravity::SimpleSetup(this, 1);
@@ -311,41 +298,31 @@ namespace app
             if (!IsGrounded)
                 return;
 
-            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
-            if (!gocVisual)
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
                 return;
 
+            Eigen::Quaternion<float> q;
             csl::math::Quaternion rotation{};
             field_3B8 = csl::math::Min(updateInfo.deltaTime * 6.28319f + field_3B8, 1.5708f);
-            if (!(Index & 1))
-            {
-                Eigen::Quaternion<float> q;
+            if (Index & 1)
                 q = Eigen::AngleAxis<float>(-1 * field_3B8, Eigen::Vector3f(0, 1, 0));
-                Eigen::Quaternion<float> q2(Rotation.X, Rotation.Y, Rotation.Z, Rotation.W);
-                rotation = csl::math::Quaternion(q.x(), q.y(), q.z(), q.w());
-            }
             else
-            {
-                Eigen::Quaternion<float> q;
                 q = Eigen::AngleAxis<float>(1 * field_3B8, Eigen::Vector3f(0, 1, 0));
-                Eigen::Quaternion<float> q2(Rotation.X, Rotation.Y, Rotation.Z, Rotation.W);
-                rotation = csl::math::Quaternion(q.x(), q.y(), q.z(), q.w());
-            }
 
-            fnd::GOCVisualTransformed::SetLocalRotation(gocVisual, &rotation);
+            rotation = csl::math::Quaternion(q.x(), q.y(), q.z(), q.w());
+            fnd::GOCTransform::SetLocalRotation(gocTransform, &rotation);
         }
 
         void StateRelease(const fnd::SUpdateInfo& updateInfo)
         {
             UpdateModelPosture(updateInfo);
-            if (field_3BC)
+
+            if (IsGrounded)
             {
                 State = ObjYoshiState::STATE_POSE;
                 return;
             }
-        
-            if (IsGrounded)
-                return;
 
             int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
             if (!gocTransform)
@@ -379,7 +356,22 @@ namespace app
 
         void StatePose(const fnd::SUpdateInfo& updateInfo)
         {
+            UpdateModelPosture(updateInfo);
 
+            ObjYoshiInfo* info = (ObjYoshiInfo*)ObjUtil::GetObjectInfo((GameDocument*)field_24[1], "ObjYoshiInfo");
+            
+            std::random_device rd;
+            std::mt19937 g(rd());
+
+            std::shuffle(info->AnimationID.begin(), info->AnimationID.end(), g);
+
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
+            if (gocAnimation)
+                game::GOCAnimationScript::ChangeAnimation(gocAnimation, Y_ANIM_NAME[info->AnimationID[Index % 12]]);
+
+            Time = 0;
+
+            State = ObjYoshiState::STATE_END;
         }
     };
 }
