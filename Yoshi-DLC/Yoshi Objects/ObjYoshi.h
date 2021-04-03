@@ -1,7 +1,10 @@
 #pragma once
 #include <random>
 
-inline static const char* Y_ANIM_NAME[] = { "RESULT1", "RESULT2", "RESULT3", "RESULT4", "RESULT5", "RESULT6" };
+inline static const char* Y_ANIM_STATE[] = { "RESULT1", "RESULT2", "RESULT3", "RESULT4", "RESULT5", "RESULT6" };
+inline static const char* Y_ANIM_NAME[] = { "RESULT1_START", "RESULT1_LOOP", "RESULT2_START", "RESULT2_LOOP",
+                                            "RESULT3_START", "RESULT3_LOOP", "RESULT4_START", "RESULT4_LOOP",
+                                            "RESULT5_START", "RESULT5_LOOP", "RESULT6_START", "RESULT6_LOOP" };
 
 namespace app
 {
@@ -107,6 +110,21 @@ namespace app
             }
         };
 
+        class BoundListener : public game::MoveBound::Listener
+        {
+        public:
+            int field_00;
+            void* object;
+
+            void OnBound(csl::math::Plane& const a1) override
+            {
+                if (!object)
+                    return;
+
+                ((ObjYoshi*)object)->OnBoundCallback();
+            }
+        };
+
         INSERT_PADDING(16);
         ObjYoshiState State{};
         int field_32C{};
@@ -124,19 +142,8 @@ namespace app
         int field_374{};
         int field_378{};
         int field_37C{};
-        ObjYoshi* Instance{};
-        int field_384{};
-        int field_388{};
-        int field_38C{};
-        int field_390{};
-        int field_394{};
-        int field_398{};
-        int field_39C{};
-        int field_3A0{};
-        int field_3A4{};
-        int field_3A8{};
-        int field_3AC{};
-        int field_3B0{};
+        BoundListener BoundListener;
+        EnemyUvAnimLinkController::Description UvLinkController{};
         float Time{};
         float field_3B8{};
         char field_3BC{};
@@ -150,6 +157,8 @@ namespace app
             Position = info.Position;
             Rotation = info.Rotation;
             Index = info.Index;
+
+            EnemyUvAnimLinkController::EnemyUvAnimLinkController(&UvLinkController);
         }
 
         void AddCallback(GameDocument* gameDocument) override
@@ -208,6 +217,15 @@ namespace app
                 }
             }
 
+            /*csl::fnd::IAllocator* pAllocator = GetAllocator();
+            EnemyUvAnimLinkController::UvBase uvBase{};
+            uvBase.UVVector = csl::math::Vector3(12, 2, 0);
+            GameObjectHandleBase::__ct(uvBase.field_10, this);
+            EnemyUvAnimLinkController::Setup(&UvLinkController, &uvBase, pAllocator);
+            for (size_t i = 0; i < 12; i++)
+                for (size_t j = 0; j < 2; j++)
+                    EnemyUvAnimLinkController::Add(&UvLinkController, &info->TexSrtAnimContainer[2 * i + j], Y_ANIM_NAME[i], 0);*/
+
             int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
             if (gocMovement)
             {
@@ -237,7 +255,7 @@ namespace app
                 game::MoveBound* movement = new game::MoveBound();
                 game::GOCMovement::SetupController(gocMovement, movement);
 
-                game::MoveBound::Desc description{};
+                game::MoveBound::Description description{};
                 description.field_00 = negXRot;
                 description.field_10 = 3;
                 description.field_14 = 300;
@@ -254,7 +272,8 @@ namespace app
                 description.field_48 |= 1;
 
                 game::MoveBound::Setup(movement, &description);
-                Instance = this;
+                BoundListener.object = this;
+                movement->ResetListener(&BoundListener);
 
                 int* contextParam = game::GOCMovement::GetContextParam(gocMovement);
                 *(csl::math::Vector3*)(contextParam + 8) = negXRot;
@@ -292,6 +311,26 @@ namespace app
             return result;
         }
 
+        void OnBoundCallback()
+        {
+            field_3BC = 1;
+
+            int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
+            if (!gocMovement)
+                return;
+
+            game::GOCMovement::DisableMovementFlag(gocMovement, false);
+            if (IsGrounded)
+                return;
+
+            IsGrounded = 1;
+
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
+            if (!gocAnimation)
+                return;
+
+            game::GOCAnimationScript::ExitLoopSeqInsideAnimation(gocAnimation);
+        }
     private:
         void UpdateModelPosture(const fnd::SUpdateInfo& updateInfo)
         {
@@ -367,7 +406,7 @@ namespace app
 
             int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
             if (gocAnimation)
-                game::GOCAnimationScript::ChangeAnimation(gocAnimation, Y_ANIM_NAME[info->AnimationID[Index % 12]]);
+                game::GOCAnimationScript::ChangeAnimation(gocAnimation, Y_ANIM_STATE[info->AnimationID[Index % 12]]);
 
             Time = 0;
 

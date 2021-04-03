@@ -7,7 +7,7 @@ namespace app
         class alignas(16) MoveBound : public MoveController
         {
         public:
-            struct Desc
+            struct Description
             {
                 csl::math::Vector3 field_00;
                 float field_10;
@@ -34,29 +34,31 @@ namespace app
             int field_24;
             int field_28;
             int field_2C;
-            Desc Description;
+            Description Descriptor;
             int field_80;
             int field_84;
             int field_88;
             int field_8C;
 
-        private:
-            inline static FUNCTION_PTR(int, __thiscall, f_Update, ASLR(0x004C5E40), MoveController* This, const fnd::SUpdateInfo& updateInfo);
-            inline static FUNCTION_PTR(int, __thiscall, f_OnEnter, ASLR(0x004C5E20), MoveController* This);
-            inline static FUNCTION_PTR(MoveBound*, __thiscall, __dt, ASLR(0x004C5400), MoveBound* This, int a2);
-            inline static FUNCTION_PTR(MoveBound*, __thiscall, __ct, ASLR(0x004C5860), MoveBound* This);
-
-        public:
             class Listener
             {
             protected:
                 virtual void OnBound(csl::math::Plane& const a1) {};
             };
 
-            inline static FUNCTION_PTR(void, __thiscall, Setup, ASLR(0x004C5930), MoveBound* This, Desc* a2);
-            inline static FUNCTION_PTR(void, __thiscall, ResetListener, ASLR(0x004C53A0), MoveBound* This, Listener* a2);
-            
+        private:
+            inline static FUNCTION_PTR(int, __thiscall, f_Update, ASLR(0x004C5E40), MoveController* This, const fnd::SUpdateInfo& updateInfo);
+            inline static FUNCTION_PTR(int, __thiscall, f_OnEnter, ASLR(0x004C5E20), MoveController* This);
+            inline static FUNCTION_PTR(MoveBound*, __thiscall, __dt, ASLR(0x004C5400), MoveBound* This, int a2);
+            inline static FUNCTION_PTR(MoveBound*, __thiscall, __ct, ASLR(0x004C5860), MoveBound* This);
+            inline static FUNCTION_PTR(void, __thiscall, f_ResetListener, ASLR(0x004C53A0), MoveBound* This, Listener* a2);
+
+        protected:
             void* GetRuntimeTypeInfo() override { return (void*)ASLR(0x00F6BDAC); }
+
+        public:
+            inline static FUNCTION_PTR(void, __thiscall, Setup, ASLR(0x004C5930), MoveBound* This, Description* a2);
+
             int Update(const fnd::SUpdateInfo& updateInfo) override
             {
                 return f_Update(this, updateInfo);
@@ -71,6 +73,11 @@ namespace app
             MoveBound()
             {
                 __ct(this);
+            }
+
+            void ResetListener(Listener* a2)
+            {
+                f_ResetListener(this, a2);
             }
         };
     }

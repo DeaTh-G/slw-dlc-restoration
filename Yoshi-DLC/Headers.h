@@ -140,11 +140,11 @@
 
 #include "Helpers.h"
 
+#include "app/EnemyUvAnimLinkController.h"
 #include "app/CObjOneUp.h"
 #include "app/Objects/CSharedObjInfo.h"
 #include "app/Objects/EnemyBlowOffObject.h"
 #include "app/Objects/CObjDroppedRing.h"
-
 
 // Yoshi Objects
 #include "app/egg.h"

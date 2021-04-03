@@ -195,7 +195,7 @@ namespace app
             {
                 game::GOCMovement::SetupController(gocMovement, Movement);
 
-                game::MoveBound::Desc description{};
+                game::MoveBound::Description description{};
                 description.field_00 = CInfo->field_40;
                 description.field_10 = 3;
                 description.field_14 = 300;
