@@ -480,7 +480,7 @@ namespace app
             }
 
             csl::math::Vector3 objectPosition = *(csl::math::Vector3*)(gocTransform + 0x50);
-            ObjYoshi::CInfo* yoshiInfo = new ObjYoshi::CInfo(ModelType, &objectPosition, &rotation, Index);
+            ObjYoshi::CInfo* yoshiInfo = new ObjYoshi::CInfo(ModelType, PlayerNo, &objectPosition, &rotation, Index);
             ObjYoshi::Create(*(GameDocument*)field_24[1], *yoshiInfo);
         }
 

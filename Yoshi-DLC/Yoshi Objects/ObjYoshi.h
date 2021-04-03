@@ -94,16 +94,17 @@ namespace app
         {
         public:
             int ModelType{};
-            int field_04{};
+            int PlayerNo{};
             int field_08{};
             int field_0C{};
             csl::math::Vector3 Position{ 0, 0, 0 };
             csl::math::Quaternion Rotation{ 0, 0, 0, 1 };
             int Index{};
 
-            CInfo(int type, csl::math::Vector3* position, csl::math::Quaternion* rotation, int index)
+            CInfo(int type, int playerNo, csl::math::Vector3* position, csl::math::Quaternion* rotation, int index)
             {
                 ModelType = type;
+                PlayerNo = playerNo;
                 Position = *position;
                 Rotation = *rotation;
                 Index = index;
@@ -133,7 +134,7 @@ namespace app
         int field_338{};
         int field_33C{};
         int Type{};
-        int field_344{};
+        int PlayerNo{};
         int field_348{};
         int field_34C{};
         csl::math::Vector3 Position;
@@ -154,6 +155,7 @@ namespace app
         ObjYoshi(const CInfo& info)
         {
             Type = info.ModelType;
+            PlayerNo = info.PlayerNo;
             Position = info.Position;
             Rotation = info.Rotation;
             Index = info.Index;
@@ -332,6 +334,23 @@ namespace app
             game::GOCAnimationScript::ExitLoopSeqInsideAnimation(gocAnimation);
         }
     private:
+        void PopupOneup()
+        {
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            csl::math::Matrix34 matrix = *(csl::math::Matrix34*)(gocTransform + 0x44);
+            csl::math::Vector3 translation{};
+            csl::math::Quaternion rotation{};
+
+            math::CalculatedTransform::GetTranslation(&matrix, &translation);
+            math::CalculatedTransform::GetQuaternionRotation(&matrix, &rotation);
+
+            ObjYoshiOneUp::CInfo* oneUpInfo = new ObjYoshiOneUp::CInfo(PlayerNo, translation, rotation);
+            ObjYoshiOneUp::Create(*(GameDocument*)field_24[1], *oneUpInfo);
+        }
+
         void UpdateModelPosture(const fnd::SUpdateInfo& updateInfo)
         {
             if (!IsGrounded)
@@ -409,6 +428,7 @@ namespace app
                 game::GOCAnimationScript::ChangeAnimation(gocAnimation, Y_ANIM_STATE[info->AnimationID[Index % 12]]);
 
             Time = 0;
+            PopupOneup();
 
             State = ObjYoshiState::STATE_END;
         }
