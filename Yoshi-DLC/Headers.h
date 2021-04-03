@@ -87,6 +87,7 @@
 #include "app/game/PathEvaluator.h"
 #include "app/game/MoveController.h"
 #include "app/game/MoveBound.h"
+#include "app/game/MovePopup.h"
 #include "app/GameMode.h"
 #include "app/GameModeStage.h"
 #include "app/GOCEnemyTarget.h"

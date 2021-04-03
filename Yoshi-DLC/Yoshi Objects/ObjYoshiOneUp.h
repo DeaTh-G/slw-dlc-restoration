@@ -85,6 +85,22 @@ namespace app
                 }
             }
 
+            int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
+            if (gocMovement)
+            {
+                game::MovePopup* movement = new game::MovePopup();
+                game::GOCMovement::SetupController(gocMovement, movement);
+
+                game::MovePopup::Description description{};
+                description.field_00 = 10;
+                description.field_04 = 20;
+                description.field_08 = 11;
+                description.field_0C |= 1;
+
+                movement->Setup(&description);
+                movement->SetBaseTransform(&Info->Position, &Info->Rotation);
+            }
+
             game::GOCEffect::SimpleSetup(this);
             game::GOCSound::SimpleSetup(this, 0, 0);
 
@@ -108,7 +124,7 @@ namespace app
             if (!controller || controller[19] < 0.5f)
                 return;
             
-            xgame::MsgTakeObject takeMessage{ 16 };
+            xgame::MsgTakeObject takeMessage{ 3 };
             ObjUtil::SendMessageImmToPlayer(this, PlayerNo, &takeMessage);
             if (takeMessage.field_20)
                 ObjUtil::AddScorePlayerAction(this, "GET_ONE_UP", PlayerNo);

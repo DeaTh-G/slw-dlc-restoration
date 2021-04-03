@@ -143,8 +143,8 @@ namespace app
         int field_374{};
         int field_378{};
         int field_37C{};
-        BoundListener BoundListener;
-        EnemyUvAnimLinkController::Description UvLinkController{};
+        BoundListener BoundListener{};
+        EnemyUvAnimLinkController UvLinkController{};
         float Time{};
         float field_3B8{};
         char field_3BC{};
@@ -159,8 +159,6 @@ namespace app
             Position = info.Position;
             Rotation = info.Rotation;
             Index = info.Index;
-
-            EnemyUvAnimLinkController::EnemyUvAnimLinkController(&UvLinkController);
         }
 
         void AddCallback(GameDocument* gameDocument) override
@@ -219,16 +217,15 @@ namespace app
                 }
             }
 
-            /*csl::fnd::IAllocator* pAllocator = GetAllocator();
-            EnemyUvAnimLinkController::UvBase uvBase{};
-            uvBase.UVVector = csl::math::Vector3(12, 2, 0);
-            GameObjectHandleBase::__ct(uvBase.field_10, this);
-            EnemyUvAnimLinkController::Setup(&UvLinkController, &uvBase, pAllocator);
+            csl::fnd::IAllocator* pAllocator = GetAllocator();
+            EnemyUvAnimLinkController::Description description { 12, 2 };
+            GameObjectHandleBase::__ct(description.field_0C, this);
+            UvLinkController.Setup(description, pAllocator);
             for (size_t i = 0; i < 12; i++)
                 for (size_t j = 0; j < 2; j++)
-                    EnemyUvAnimLinkController::Add(&UvLinkController, &info->TexSrtAnimContainer[2 * i + j], Y_ANIM_NAME[i], 0);*/
+                    UvLinkController.Add((int*)info->TexSrtAnimContainer[2 * i + j], Y_ANIM_NAME[i], 0);
 
-            int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
+            int* gocMovement = GameObject::GetGOC (this, GOCMovementString);
             if (gocMovement)
             {
                 unsigned int random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
@@ -360,15 +357,7 @@ namespace app
             if (!gocTransform)
                 return;
 
-            Eigen::Quaternion<float> q;
-            csl::math::Quaternion rotation{};
-            field_3B8 = csl::math::Min(updateInfo.deltaTime * 6.28319f + field_3B8, 1.5708f);
-            if (Index & 1)
-                q = Eigen::AngleAxis<float>(-1 * field_3B8, Eigen::Vector3f(0, 1, 0));
-            else
-                q = Eigen::AngleAxis<float>(1 * field_3B8, Eigen::Vector3f(0, 1, 0));
-
-            rotation = csl::math::Quaternion(q.x(), q.y(), q.z(), q.w());
+            csl::math::Quaternion rotation { 0, 0, 0, 1 };
             fnd::GOCTransform::SetLocalRotation(gocTransform, &rotation);
         }
 
@@ -376,7 +365,7 @@ namespace app
         {
             UpdateModelPosture(updateInfo);
 
-            if (IsGrounded)
+            if (field_3BC)
             {
                 State = ObjYoshiState::STATE_POSE;
                 return;
@@ -414,23 +403,32 @@ namespace app
 
         void StatePose(const fnd::SUpdateInfo& updateInfo)
         {
-            UpdateModelPosture(updateInfo);
+            if (!Time)
+            {
+                UpdateModelPosture(updateInfo);
 
-            ObjYoshiInfo* info = (ObjYoshiInfo*)ObjUtil::GetObjectInfo((GameDocument*)field_24[1], "ObjYoshiInfo");
-            
-            std::random_device rd;
-            std::mt19937 g(rd());
+                ObjYoshiInfo* info = (ObjYoshiInfo*)ObjUtil::GetObjectInfo((GameDocument*)field_24[1], "ObjYoshiInfo");
 
-            std::shuffle(info->AnimationID.begin(), info->AnimationID.end(), g);
+                std::random_device rd;
+                std::mt19937 g(rd());
 
-            int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
-            if (gocAnimation)
-                game::GOCAnimationScript::ChangeAnimation(gocAnimation, Y_ANIM_STATE[info->AnimationID[Index % 12]]);
+                std::shuffle(info->AnimationID.begin(), info->AnimationID.end(), g);
 
-            Time = 0;
-            PopupOneup();
+                int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
+                if (gocAnimation)
+                    game::GOCAnimationScript::ChangeAnimation(gocAnimation, Y_ANIM_STATE[info->AnimationID[Index % 12]]);
 
-            State = ObjYoshiState::STATE_END;
+                PopupOneup();
+            }
+
+            if (Time > 1 && Time <= (1 + updateInfo.deltaTime))
+                PopupOneup();
+            else if (Time > 2 && Time <= (2 + updateInfo.deltaTime))
+                PopupOneup();
+            else if (Time > (2 + updateInfo.deltaTime))
+                State = ObjYoshiState::STATE_END;
+
+            Time += updateInfo.deltaTime;
         }
     };
 }
