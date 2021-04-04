@@ -67,7 +67,6 @@ namespace app
             ~MoveBound() override
             {
                 __dt(this, 0);
-                FORCE_RET;
             }
 
             MoveBound()

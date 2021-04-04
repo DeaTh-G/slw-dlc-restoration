@@ -26,7 +26,6 @@ namespace app
             virtual ~MoveController()
             {
                 __dt(this, 0);
-                FORCE_RET;
             }
         };
     }

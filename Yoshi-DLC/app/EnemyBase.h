@@ -23,10 +23,9 @@ namespace app
         INSERT_PADDING(32);
 
         EnemyBase() { __ct(this); }
-        ~EnemyBase() override
+        void Destructor(size_t deletingFlags) override
         {
-            __dt(this, 0);
-            FORCE_RET;
+            __dt(this, deletingFlags);
         }
     };
 }

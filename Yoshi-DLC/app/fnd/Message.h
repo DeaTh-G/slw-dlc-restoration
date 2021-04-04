@@ -442,7 +442,6 @@ namespace app
             virtual ~Message()
             {
                 __dt(this, 0);
-                FORCE_RET;
             }
 
             Message()

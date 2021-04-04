@@ -26,10 +26,9 @@ namespace app
 
     public:
         CSetObjectListener() { __ct(this); }
-        ~CSetObjectListener() override
+        void Destructor(size_t deletingFlags) override
         {
-            __dt(this, 0);
-            FORCE_RET;
+            __dt(this, deletingFlags);
         }
 
         virtual unsigned int GetAbsordGuidePathID() { return 0; }

@@ -46,7 +46,6 @@ namespace app
             ~MovePopup() override
             {
                 __dt(this, 0);
-                FORCE_RET;
             }
 
             MovePopup()

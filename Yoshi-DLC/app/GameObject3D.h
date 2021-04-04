@@ -19,10 +19,9 @@ namespace app
             __ct(this);
         }
 
-        ~GameObject3D() override
+        void Destructor(size_t deletingFlags) override
         {
-            __dt(this, 0);
-            FORCE_RET;
+            __dt(this, deletingFlags);
         }
 
         bool ProcessMessage(fnd::Message& message) override { return f_ProcessMessage(this, message); }

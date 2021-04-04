@@ -8,7 +8,7 @@ namespace app
         inline static FUNCTION_PTR(bool, __thiscall, f_ActorProc, ASLR(0x0049D0A0), CActor* This, int id, void* data);
         inline static FUNCTION_PTR(bool, __thiscall, f_ProcessMessage, ASLR(0x0049CD10), CActor* This, fnd::Message& message);
         inline static FUNCTION_PTR(void, __thiscall, __ct, ASLR(0x0049CD60), GameObject* This);
-        inline static FUNCTION_PTR(void, __thiscall, __dt, ASLR(0x0049CE70), GameObject* This);
+        inline static FUNCTION_PTR(void, __thiscall, __dt, ASLR(0x0049D070), GameObject* This, size_t flags);
 
     public:
         inline static FUNCTION_PTR(GameObject*, __cdecl, New, ASLR(0x0049CAD0), size_t size);
@@ -29,10 +29,9 @@ namespace app
             __ct(this);
         }
 
-        ~GameObject() override
+        void Destructor(size_t deletingFlags) override
         {
-            __dt(this);
-            FORCE_RET;
+            __dt(this, deletingFlags);
         }
 
         virtual void AddCallback(GameDocument* gameDocument) {};

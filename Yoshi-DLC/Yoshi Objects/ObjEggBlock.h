@@ -93,89 +93,87 @@ namespace app
         {
             int* handle = fnd::Handle::Get(&message.field_18);
             int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
-            if (State != STATE_DAMAGE && handle && gocTransform)
+            if (State == STATE_DAMAGE || !handle || !gocTransform)
+                return;
+
+            csl::math::Matrix34 m = *(csl::math::Matrix34*)(gocTransform + 0x44);
+            Eigen::MatrixXf transformMatrix(4, 4);
+            for (size_t i = 0; i < 4; i++)
+                for (size_t j = 0; j < 4; j++)
+                    transformMatrix(i, j) = m.data[i][j];
+            transformMatrix = transformMatrix.inverse();
+
+            csl::math::Vector3 inversePosition{ transformMatrix(3,0), transformMatrix(3,1), transformMatrix(3,2) };
+
+            int playerNo = ObjUtil::GetPlayerNo(field_24[1], message.field_08);
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], playerNo);
+            if (!playerInfo)
+                return;
+
+            csl::math::Vector3 playerPosition = *(csl::math::Vector3*)(playerInfo + 0x3C);
+            auto locPos = (transformMatrix.transpose() *
+                Eigen::Vector4f(playerPosition.X, playerPosition.Y, playerPosition.Z, 1)).head<3>();
+            csl::math::Vector3 localPosition{ locPos.x(), locPos.y(), locPos.z() };
+
+            csl::math::Vector3 somePos = *(csl::math::Vector3*)(playerInfo + 0xC);
+            auto invPos = (transformMatrix.transpose() *
+                Eigen::Vector4f(somePos.X, somePos.Y, somePos.Z, 1)).head<3>();
+            inversePosition = Vector3(invPos.x(), invPos.y(), invPos.z());
+
+            if (!math::Vector3NormalizeIfNotZero(&inversePosition, &inversePosition))
+                return;
+
+            csl::math::Vector3 downVec = csl::math::Vector3(0, -1, 0);
+            if (*(handle + 0x2F) &&
+                localPosition.Y > 9 &&
+                math::Vector3DotProduct(&inversePosition, &downVec) >= 0 &&
+                AttackType::IsDamaged(message.AttackType, 0xA))
             {
-                csl::math::Matrix34 m = *(csl::math::Matrix34*)(gocTransform + 0x44);
-                Eigen::MatrixXf transformMatrix(4, 4);
-                for (size_t i = 0; i < 4; i++)
-                    for (size_t j = 0; j < 4; j++)
-                        transformMatrix(i, j) = m.data[i][j];
-                transformMatrix = transformMatrix.inverse();
+                DamageMotor = InitMotorParam(0.80000001f, 0, 0);
+                EggParam = InitPopEggParam(downVec, -5);
 
-                csl::math::Vector3 inversePosition{ transformMatrix(3,0), transformMatrix(3,1), transformMatrix(3,2) };
-
-                //inversePosition.Y *= 2.8f;
-
-                int playerNo = ObjUtil::GetPlayerNo(field_24[1], message.field_08);
-                int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], playerNo);
-                if (playerInfo)
+                int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+                if (gocSound)
                 {
-                    csl::math::Vector3 playerPosition = *(csl::math::Vector3*)(playerInfo + 0x3C);
-                    auto locPos = (transformMatrix.transpose() *
-                        Eigen::Vector4f(playerPosition.X, playerPosition.Y, playerPosition.Z, 1)).head<3>();
-                    csl::math::Vector3 localPosition { locPos.x(), locPos.y(), locPos.z() };
+                    csl::math::Vector3 translation{};
+                    int deviceTag[3];
 
-                    csl::math::Vector3 somePos = *(csl::math::Vector3*)(playerInfo + 0xC);
-                    auto invPos = (transformMatrix.transpose() *
-                        Eigen::Vector4f(somePos.X, somePos.Y, somePos.Z, 1)).head<3>();
-                    inversePosition = Vector3(invPos.x(), invPos.y(), invPos.z());
-
-                    if (math::Vector3NormalizeIfNotZero(&inversePosition, &inversePosition))
-                    {
-                        csl::math::Vector3 downVec = csl::math::Vector3(0, -1, 0);
-                        if (*(handle + 0x2F) &&
-                            localPosition.Y > 9 &&
-                            math::Vector3DotProduct(&inversePosition, &downVec) >= 0 &&
-                            AttackType::IsDamaged(message.AttackType, 0xA))
-                        {
-                            DamageMotor = InitMotorParam(0.80000001f, 0, 0);
-                            EggParam = InitPopEggParam(downVec, -5);
-
-                            int* gocSound = GameObject::GetGOC(this, GOCSoundString);
-                            if (gocSound)
-                            {
-                                csl::math::Vector3 translation{};
-                                int deviceTag[3];
-
-                                game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggblock_hit", 0);
-                                math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
-                                xgame::MsgDamage::SetReply(&message, &translation, 0);
-                                State = STATE_DAMAGE;
-                            }
-                        }
-                        else if (!*(handle + 0x2F) &&
-                            localPosition.Y < 0 &&
-                            (message.AttackType & 0x20 || message.AttackType & 0x40))
-                        {
-                            if (math::Vector3NormalizeIfNotZero(&localPosition, &localPosition)
-                                && acosf(math::Vector3DotProduct(&localPosition, &localPosition)) < 1.3962634f)
-                            {
-                                csl::math::Vector3 crossVector{};
-                                csl::math::Vector3 upVec = csl::math::Vector3(0, 1, 0);
-                                math::Vector3CrossProduct(&upVec, &localPosition, &crossVector);
-                                if (math::Vector3NormalizeIfNotZero(&crossVector, &crossVector))
-                                {
-                                    csl::math::Vector3 zVector{ 0, 0, 1 };
-
-                                    DamageMotor = InitMotorParam(1, -math::Vector3DotProduct(&zVector, &crossVector), 30);
-                                    EggParam = InitPopEggParam(upVec, 10);
-
-                                    int* gocSound = GameObject::GetGOC(this, GOCSoundString);
-                                    if (gocSound)
-                                    {
-                                        csl::math::Vector3 translation{};
-                                        int deviceTag[3];
-
-                                        game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggblock_hit", 0);
-                                        math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
-                                        xgame::MsgDamage::SetReply(&message, &translation, 0);
-                                        State = STATE_DAMAGE;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggblock_hit", 0);
+                    math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
+                    xgame::MsgDamage::SetReply(&message, &translation, 0);
+                    State = STATE_DAMAGE;
                 }
+            }
+            else if (!*(handle + 0x2F) &&
+                localPosition.Y < 0 &&
+                (message.AttackType & 0x20 || message.AttackType & 0x40))
+            {
+                if (!math::Vector3NormalizeIfNotZero(&localPosition, &localPosition)
+                    || acosf(math::Vector3DotProduct(&localPosition, &localPosition)) >= 1.3962634f)
+                    return;
+
+                csl::math::Vector3 crossVector{};
+                csl::math::Vector3 upVec = csl::math::Vector3(0, 1, 0);
+                math::Vector3CrossProduct(&upVec, &localPosition, &crossVector);
+                if (!math::Vector3NormalizeIfNotZero(&crossVector, &crossVector))
+                    return;
+
+                csl::math::Vector3 zVector{ 0, 0, 1 };
+
+                DamageMotor = InitMotorParam(1, -math::Vector3DotProduct(&zVector, &crossVector), 30);
+                EggParam = InitPopEggParam(upVec, 10);
+
+                int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+                if (!gocSound)
+                    return;
+
+                csl::math::Vector3 translation{};
+                int deviceTag[3];
+
+                game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggblock_hit", 0);
+                math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
+                xgame::MsgDamage::SetReply(&message, &translation, 0);
+                State = STATE_DAMAGE;
             }
         }
 

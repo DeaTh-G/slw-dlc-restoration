@@ -23,7 +23,6 @@ namespace app
             virtual ~CActor()
             {
                 __dt(this);
-                FORCE_RET;
             }
 
             char SendMessageImm(int actorID, fnd::Message* msg)
