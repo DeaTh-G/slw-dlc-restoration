@@ -484,7 +484,6 @@ namespace app
                     csl::math::Vector3 rotX = *(csl::math::Vector3*)&center->Transform.data[1][0];
                     csl::math::Vector3 rotY = *(csl::math::Vector3*)&center->Transform.data[2][0];
 
-                    // Fix Rotation Issues in the 2nd Warp Area
                     math::Vector3Subtract(&playerPos, &objectPos, &playerPos);
                     csl::math::Vector3NormalizeZero(&playerPos, &playerPos);
                     float xDot = math::Vector3DotProduct(&rotX, &playerPos);
