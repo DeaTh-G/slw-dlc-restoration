@@ -317,8 +317,8 @@ namespace app
                 game::CollisionObjCInfo::__ct(&collisionInfo);
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_BOX;
                 collisionInfo.MotionType = 2;
-                collisionInfo.Size = csl::math::Vector3(5, 0.65f, 5);
-                collisionOffset = csl::math::Vector3(0, 0.65f, 0);
+                collisionInfo.Size = csl::math::Vector3(5, 2.65f, 5);
+                collisionOffset = csl::math::Vector3(0, 1.45f, 0);
                 game::CollisionObjCInfo::SetLocalPosition(&collisionInfo, &collisionOffset);
                 ObjUtil::SetupCollisionFilter(0, &collisionInfo);
                 collisionInfo.field_0C = 0;
