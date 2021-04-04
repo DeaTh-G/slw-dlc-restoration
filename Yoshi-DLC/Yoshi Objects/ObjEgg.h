@@ -72,7 +72,10 @@ namespace app
         {
             CInfo = cInfo;
             ModelType = cInfo->ModelType;
-            PlayerNo = cInfo->PlayerNo;
+            if (cInfo->PlayerNo > 1)
+                PlayerNo = 0;
+            else
+                PlayerNo = cInfo->PlayerNo;
         }
 
         void AddCallback(GameDocument* gameDocument) override
@@ -272,7 +275,8 @@ namespace app
             if (!DoRotate)
             {
                 int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], playerNo);
-                csl::math::QuaternionNormalize(&normalizedPlayerRotation, (csl::math::Quaternion*)(playerInfo + 8));
+                if (playerInfo)
+                    csl::math::QuaternionNormalize(&normalizedPlayerRotation, (csl::math::Quaternion*)(playerInfo + 8));
             }
 
             int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
