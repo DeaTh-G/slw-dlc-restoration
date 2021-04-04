@@ -191,11 +191,12 @@ namespace app
                 fnd::GOCTransform::SetLocalRotation(gocTransform, &Rotation);
             }
 
-            int* gocVisual = fnd::GOComponent::CreateSingle(this, GOCVisualModel);
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
             if (gocVisual)
             {
                 fnd::GOCVisualModel::VisualDescription visualDescriptor{};
 
+                fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
                 visualDescriptor.Model = info->Models[Type];
                 visualDescriptor.Skeleton = info->Skeleton;
                 visualDescriptor.Animation |= 0x400000;
