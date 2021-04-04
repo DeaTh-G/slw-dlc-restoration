@@ -14,12 +14,6 @@ char IsYoshiIslandStage()
 
 void Initialize()
 {
-    //MessageBoxA(NULL, "AAAAAAAAAAAA", NULL, MB_OK);
-    WRITE_MEMORY(ASLR(0x0093F790), 0xB2, 0x1, 0x90);
-
-    /* Re-enable initialization of EggManager */
-    WRITE_MEMORY(ASLR(0x00E05B80), 0x64, 0xE7, 0xFE);
-
     /* TODO: Please replace this with sane code. */
     WRITE_MEMORY(ASLR(0x00D41252),
         0x68,

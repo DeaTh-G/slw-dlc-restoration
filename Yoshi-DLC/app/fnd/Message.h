@@ -342,6 +342,7 @@ namespace app
             PROC_MSG_POP_CAMERA_CONTROLLER						= 0x8006,
             PROC_MSG_CHANGE_PLAYER_CAMERA						= 0x8008,
             PROC_MSG_CAMERA_ON									= 0x8009,
+            PROC_MSG_CAMERA_OFF                                 = 0x800A,
             PROC_MSG_GET_CAMERA_DEFAULT_FOVY					= 0x800B,
             PROC_MSG_GET_CAMERA_FOVY							= 0x800C,
             PROC_MSG_CAMERA_BEGIN_QUICK_STEP					= 0x800F,

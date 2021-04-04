@@ -29,5 +29,5 @@ __declspec(naked) void GameModStageStateWarpMidAsmHook()
 
 void app::GameModeStage::StateWarp()
 {
-    WRITE_JUMP(0x0091805B, &GameModStageStateWarpMidAsmHook);
+    WRITE_JUMP(ASLR(0x0091805B), &GameModStageStateWarpMidAsmHook);
 }

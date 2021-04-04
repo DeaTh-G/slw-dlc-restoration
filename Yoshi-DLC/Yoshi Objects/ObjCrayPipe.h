@@ -23,7 +23,7 @@ namespace app
         xgame::MsgGetExternalMovePosition* ExternalMoveMessage = new xgame::MsgGetExternalMovePosition();
         xgame::MsgStayTrigger* StayMessage = new xgame::MsgStayTrigger();
         int PlayerNumber{};
-        int field_3B8{};
+        fnd::MessageType MessageType{};
         int field_3BC{};
         Matrix34 field_3C0;
         float field_400{};
@@ -81,6 +81,8 @@ namespace app
         {
             if (PreProcessMessage(message))
                 return true;
+
+            MessageType = message.Type;
             switch (message.Type)
             {
             case fnd::PROC_MSG_STAY_TRIGGER:
@@ -114,7 +116,7 @@ namespace app
 
         void StateIdle()
         {
-            if (State != ObjCrayPipeState::STATE_IDLE)
+            if (State != ObjCrayPipeState::STATE_IDLE || MessageType != fnd::PROC_MSG_STAY_TRIGGER)
                 return;
 
             int playerNo = ObjUtil::GetPlayerNo(field_24[1], StayMessage->field_20);
@@ -134,7 +136,10 @@ namespace app
             xgame::MsgPLGetInputButton buttonMessage{ direction, 1 };
             if (!ObjUtil::SendMessageImmToPlayer(this, playerNo, &buttonMessage)
                 || !buttonMessage.IsPressed)
+            {
+                MessageType = (fnd::MessageType)0;
                 return;
+            }
 
             xgame::MsgCatchPlayer catchMessage { 18 };
             if (ObjUtil::SendMessageImmToPlayer(this, playerNo, &catchMessage))

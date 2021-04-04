@@ -132,7 +132,7 @@ void app::EggManager::DoCheckClearAllEggEndExtrication(int playerNo)
 
         for (app::ObjEgg* egg : EggsP2)
             if (!egg->IsEndExtrication())
-                break;
+                return;
 
         for (app::ObjEgg* egg : EggsP2)
             GameObject::Kill(egg);

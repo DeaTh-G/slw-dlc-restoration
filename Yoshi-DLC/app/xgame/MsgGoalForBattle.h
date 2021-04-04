@@ -17,9 +17,11 @@ namespace app
                 Type = fnd::PROC_MSG_GOAL_FOR_BATTLE;
             }
             
-            MsgGoalForBattle(int winnerNo) : MsgGoalForBattle()
+            MsgGoalForBattle(int winnerNo, csl::math::Matrix34* matrixP1, csl::math::Matrix34* matrixP2) : MsgGoalForBattle()
             {
                 WinnerNumber = winnerNo;
+                MatrixP1 = *matrixP1;
+                MatrixP2 = *matrixP2;
             }
         };
     }

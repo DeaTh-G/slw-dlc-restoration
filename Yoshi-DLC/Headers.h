@@ -126,6 +126,7 @@
 #include "app/xgame/MsgDlcChangeEggRotation.h"
 #include "app/xgame/MsgPLJumpToTargetPosition.h"
 #include "app/xgame/MsgCameraOn.h"
+#include "app/xgame/MsgCameraOff.h"
 #include "app/xgame/MsgDisableItemBag.h"
 #include "app/xgame/MsgStopBgm.h"
 #include "app/xgame/MsgPlayerReachGoal.h"

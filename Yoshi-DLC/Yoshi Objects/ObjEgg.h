@@ -574,7 +574,7 @@ namespace app
         {
             int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
             int* gocGravity = GameObject::GetGOC(this, GOCGravityString);
-            if (!gocTransform && !gocGravity)
+            if (!gocTransform || !gocGravity)
             {
                 Kill(this);
                 return;

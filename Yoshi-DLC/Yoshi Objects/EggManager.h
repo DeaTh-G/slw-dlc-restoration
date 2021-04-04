@@ -37,7 +37,6 @@ namespace app
 
         bool IsLocusDataInGroundToAir(int playerNo)
         {
-            sizeof(EggManager);
             LocusData data{};
             bool IsInAir = 0;
             bool flag = 0;

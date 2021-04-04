@@ -193,6 +193,9 @@ namespace app
 
             if (State == ObjYoshiGoalState::STATE_WAIT_YOSHI_EXTRICATION)
                 StateWaitYoshiExtrication();
+
+            if (State == ObjYoshiGoalState::STATE_RESULT)
+                StateResult();
         }
 
     private:
@@ -434,8 +437,23 @@ namespace app
             int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 1);
             if (playerInfo)
             {
+                csl::math::Matrix34 matrixP1{};
+                *(csl::math::Vector3*)&matrixP1.data[0][0] = Vector3(1, 0, 0);
+                *(csl::math::Vector3*)&matrixP1.data[1][0] = Vector3(0, 1, 0);
+                *(csl::math::Vector3*)&matrixP1.data[2][0] = Vector3(0, 0, 1);
+                *(csl::math::Vector3*)&matrixP1.data[3][0] = Vector3(502.8f, 103, 0);
+
+                csl::math::Matrix34 matrixP2{};
+                *(csl::math::Vector3*)&matrixP2.data[0][0] = Vector3(1, 0, 0);
+                *(csl::math::Vector3*)&matrixP2.data[1][0] = Vector3(0, 1, 0);
+                *(csl::math::Vector3*)&matrixP2.data[2][0] = Vector3(0, 0, 1);
+                *(csl::math::Vector3*)&matrixP2.data[3][0] = Vector3(520.2f, 103, 0);
+
                 int playerNo = ObjUtil::GetPlayerNo(field_24[1], HitMessage->ActorID);
-                xgame::MsgGoalForBattle goalMessage { playerNo };
+                xgame::MsgCameraOff cameraMessage{ 0, 0, 1, playerNo, 1 };
+                ObjUtil::SendMessageImmToSetObject(this, &Camera, &cameraMessage, 0);
+
+                xgame::MsgGoalForBattle goalMessage { playerNo, &matrixP1, &matrixP2 };
                 SendMessageImm(*(int*)(field_24[1] + 0x10), &goalMessage);
             }
             else
@@ -443,7 +461,46 @@ namespace app
                 xgame::MsgPlayerReachGoal goalMessage{};
                 SendMessageImm(PlayerActorID, &goalMessage);
             }
-            State == ObjYoshiGoalState::STATE_RESULT;
+            State = ObjYoshiGoalState::STATE_RESULT;
+        }
+
+        void StateResult()
+        {
+            EggManager* eggManager = EggManager::GetService((GameDocument*)field_24[1]);
+            if (!eggManager)
+                return;
+
+            for (app::ObjEgg* egg : eggManager->EggsP1)
+            {
+                int* gocEffect = GameObject::GetGOC(egg, GOCEffectString);
+                if (gocEffect)
+                    game::GOCEffect::CreateEffect(gocEffect, "ef_dl2_yossi_birth");
+
+                int deviceTag[3];
+                int* gocSound = GameObject::GetGOC(egg, GOCSoundString);
+                if (gocSound)
+                    game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggitem_break", 0);
+
+                GameObject::Kill(egg);
+            }
+
+            eggManager->EggsP1.clear();
+
+            for (app::ObjEgg* egg : eggManager->EggsP2)
+            {
+                int* gocEffect = GameObject::GetGOC(egg, GOCEffectString);
+                if (gocEffect)
+                    game::GOCEffect::CreateEffect(gocEffect, "ef_dl2_yossi_birth");
+
+                int deviceTag[3];
+                int* gocSound = GameObject::GetGOC(egg, GOCSoundString);
+                if (gocSound)
+                    game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggitem_break", 0);
+
+                GameObject::Kill(egg);
+            }
+
+            eggManager->EggsP2.clear();
         }
     };
 
