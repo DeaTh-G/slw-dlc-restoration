@@ -237,6 +237,15 @@ namespace app
             if (!playerInfo)
                 return;
 
+            if (*((char*)playerInfo + 0x173))
+            {
+                HitMessage = new xgame::MsgHitEventCollision();
+                ExternalMoveMessage = new xgame::MsgGetExternalMovePosition();
+                State = ObjYoshiJumpBoardState::STATE_WAIT;
+                Flags = 0;
+                return;
+            }
+            
             DefaultShot->StartingPosition = *(csl::math::Vector3*)(playerInfo + 4);
             JumpShot->StartingPosition = *(csl::math::Vector3*)(playerInfo + 4);
 
@@ -253,7 +262,7 @@ namespace app
             if (State != ObjYoshiJumpBoardState::STATE_EXPANSION)
                 return;
 
-            int playerNo = ObjUtil::GetPlayerNo(field_24[1], ExternalMoveMessage->field_08);
+            int playerNo = ObjUtil::GetPlayerNo(field_24[1], HitMessage->ActorID);
             int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], playerNo);
             if (!playerInfo)
                 return;
