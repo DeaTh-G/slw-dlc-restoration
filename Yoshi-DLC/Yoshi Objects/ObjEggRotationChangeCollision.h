@@ -17,7 +17,6 @@ namespace app
             xgame::MsgDlcChangeEggRotation msg{};
 
             fnd::CActor::SendMessageImmOld(&field_04[0], message.ActorID, &msg);
-            xgame::MsgExtendPlayer::__dt(&msg);
         }
 
         void ProcMsgLeaveEventCollision(xgame::MsgLeaveEventCollision& message)
@@ -25,7 +24,6 @@ namespace app
             xgame::MsgDlcChangeEggRotation msg{};
 
             fnd::CActor::SendMessageImmOld(&field_04[0], message.ActorID, &msg);
-            xgame::MsgExtendPlayer::__dt(&msg);
         }
 
     public:

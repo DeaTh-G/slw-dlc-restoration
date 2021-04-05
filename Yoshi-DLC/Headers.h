@@ -104,6 +104,8 @@
 #include "app/Player/CPhysics.h"
 #include "app/Player/StateUtil.h"
 #include "app/Player/CPlayer.h"
+#include "app/Player/CStateBase.h"
+#include "app/Player/CStateGOC.h"
 
 #include "app/xgame.h"
 #include "app/xgame/Blackboard.h"

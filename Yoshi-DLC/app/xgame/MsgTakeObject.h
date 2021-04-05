@@ -6,22 +6,44 @@ namespace app
     {
         class MsgTakeObject : public fnd::Message
         {
-            // Make this private
         public:
+            enum class EType : int {
+                RING,
+                RING_2,
+                SUPER_RING,
+                ONE_UP,
+                GRUNT,
+                SPEED_UP,
+                SLOW_DOWN,
+                INVINCIBILITY,
+                WARP,
+                BARRIER,
+                BARRIER_2,
+                BARRIER_3,
+                RED_RING_RADAR,
+                UNKNOWN_1,
+                UNKNOWN_2,
+                WISP,
+                YOSHI_ONE_UP,
+                YOSHI_COIN,
+                ZELDA_ONE_UP
+            };
+
+        private:
             inline static FUNCTION_PTR(void, __thiscall, f_SetShapeUserID, ASLR(0x00536700), MsgTakeObject* This, char a1);
 
         public:
-            int EType;
+            EType TakeType;
             int field_1C;
             char field_20;
             char field_21;
             short field_22;
             int ShapeID;
 
-            MsgTakeObject(int a1) : Message()
+            MsgTakeObject(EType type) : Message()
             {
                 Type = fnd::PROC_MSG_TAKE_OBJECT;
-                EType = a1;
+                TakeType = type;
                 field_1C = -1;
                 field_20 = 0;
                 field_21 = 0;

@@ -345,7 +345,7 @@ namespace app
             {
                 for (size_t i = 0; i < 10; i++)
                 {
-                    xgame::MsgTakeObject takeMessage { 3 };
+                    xgame::MsgTakeObject takeMessage { xgame::MsgTakeObject::EType::ONE_UP };
                     SendMessageImm(PlayerActorID, &takeMessage);
                 }
 

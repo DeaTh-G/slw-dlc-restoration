@@ -124,7 +124,7 @@ namespace app
             if (!controller || controller[19] < 0.5f)
                 return;
             
-            xgame::MsgTakeObject takeMessage{ 3 };
+            xgame::MsgTakeObject takeMessage{ xgame::MsgTakeObject::EType::YOSHI_ONE_UP };
             ObjUtil::SendMessageImmToPlayer(this, PlayerNo, &takeMessage);
             if (takeMessage.field_20)
                 ObjUtil::AddScorePlayerAction(this, "GET_ONE_UP", PlayerNo);

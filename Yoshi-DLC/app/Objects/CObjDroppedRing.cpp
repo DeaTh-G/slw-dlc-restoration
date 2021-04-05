@@ -5,7 +5,7 @@ HOOK(void, __fastcall, ProcMsgHitEventCollisionHook, ASLR(0x00662320), int* This
     const char* packFileName = app::ObjUtil::GetStagePackName(*app::Document);
     if (strncmp(packFileName, "zdlc02", 6) == 0)
     {
-        app::xgame::MsgTakeObject msgTakeObject{ 0 };
+        app::xgame::MsgTakeObject msgTakeObject{ app::xgame::MsgTakeObject::EType::RING };
         app::game::EffectCreateInfo effectInfo;
 
         int* gocSound;
@@ -15,7 +15,7 @@ HOOK(void, __fastcall, ProcMsgHitEventCollisionHook, ASLR(0x00662320), int* This
 
         if ((This[0xD2] & 0x40) == 0)
         {
-            app::xgame::MsgTakeObject::f_SetShapeUserID(&msgTakeObject, *(int*)(message[7] + 0xBC));
+            msgTakeObject.SetShapeUserID(*(int*)(message[7] + 0xBC));
             if (app::fnd::CActor::SendMessageImmOld((int*)This + 2, message[8], (int*)&msgTakeObject))
             {
                 if (This[0xCA])
@@ -34,7 +34,6 @@ HOOK(void, __fastcall, ProcMsgHitEventCollisionHook, ASLR(0x00662320), int* This
                 This[0xD2] |= 0x40;
                 app::GameObject::Kill((app::GameObject*)This);
             }
-            app::xgame::MsgExtendPlayer::__dt((int*)&msgTakeObject);
         }
     }
     else

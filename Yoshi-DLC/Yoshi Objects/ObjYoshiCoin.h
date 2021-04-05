@@ -195,7 +195,7 @@ namespace app
 
         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
         {
-            xgame::MsgTakeObject msgTakeObject { 0 };
+            xgame::MsgTakeObject msgTakeObject { xgame::MsgTakeObject::EType::RING };
             msgTakeObject.SetShapeUserID(message.field_1C[0x2F]);
             if (SendMessageImm(message.ActorID, &msgTakeObject))
             {

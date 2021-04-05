@@ -80,6 +80,7 @@ void Initialize()
     app::CObjDroppedRing::ProcMsgHitEventCollision();
     app::EnemyBlowOffObject::OnDead();
     app::Player::CPlayer::UpdatePlayerInformation();
+    app::Player::CStateBase::ProcMsgTakeObject();
 
     if (!DisablePipeTransition)
         app::GameModeStage::StateWarp();

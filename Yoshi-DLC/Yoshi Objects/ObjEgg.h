@@ -162,7 +162,7 @@ namespace app
                     game::GOCSound::Play(gocSound, deviceTag, "obj_yossyegg_get", 0);
                 else
                 {
-                    xgame::MsgTakeObject msg { 3 };
+                    xgame::MsgTakeObject msg { xgame::MsgTakeObject::EType::ONE_UP };
                     ObjUtil::SendMessageImmToPlayer(this, CInfo->PlayerNo, &msg);
                     int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
                     if (msg.field_20 && gocEffect)

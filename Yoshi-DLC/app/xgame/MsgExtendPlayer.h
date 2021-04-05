@@ -4,10 +4,22 @@ namespace app
 {
     namespace xgame
     {
-        class MsgExtendPlayer
+        class MsgExtendPlayer : public fnd::Message
         {
         public:
-            inline static FUNCTION_PTR(int, __thiscall, __dt, ASLR(0x0049A620), void* This);
+            int field_18{};
+            int field_1C{};
+
+            MsgExtendPlayer() : Message()
+            {
+                Type = fnd::PROC_MSG_EXTEND_PLAYER;
+            }
+
+            MsgExtendPlayer(int a1, int a2) : MsgExtendPlayer()
+            {
+                field_18 = a1;
+                field_1C = a2;
+            }
         };
     }
 }
