@@ -70,7 +70,8 @@ void app::EggManager::DoCheckReleaseAllEgg(const fnd::SUpdateInfo updateInfo, in
         return;
 
     bool isDamaged = *((char*)playerInfo + 0x172);
-    if (isDamaged)
+    bool isDead = *((char*)playerInfo + 0x171);
+    if (isDamaged || isDead)
     {
         if (IsSpaceShrink & 8)
             return;
