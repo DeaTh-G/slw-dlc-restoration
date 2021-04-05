@@ -179,6 +179,10 @@ namespace app
 
             if (std::abs(playerPosition.X - targetPosition.X) > 0.55f)
             {
+                if (!Direction)
+                    if (playerPosition.Y - (targetPosition.Y - 10) > 0.55f)
+                        playerPosition.Y -= 0.5f;
+
                 if (playerPosition.X < targetPosition.X)
                     playerPosition.X += 0.5f;
                 else
