@@ -607,6 +607,9 @@ namespace app
                 virtual int ProcessMessage(EnemyPiranhaPlant* obj, int a2) { return 0; };
                 virtual int OnEnter(EnemyPiranhaPlant* obj, int a2)
                 {
+                    AbsoluteRotation = fabs(obj->HeadRotation);
+                    Scale = obj->Scale;
+
                     obj->SetEnableCollision(false);
                     ChangeSubState(0);                    
                     
@@ -630,11 +633,11 @@ namespace app
 
                     if (!State)
                     {
-                        float multiplier = csl::math::Clamp(Time / 0.2f, 0, 1);
+                        Time = csl::math::Clamp(Time / 0.2f, 0, 1);
                         obj->HeadRotation = (-0.34906584f - AbsoluteRotation) *
-                            csl::math::Clamp(sinf(multiplier * 1.5707964f), 0, 1) + AbsoluteRotation;
+                            csl::math::Clamp(sinf(Time * 1.5707964f), 0, 1) + AbsoluteRotation;
 
-                        if (multiplier >= 1)
+                        if (Time >= 1)
                         {
                             ChangeSubState(1);
                             return 1;
@@ -663,9 +666,9 @@ namespace app
                     }
                     else if (State == 2)
                     {
-                        float multiplier = csl::math::Clamp(Time / 0.6f, 0, 1);
-                        obj->SetScale(((0.2f - obj->Scale) * multiplier) + obj->Scale);
-                        if (multiplier >= 1)
+                        float scalar = csl::math::Clamp(Time / 0.6f, 0, 1);
+                        obj->SetScale(((0.2f - Scale) * scalar) + Scale);
+                        if (scalar >= 1)
                         {
                             ChangeSubState(3);
                             return 1;
@@ -690,7 +693,7 @@ namespace app
 
                         fnd::GOCVisualModel::GetNodeTransform(gocVisual, 1, "Mouth", &transform);
                         math::Vector3Scale(&transform.Position, 0.2f, &transform.Position);
-                        math::Vector3Add(&transform.Position, (csl::math::Vector3*) & center->Transform.data[3][0], &transform.Position);
+                        math::Vector3Add(&transform.Position, (csl::math::Vector3*)&center->Transform.data[3][0], &transform.Position);
                         transform.SetFlag(1);
 
                         effectInfo.field_20.data[3][0] = transform.Position.X;
