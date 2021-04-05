@@ -477,6 +477,7 @@ namespace app
 
                             csl::math::Quaternion rotation;
                             csl::math::Quaternion::QuaternionMultiply(&Rotation, &Rotation, &multiplier);
+                            csl::math::QuaternionNormalize(&Rotation, &Rotation);
                             fnd::GOCTransform::SetLocalRotation(gocTransform, &Rotation);
                         }
                         break;
