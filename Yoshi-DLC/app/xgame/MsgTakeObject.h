@@ -52,6 +52,7 @@ namespace app
             }
 
             void SetShapeUserID(int a1) { f_SetShapeUserID(this, a1); }
+            int IsValidUserID() { return field_21; }
         };
     }
 }

@@ -22,6 +22,20 @@ HOOK(int, __fastcall, ProcMsgTakeObjectHook, ASLR(0x008947B0), int* This, void* 
             extendMessage.field_1C = messageVar[message.field_1C];
         }
         app::Player::CStateGOC::SendMessageImmToGame(cStateGOC, &extendMessage);
+        message.field_20 = 1;
+
+        return 1;
+    }
+    else if (message.TakeType == app::xgame::MsgTakeObject::EType::YOSHI_COIN)
+    {
+        if (app::Player::StateUtil::IsDead(cStateGOC) || (app::Player::CStateGOC::GetBlackBoard(cStateGOC)[6] & 0x4000000))
+            return 1;
+
+        if (!message.IsValidUserID() || message.ShapeID == 6)
+        {
+            app::Player::StateUtil::AddRingNum(cStateGOC, 1);
+            message.field_20 = 1;
+        }
 
         return 1;
     }
