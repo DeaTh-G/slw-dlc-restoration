@@ -9,6 +9,7 @@ namespace app
         public:
             int PlayerNumber{};
             bool IsDestination2D{};
+            INSERT_PADDING(3);
             csl::math::Vector3 TargetPosition{};
             csl::math::Quaternion TargetRotation{};
             int field_40{};

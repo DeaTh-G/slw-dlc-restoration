@@ -81,6 +81,7 @@ void Initialize()
     app::EnemyBlowOffObject::OnDead();
     app::Player::CPlayer::UpdatePlayerInformation();
     app::Player::CStateBase::ProcMsgTakeObject();
+    app::GameModeStageBattle::LoadLoadingScreenData();
 
     if (!DisablePipeTransition)
         app::GameModeStage::StateWarp();

@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "GameModeStage.h"
 
 static void* FadeInAddress = (void*)ASLR(0x004AC5C0);
 static void* OriginalAddress = (void*)ASLR(0x00918060);
