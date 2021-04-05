@@ -197,7 +197,7 @@ namespace app
         {
             xgame::MsgTakeObject msgTakeObject { xgame::MsgTakeObject::EType::YOSHI_COIN };
             msgTakeObject.SetShapeUserID(message.field_1C[0x2F]);
-            if (SendMessageImm(message.ActorID, &msgTakeObject))
+            if (SendMessageImm(message.ActorID, &msgTakeObject) && msgTakeObject.field_20)
             {
                 int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
                 if (gocEffect)
