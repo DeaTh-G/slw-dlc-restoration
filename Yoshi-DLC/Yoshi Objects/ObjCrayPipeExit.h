@@ -15,11 +15,12 @@ namespace app
 
     class ObjCrayPipeExit : public CSetObjectListener
     {
-        INSERT_PADDING(8);
+        INSERT_PADDING(4);
         ObjCrayPipeExitState State;
-        xgame::MsgGetExternalMovePosition* ExternalMoveMessage = new xgame::MsgGetExternalMovePosition();
+        xgame::MsgGetExternalMovePosition* ExternalMoveMessageP1 = new xgame::MsgGetExternalMovePosition();
+        xgame::MsgGetExternalMovePosition* ExternalMoveMessageP2 = new xgame::MsgGetExternalMovePosition();
         xgame::MsgStayTrigger* StayMessage = new xgame::MsgStayTrigger();
-        int PlayerNumber{};
+        int PlayerCount{};
         float Time{};
         char Direction{};
         char IsInPosition{};
@@ -101,7 +102,10 @@ namespace app
 
         void ProcMsgGetExternalMovePosition(xgame::MsgGetExternalMovePosition& message)
         {
-            *ExternalMoveMessage = message;
+            if (!ObjUtil::GetPlayerNo(field_24[1], message.field_08))
+                *ExternalMoveMessageP1 = message;
+            else if (ObjUtil::GetPlayerNo(field_24[1], message.field_08) == 1)
+                *ExternalMoveMessageP2 = message;
         }
 
         void ProcMsgStayTrigger(xgame::MsgStayTrigger& message)
@@ -118,11 +122,23 @@ namespace app
             int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], playerNo);
             if (!playerInfo)
                 return;
-            PlayerNumber = playerNo;
 
-            xgame::MsgCatchPlayer catchMessage{ 18 };
-            if (ObjUtil::SendMessageImmToPlayer(this, playerNo, &catchMessage))
-                State = ObjCrayPipeExitState::STATE_PIPE_OUT;
+            if (ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 1))
+                PlayerCount = 1;
+
+            if (!PlayerCount)
+            {
+                xgame::MsgCatchPlayer catchMessage{ 18 };
+                if (ObjUtil::SendMessageImmToPlayer(this, playerNo, &catchMessage))
+                    State = ObjCrayPipeExitState::STATE_PIPE_OUT;
+            }
+            else
+            {
+                xgame::MsgCatchPlayer catchMessage{ 18 };
+                if (ObjUtil::SendMessageImmToPlayer(this, 0, &catchMessage))
+                    if (ObjUtil::SendMessageImmToPlayer(this, 1, &catchMessage))
+                        State = ObjCrayPipeExitState::STATE_PIPE_OUT;
+            }
         }
 
         void StatePipeOut(const fnd::SUpdateInfo& updateInfo)
@@ -137,7 +153,7 @@ namespace app
             if (!gocTransform)
                 return;
 
-            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], PlayerNumber);
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0);
             if (!playerInfo)
                 return;
 
@@ -152,9 +168,13 @@ namespace app
                     verticalDestination = targetPosition.Y += 2;
                     if (std::abs(playerPosition.Y - verticalDestination) > 1.95f)
                     {
-                        ExternalMoveMessage->Transform->data[3][0] = playerPosition.X;
-                        ExternalMoveMessage->Transform->data[3][1] = verticalDestination;
-                        ExternalMoveMessage->Transform->data[3][2] = playerPosition.Z;
+                        ExternalMoveMessageP1->Transform->data[3][0] = playerPosition.X;
+                        ExternalMoveMessageP1->Transform->data[3][1] = verticalDestination;
+                        ExternalMoveMessageP1->Transform->data[3][2] = playerPosition.Z;
+
+                        ExternalMoveMessageP2->Transform->data[3][0] = playerPosition.X;
+                        ExternalMoveMessageP2->Transform->data[3][1] = verticalDestination;
+                        ExternalMoveMessageP2->Transform->data[3][2] = playerPosition.Z;
                     }
                     else
                     {
@@ -167,9 +187,13 @@ namespace app
                     verticalDestination = targetPosition.Y -= 12;
                     if (std::abs(playerPosition.Y - verticalDestination) > 11.95f)
                     {
-                        ExternalMoveMessage->Transform->data[3][0] = playerPosition.X;
-                        ExternalMoveMessage->Transform->data[3][1] = verticalDestination;
-                        ExternalMoveMessage->Transform->data[3][2] = playerPosition.Z;
+                        ExternalMoveMessageP1->Transform->data[3][0] = playerPosition.X;
+                        ExternalMoveMessageP1->Transform->data[3][1] = verticalDestination;
+                        ExternalMoveMessageP1->Transform->data[3][2] = playerPosition.Z;
+
+                        ExternalMoveMessageP2->Transform->data[3][0] = playerPosition.X;
+                        ExternalMoveMessageP2->Transform->data[3][1] = verticalDestination;
+                        ExternalMoveMessageP2->Transform->data[3][2] = playerPosition.Z;
                     }
                     else
                     {
@@ -214,11 +238,25 @@ namespace app
                 return;
 
             IsInPosition |= 0x20;
-            xgame::MsgCatchEndPlayer catchEndMessage { false };
-            ObjUtil::SendMessageImmToPlayer(this, PlayerNumber, &catchEndMessage);
 
-            xgame::MsgPLVisibleItemEffect visibleEffectMessage{ 1 };
-            ObjUtil::SendMessageImmToPlayer(this, PlayerNumber, &visibleEffectMessage);
+            if (!PlayerCount)
+            {
+                xgame::MsgCatchEndPlayer catchEndMessage{ false };
+                ObjUtil::SendMessageImmToPlayer(this, 0, &catchEndMessage);
+
+                xgame::MsgPLVisibleItemEffect visibleEffectMessage{ 1 };
+                ObjUtil::SendMessageImmToPlayer(this, 0, &visibleEffectMessage);
+            }
+            else
+            {
+                xgame::MsgCatchEndPlayer catchEndMessage{ false };
+                ObjUtil::SendMessageImmToPlayer(this, 0, &catchEndMessage);
+                ObjUtil::SendMessageImmToPlayer(this, 1, &catchEndMessage);
+
+                xgame::MsgPLVisibleItemEffect visibleEffectMessage{ 1 };
+                ObjUtil::SendMessageImmToPlayer(this, 0, &visibleEffectMessage);
+                ObjUtil::SendMessageImmToPlayer(this, 1, &visibleEffectMessage);
+            }
 
             int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
             if (!gocCollider)
@@ -251,9 +289,13 @@ namespace app
             else
                 playerPos.Y += 0.3f;
 
-            ExternalMoveMessage->Transform->data[3][0] = playerPos.X;
-            ExternalMoveMessage->Transform->data[3][1] = playerPos.Y;
-            ExternalMoveMessage->Transform->data[3][2] = playerPos.Z;
+            ExternalMoveMessageP1->Transform->data[3][0] = playerPos.X;
+            ExternalMoveMessageP1->Transform->data[3][1] = playerPos.Y;
+            ExternalMoveMessageP1->Transform->data[3][2] = playerPos.Z;
+
+            ExternalMoveMessageP2->Transform->data[3][0] = playerPos.X;
+            ExternalMoveMessageP2->Transform->data[3][1] = playerPos.Y;
+            ExternalMoveMessageP2->Transform->data[3][2] = playerPos.Z;
         }
     };
 
