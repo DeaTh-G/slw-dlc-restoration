@@ -173,9 +173,9 @@ namespace app
             float verticalDestination = 0;
 
             if (Direction)
-                verticalDestination = targetPosition.Y - 12;
+                verticalDestination = targetPosition.Y - 14;
             else
-                verticalDestination = targetPosition.Y + 12;
+                verticalDestination = targetPosition.Y + 14;
 
             if (std::abs(playerPosition.X - targetPosition.X) > 0.55f)
             {
@@ -244,6 +244,17 @@ namespace app
 
             xgame::MsgWarpNewArea warpMessage{ PlayerNumber, true, targetPosition, targetRotation, 5, 1 };
             ObjUtil::SendMessageImmToGameActor(this, &warpMessage);
+
+            ExternalMoveMessage = new xgame::MsgGetExternalMovePosition();
+            StayMessage = new xgame::MsgStayTrigger();
+            State == ObjCrayPipeState::STATE_IDLE;
+
+            /* Code that stops the battle mode players from teleporting back to entry pipe */
+            xgame::MsgCatchEndPlayer catchEndMessage{ false };
+            ObjUtil::SendMessageImmToPlayer(this, PlayerNumber, &catchEndMessage);
+
+            xgame::MsgCatchPlayer catchMessage{ 18 };
+            ObjUtil::SendMessageImmToPlayer(this, PlayerNumber, &catchMessage);
         }
     };
 
