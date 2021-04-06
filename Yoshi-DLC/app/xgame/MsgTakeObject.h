@@ -12,7 +12,7 @@ namespace app
                 RING_2,
                 SUPER_RING,
                 ONE_UP,
-                STICKER_RED_RING,
+                RED_RING,
                 SPEED_UP,
                 SLOW_DOWN,
                 INVINCIBILITY,
