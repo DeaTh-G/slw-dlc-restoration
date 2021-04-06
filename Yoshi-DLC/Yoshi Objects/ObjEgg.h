@@ -641,8 +641,8 @@ namespace app
             UpdateSlippery(nextLocusData.IsInAir, 1, updateInfo);
             if (!nextLocusData.IsInAir)
             {
-                float posDiff = nextLocusData.Position.X - currentLocus.Position.X;
-                if (abs(posDiff) > 0.35f || isMoving)
+                math::Vector3Subtract(&nextLocusData.Position, &currentLocus.Position, &locusData.Position);
+                if (abs(locusData.Position.X) > 0.35f || abs(locusData.Position.Y) > 0.35f || abs(locusData.Position.Z) > 0.35f || isMoving)
                     return;
 
                 Extrication();

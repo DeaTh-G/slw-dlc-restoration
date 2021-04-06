@@ -7,6 +7,7 @@ namespace app
     namespace math
     {
         inline static FUNCTION_PTR(bool, __cdecl, Vector3NormalizeIfNotZero, ASLR(0x00417C40), Vector3* a1, Vector3* a2);
+        inline static FUNCTION_PTR(bool, __cdecl, Vector3NormalizeZero, ASLR(0x0041B980), Vector3* a1, Vector3* a2);
         inline static FUNCTION_PTR(Quaternion*, __cdecl, Vector3Rotate, ASLR(0x00533000), Vector3* a1, Quaternion* a2, Vector3* a3);
         inline static FUNCTION_PTR(Vector3*, __cdecl, Vector3RotateX, ASLR(0x00532E50), Vector3* a1, float a2, Vector3* a3);
         inline static FUNCTION_PTR(Matrix34*, __cdecl, Matrix34AffineTransformation, ASLR(0x005325D0), Matrix34* a1, Vector3* a2, Quaternion* a3);
@@ -56,6 +57,11 @@ namespace app
         static void Vector3SquareMagnitude(Vector3* a, float* length)
         {
             *length = pow(a->X, 2) + pow(a->Y, 2) + pow(a->Z, 2);
+        }
+
+        static void Vector3Multiply(Vector3* a, Vector3* b, Vector3* ab)
+        {
+            *ab = Vector3(a->X * b->X, a->Y * b->Y, a->Z * b->Z);
         }
 
         static void MatrixConcat(Matrix34* a, Matrix34* b, Matrix34* ab)

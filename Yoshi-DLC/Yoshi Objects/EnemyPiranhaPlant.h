@@ -485,7 +485,7 @@ namespace app
                     csl::math::Vector3 rotY = *(csl::math::Vector3*)&center->Transform.data[2][0];
 
                     math::Vector3Subtract(&playerPos, &objectPos, &playerPos);
-                    csl::math::Vector3NormalizeZero(&playerPos, &playerPos);
+                    math::Vector3NormalizeZero(&playerPos, &playerPos);
                     float xDot = math::Vector3DotProduct(&rotX, &playerPos);
                     xDot = csl::math::Clamp(xDot, -1, 1);
                     float xMin = csl::math::Min(acosf(xDot), 1.2217305f);
