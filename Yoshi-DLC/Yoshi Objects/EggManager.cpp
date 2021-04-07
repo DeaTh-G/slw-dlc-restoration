@@ -12,19 +12,6 @@ void app::EggManager::StartExtrication(int playerNo)
     IsSpaceShrink |= 2;
 }
 
-char app::EggManager::SubSpaceCount(int playerNo)
-{
-    if (!playerNo)
-        for (app::ObjEgg* egg : EggsP1)
-            egg->SubSpaceOffset();
-    else
-        for (app::ObjEgg* egg : EggsP2)
-            egg->SubSpaceOffset();
-
-    IsSpaceShrink |= 4;
-    return IsSpaceShrink;
-}
-
 bool app::EggManager::AddEgg(ObjEgg* egg)
 {
     if (!egg->PlayerNo)
@@ -154,4 +141,82 @@ char app::EggManager::AddSpaceCount(int playerNo)
 
     IsSpaceShrink |= 4;
     return IsSpaceShrink;
+}
+
+char app::EggManager::SubSpaceCount(int playerNo)
+{
+    if (!playerNo)
+        for (app::ObjEgg* egg : EggsP1)
+            egg->SubSpaceOffset();
+    else
+        for (app::ObjEgg* egg : EggsP2)
+            egg->SubSpaceOffset();
+
+    IsSpaceShrink |= 4;
+    return IsSpaceShrink;
+}
+
+void app::EggManager::UpdateEggSpace(const fnd::SUpdateInfo& updateInfo, int playerNo)
+{
+    IsSpaceShrink &= ~4;
+
+    int* playerInfo = app::ObjUtil::GetPlayerInformation(Document, playerNo);
+    if (!playerInfo)
+        return;
+
+    if (!playerNo)
+    {
+        if (*((char*)playerInfo + 0x145) && *((char*)playerInfo + 0x144))
+        {
+            csl::math::Vector3 playerPos{ *(csl::math::Vector3*)(playerInfo + 4) };
+            if (!EggsP1.size())
+                return;
+
+            SubSpaceCount(playerNo);
+
+            if (!EggsP1.at(EggsP1.size() - 1)->SpaceCount)
+            {
+                for (size_t i = 0; i < EggsP1.size() * 10; i++)
+                {
+                    LocusData data{ playerPos, *(csl::math::Quaternion*)(playerInfo + 8),
+                        *((char*)playerInfo + 0x144) ^ 1 };
+                    GhostDataP1.push_front(data);
+                }
+            }
+
+            return;
+        }
+
+        if (IsSpaceShrink & 1)
+        {
+            SubSpaceCount(playerNo);
+            return;
+        }
+
+        if (field_64P1 > 0)
+        {
+            AddSpaceCount(playerNo);
+            return;
+        }
+    }
+    else
+    {
+        if (*((char*)playerInfo + 0x145) && *((char*)playerInfo + 0x144))
+        {
+            SubSpaceCount(playerNo);
+            return;
+        }
+
+        if (IsSpaceShrink & 1)
+        {
+            SubSpaceCount(playerNo);
+            return;
+        }
+
+        if (field_64P2 > 0)
+        {
+            AddSpaceCount(playerNo);
+            return;
+        }
+    }
 }

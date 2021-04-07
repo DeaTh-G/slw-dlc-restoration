@@ -23,7 +23,6 @@ namespace app
         float field_64P2{};
         char IsSpaceShrink{};
         char FlowerCount{};
-        INSERT_PADDING(2);
 
         EggManager() {}
 
@@ -139,56 +138,7 @@ namespace app
 
         char AddSpaceCount(int playerNo);
         char SubSpaceCount(int playerNo);
-
-        void UpdateEggSpace(int playerNo)
-        {
-            IsSpaceShrink &= ~4;
-
-            int* playerInfo = ObjUtil::GetPlayerInformation(Document, playerNo);
-            if (!playerInfo)
-                return;
-
-            if (!playerNo)
-            {
-                if (*((char*)playerInfo + 0x145) && *((char*)playerInfo + 0x144))
-                {
-                    SubSpaceCount(playerNo);
-                    return;
-                }
-
-                if (IsSpaceShrink & 1)
-                {
-                    SubSpaceCount(playerNo);
-                    return;
-                }
-
-                if (field_64P1 > 0)
-                {
-                    AddSpaceCount(playerNo);
-                    return;
-                }
-            }
-            else
-            {
-                if (*((char*)playerInfo + 0x145) && *((char*)playerInfo + 0x144))
-                {
-                    SubSpaceCount(playerNo);
-                    return;
-                }
-
-                if (IsSpaceShrink & 1)
-                {
-                    SubSpaceCount(playerNo);
-                    return;
-                }
-
-                if (field_64P2 > 0)
-                {
-                    AddSpaceCount(playerNo);
-                    return;
-                }
-            }
-        }
+        void UpdateEggSpace(const fnd::SUpdateInfo& updateInfo, int playerNo);
 
     public:
         bool AddEgg(ObjEgg* egg);
@@ -304,8 +254,8 @@ namespace app
         {
             UpdateLocusPos(updateInfo, 0);
             UpdateLocusPos(updateInfo, 1);
-            UpdateEggSpace(0);
-            UpdateEggSpace(1);
+            UpdateEggSpace(updateInfo, 0);
+            UpdateEggSpace(updateInfo, 1);
             DoCheckReleaseAllEgg(updateInfo, 0);
             DoCheckReleaseAllEgg(updateInfo, 1);
             DoCheckClearAllEggEndExtrication(0);
