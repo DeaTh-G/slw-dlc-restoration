@@ -237,7 +237,7 @@ namespace app
             if (!playerInfo)
                 return;
 
-            if (*((char*)playerInfo + 0x173))
+            if (*(playerInfo + 0x58) != -1)
             {
                 HitMessage = new xgame::MsgHitEventCollision();
                 ExternalMoveMessage = new xgame::MsgGetExternalMovePosition();
