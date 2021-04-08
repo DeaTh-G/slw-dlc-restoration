@@ -208,10 +208,6 @@ namespace app
                 xgame::MsgResumeGameTimer timerMessage{};
                 if (!ObjUtil::SendMessageImmToGameActor(this, &timerMessage))
                     return;
-                
-                EggManager* eggManager = EggManager::GetService(*Document);
-                if (eggManager)
-                    eggManager->SetForceSpaceShrink(false);
 
                 IsTimerEnabled = true;
             }
@@ -296,6 +292,10 @@ namespace app
             ExternalMoveMessageP2->Transform->data[3][0] = playerPos.X;
             ExternalMoveMessageP2->Transform->data[3][1] = playerPos.Y;
             ExternalMoveMessageP2->Transform->data[3][2] = playerPos.Z;
+
+            EggManager* eggManager = EggManager::GetService(*Document);
+            if (eggManager)
+                eggManager->SetForceSpaceShrink(false);
         }
     };
 

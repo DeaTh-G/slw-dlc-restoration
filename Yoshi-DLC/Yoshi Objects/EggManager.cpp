@@ -189,7 +189,21 @@ void app::EggManager::UpdateEggSpace(const fnd::SUpdateInfo& updateInfo, int pla
 
         if (IsSpaceShrink & 1)
         {
+            csl::math::Vector3 playerPos{ *(csl::math::Vector3*)(playerInfo + 4) };
+            if (!EggsP1.size())
+                return;
+
             SubSpaceCount(playerNo);
+
+            if (!EggsP1.at(EggsP1.size() - 1)->SpaceCount)
+            {
+                for (size_t i = 0; i < EggsP1.size() * 10; i++)
+                {
+                    LocusData data{ playerPos, *(csl::math::Quaternion*)(playerInfo + 8),
+                        *((char*)playerInfo + 0x144) ^ 1 };
+                    GhostDataP1.push_front(data);
+                }
+            }
             return;
         }
 
