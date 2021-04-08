@@ -294,8 +294,11 @@ namespace app
             ExternalMoveMessageP2->Transform->data[3][2] = playerPos.Z;
 
             EggManager* eggManager = EggManager::GetService(*Document);
-            if (eggManager)
-                eggManager->SetForceSpaceShrink(false);
+            if (!eggManager)
+                return;
+
+            for (size_t i = 0; i <= PlayerCount; i++)
+                eggManager->SetForceSpaceShrink(false, i);
         }
     };
 

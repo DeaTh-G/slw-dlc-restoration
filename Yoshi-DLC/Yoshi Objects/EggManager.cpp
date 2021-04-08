@@ -3,13 +3,20 @@
 void app::EggManager::StartExtrication(int playerNo)
 {
     if (!playerNo)
+    {
         for (app::ObjEgg* egg : EggsP1)
             egg->StartExtrication();
+
+        IsSpaceShrink |= 2;
+    }
     else
+    {
         for (app::ObjEgg* egg : EggsP2)
             egg->StartExtrication();
 
-    IsSpaceShrink |= 2;
+        IsSpaceShrink |= 0x20;
+    }
+
 }
 
 bool app::EggManager::AddEgg(ObjEgg* egg)
@@ -60,11 +67,11 @@ void app::EggManager::DoCheckReleaseAllEgg(const fnd::SUpdateInfo updateInfo, in
     bool isDead = *((char*)playerInfo + 0x171);
     if (isDamaged || isDead)
     {
-        if (IsSpaceShrink & 8)
-            return;
-
         if (!playerNo)
         {
+            if (IsSpaceShrink & 8)
+                return;
+
             for (ObjEgg* egg : EggsP1)
             {
                 egg->StartDrop();
@@ -73,9 +80,14 @@ void app::EggManager::DoCheckReleaseAllEgg(const fnd::SUpdateInfo updateInfo, in
             }
             
             EggsP1.clear();
+
+            IsSpaceShrink |= 8;
         }
         else
         {
+            if (IsSpaceShrink & 0x80)
+                return;
+
             for (ObjEgg* egg : EggsP2)
             {
                 egg->StartDrop();
@@ -83,23 +95,23 @@ void app::EggManager::DoCheckReleaseAllEgg(const fnd::SUpdateInfo updateInfo, in
                 egg->Frame = 0;
             }
             EggsP2.clear();
-        }
 
-        IsSpaceShrink |= 8;
+            IsSpaceShrink |= 0x80;
+        }
     }
     else
     {
-        IsSpaceShrink &= ~8;
+        IsSpaceShrink &= ~0x88;
     }
 }
 
 void app::EggManager::DoCheckClearAllEggEndExtrication(int playerNo)
 {
-    if (!(IsSpaceShrink & 2))
-        return;
-    
     if (!playerNo)
     {
+        if (!(IsSpaceShrink & 2))
+            return;
+
         if (EggsP1.empty())
             return;
 
@@ -115,6 +127,9 @@ void app::EggManager::DoCheckClearAllEggEndExtrication(int playerNo)
     }
     else
     {
+        if (!(IsSpaceShrink & 0x20))
+            return;
+
         if (EggsP2.empty())
             return;
 
@@ -126,46 +141,60 @@ void app::EggManager::DoCheckClearAllEggEndExtrication(int playerNo)
             GameObject::Kill(egg);
 
         EggsP2.clear();
-        IsSpaceShrink &= ~2;
+        IsSpaceShrink &= ~0x20;
     }
 }
 
 char app::EggManager::AddSpaceCount(int playerNo)
 {
     if (!playerNo)
+    {
         for (app::ObjEgg* egg : EggsP1)
             egg->AddSpaceOffset();
+
+        IsSpaceShrink |= 4;
+    }
     else
+    {
         for (app::ObjEgg* egg : EggsP2)
             egg->AddSpaceOffset();
 
-    IsSpaceShrink |= 4;
+        IsSpaceShrink |= 0x40;
+    }
+
     return IsSpaceShrink;
 }
 
 char app::EggManager::SubSpaceCount(int playerNo)
 {
     if (!playerNo)
+    {
         for (app::ObjEgg* egg : EggsP1)
             egg->SubSpaceOffset();
+
+        IsSpaceShrink |= 4;
+    }
     else
+    {
         for (app::ObjEgg* egg : EggsP2)
             egg->SubSpaceOffset();
 
-    IsSpaceShrink |= 4;
+        IsSpaceShrink |= 0x40;
+    }
+
     return IsSpaceShrink;
 }
 
 void app::EggManager::UpdateEggSpace(const fnd::SUpdateInfo& updateInfo, int playerNo)
 {
-    IsSpaceShrink &= ~4;
-
     int* playerInfo = app::ObjUtil::GetPlayerInformation(Document, playerNo);
     if (!playerInfo)
         return;
 
     if (!playerNo)
     {
+        IsSpaceShrink &= ~4;
+
         if (*((char*)playerInfo + 0x145) && *((char*)playerInfo + 0x144))
         {
             csl::math::Vector3 playerPos{ *(csl::math::Vector3*)(playerInfo + 4) };
@@ -215,13 +244,15 @@ void app::EggManager::UpdateEggSpace(const fnd::SUpdateInfo& updateInfo, int pla
     }
     else
     {
+        IsSpaceShrink &= ~0x40;
+
         if (*((char*)playerInfo + 0x145) && *((char*)playerInfo + 0x144))
         {
             SubSpaceCount(playerNo);
             return;
         }
 
-        if (IsSpaceShrink & 1)
+        if (IsSpaceShrink & 0x10)
         {
             SubSpaceCount(playerNo);
             return;

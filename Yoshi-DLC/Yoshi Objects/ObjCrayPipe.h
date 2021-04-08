@@ -156,7 +156,7 @@ namespace app
             {
                 EggManager* eggManager = EggManager::GetService(*Document);
                 if (eggManager)
-                    eggManager->SetForceSpaceShrink(true);
+                    eggManager->SetForceSpaceShrink(true, PlayerNumber);
             }
 
             int* gocTransform = GameObject::GetGOC(this, GOCTransformString);

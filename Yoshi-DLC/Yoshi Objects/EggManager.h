@@ -196,6 +196,15 @@ namespace app
                             *magnitude = localMagnitude;
                     }
                 }
+                else
+                {
+                    if (localMagnitude > 0.3f && (field_64P2 > 0 || IsSpaceShrink & 0x40))
+                    {
+                        *a3 = true;
+                        if (magnitude)
+                            *magnitude = localMagnitude;
+                    }
+                }
             }
 
             *locus = data1;
@@ -207,12 +216,22 @@ namespace app
             GetTargetDataFromLocusIndex(locus, dataIndex, a3, magnitude, playerNo);
         }
 
-        void SetForceSpaceShrink(bool isShrink)
+        void SetForceSpaceShrink(bool isShrink, int playerNo)
         {
-            if (isShrink)
-                IsSpaceShrink |= 1;
+            if (!playerNo)
+            {
+                if (isShrink)
+                    IsSpaceShrink |= 1;
+                else
+                    IsSpaceShrink &= ~1;
+            }
             else
-                IsSpaceShrink &= ~1;
+            {
+                if (isShrink)
+                    IsSpaceShrink |= 0x10;
+                else
+                    IsSpaceShrink &= ~0x10;
+            }
         }
 
         bool IsEndExtrication(int playerNo)
@@ -246,7 +265,7 @@ namespace app
 
             field_64P1 = 0;
             field_64P2 = 0;
-            IsSpaceShrink = false;
+            IsSpaceShrink = 0;
             FlowerCount = 0;
         }
 
