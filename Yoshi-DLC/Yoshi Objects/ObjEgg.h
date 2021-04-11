@@ -190,7 +190,7 @@ namespace app
         void Update(const fnd::SUpdateInfo& updateInfo) override
         {
             if (State == ObjEggState::STATE_TO_FIRST_LOCUS)
-                StateFirstToLocus(updateInfo);
+                StateToFirstLocus(updateInfo);
 
             if (State == ObjEggState::STATE_TO_INDEX_LOCUS)
                 StateToIndexLocus(updateInfo);
@@ -488,7 +488,7 @@ namespace app
             ObjYoshi::Create(*(GameDocument*)field_24[1], *yoshiInfo);
         }
 
-        void StateFirstToLocus(const fnd::SUpdateInfo& updateInfo)
+        void StateToFirstLocus(const fnd::SUpdateInfo& updateInfo)
         {
             EggManager::LocusData locusData{};
             csl::math::Vector3 translation{};
@@ -504,7 +504,7 @@ namespace app
 
             bool isMoving = false;
             eggManager->GetTargetDataFromLocusIndex(&locusData, 0, &isMoving, nullptr, PlayerNo);
-            Time = csl::math::Clamp(Time, 0, 1);
+            Time = csl::math::Clamp(Time / 30, 0, 1);
                 
             math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
             math::Vector3Subtract(&locusData.Position, &translation, &posDifference);
@@ -518,7 +518,7 @@ namespace app
             Time += updateInfo.deltaTime;
             Frame++;
 
-            if (Frame == 60)
+            if (Frame == 30)
             {
                 Frame = 0;
                 State = ObjEggState::STATE_TO_INDEX_LOCUS;

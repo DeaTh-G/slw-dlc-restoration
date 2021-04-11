@@ -1,6 +1,6 @@
 #pragma once
 
-bool IsEggBlockShadowOn;
+inline static float EGGBLOCK_RAND[] = { 0x28, 0x14, 0x14, 0x14 };
 
 namespace app
 {
@@ -207,12 +207,12 @@ namespace app
             random = floorf((random * 2.328306436538696e-10f) * 100);
 
             int ModelType = 0;
+            int limit = 0;
             for (size_t i = 0; i < 4; i++)
             {
-                if (random < 40)
+                limit += EGGBLOCK_RAND[i];
+                if (random > limit)
                 {
-                    random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
-                    random = floorf((random * 2.328306436538696e-10f) * 100);
                     ModelType++;
                     continue;
                 }
