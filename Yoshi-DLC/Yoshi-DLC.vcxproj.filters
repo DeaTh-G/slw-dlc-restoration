@@ -1,0 +1,591 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\app">
+      <UniqueIdentifier>{29fdc633-cc6e-43df-848d-6b4adb2c4cc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\animation">
+      <UniqueIdentifier>{15da18ae-df4d-471b-a57c-2f9d663630b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\fnd">
+      <UniqueIdentifier>{df0a1838-98cf-40ce-b638-a3608721a273}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\game">
+      <UniqueIdentifier>{7113483e-851e-4f93-9aa2-cdead156bf84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\Gimmick">
+      <UniqueIdentifier>{3b6832e7-1501-4f16-b8cf-15ec9b243b93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\HUD">
+      <UniqueIdentifier>{30c91a81-b2ba-4fb4-9e57-07ebfb6848c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\xgame">
+      <UniqueIdentifier>{44674778-84c8-4ca5-bc0f-b580ea1608ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\csl">
+      <UniqueIdentifier>{fe572b27-1bcd-49ec-a4bb-b6dbcdf50d58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\Player">
+      <UniqueIdentifier>{e9364e55-a298-4e33-bd94-577ac38f827c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\hh">
+      <UniqueIdentifier>{d8cf8da6-724d-42ff-acd8-410dc8345bf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\hh\ut">
+      <UniqueIdentifier>{768d0cd1-c0d7-426a-8e91-0de53c69b4c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SurfRide">
+      <UniqueIdentifier>{a831b909-f3b7-4588-b726-8b531bb31f13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Yoshi Objects">
+      <UniqueIdentifier>{6b9e4328-1da8-4659-9246-352153c9ce39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\enemy">
+      <UniqueIdentifier>{9609bf40-e322-4057-9627-d8c94c0cc57f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\Objects">
+      <UniqueIdentifier>{cd5c8954-3349-443f-9862-d2c88d137978}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\math">
+      <UniqueIdentifier>{6e07c76f-c392-4652-a5b2-67c04e023f80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\ut">
+      <UniqueIdentifier>{76005774-b47f-4710-b3b1-e4992255d853}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\ut\internal">
+      <UniqueIdentifier>{4fb4288c-cecd-4aa7-bc6f-4c7dd67e5186}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\csl\math">
+      <UniqueIdentifier>{2255d062-4fa1-4e9a-9302-c2fd0ba5ac85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\csl\ut">
+      <UniqueIdentifier>{29caffb1-2b83-45e1-9a35-00000147a1ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SonicUSA">
+      <UniqueIdentifier>{9b236b25-d27b-468b-afb1-fa0e04b1c397}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\SonicUSA\System">
+      <UniqueIdentifier>{a98c8d9b-5a87-4d92-9999-1020bf371552}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi-DLC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InfoFileLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MemAccess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LWVariables.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\CLevelInfo.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\CObjInfo.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\CSetAdapter.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\CSetObjectListener.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\EnemyBase.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\EnemyInfo.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\GameDocument.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\GameObject.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\ObjUtil.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\SetShotInfo.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\CGOCCollectionImpl.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\animation\AnimationResContainer.h">
+      <Filter>Header Files\app\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\GameServiceClass.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\GOComponent.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\GOCTransform.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\GOCVisualContainer.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\HFrame.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\Message.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\MessageManager.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\ReferencedObject.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\CActor.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\GameService.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCAnimationScript.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCAnimationSimple.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCCollider.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCEffect.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCHud.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCLauncher.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCMotorRotate.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCShadowSimple.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCSound.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCVisualModel.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\ShadowShapeCInfo.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\CollisionObjCInfo.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\CollisionShapeType.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Gimmick\CRingManager.h">
+      <Filter>Header Files\app\Gimmick</Filter>
+    </ClInclude>
+    <ClInclude Include="app\HUD\SRUtility.h">
+      <Filter>Header Files\app\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgPLGetInputButton.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgPLVisibleItemEffect.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgResumeGameTimer.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgSetPosition.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgSpringImpulse.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgStayTrigger.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgStopGameTimer.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgTakeObject.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgWarpNewArea.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgCatchEndPlayer.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgCatchPlayer.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgExtendPlayer.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgGetExternalMovePosition.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgNotifyObjectEvent.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Player\CPhysics.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="csl\fnd.h">
+      <Filter>Header Files\csl</Filter>
+    </ClInclude>
+    <ClInclude Include="hh\base.h">
+      <Filter>Header Files\hh</Filter>
+    </ClInclude>
+    <ClInclude Include="hh\ut\Packfile.h">
+      <Filter>Header Files\hh\ut</Filter>
+    </ClInclude>
+    <ClInclude Include="SurfRide\Layer.h">
+      <Filter>Header Files\SurfRide</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\ObjCrayPipe.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\ObjCrayPipeExit.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\ObjRotateLift.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\ObjYoshiCoin.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\ObjYoshiJumpBoard.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\ObjYoshiSpecialFlower.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\EggManager.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\EnemyShyGuy.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCGravity.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\MoveStraight.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="Headers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCMovement.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\EnemyBlowOffObjectCInfo.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgKick.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgDamage.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\enemy\DeadEffectCInfo.h">
+      <Filter>Header Files\app\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Objects\CSharedObjInfo.h">
+      <Filter>Header Files\app\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\HUD\CHudGameMainDisplay.h">
+      <Filter>Header Files\app\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Objects\CObjDroppedRing.h">
+      <Filter>Header Files\app\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\EnemyManager.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\math\CalculatedTransform.h">
+      <Filter>Header Files\app\math</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Objects\EnemyBlowOffObject.h">
+      <Filter>Header Files\app\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\ut\internal\StateImpl.h">
+      <Filter>Header Files\app\ut\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="app\GOCEnemyHsm.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\ut\StateBase.h">
+      <Filter>Header Files\app\ut</Filter>
+    </ClInclude>
+    <ClInclude Include="app\EnemyState.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\math\Transform.h">
+      <Filter>Header Files\app\math</Filter>
+    </ClInclude>
+    <ClInclude Include="csl\math\Quaternion.h">
+      <Filter>Header Files\csl\math</Filter>
+    </ClInclude>
+    <ClInclude Include="app\animation\AnimCallbackBridge.h">
+      <Filter>Header Files\app\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\ObjEggBlock.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\PathManager.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\PathEvaluator.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\GameObject3D.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\CLeafActor.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="csl\ut\NonCopyable.h">
+      <Filter>Header Files\csl\ut</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCMotor.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\ObjEgg.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\ObjYoshi.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\CObjInfoContainer.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\ObjDroppedEgg.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\egg.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\BaseObject.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\ColliShapeBase.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\Handle.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="csl\math\Vector3.h">
+      <Filter>Header Files\csl\math</Filter>
+    </ClInclude>
+    <ClInclude Include="csl\math\Matrix34.h">
+      <Filter>Header Files\csl\math</Filter>
+    </ClInclude>
+    <ClInclude Include="app\math\math.h">
+      <Filter>Header Files\app\math</Filter>
+    </ClInclude>
+    <ClInclude Include="SonicUSA\System\Random.h">
+      <Filter>Header Files\SonicUSA\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Helpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\MoveBound.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="csl\math\Plane.h">
+      <Filter>Header Files\csl\math</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\MoveController.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\ObjEggRotationChangeCollision.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgLeaveEventCollision.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgHitEventCollision.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgDlcChangeEggRotation.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\CSetObjClass.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Player\CPlayer.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\Blackboard.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Player\StateUtil.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCVisual.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="csl\math\math.h">
+      <Filter>Header Files\csl\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\EnemyPiranhaPlant.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\GOCEnemyTarget.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\animation\AnimationListener.h">
+      <Filter>Header Files\app\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="app\animation\AnimationObj.h">
+      <Filter>Header Files\app\animation</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\TexSrtControlHH.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\HudWipeCrayPipe.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\HudLayerController.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\GameModeStage.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\GameMode.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\ObjYoshiGoal.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgPLHoldOn.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgPLJumpToTargetPosition.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgCameraOn.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgDisableItemBag.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgStopBgm.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgPlayerReachGoal.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgGoalForBattle.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\SoundPlayerCri.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCShadow.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\ShadowShape.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\CObjOneUp.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\ObjYoshiOneUp.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\EnemyUvAnimLinkController.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\MovePopup.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgCameraOff.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Player\CStateBase.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Player\CStateGOC.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="app\GameModeStageBattle.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\FileLoaderParam.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Yoshi-DLC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Yoshi Objects\EggManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\HUD\CHudGameMainDisplay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\xgame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Objects\CObjDroppedRing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Objects\CSharedObjInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Objects\EnemyBlowOffObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Player\CPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\GameModeStage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Player\CStateBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\GameModeStageBattle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

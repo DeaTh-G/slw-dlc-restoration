@@ -504,7 +504,7 @@ namespace app
 
             bool isMoving = false;
             eggManager->GetTargetDataFromLocusIndex(&locusData, 0, &isMoving, nullptr, PlayerNo);
-            Time = csl::math::Clamp(Time / 30, 0, 1);
+            Time = csl::math::Clamp(Time, 0, 1);
                 
             math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
             math::Vector3Subtract(&locusData.Position, &translation, &posDifference);
