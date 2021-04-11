@@ -150,14 +150,22 @@ char app::EggManager::AddSpaceCount(int playerNo)
     if (!playerNo)
     {
         for (app::ObjEgg* egg : EggsP1)
-            egg->AddSpaceOffset();
+        {
+            bool isSpaceMax = egg->AddSpaceOffset();
+            if (isSpaceMax)
+                break;
+        }
 
         IsSpaceShrink |= 4;
     }
     else
     {
         for (app::ObjEgg* egg : EggsP2)
-            egg->AddSpaceOffset();
+        {
+            bool isSpaceMax = egg->AddSpaceOffset();
+            if (isSpaceMax)
+                break;
+        }
 
         IsSpaceShrink |= 0x40;
     }
@@ -169,15 +177,24 @@ char app::EggManager::SubSpaceCount(int playerNo)
 {
     if (!playerNo)
     {
+
         for (app::ObjEgg* egg : EggsP1)
-            egg->SubSpaceOffset();
+        {
+            bool isSpaceEmpty = egg->SubSpaceOffset();
+            if (isSpaceEmpty)
+                break;
+        }
 
         IsSpaceShrink |= 4;
     }
     else
     {
         for (app::ObjEgg* egg : EggsP2)
-            egg->SubSpaceOffset();
+        {
+            bool isSpaceEmpty = egg->SubSpaceOffset();
+            if (isSpaceEmpty)
+                break;
+        }
 
         IsSpaceShrink |= 0x40;
     }
@@ -248,13 +265,42 @@ void app::EggManager::UpdateEggSpace(const fnd::SUpdateInfo& updateInfo, int pla
 
         if (*((char*)playerInfo + 0x145) && *((char*)playerInfo + 0x144))
         {
+            csl::math::Vector3 playerPos{ *(csl::math::Vector3*)(playerInfo + 4) };
+            if (!EggsP2.size())
+                return;
+
             SubSpaceCount(playerNo);
+
+            if (!EggsP2.at(EggsP2.size() - 1)->SpaceCount)
+            {
+                for (size_t i = 0; i < EggsP2.size() * 10; i++)
+                {
+                    LocusData data{ playerPos, *(csl::math::Quaternion*)(playerInfo + 8),
+                        *((char*)playerInfo + 0x144) ^ 1 };
+                    GhostDataP2.push_front(data);
+                }
+            }
+
             return;
         }
 
         if (IsSpaceShrink & 0x10)
         {
+            csl::math::Vector3 playerPos{ *(csl::math::Vector3*)(playerInfo + 4) };
+            if (!EggsP2.size())
+                return;
+
             SubSpaceCount(playerNo);
+
+            if (!EggsP2.at(EggsP2.size() - 1)->SpaceCount)
+            {
+                for (size_t i = 0; i < EggsP2.size() * 10; i++)
+                {
+                    LocusData data{ playerPos, *(csl::math::Quaternion*)(playerInfo + 8),
+                        *((char*)playerInfo + 0x144) ^ 1 };
+                    GhostDataP2.push_front(data);
+                }
+            }
             return;
         }
 
