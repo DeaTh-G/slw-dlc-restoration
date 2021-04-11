@@ -1,0 +1,2 @@
+Patch "Enable DLC Music in Battle Mode" by "ĐeäTh"
+WriteNop(ASLR(0x0095B570), 6)

@@ -1,0 +1,27 @@
+{
+  "Groups": [
+    {
+      "Name": "Tweaks",
+      "DisplayName": "Tweaks",
+      "Elements": [
+        {
+          "Name": "isConsistentShadows",
+          "DisplayName": "Consistent Shadows",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        },
+		{
+          "Name": "disablePipeTransition",
+          "DisplayName": "Disable Pipe Transition",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        }
+      ]
+    }
+  ],
+  "IniFile": "DLCRestoration.ini"
+}

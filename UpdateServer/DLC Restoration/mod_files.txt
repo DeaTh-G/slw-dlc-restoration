@@ -1,0 +1,6 @@
+[Main]
+VersionString="Initial Commit"
+DownloadSizeString="387 KB"
+[Changelog]
+StringCount=1
+String0="Initial Commit"
