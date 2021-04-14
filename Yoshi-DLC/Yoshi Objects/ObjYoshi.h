@@ -29,6 +29,14 @@ namespace app
             animation::AnimationResContainer::__ct(&AnimationContainer, (csl::fnd::IAllocator*)pAllocator);
         }
 
+        void Destructor(size_t deletingFlags) override
+        {
+            animation::AnimationResContainer::__dt(&AnimationContainer);
+            delete &AnimationID;
+
+            CObjInfo::Destructor(deletingFlags);
+        }
+
         void Initialize(GameDocument& gameDocument) override
         {
             const char* modelNames[4] { "zdlc02_obj_yoshi_green", "zdlc02_obj_yoshi_blue", "zdlc02_obj_yoshi_red", "zdlc02_obj_yoshi_yellow" };

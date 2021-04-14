@@ -7,7 +7,7 @@ namespace app
         class BaseObject
         {
         public:
-            virtual ~BaseObject() {};
+            virtual void Destructor(size_t deletingFlags) {};
         };
     }
 }

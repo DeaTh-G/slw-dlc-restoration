@@ -38,6 +38,11 @@ namespace app
             animation::AnimationResContainer::__ct(&AnimationContainer, pAllocator);
         }
 
+        void Destructor(size_t deletingFlags) override
+        {
+            animation::AnimationResContainer::__dt(&AnimationContainer);
+        }
+
         void Initialize(GameDocument& gameDocument) override
         {
             int animationScript = 0;
@@ -77,6 +82,16 @@ namespace app
         {
             State = ObjYoshiJumpBoardState::STATE_WAIT;
             Type = type;
+        }
+
+        void Destructor(size_t deletingFlags) override
+        {
+            delete HitMessage;
+            delete ExternalMoveMessage;
+            delete DefaultShot;
+            delete JumpShot;
+
+            CSetObjectListener::Destructor(deletingFlags);
         }
 
         void AddCallback(GameDocument* gameDocument) override

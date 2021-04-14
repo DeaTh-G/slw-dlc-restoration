@@ -6,6 +6,9 @@ namespace app
     {
         class GOCTransform
         {
+        private:
+            inline static FUNCTION_PTR(void, __thiscall, __dt, ASLR(0x00494B90), GOCTransform* This, size_t deletingFlags);
+
         public:
             int Data[0x78]{};
 
@@ -13,6 +16,8 @@ namespace app
             inline static FUNCTION_PTR(void, __thiscall, SetLocalRotation, ASLR(0x00494470), int* This, csl::math::Quaternion* position);
             inline static FUNCTION_PTR(bool, __thiscall, IsExistParent, ASLR(0x00494240), GOCTransform* This);
             inline static FUNCTION_PTR(char, __thiscall, SetInheriteFlags, ASLR(0x00494250), GOCTransform* This, char a2);
+
+            ~GOCTransform() { __dt(this, 0); }
         };
     }
 }

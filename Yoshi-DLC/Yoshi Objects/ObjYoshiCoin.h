@@ -31,9 +31,9 @@ namespace app
 
     class ObjYoshiCoin : public CSetObjectListener
     {
-        void* RingManager;
+        void* RingManager = NULL;
         float ResetTime{};
-        bool IsReset;
+        bool IsReset{};
         INSERT_PADDING(7);
 
     public:

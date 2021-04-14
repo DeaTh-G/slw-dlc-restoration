@@ -43,7 +43,12 @@ namespace app
             int field_98{};
             int field_9C{};
 
-            MsgDamage(int a1, int a2, int a3, xgame::MsgHitEventCollision* hitMessage, csl::math::Vector3* position) : Message()
+            MsgDamage() : Message()
+            {
+                Type = fnd::PROC_MSG_DAMAGE;
+            }
+
+            MsgDamage(int a1, int a2, int a3, xgame::MsgHitEventCollision* hitMessage, csl::math::Vector3* position) : MsgDamage()
             {
                 __ct(this, a1, a2, a3, hitMessage, position);
             }

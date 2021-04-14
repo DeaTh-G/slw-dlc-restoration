@@ -63,6 +63,13 @@ namespace app
         int field_3E8{};
         int field_3EC{};
 
+        void Destructor(size_t deletingFlags) override
+        {
+            delete HitMessage;
+
+            CSetObjectListener::Destructor(deletingFlags);
+        }
+
     public:
         void AddCallback(GameDocument* gameDocument) override
         {
@@ -425,13 +432,11 @@ namespace app
 
         void StateWaitYoshiExtrication()
         {
-            EggManager* eggManager = EggManager::GetService((GameDocument*)field_24[1]);
-            if (!eggManager)
-                return;
-
             int winnerNo = ObjUtil::GetPlayerNo(field_24[1], HitMessage->ActorID);
-            if (!eggManager->IsEndExtrication(winnerNo))
-                return;
+            EggManager* eggManager = EggManager::GetService((GameDocument*)field_24[1]);
+            if (eggManager)
+                if (!eggManager->IsEndExtrication(winnerNo))
+                    return;
 
             /* Send Battle Goal Message if a second player exists */
             int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 1);

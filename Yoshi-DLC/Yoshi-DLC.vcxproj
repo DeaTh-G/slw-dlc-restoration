@@ -299,6 +299,7 @@
     <ClInclude Include="csl\math\Vector3.h" />
     <ClInclude Include="csl\ut\NonCopyable.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="HH_ALLOC.h" />
     <ClInclude Include="Headers.h" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="hh\base.h" />

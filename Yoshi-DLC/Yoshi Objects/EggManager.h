@@ -23,8 +23,9 @@ namespace app
         float field_64P2{};
         char IsSpaceShrink{};
         char FlowerCount{};
-
+        
         EggManager() {}
+        void Destructor(size_t deletingFlags) override;
 
         void StartExtrication(int playerNo);
 

@@ -143,6 +143,14 @@ namespace app
             ModelType = CInfo->ModelType;
         }
 
+        void Destructor(size_t deletingFlags) override
+        {
+            delete CInfo;
+            delete Movement;
+
+            GameObject3D::Destructor(deletingFlags);
+        }
+
         void AddCallback(GameDocument* gameDocument) override
         {
             fnd::GOCVisualModel::VisualDescription visualDescriptor{};

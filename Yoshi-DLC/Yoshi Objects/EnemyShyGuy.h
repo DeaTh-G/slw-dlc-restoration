@@ -29,6 +29,13 @@ namespace app
             animation::AnimationResContainer::__ct(&AnimationContainer, (csl::fnd::IAllocator*)pAllocator);
         }
 
+        void Destructor(size_t deletingFlags) override
+        {
+            animation::AnimationResContainer::__dt(&AnimationContainer);
+
+            EnemyInfo::Destructor(deletingFlags);
+        }
+
         void Initialize(GameDocument& gameDocument) override
         {
             int packFile = 0;

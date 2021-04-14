@@ -51,6 +51,14 @@ namespace app
             GameObject::SetObjectCategory(this, 4);
         }
 
+        void Destructor(size_t deletingFlags) override
+        {
+            for (fnd::HFrame& pointer : Children)
+                fnd::HFrame::__dt(&pointer, 2);
+
+            CSetObjectListener::Destructor(deletingFlags);
+        }
+
         void AddCallback(GameDocument* gameDocument) override
         {
             fnd::GOComponent::Create(this, GOCVisualContainer);

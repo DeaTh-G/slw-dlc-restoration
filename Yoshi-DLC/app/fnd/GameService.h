@@ -9,19 +9,18 @@ namespace app
         private:
             inline static FUNCTION_PTR(bool, __thiscall, f_ActorProc, ASLR(0x004A1BF0), CActor* This, int id, void* data);
             inline static FUNCTION_PTR(GameService*, __thiscall, __ct, ASLR(0x004A1C20), GameService* This, int a2);
+            inline static FUNCTION_PTR(GameService*, __thiscall, __dt, ASLR(0x004A1CE0), GameService* This, int a2);
 
         protected:
             GameDocument* Document;
             GameServiceClass* ServiceClass;
-            void* field_04;
             void* field_08;
+            void* field_0C;
             unsigned int flags;
 
         public:
-            GameService()
-            {
-                __ct(this, 0);
-            }
+            GameService() { __ct(this, 0); }
+            void Destructor(size_t deletingFlags) override { __dt(this, 0); }
 
             virtual void ResolveAccessibleSerivce(GameDocument& document) {}
             virtual void Load() {}

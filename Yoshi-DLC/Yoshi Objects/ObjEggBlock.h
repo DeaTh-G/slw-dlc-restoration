@@ -270,6 +270,14 @@ namespace app
             game::PathEvaluator::__ct(&PathEvaluator);
         }
 
+        void Destructor(size_t deletingFlags) override
+        {
+            __HH_FREE(&PathEvaluator);
+            fnd::HFrame::__dt(&Parent, 2);
+
+            CSetObjectListener::Destructor(deletingFlags);
+        }
+
         void AddCallback(GameDocument* gameDocument) override
         {
             fnd::GOCVisualModel::VisualDescription visualDescriptor;

@@ -78,6 +78,13 @@ namespace app
                 PlayerNo = cInfo->PlayerNo;
         }
 
+        void Destructor(size_t deletingFlags) override
+        {
+            delete CInfo;
+
+            GameObject3D::Destructor(deletingFlags);
+        }
+
         void AddCallback(GameDocument* gameDocument) override
         {
             fnd::GOComponent::Create(this, GOCVisualModel);

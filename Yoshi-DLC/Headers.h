@@ -2,6 +2,7 @@
 
 #include "framework.h"
 #include "LWVariables.h"
+#include "HH_ALLOC.h"
 
 // csl
 #include "csl/fnd.h"

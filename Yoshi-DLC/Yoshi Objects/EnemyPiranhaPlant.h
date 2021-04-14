@@ -22,6 +22,13 @@ namespace app
             animation::AnimationResContainer::__ct(&AnimationContainer, (csl::fnd::IAllocator*)pAllocator);
         }
 
+        void Destructor(size_t deletingFlags) override
+        {
+            animation::AnimationResContainer::__dt(&AnimationContainer);
+
+            EnemyInfo::Destructor(deletingFlags);
+        }
+
         void Initialize(GameDocument& gameDocument) override
         {
             int packFile = 0;
@@ -67,7 +74,7 @@ namespace app
         fnd::HFrame Parent{};
         float HeadRotation{};
         float Scale{};
-        xgame::MsgDamage* Message{};
+        xgame::MsgDamage* Message = new xgame::MsgDamage();
         int Direction{};
 
         EnemyPiranhaPlant()
@@ -76,6 +83,15 @@ namespace app
             fnd::HFrame::__ct(&Parent);
             Scale = 1;
             HeadRotation = -(3.1415927f * 0.5f);
+        }
+
+        void Destructor(size_t deletingFlags)
+        {
+            fnd::HFrame::__dt(&Parent, 2);
+            AnimationListener.Destructor(0);
+            delete Message;
+
+            EnemyBase::Destructor(deletingFlags);
         }
 
         void AddCallback(GameDocument* gameDocument) override
@@ -312,7 +328,12 @@ namespace app
                         csl::math::Select(obj->HeadRotation, abs(1.2217305f), -abs(1.2217305f)), deltaTime * 5);
                     UpdateHeadPosture(obj, 0);
                     
-                    if (!GocEnemyTarget || !GOCEnemyTarget::IsFindTarget(GocEnemyTarget))
+                    bool isTargetFound = false;
+                    if (!GocEnemyTarget)
+                        return 0;
+
+                    isTargetFound = GOCEnemyTarget::IsFindTarget(GocEnemyTarget);
+                    if (!isTargetFound)
                         return 0;
 
                     int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);

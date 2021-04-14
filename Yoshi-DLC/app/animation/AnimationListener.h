@@ -8,6 +8,10 @@ namespace app
         {
         private:
             inline static FUNCTION_PTR(void, __thiscall, __ct, ASLR(0x0040B1B0), AnimationListener* This);
+            inline static FUNCTION_PTR(void, __thiscall, __dt, ASLR(0x0040B1E0), AnimationListener* This, int a2);
+
+        public:
+            void Destructor(size_t deletingFlags) override { __dt(this, deletingFlags); }
 
         protected:
             void* animationManager{};
@@ -21,7 +25,7 @@ namespace app
             int field_20{};
             int field_24{};
 
-            AnimationListener() { __ct(this); sizeof(AnimationListener); }
+            AnimationListener() { __ct(this); }
         };
     }
 }

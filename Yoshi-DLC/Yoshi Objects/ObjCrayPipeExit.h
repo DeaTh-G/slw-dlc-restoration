@@ -27,6 +27,15 @@ namespace app
         char IsTimerEnabled{};
         char IsNotMoving{};
 
+        void Destructor(size_t deletingFlags) override
+        {
+            delete ExternalMoveMessageP1;
+            delete ExternalMoveMessageP2;
+            delete StayMessage;
+
+            CSetObjectListener::Destructor(deletingFlags);
+        }
+
     public:
         void AddCallback(GameDocument* gameDocument) override
         {

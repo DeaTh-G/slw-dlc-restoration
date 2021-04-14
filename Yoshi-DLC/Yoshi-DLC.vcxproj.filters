@@ -546,6 +546,9 @@
     <ClInclude Include="app\fnd\FileLoaderParam.h">
       <Filter>Header Files\app</Filter>
     </ClInclude>
+    <ClInclude Include="HH_ALLOC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">

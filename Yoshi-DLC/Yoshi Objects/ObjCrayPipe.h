@@ -33,6 +33,14 @@ namespace app
         INSERT_PADDING(2);
         int field_40C{};
 
+        void Destructor(size_t deletingFlags) override
+        {
+            delete ExternalMoveMessage;
+            delete StayMessage;
+
+            CSetObjectListener::Destructor(deletingFlags);
+        }
+
     public:
         ObjCrayPipe()
         {
@@ -245,9 +253,11 @@ namespace app
             xgame::MsgWarpNewArea warpMessage{ PlayerNumber, true, targetPosition, targetRotation, 5, 1 };
             ObjUtil::SendMessageImmToGameActor(this, &warpMessage);
 
+            delete ExternalMoveMessage;
+            delete StayMessage;
             ExternalMoveMessage = new xgame::MsgGetExternalMovePosition();
             StayMessage = new xgame::MsgStayTrigger();
-            State == ObjCrayPipeState::STATE_IDLE;
+            State = ObjCrayPipeState::STATE_IDLE;
 
             /* Code that stops the battle mode players from teleporting back to entry pipe */
             xgame::MsgCatchEndPlayer catchEndMessage{ false };

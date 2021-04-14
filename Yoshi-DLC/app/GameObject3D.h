@@ -12,7 +12,7 @@ namespace app
     public:
         fnd::GOCTransform Transform{};
         char Padding[100]{};
-        fnd::GOCTransform* pTransform = new fnd::GOCTransform();
+        fnd::GOCTransform* pTransform { &Transform };
 
         GameObject3D()
         {
@@ -21,6 +21,8 @@ namespace app
 
         void Destructor(size_t deletingFlags) override
         {
+            pTransform->~GOCTransform();
+
             __dt(this, deletingFlags);
         }
 
