@@ -5,7 +5,7 @@ namespace app
     class alignas(16) GameObject3D : public GameObject
     {
     private:
-        inline static FUNCTION_PTR(bool, __thiscall, f_ProcessMessage, ASLR(0x0090BD70), CActor* This, fnd::Message& message);
+        inline static FUNCTION_PTR(bool, __thiscall, f_ProcessMessage, ASLR(0x0090BD70), GameObject3D* This, fnd::Message& message);
         inline static FUNCTION_PTR(void, __thiscall, __ct, ASLR(0x0090BC90), GameObject3D* This);
         inline static FUNCTION_PTR(void, __thiscall, __dt, ASLR(0x0090BD30), GameObject3D* This, int a2);
 
@@ -21,6 +21,8 @@ namespace app
 
         void Destructor(size_t deletingFlags) override
         {
+            pTransform->~GOCTransform();
+
             __dt(this, deletingFlags);
         }
 
