@@ -130,7 +130,7 @@ namespace app
         DroppedEggCInfo* CInfo{};
         int ModelType{};
         float Time{};
-        game::MoveBound* Movement = new game::MoveBound();
+        game::MoveBound* Movement = new(::operator new(sizeof(game::MoveBound))) game::MoveBound();
         INSERT_PADDING(0x4);	// BoundListener
         ObjDroppedEgg* Instance;
         fnd::HandleBase Handle{};
@@ -145,8 +145,8 @@ namespace app
 
         void Destructor(size_t deletingFlags) override
         {
-            ::operator delete(Movement);
             GameObject3D::Destructor(deletingFlags);
+            ::operator delete(Movement);
         }
 
         void AddCallback(GameDocument* gameDocument) override
