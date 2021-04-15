@@ -32,7 +32,6 @@ namespace app
         void Destructor(size_t deletingFlags) override
         {
             animation::AnimationResContainer::__dt(&AnimationContainer);
-
             EnemyInfo::Destructor(deletingFlags);
         }
 

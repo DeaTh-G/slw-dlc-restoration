@@ -41,6 +41,7 @@ namespace app
         void Destructor(size_t deletingFlags) override
         {
             animation::AnimationResContainer::__dt(&AnimationContainer);
+            CObjInfo::Destructor(deletingFlags);
         }
 
         void Initialize(GameDocument& gameDocument) override

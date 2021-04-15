@@ -12,7 +12,7 @@ namespace app
         inline static FUNCTION_PTR(uint32_t, __thiscall, f_SetExtUserData, ASLR(0x00844850), GameObject* This, int a2, int a3);
 
     public:
-        char field_031C[0x88]{};
+        char field_031C[0x80]{};
 
         inline static FUNCTION_PTR(void, __thiscall, SetStatusRetire, ASLR(0x00844790), GameObject* This);
         inline static FUNCTION_PTR(void, __thiscall, SetStatusTemporaryRetire, ASLR(0x008447B0), GameObject* This, float a2);
@@ -20,9 +20,9 @@ namespace app
 
     protected:
         bool ProcessMessage(fnd::Message& message) override { return f_ProcessMessage(this, &message); }
-        virtual void OnInitializedSetObject() {};
+        virtual void OnInitializedSetObject() {}
         virtual void OnPutSetObject(CSetAdapter& adapter) {}
-        virtual void OnSetEditorParamChanged(CSetAdapter& adapter) {};
+        virtual void OnSetEditorParamChanged(CSetAdapter& adapter) {}
 
     public:
         CSetObjectListener() { __ct(this); }

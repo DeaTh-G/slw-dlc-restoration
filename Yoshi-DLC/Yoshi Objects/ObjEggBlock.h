@@ -272,8 +272,7 @@ namespace app
 
         void Destructor(size_t deletingFlags) override
         {
-            __HH_FREE(&PathEvaluator);
-            fnd::HFrame::__dt(&Parent, 2);
+            fnd::HFrame::__dt(&Parent, 0);
 
             CSetObjectListener::Destructor(deletingFlags);
         }

@@ -145,9 +145,7 @@ namespace app
 
         void Destructor(size_t deletingFlags) override
         {
-            delete CInfo;
-            delete Movement;
-
+            ::operator delete(Movement);
             GameObject3D::Destructor(deletingFlags);
         }
 
