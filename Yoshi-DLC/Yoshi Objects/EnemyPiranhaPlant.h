@@ -108,7 +108,7 @@ namespace app
             
             EnemyPiranhaPlantData* data = (EnemyPiranhaPlantData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
             EnemyPiranhaPlantInfo* info = (EnemyPiranhaPlantInfo*)ObjUtil::GetObjectInfo(gameDocument, "EnemyPiranhaPlantInfo");
-            Direction |= !data->Direction;
+            Direction |= data->Direction == 0;
 
             fnd::GOComponent::BeginSetup(this);
 
@@ -175,11 +175,10 @@ namespace app
             int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
             if (gocShadow)
             {
-                game::ShadowHemisphereShapeCInfo shadowInfo;
-                game::ShadowHemisphereShapeCInfo* ppShadowInfo = &shadowInfo;
+                game::ShadowSphereShapeCInfo shadowInfo;
+                game::ShadowSphereShapeCInfo* ppShadowInfo = &shadowInfo;
 
-                game::ShadowHemisphereShapeCInfo::__ct(&shadowInfo, 4);
-                shadowInfo.field_04 = 6;
+                game::ShadowSphereShapeCInfo::__ct(&shadowInfo, 4);
 
                 game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
                 if (Direction & 16)
