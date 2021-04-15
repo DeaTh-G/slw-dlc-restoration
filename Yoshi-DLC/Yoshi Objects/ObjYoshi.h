@@ -31,8 +31,8 @@ namespace app
 
         void Destructor(size_t deletingFlags) override
         {
+            ObjYoshiInfo::~ObjYoshiInfo();
             animation::AnimationResContainer::__dt(&AnimationContainer);
-            delete &AnimationID;
 
             CObjInfo::Destructor(deletingFlags);
         }

@@ -54,7 +54,7 @@ namespace app
         void Destructor(size_t deletingFlags) override
         {
             for (fnd::HFrame& pointer : Children)
-                fnd::HFrame::__dt(&pointer, 2);
+                fnd::HFrame::__dt(&pointer, 0);
 
             CSetObjectListener::Destructor(deletingFlags);
         }

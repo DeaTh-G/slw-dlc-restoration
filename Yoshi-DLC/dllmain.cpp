@@ -15,13 +15,13 @@ char IsYoshiIslandStage()
 void Initialize()
 {
     /* TODO: Please replace this with sane code. */
-    /*WRITE_MEMORY(ASLR(0x00D41252),
+    WRITE_MEMORY(ASLR(0x00D41252),
         0x68,
         (const char)((uint32_t)app::construct_EggManager >> 0),
         (const char)((uint32_t)app::construct_EggManager >> 8),
         (const char)((uint32_t)app::construct_EggManager >> 16),
         (const char)((uint32_t)app::construct_EggManager >> 24)
-    );*/
+    );
 
     WriteCall((void*)ASLR(0x009159F3), &IsYoshiIslandStage);
     WriteCall((void*)ASLR(0x00915A16), &IsYoshiIslandStage);
@@ -50,41 +50,41 @@ void Initialize()
     auto createObjInfo_ObjYoshiSpecialFlowerInfo = &app::createObjInfo_ObjYoshiSpecialFlowerInfo;
 
     //WRITE_FUNCTION(ASLR(0x00D2A654), *(void**)&create_EnemyShyGuy);
-    WRITE_FUNCTION(ASLR(0x00D2A2E4), *(void**)&create_EnemyPiranhaPlant);
-    /*WRITE_FUNCTION(ASLR(0x00D2BB51), *(void**)&create_ObjCrayPipe);
-    WRITE_FUNCTION(ASLR(0x00D2BBA1), *(void**)&create_ObjCrayPipeExit);*/
-    /*WRITE_FUNCTION(ASLR(0x00D2BC94), *(void**)&create_ObjEggBlock);
-    WRITE_FUNCTION(ASLR(0x00D2BC41), *(void**)&create_ObjEggRotationChangeCollision);*/
+    //WRITE_FUNCTION(ASLR(0x00D2A2E4), *(void**)&create_EnemyPiranhaPlant);
+    //WRITE_FUNCTION(ASLR(0x00D2BB51), *(void**)&create_ObjCrayPipe);
+    //WRITE_FUNCTION(ASLR(0x00D2BBA1), *(void**)&create_ObjCrayPipeExit);
+    //WRITE_FUNCTION(ASLR(0x00D2BC94), *(void**)&create_ObjEggBlock);
+    //WRITE_FUNCTION(ASLR(0x00D2BC41), *(void**)&create_ObjEggRotationChangeCollision);
     //WRITE_FUNCTION(ASLR(0x00D2C0F4), *(void**)&create_ObjRotateLift);
     WRITE_FUNCTION(ASLR(0x00D2C1E4), *(void**)&create_ObjYoshiCoin);
-    WRITE_FUNCTION(ASLR(0x00D2C234), *(void**)&create_ObjYoshiGoal);
+    //WRITE_FUNCTION(ASLR(0x00D2C234), *(void**)&create_ObjYoshiGoal);
     //WRITE_FUNCTION(ASLR(0x00D2C2D4), *(void**)&create_ObjYoshiJumpBoardBig);
-    /*WRITE_FUNCTION(ASLR(0x00D2C324), *(void**)&create_ObjYoshiJumpBoardSmall);*/
+    //WRITE_FUNCTION(ASLR(0x00D2C324), *(void**)&create_ObjYoshiJumpBoardSmall);
     //WRITE_FUNCTION(ASLR(0x00D2C284), *(void**)&create_ObjYoshiSpecialFlower);
 
-    //WRITE_FUNCTION(ASLR(0x00D2A64F), *(void**)&createObjInfo_EnemyShyGuyInfo);
+    WRITE_FUNCTION(ASLR(0x00D2A64F), *(void**)&createObjInfo_EnemyShyGuyInfo);
     WRITE_FUNCTION(ASLR(0x00D2A2DF), *(void**)&createObjInfo_EnemyPiranhaPlantInfo);
-    //WRITE_FUNCTION(ASLR(0x00D2BC8F), *(void**)&createObjInfo_ObjEggBlockInfo);
-    //WRITE_FUNCTION(ASLR(0x00D2C0EF), *(void**)&createObjInfo_ObjRotateLiftInfo);
+    WRITE_FUNCTION(ASLR(0x00D2BC8F), *(void**)&createObjInfo_ObjEggBlockInfo);
+    WRITE_FUNCTION(ASLR(0x00D2C0EF), *(void**)&createObjInfo_ObjRotateLiftInfo);
     WRITE_FUNCTION(ASLR(0x00D2C1DF), *(void**)&createObjInfo_ObjYoshiCoinInfo);
     WRITE_FUNCTION(ASLR(0x00D2C22F), *(void**)&createObjInfo_ObjYoshiGoalInfo);
-    //WRITE_FUNCTION(ASLR(0x00D2C2CF), *(void**)&createObjInfo_ObjYoshiJumpBoard);
-    /*WRITE_FUNCTION(ASLR(0x00D2C31F), *(void**)&createObjInfo_ObjYoshiJumpBoard);*/
-    //WRITE_FUNCTION(ASLR(0x00D2C27F), *(void**)&createObjInfo_ObjYoshiSpecialFlowerInfo);
+    WRITE_FUNCTION(ASLR(0x00D2C2CF), *(void**)&createObjInfo_ObjYoshiJumpBoard);
+    WRITE_FUNCTION(ASLR(0x00D2C31F), *(void**)&createObjInfo_ObjYoshiJumpBoard);
+    WRITE_FUNCTION(ASLR(0x00D2C27F), *(void**)&createObjInfo_ObjYoshiSpecialFlowerInfo);
 
     // Install Hooks
-    /*app::xgame::IsDLCStagePurchase::Func();
+    app::xgame::IsDLCStagePurchase::Func();
     app::HUD::CHudGameMainDisplay::__ct();
     app::HUD::CHudGameMainDisplay::SpecialRingUpdate();
     app::CSharedObjInfo::Initialize();
     app::CObjDroppedRing::ProcMsgHitEventCollision();
     app::EnemyBlowOffObject::OnDead();
-    app::Player::CPlayer::UpdatePlayerInformation();*/
+    app::Player::CPlayer::UpdatePlayerInformation();
     app::Player::CStateBase::ProcMsgTakeObject();
-    /*app::GameModeStageBattle::LoadLoadingScreenData();
+    app::GameModeStageBattle::LoadLoadingScreenData();
 
     if (!DisablePipeTransition)
-        app::GameModeStage::StateWarp();*/
+        app::GameModeStage::StateWarp();
 }
 
 extern "C"

@@ -94,4 +94,4 @@ const HMODULE MODULE_HANDLE = GetModuleHandle(NULL);
     { \
         FUNCTION_PTR(returnType, __thiscall, Base##function, location, void* This, __VA_ARGS__);\
         return Base##function((void*)this, __VA_ARGS__);\
-    } \
+    }

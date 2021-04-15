@@ -34,7 +34,7 @@ namespace app
 
         ObjYoshiOneUp(CInfo& info)
         {
-            Info = &info;
+            *Info = info;
             PlayerNo = info.PlayerNo;
         }
 

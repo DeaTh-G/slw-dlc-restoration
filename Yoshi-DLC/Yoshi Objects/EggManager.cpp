@@ -2,13 +2,8 @@
 
 void app::EggManager::Destructor(size_t deletingFlags)
 {
-    for (auto& egg : EggsP1)
-        egg->Destructor(1);
-
-    for (auto& egg : EggsP2)
-        egg->Destructor(1);
-
-    fnd::GameService::Destructor(deletingFlags);
+    EggManager::~EggManager();
+    GameService::Destructor(deletingFlags);
 }
 
 void app::EggManager::StartExtrication(int playerNo)

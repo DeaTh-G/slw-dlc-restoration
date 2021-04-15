@@ -25,7 +25,6 @@ namespace app
         void Destructor(size_t deletingFlags) override
         {
             animation::AnimationResContainer::__dt(&AnimationContainer);
-
             EnemyInfo::Destructor(deletingFlags);
         }
 
@@ -87,7 +86,7 @@ namespace app
 
         void Destructor(size_t deletingFlags)
         {
-            fnd::HFrame::__dt(&Parent, 2);
+            fnd::HFrame::__dt(&Parent, 0);
             AnimationListener.Destructor(0);
             delete Message;
 
@@ -349,7 +348,7 @@ namespace app
                 bool ProcMsgDamage(EnemyPiranhaPlant* obj, xgame::MsgDamage& message)
                 {
                     csl::math::Vector3 position{};
-                    obj->Message = &message;
+                    *obj->Message = message;
 
                     fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
                     math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
@@ -418,7 +417,7 @@ namespace app
                 bool ProcMsgDamage(EnemyPiranhaPlant* obj, xgame::MsgDamage& message)
                 {
                     csl::math::Vector3 position{};
-                    obj->Message = &message;
+                    *obj->Message = message;
 
                     fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
                     math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
@@ -522,7 +521,7 @@ namespace app
                 bool ProcMsgDamage(EnemyPiranhaPlant* obj, xgame::MsgDamage& message)
                 {
                     csl::math::Vector3 position{};
-                    obj->Message = &message;
+                    *obj->Message = message;
 
                     fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
                     math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
@@ -596,7 +595,7 @@ namespace app
                 bool ProcMsgDamage(EnemyPiranhaPlant* obj, xgame::MsgDamage& message)
                 {
                     csl::math::Vector3 position{};
-                    obj->Message = &message;
+                    *obj->Message = message;
 
                     fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
                     math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
@@ -730,7 +729,9 @@ namespace app
                         
                         return 1;
                     }
-                };
+
+                    return 1;
+                }
 
             private:
                 void ChangeSubState(int stateID)

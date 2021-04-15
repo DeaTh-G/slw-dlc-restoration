@@ -80,8 +80,6 @@ namespace app
 
         void Destructor(size_t deletingFlags) override
         {
-            delete CInfo;
-
             GameObject3D::Destructor(deletingFlags);
         }
 
