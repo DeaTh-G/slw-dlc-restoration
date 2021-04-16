@@ -22,7 +22,7 @@ namespace app
         fnd::HFrame Parent;
         INSERT_PADDING(32);
 
-        EnemyBase() { __ct(this); }
+        EnemyBase() : CSetObjectListener(1) { __ct(this); }
         void Destructor(size_t deletingFlags) override
         {
             __dt(this, deletingFlags);

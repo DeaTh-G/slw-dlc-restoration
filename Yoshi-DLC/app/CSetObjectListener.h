@@ -26,6 +26,7 @@ namespace app
 
     public:
         CSetObjectListener() : GameObject3D(1) { __ct(this); }
+        CSetObjectListener(size_t dummy) { }
         void Destructor(size_t deletingFlags) override
         {
             __dt(this, deletingFlags);
