@@ -16,14 +16,14 @@ namespace app
         {
             xgame::MsgDlcChangeEggRotation msg{};
 
-            fnd::CActor::SendMessageImmOld(&field_04[0], message.ActorID, &msg);
+            SendMessageImm(message.ActorID, &msg);
         }
 
         void ProcMsgLeaveEventCollision(xgame::MsgLeaveEventCollision& message)
         {
             xgame::MsgDlcChangeEggRotation msg{};
 
-            fnd::CActor::SendMessageImmOld(&field_04[0], message.ActorID, &msg);
+            SendMessageImm(message.ActorID, &msg);
         }
 
     public:

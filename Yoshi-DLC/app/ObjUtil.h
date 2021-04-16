@@ -27,11 +27,11 @@ namespace app
         inline static FUNCTION_PTR(int*, __cdecl, GetSVPath, ASLR(0x0073E6C0), GameDocument* gameDocumnet, csl::math::Vector3* a1, csl::math::Vector3* a2);
         inline static FUNCTION_PTR(int*, __cdecl, RaycastHitCollision, ASLR(0x0073D980), GameDocument* gameDocumnet, csl::math::Vector3* a1, csl::math::Vector3* a2, int a3);
 
-        static int SendMessageImmToPlayer(GameObject* gameObject, int playerNo, void* message)
+        static int SendMessageImmToPlayer(GameObject* gameObject, int playerNo, fnd::Message* message)
         {
             void* levelInfo = CLevelInfo::GetService(*Document);
             int playerID = CLevelInfo::GetPlayerID(levelInfo, playerNo);
-            return fnd::CActor::SendMessageImmOld((int*)gameObject + 2, playerID, message);
+            return gameObject->SendMessageImm(playerID, message);
         }
     };
 }

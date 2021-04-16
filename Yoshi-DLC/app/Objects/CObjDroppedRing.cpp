@@ -16,7 +16,7 @@ HOOK(void, __fastcall, ProcMsgHitEventCollisionHook, ASLR(0x00662320), int* This
         if ((This[0xD2] & 0x40) == 0)
         {
             msgTakeObject.SetShapeUserID(*(int*)(message[7] + 0xBC));
-            if (app::fnd::CActor::SendMessageImmOld((int*)This + 2, message[8], (int*)&msgTakeObject))
+            if (((app::GameObject3D*)This)->SendMessageImm(message[8], &msgTakeObject))
             {
                 if (This[0xCA])
                     app::game::GOCEffect::CreateEffect((int*)This[0xCA], "ef_dl2_coin_get");

@@ -5,7 +5,7 @@ namespace app
     class CSetObjectListener : public GameObject3D
     {
     private:
-        inline static FUNCTION_PTR(bool, __thiscall, f_ProcessMessage, ASLR(0x00844A30), CSetObjectListener* This, fnd::Message* message);
+        inline static FUNCTION_PTR(bool, __thiscall, f_ProcessMessage, ASLR(0x00844A30), CActor* This, fnd::Message& message);
         inline static FUNCTION_PTR(CSetObjectListener*, __thiscall, __ct, ASLR(0x008448A0), CSetObjectListener* This);
         inline static FUNCTION_PTR(CSetObjectListener*, __thiscall, __dt, ASLR(0x00844A70), CSetObjectListener* This, int a2);
         inline static FUNCTION_PTR(uint32_t, __thiscall, f_GetExtUserData, ASLR(0x00844830), CSetObjectListener* This, int a2);
@@ -14,18 +14,18 @@ namespace app
     public:
         char field_031C[0x80]{};
 
-        inline static FUNCTION_PTR(void, __thiscall, SetStatusRetire, ASLR(0x00844790), GameObject* This);
-        inline static FUNCTION_PTR(void, __thiscall, SetStatusTemporaryRetire, ASLR(0x008447B0), GameObject* This, float a2);
+        inline static FUNCTION_PTR(void, __thiscall, SetStatusRetire, ASLR(0x00844790), CSetObjectListener* This);
+        inline static FUNCTION_PTR(void, __thiscall, SetStatusTemporaryRetire, ASLR(0x008447B0), CSetObjectListener* This, float a2);
         inline static FUNCTION_PTR(CSetObjectListener*, __thiscall, GetParentObject, ASLR(0x00844AE0), CSetObjectListener* This);
 
     protected:
-        bool ProcessMessage(fnd::Message& message) override { return f_ProcessMessage(this, &message); }
+        bool ProcessMessage(fnd::Message& message) override { return f_ProcessMessage(this, message); }
         virtual void OnInitializedSetObject() {}
         virtual void OnPutSetObject(CSetAdapter& adapter) {}
         virtual void OnSetEditorParamChanged(CSetAdapter& adapter) {}
 
     public:
-        CSetObjectListener() { __ct(this); }
+        CSetObjectListener() : GameObject3D(1) { __ct(this); }
         void Destructor(size_t deletingFlags) override
         {
             __dt(this, deletingFlags);
