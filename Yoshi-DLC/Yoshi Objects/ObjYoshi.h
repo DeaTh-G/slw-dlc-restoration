@@ -260,7 +260,10 @@ namespace app
                 math::Vector3Scale(&xRot, 10, &xRot);
                 math::Vector3Add(&negXRot, &xRot, &negXRot);
 
-                game::MoveBound* movement = new game::MoveBound();
+                void* movementMem = ((app::fnd::ReferencedObject*)gocMovement)->pAllocator->Alloc
+            	(sizeof(game::MoveBound), 16);
+                game::MoveBound* movement = new(movementMem) game::MoveBound();
+            	
                 game::GOCMovement::SetupController(gocMovement, movement);
 
                 game::MoveBound::Description description{};

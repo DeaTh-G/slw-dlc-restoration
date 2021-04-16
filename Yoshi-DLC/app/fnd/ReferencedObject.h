@@ -10,7 +10,7 @@ namespace app
             inline static FUNCTION_PTR(ReferencedObject*, __cdecl, f_new, ASLR(0x0048D4A0), size_t size, csl::fnd::IAllocator* pAllocator);
             inline static FUNCTION_PTR(void, __cdecl, f_delete, ASLR(0x0048D480), void* obj);
 
-        protected:
+        public:
             short field_04;
             short field_06;
             csl::fnd::IAllocator* pAllocator;

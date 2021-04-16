@@ -130,7 +130,7 @@ namespace app
         DroppedEggCInfo* CInfo{};
         int ModelType{};
         float Time{};
-        game::MoveBound* Movement = new(::operator new(sizeof(game::MoveBound))) game::MoveBound();
+        game::MoveBound* Movement = nullptr;
         INSERT_PADDING(0x4);	// BoundListener
         ObjDroppedEgg* Instance;
         fnd::HandleBase Handle{};
@@ -141,12 +141,6 @@ namespace app
         {
             CInfo = cInfo;
             ModelType = CInfo->ModelType;
-        }
-
-        void Destructor(size_t deletingFlags) override
-        {
-            GameObject3D::Destructor(deletingFlags);
-            ::operator delete(Movement);
         }
 
         void AddCallback(GameDocument* gameDocument) override
@@ -198,6 +192,10 @@ namespace app
             int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
             if (gocMovement)
             {
+                void* movementMem = ((app::fnd::ReferencedObject*)gocMovement)->pAllocator->Alloc
+            	(sizeof(game::MoveBound), 16);
+
+            	Movement = new(movementMem) game::MoveBound();
                 game::GOCMovement::SetupController(gocMovement, Movement);
 
                 game::MoveBound::Description description{};
