@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<Template>
+  <RangeIn type="float" default="1000" description="Distance from object before it spawns" />
+  <RangeOut type="float" default="1200" description="Distance from object before it despawns" />
+  <Parent type="target" description="" />
+  <Unknown1 type="uint16" default="0" description="" />
+  <Unknown2 type="uint32" default="0" description="" />
+  <Unknown3 type="float" default="0" description="" />
+  <ResetTime type="float" default="0" description="Time that it takes for the coin to reset (used if IsReset is set to true)." />
+  <IsReset type="bool" default="false" description="Does the coin reset?" />
+  <SetPlaceType type="enum" default="0" description="" />
+  <EventType type="enum" default="0" description="Is the coin spawned by an event?" />
+  <Extra type="model" name="zdlc02_obj_yoshicoin.model" />
+  <Extra type="offset_rotation_y_speed" name="120" />
+  <Extra type="offset_position_y" name="0.5" />
+</Template>
