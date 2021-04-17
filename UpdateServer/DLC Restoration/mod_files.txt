@@ -2,7 +2,8 @@ add Yoshi-DLC.dll
 add Yoshi-DLC.hmm
 add DLCRestoration.json
 add DLCRestoration.ini
-add disk/sonic2013_patch_0/set/zdlc02_obj_00.orc
+add disk/sonic2013_patch_0/set/zdlc02_obj_00.
+add disk/sonic2013_patch_0/set/zdlc02_obj_02.orc
 add disk/sonic2013_patch_0/sound/bgm_zdlc02.acb
 add disk/sonic2013_patch_0/sound/bgm_zdlc02_streamfiles.awb
 add disk/sonic2013_patch_0/sound/se_ambience_zdlc02.acb
@@ -46,9 +47,4 @@ add disk/sonic2013_patch_0/zdlc02/zdlc02_trr_cmn.pac
 add disk/sonic2013_patch_0/zdlc02/zdlc02_trr_cmn.pac.00
 add disk/sonic2013_patch_0/zdlc02/zdlc02_trr_cmn.pac.01
 add disk/sonic2013_patch_0/zdlc02/zdlc02_trr_cmn.pac.02
-add disk/sonic2013_patch_0/actstgmission.lua
-add disk/sonic2013_patch_0/EnemyHeyho.pac
-add disk/sonic2013_patch_0/EnemyHeyho.pac.00
-add disk/sonic2013_patch_0/EnemyPackunFlower.pac
-add disk/sonic2013_patch_0/EnemyPackunFlower.pac.00
 add mod.ini
