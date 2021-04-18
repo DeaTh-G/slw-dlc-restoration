@@ -96,7 +96,8 @@ void Initialize()
     if (!DisablePipeTransition)
         app::GameModeStage::StateWarp();
 
-    app::StageInfo::SStageData::IsZeldaStage();
+    app::Player::CVisualSonic::RegisterResource();
+    app::GameModeStage::RegisterObjInfos();
 }
 
 extern "C"

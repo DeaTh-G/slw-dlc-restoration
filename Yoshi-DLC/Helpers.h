@@ -2,6 +2,8 @@
 
 inline static bool DisablePipeTransition = false;
 inline static bool IsConsistentShadow = false;
+inline static bool IsAlwaysLinkSonic = true;
+
 
 static csl::math::Quaternion GetRotationFromMatrix(csl::math::Matrix34* matrix)
 {

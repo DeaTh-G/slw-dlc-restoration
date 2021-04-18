@@ -258,6 +258,7 @@
     <ClInclude Include="app\Player\CPlayer.h" />
     <ClInclude Include="app\Player\CStateBase.h" />
     <ClInclude Include="app\Player\CStateGOC.h" />
+    <ClInclude Include="app\Player\CVisualSonic.h" />
     <ClInclude Include="app\Player\StateUtil.h" />
     <ClInclude Include="app\SetShotInfo.h" />
     <ClInclude Include="app\StageInfo.h" />
@@ -344,6 +345,7 @@
     <ClCompile Include="app\Objects\EnemyBlowOffObject.cpp" />
     <ClCompile Include="app\Player\CPlayer.cpp" />
     <ClCompile Include="app\Player\CStateBase.cpp" />
+    <ClCompile Include="app\Player\CVisualSonic.cpp" />
     <ClCompile Include="app\StageInfo.cpp" />
     <ClCompile Include="app\xgame.cpp" />
     <ClCompile Include="dllmain.cpp" />

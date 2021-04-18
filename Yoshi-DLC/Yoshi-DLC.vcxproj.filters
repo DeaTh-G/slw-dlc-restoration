@@ -570,6 +570,9 @@
     <ClInclude Include="app\StageInfo.h">
       <Filter>Header Files\app</Filter>
     </ClInclude>
+    <ClInclude Include="app\Player\CVisualSonic.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">
@@ -612,6 +615,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="app\StageInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Player\CVisualSonic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

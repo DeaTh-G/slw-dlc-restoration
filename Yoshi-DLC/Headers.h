@@ -110,6 +110,7 @@
 #include "app/Player/CPlayer.h"
 #include "app/Player/CStateBase.h"
 #include "app/Player/CStateGOC.h"
+#include "app/Player/CVisualSonic.h"
 
 #include "app/xgame.h"
 #include "app/xgame/Blackboard.h"

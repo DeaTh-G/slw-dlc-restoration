@@ -6,5 +6,6 @@ namespace app
     {
     public:
         static void StateWarp();
+        static void RegisterObjInfos();
     };
 }
