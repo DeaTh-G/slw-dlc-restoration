@@ -261,7 +261,6 @@
     <ClInclude Include="app\Player\CVisualSonic.h" />
     <ClInclude Include="app\Player\StateUtil.h" />
     <ClInclude Include="app\SetShotInfo.h" />
-    <ClInclude Include="app\StageInfo.h" />
     <ClInclude Include="app\ut\internal\StateImpl.h" />
     <ClInclude Include="app\ut\StateBase.h" />
     <ClInclude Include="app\xgame.h" />
@@ -334,6 +333,7 @@
     <ClInclude Include="Yoshi Objects\ObjYoshiJumpBoard.h" />
     <ClInclude Include="Yoshi Objects\ObjYoshiSpecialFlower.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaItemTree.h" />
+    <ClInclude Include="Zelda Objects\ObjZeldaRupee.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaWarpCollision.h" />
   </ItemGroup>
   <ItemGroup>
@@ -346,7 +346,6 @@
     <ClCompile Include="app\Player\CPlayer.cpp" />
     <ClCompile Include="app\Player\CStateBase.cpp" />
     <ClCompile Include="app\Player\CVisualSonic.cpp" />
-    <ClCompile Include="app\StageInfo.cpp" />
     <ClCompile Include="app\xgame.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Yoshi Objects\EggManager.cpp" />

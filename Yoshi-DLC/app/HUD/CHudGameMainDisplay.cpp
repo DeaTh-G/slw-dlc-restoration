@@ -22,6 +22,12 @@ HOOK(int*, __fastcall, CHudGameMainDisplayHook, ASLR(0x00503290), int* This, int
         *(This + 0x7A) |= 0x20;
     }
 
+    if (strncmp(packFileName, "zdlc03", 6) == 0)
+    {
+        *(This + 0x7A) |= 0x80;
+        *(This + 0x7A) |= 0x100;
+    }
+
     return This;
 }
 

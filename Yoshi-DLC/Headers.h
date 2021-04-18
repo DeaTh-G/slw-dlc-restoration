@@ -54,7 +54,6 @@
 #include "app/EnemyManager.h"
 #include "app/game/CollisionObjCInfo.h"
 #include "app/CSetObjClass.h"
-#include "app/StageInfo.h"
 
 #include "app/fnd/GameServiceClass.h"
 #include "app/fnd/GameService.h"
@@ -182,3 +181,4 @@
 
 #include "Zelda Objects/ObjZeldaWarpCollision.h"
 #include "Zelda Objects/ObjZeldaItemTree.h"
+#include "Zelda Objects/ObjZeldaRupee.h"
