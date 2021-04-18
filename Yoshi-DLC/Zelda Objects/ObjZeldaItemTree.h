@@ -76,39 +76,38 @@ namespace app
                 topCollisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
                 topCollisionInfo.MotionType = 0;
                 topCollisionInfo.Radius = 10;
-                topCollisionInfo.field_04 = 1;
+                topCollisionInfo.field_04 |= 1;
                 topCollisionInfo.field_0C = 1;
                 ObjUtil::SetupCollisionFilter(6, &topCollisionInfo);
                 game::CollisionObjCInfo::SetLocalPosition(&topCollisionInfo, &position);
                 game::GOCCollider::CreateShape(gocCollider, &topCollisionInfo);
 
-                game::ColliCylinderShapeCInfo trunkCollisionInfo;
+                game::ColliCylinderShapeCInfo wobbleCollisionInfo;
                 position = Vector3(0, 65, 0);
 
+                game::CollisionObjCInfo::__ct(&wobbleCollisionInfo);
+                wobbleCollisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_CYLINDER;
+                wobbleCollisionInfo.MotionType = 2;
+                wobbleCollisionInfo.Radius = 40;
+                wobbleCollisionInfo.Height = 40;
+                wobbleCollisionInfo.field_04 |= 3;
+                wobbleCollisionInfo.field_0C = 2;
+                ObjUtil::SetupCollisionFilter(6, &wobbleCollisionInfo);
+                game::CollisionObjCInfo::SetLocalPosition(&wobbleCollisionInfo, &position);
+                game::GOCCollider::CreateShape(gocCollider, &wobbleCollisionInfo);
+                
+                game::ColliCapsuleShapeCInfo trunkCollisionInfo;
+                position = Vector3(0, 46, 0);
+
                 game::CollisionObjCInfo::__ct(&trunkCollisionInfo);
-                trunkCollisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_CYLINDER;
-                trunkCollisionInfo.MotionType = 2;
-                trunkCollisionInfo.Radius = 40;
-                trunkCollisionInfo.Height = 40;
-                trunkCollisionInfo.field_04 = 3;
-                trunkCollisionInfo.field_0C = 2;
-                ObjUtil::SetupCollisionFilter(6, &trunkCollisionInfo);
+                trunkCollisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_CAPSULE;
+                trunkCollisionInfo.MotionType = 0;
+                trunkCollisionInfo.Radius = 4.5f;
+                trunkCollisionInfo.Height = 92;
+                trunkCollisionInfo.field_04 |= 0x100;
+                trunkCollisionInfo.field_08 = 0x2010000;
                 game::CollisionObjCInfo::SetLocalPosition(&trunkCollisionInfo, &position);
                 game::GOCCollider::CreateShape(gocCollider, &trunkCollisionInfo);
-
-                game::ColliCapsuleShapeCInfo unknownCollisionInfo;
-                position = Vector3(0, 92 * 0.5f, 0);
-
-                game::CollisionObjCInfo::__ct(&unknownCollisionInfo);
-                unknownCollisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_CAPSULE;
-                unknownCollisionInfo.MotionType = 0;
-                unknownCollisionInfo.Radius = 4.5f;
-                unknownCollisionInfo.Height = 92;
-                unknownCollisionInfo.field_04 = 100;
-                unknownCollisionInfo.field_08 = 0x2010000;
-                ObjUtil::SetupCollisionFilter(6, &unknownCollisionInfo);
-                game::CollisionObjCInfo::SetLocalPosition(&unknownCollisionInfo, &position);
-                game::GOCCollider::CreateShape(gocCollider, &unknownCollisionInfo);
             }
 
             game::GOCEffect::SimpleSetup(this);
@@ -172,16 +171,14 @@ namespace app
 
         void ProcMsgLeaveEventCollision(xgame::MsgLeaveEventCollision& message)
         {
-            csl::math::Vector3 playerPos{};
-            xgame::MsgGetPosition positionMessage { &playerPos };
+            /*csl::math::Vector3 playerPos{};
+            xgame::MsgGetPosition positionMessage { playerPos };
             if (SendMessageImm(message.field_28, &positionMessage))
             {
                 int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
                 if (!gocTransform)
                     return;
-
-
-            }
+            }*/
         }
     };
 
