@@ -141,6 +141,7 @@
 #include "app/xgame/MsgGoalForBattle.h"
 #include "app/xgame/MsgGetClimbObjectInfo.h"
 #include "app/xgame/MsgItemTreeWobblePoint.h"
+#include "app/xgame/MsgPLChangeAreaTopView.h"
 
 #include "SonicUSA/System/Random.h"
 
@@ -184,3 +185,4 @@
 #include "Zelda Objects/ObjZeldaItemTree.h"
 #include "Zelda Objects/ObjZeldaPopupItem.h"
 #include "Zelda Objects/ObjZeldaRupee.h"
+#include "Zelda Objects/ObjChangeTopViewCollision.h"

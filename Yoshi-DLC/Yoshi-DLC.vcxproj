@@ -284,6 +284,7 @@
     <ClInclude Include="app\xgame\MsgLeaveEventCollision.h" />
     <ClInclude Include="app\xgame\MsgNotifyObjectEvent.h" />
     <ClInclude Include="app\xgame\MsgPlayerReachGoal.h" />
+    <ClInclude Include="app\xgame\MsgPLChangeAreaTopView.h" />
     <ClInclude Include="app\xgame\MsgPLGetInputButton.h" />
     <ClInclude Include="app\xgame\MsgPLHoldOn.h" />
     <ClInclude Include="app\xgame\MsgPLJumpToTargetPosition.h" />
@@ -333,6 +334,7 @@
     <ClInclude Include="Yoshi Objects\ObjYoshiCoin.h" />
     <ClInclude Include="Yoshi Objects\ObjYoshiJumpBoard.h" />
     <ClInclude Include="Yoshi Objects\ObjYoshiSpecialFlower.h" />
+    <ClInclude Include="Zelda Objects\ObjChangeTopViewCollision.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaItemTree.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaRupee.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaWarpCollision.h" />
