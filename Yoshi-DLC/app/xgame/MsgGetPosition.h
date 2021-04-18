@@ -14,9 +14,9 @@ namespace app
                 Type = fnd::PROC_MSG_GET_POSITION;
             }
 
-            MsgGetPosition(Vector3* a1) : MsgGetPosition()
+            MsgGetPosition(Vector3& a1) : MsgGetPosition()
             {
-                *position = *a1;
+                *position = a1;
             }
         };
     }
