@@ -72,6 +72,16 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2C31F), *(void**)&createObjInfo_ObjYoshiJumpBoard);
     WRITE_FUNCTION(ASLR(0x00D2C27F), *(void**)&createObjInfo_ObjYoshiSpecialFlowerInfo);
 
+    auto create_ObjZeldaWarpCollision = &app::create_ObjZeldaWarpCollision;
+    auto create_ObjZeldaItemTree = &app::create_ObjZeldaItemTree;
+
+    auto createObjInfo_ObjZeldaItemTreeInfo = &app::createObjInfo_ObjZeldaItemTreeInfo;
+
+    WRITE_FUNCTION(ASLR(0x00D28691), *(void**)&create_ObjZeldaWarpCollision);
+    WRITE_FUNCTION(ASLR(0x00D2C414), *(void**)&create_ObjZeldaItemTree);
+
+    WRITE_FUNCTION(ASLR(0x00D2C40F), *(void**)&createObjInfo_ObjZeldaItemTreeInfo);
+
     // Install Hooks
     app::xgame::IsDLCStagePurchase::Func();
     app::HUD::CHudGameMainDisplay::__ct();
@@ -85,6 +95,8 @@ void Initialize()
 
     if (!DisablePipeTransition)
         app::GameModeStage::StateWarp();
+
+    app::StageInfo::SStageData::IsZeldaStage();
 }
 
 extern "C"

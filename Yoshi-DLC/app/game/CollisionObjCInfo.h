@@ -70,5 +70,12 @@ namespace app
             float Radius;
             float Height;
         };
+
+        class ColliCylinderShapeCInfo : public ColliShapeCInfo
+        {
+        public:
+            float Radius;
+            float Height;
+        };
     }
 }
