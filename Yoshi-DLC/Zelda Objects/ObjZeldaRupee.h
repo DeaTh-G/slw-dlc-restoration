@@ -157,11 +157,17 @@ namespace app
             if (PreProcessMessage(message))
                 return true;
 
-            if (message.Type != fnd::PROC_MSG_HIT_EVENT_COLLISION)
+            switch (message.Type)
+            {
+            case fnd::PROC_MSG_HIT_EVENT_COLLISION:
+                ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
+                return true;
+            case fnd::PROC_MSG_NOTIFY_OBJECT_EVENT:
+                ProcMsgNotifyObjectEvent((xgame::MsgNotifyObjectEvent&)message);
+                return true;
+            default:
                 return CSetObjectListener::ProcessMessage(message);
-
-            ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
-            return true;
+            }
         }
 
         void Update(const fnd::SUpdateInfo& updateInfo) override
@@ -196,15 +202,14 @@ namespace app
             Eigen::Quaternion<float> q;
             q = Eigen::AngleAxis<float>(radianRotation, Eigen::Vector3f(0, 1, 0));
             csl::math::Quaternion visualRotation{ q.x(), q.y(), q.z(), q.w() };
-
-            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
-            if (!gocTransform)
-                return;
-
-            fnd::GOCTransform::SetLocalRotation(gocTransform, &visualRotation);
+            fnd::GOCVisualTransformed::SetLocalRotation(gocVisual, &visualRotation);
 
             int playerNo = ObjUtil::GetPlayerNo(field_24[1], HitMessage->ActorID);
             if (playerNo < 0)
+                return;
+
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
                 return;
 
             zelda_popupitem::ZeldaPopupItemCinfo popupInfo { (csl::math::Matrix34*)(gocTransform + 0x44), (ObjZeldaPopupItemType)((int)Type), playerNo };
