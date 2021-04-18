@@ -50,6 +50,7 @@
 #include "app/xgame/MsgHitEventCollision.h"
 #include "app/xgame/MsgDamage.h"
 #include "app/xgame/MsgPLHoldOn.h"
+#include "app/xgame/MsgGetAnimal.h"
 #include "app/EnemyBase.h"
 #include "app/EnemyManager.h"
 #include "app/game/CollisionObjCInfo.h"
@@ -181,4 +182,5 @@
 
 #include "Zelda Objects/ObjZeldaWarpCollision.h"
 #include "Zelda Objects/ObjZeldaItemTree.h"
+#include "Zelda Objects/ObjZeldaPopupItem.h"
 #include "Zelda Objects/ObjZeldaRupee.h"

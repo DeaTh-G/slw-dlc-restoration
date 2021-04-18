@@ -47,5 +47,7 @@ namespace app
     {
     public:
         inline static FUNCTION_PTR(GameObject*, __thiscall, __ct, ASLR(0x0049D490), void* This, GameObject* a1);
+        inline static FUNCTION_PTR(int*, __thiscall, Get, ASLR(0x0049D4C0), void* This);
+        inline static FUNCTION_PTR(int*, __thiscall, __as, ASLR(0x004999A0), void* This, GameObject* a1);
     };
 }

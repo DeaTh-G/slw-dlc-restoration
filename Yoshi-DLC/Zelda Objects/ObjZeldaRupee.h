@@ -1,4 +1,5 @@
 #pragma once
+
 namespace app
 {
     inline static const char* RUPEE_MODEL_NAMES[] = 
@@ -37,6 +38,8 @@ namespace app
     public:
         int Models[5];
 
+        ObjZeldaRupeeInfo() {}
+
         void Initialize(GameDocument& gameDocument) override
         {
             int packFile = 0;
@@ -49,6 +52,13 @@ namespace app
         const char* GetInfoName() override
         {
             return "ObjZeldaRupeeInfo";
+        }
+
+        void RegistCallback(int& container) override
+        {
+            ObjZeldaPopupItemInfo* popupObject = new(pAllocator) ObjZeldaPopupItemInfo();
+            if (popupObject)
+                CObjInfoContainer::Register(&container, popupObject->GetInfoName(), popupObject);
         }
     };
 
@@ -186,7 +196,21 @@ namespace app
             Eigen::Quaternion<float> q;
             q = Eigen::AngleAxis<float>(radianRotation, Eigen::Vector3f(0, 1, 0));
             csl::math::Quaternion visualRotation{ q.x(), q.y(), q.z(), q.w() };
-            fnd::GOCVisualTransformed::SetLocalRotation(gocVisual, &visualRotation);
+
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            fnd::GOCTransform::SetLocalRotation(gocTransform, &visualRotation);
+
+            int playerNo = ObjUtil::GetPlayerNo(field_24[1], HitMessage->ActorID);
+            if (playerNo < 0)
+                return;
+
+            zelda_popupitem::ZeldaPopupItemCinfo popupInfo { (csl::math::Matrix34*)(gocTransform + 0x44), (ObjZeldaPopupItemType)((int)Type), playerNo };
+            zelda_popupitem::CreateZeldaPopupItem((GameDocument&)field_24[1], &popupInfo);
+            GameObject::Kill(this);
+            CSetObjectListener::SetStatusRetire(this);
         }
 
         void StateInactive(const fnd::SUpdateInfo& updateInfo)

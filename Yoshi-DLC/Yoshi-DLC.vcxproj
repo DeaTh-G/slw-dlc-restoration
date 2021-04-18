@@ -273,6 +273,7 @@
     <ClInclude Include="app\xgame\MsgDisableItemBag.h" />
     <ClInclude Include="app\xgame\MsgDlcChangeEggRotation.h" />
     <ClInclude Include="app\xgame\MsgExtendPlayer.h" />
+    <ClInclude Include="app\xgame\MsgGetAnimal.h" />
     <ClInclude Include="app\xgame\MsgGetClimbObjectInfo.h" />
     <ClInclude Include="app\xgame\MsgGetExternalMovePosition.h" />
     <ClInclude Include="app\xgame\MsgGetPosition.h" />
@@ -335,6 +336,7 @@
     <ClInclude Include="Zelda Objects\ObjZeldaItemTree.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaRupee.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaWarpCollision.h" />
+    <ClInclude Include="Zelda Objects\ObjZeldaPopupItem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app\GameModeStage.cpp" />

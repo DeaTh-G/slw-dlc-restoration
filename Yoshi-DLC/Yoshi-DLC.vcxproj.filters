@@ -573,6 +573,12 @@
     <ClInclude Include="Zelda Objects\ObjZeldaRupee.h">
       <Filter>Header Files\Zelda Objects</Filter>
     </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjZeldaPopupItem.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgGetAnimal.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">
