@@ -79,6 +79,9 @@
     <Filter Include="Header Files\SonicUSA\System">
       <UniqueIdentifier>{a98c8d9b-5a87-4d92-9999-1020bf371552}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Zelda Objects">
+      <UniqueIdentifier>{4e926ee3-ba6a-4953-8485-7f7ee9c29189}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -549,6 +552,24 @@
     <ClInclude Include="HH_ALLOC.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjZeldaWarpCollision.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjZeldaItemTree.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgGetClimbObjectInfo.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgItemTreeWobblePoint.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgGetPosition.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\StageInfo.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">
@@ -588,6 +609,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="app\GameModeStageBattle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\StageInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

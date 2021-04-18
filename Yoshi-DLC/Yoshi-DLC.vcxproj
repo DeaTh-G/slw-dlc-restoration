@@ -260,6 +260,7 @@
     <ClInclude Include="app\Player\CStateGOC.h" />
     <ClInclude Include="app\Player\StateUtil.h" />
     <ClInclude Include="app\SetShotInfo.h" />
+    <ClInclude Include="app\StageInfo.h" />
     <ClInclude Include="app\ut\internal\StateImpl.h" />
     <ClInclude Include="app\ut\StateBase.h" />
     <ClInclude Include="app\xgame.h" />
@@ -272,9 +273,12 @@
     <ClInclude Include="app\xgame\MsgDisableItemBag.h" />
     <ClInclude Include="app\xgame\MsgDlcChangeEggRotation.h" />
     <ClInclude Include="app\xgame\MsgExtendPlayer.h" />
+    <ClInclude Include="app\xgame\MsgGetClimbObjectInfo.h" />
     <ClInclude Include="app\xgame\MsgGetExternalMovePosition.h" />
+    <ClInclude Include="app\xgame\MsgGetPosition.h" />
     <ClInclude Include="app\xgame\MsgGoalForBattle.h" />
     <ClInclude Include="app\xgame\MsgHitEventCollision.h" />
+    <ClInclude Include="app\xgame\MsgItemTreeWobblePoint.h" />
     <ClInclude Include="app\xgame\MsgKick.h" />
     <ClInclude Include="app\xgame\MsgLeaveEventCollision.h" />
     <ClInclude Include="app\xgame\MsgNotifyObjectEvent.h" />
@@ -328,6 +332,8 @@
     <ClInclude Include="Yoshi Objects\ObjYoshiCoin.h" />
     <ClInclude Include="Yoshi Objects\ObjYoshiJumpBoard.h" />
     <ClInclude Include="Yoshi Objects\ObjYoshiSpecialFlower.h" />
+    <ClInclude Include="Zelda Objects\ObjZeldaItemTree.h" />
+    <ClInclude Include="Zelda Objects\ObjZeldaWarpCollision.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app\GameModeStage.cpp" />
@@ -338,6 +344,7 @@
     <ClCompile Include="app\Objects\EnemyBlowOffObject.cpp" />
     <ClCompile Include="app\Player\CPlayer.cpp" />
     <ClCompile Include="app\Player\CStateBase.cpp" />
+    <ClCompile Include="app\StageInfo.cpp" />
     <ClCompile Include="app\xgame.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Yoshi Objects\EggManager.cpp" />
