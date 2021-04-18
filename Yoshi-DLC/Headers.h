@@ -54,6 +54,7 @@
 #include "app/EnemyManager.h"
 #include "app/game/CollisionObjCInfo.h"
 #include "app/CSetObjClass.h"
+#include "app/StageInfo.h"
 
 #include "app/fnd/GameServiceClass.h"
 #include "app/fnd/GameService.h"
@@ -121,6 +122,7 @@
 #include "app/xgame/MsgPLGetInputButton.h"
 #include "app/xgame/MsgPLVisibleItemEffect.h"
 #include "app/xgame/MsgResumeGameTimer.h"
+#include "app/xgame/MsgGetPosition.h"
 #include "app/xgame/MsgSetPosition.h"
 #include "app/xgame/MsgSpringImpulse.h"
 #include "app/xgame/MsgStayTrigger.h"
@@ -136,6 +138,8 @@
 #include "app/xgame/MsgStopBgm.h"
 #include "app/xgame/MsgPlayerReachGoal.h"
 #include "app/xgame/MsgGoalForBattle.h"
+#include "app/xgame/MsgGetClimbObjectInfo.h"
+#include "app/xgame/MsgItemTreeWobblePoint.h"
 
 #include "SonicUSA/System/Random.h"
 
@@ -174,3 +178,6 @@
 #include "Yoshi Objects/ObjYoshiJumpBoard.h"
 #include "Yoshi Objects/ObjYoshiSpecialFlower.h"
 #include "Yoshi Objects/ObjYoshiGoal.h"
+
+#include "Zelda Objects/ObjZeldaWarpCollision.h"
+#include "Zelda Objects/ObjZeldaItemTree.h"
