@@ -49,7 +49,7 @@ namespace app
                 return true;
 
             if (message.Type != fnd::PROC_MSG_HIT_EVENT_COLLISION)
-                CSetObjectListener::ProcessMessage(message);
+                return CSetObjectListener::ProcessMessage(message);
 
             ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
             return 1;
