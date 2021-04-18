@@ -12,6 +12,7 @@ namespace app
             inline static FUNCTION_PTR(void, __thiscall, AddListener, ASLR(0x004B3FA0), int* This, animation::AnimationListener* listener);
             inline static FUNCTION_PTR(void, __thiscall, SetAnimation, ASLR(0x004B3A80), int* This, const char* AnimationType);
             inline static FUNCTION_PTR(bool, __thiscall, IsFinished, ASLR(0x004B38E0), int* This);
+            inline static FUNCTION_PTR(bool, __thiscall, IsCurrentAnimaton, ASLR(0x004B3930), int* This, const char* animationName);
         };
     }
 }

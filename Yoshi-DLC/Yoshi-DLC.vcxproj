@@ -335,6 +335,7 @@
     <ClInclude Include="Yoshi Objects\ObjYoshiJumpBoard.h" />
     <ClInclude Include="Yoshi Objects\ObjYoshiSpecialFlower.h" />
     <ClInclude Include="Zelda Objects\ObjChangeTopViewCollision.h" />
+    <ClInclude Include="Zelda Objects\ObjZeldaBush.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaItemTree.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaRupee.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaWarpCollision.h" />

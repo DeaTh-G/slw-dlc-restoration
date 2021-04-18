@@ -186,3 +186,4 @@
 #include "Zelda Objects/ObjZeldaPopupItem.h"
 #include "Zelda Objects/ObjZeldaRupee.h"
 #include "Zelda Objects/ObjChangeTopViewCollision.h"
+#include "Zelda Objects/ObjZeldaBush.h"

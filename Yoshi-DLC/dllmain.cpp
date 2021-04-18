@@ -72,21 +72,25 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2C31F), *(void**)&createObjInfo_ObjYoshiJumpBoard);
     WRITE_FUNCTION(ASLR(0x00D2C27F), *(void**)&createObjInfo_ObjYoshiSpecialFlowerInfo);
 
+    auto create_ObjChangeTopViewCollision = &app::create_ObjChangeTopViewCollision;
     auto create_ObjZeldaWarpCollision = &app::create_ObjZeldaWarpCollision;
     auto create_ObjZeldaItemTree = &app::create_ObjZeldaItemTree;
     auto create_ObjZeldaRupee = &app::create_ObjZeldaRupee;
-    auto create_ObjChangeTopViewCollision = &app::create_ObjChangeTopViewCollision;
+    auto create_ObjZeldaBush = &app::create_ObjZeldaBush;
 
     auto createObjInfo_ObjZeldaItemTreeInfo = &app::createObjInfo_ObjZeldaItemTreeInfo;
     auto createObjInfo_ObjZeldaRupeeInfo = &app::createObjInfo_ObjZeldaRupeeInfo;
+    auto createObjInfo_ObjZeldaBushInfo = &app::createObjInfo_ObjZeldaBushInfo;
 
+    WRITE_FUNCTION(ASLR(0x00D2BA61), *(void**)&create_ObjChangeTopViewCollision);
     WRITE_FUNCTION(ASLR(0x00D28691), *(void**)&create_ObjZeldaWarpCollision);
     WRITE_FUNCTION(ASLR(0x00D2C414), *(void**)&create_ObjZeldaItemTree);
     WRITE_FUNCTION(ASLR(0x00D2C4B4), *(void**)&create_ObjZeldaRupee);
-    WRITE_FUNCTION(ASLR(0x00D2BA61), *(void**)&create_ObjChangeTopViewCollision);
+    WRITE_FUNCTION(ASLR(0x00D2C374), *(void**)&create_ObjZeldaBush);
 
     WRITE_FUNCTION(ASLR(0x00D2C40F), *(void**)&createObjInfo_ObjZeldaItemTreeInfo);
     WRITE_FUNCTION(ASLR(0x00D2C4AF), *(void**)&createObjInfo_ObjZeldaRupeeInfo);
+    WRITE_FUNCTION(ASLR(0x00D2C36F), *(void**)&createObjInfo_ObjZeldaBushInfo);
 
     // Install Hooks
     app::xgame::IsDLCStagePurchase::Func();

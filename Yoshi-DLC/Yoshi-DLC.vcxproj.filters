@@ -585,6 +585,9 @@
     <ClInclude Include="app\xgame\MsgPLChangeAreaTopView.h">
       <Filter>Header Files\app\xgame</Filter>
     </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjZeldaBush.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">
