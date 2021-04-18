@@ -45,9 +45,48 @@ namespace app
 
     class GameObjectHandleBase
     {
+    protected:
+        size_t ObjectHandle{};
+        void* pEntry{};
+
+        void Set(const GameObject* obj)
+        {
+            if (obj)
+            {
+                pEntry = (void*)obj->field_24[3];
+                ObjectHandle = obj->field_24[2];
+            }
+            else
+            {
+                pEntry = nullptr;
+                ObjectHandle = 0;
+            }
+        }
+
+    public:
+        bool IsValid() const
+        {
+            if (!pEntry)
+                return false;
+
+            return (*(int*)pEntry == ObjectHandle) && *((int*)pEntry + 1);
+        }
+
+        GameObject* Get() const
+        {
+            if (!IsValid())
+                return nullptr;
+
+            return (GameObject*)(*((int**)pEntry + 1));
+        }
+
+        GameObjectHandleBase& operator=(const GameObject* obj)
+        {
+            Set(obj);
+            return *this;
+        }
+
     public:
         inline static FUNCTION_PTR(GameObject*, __thiscall, __ct, ASLR(0x0049D490), void* This, GameObject* a1);
-        inline static FUNCTION_PTR(int*, __thiscall, Get, ASLR(0x0049D4C0), void* This);
-        inline static FUNCTION_PTR(int*, __thiscall, __as, ASLR(0x004999A0), void* This, GameObject* a1);
     };
 }

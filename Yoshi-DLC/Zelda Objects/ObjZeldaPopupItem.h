@@ -65,8 +65,7 @@ namespace app
         int Models[6];
         int Skeletons[2];
         int Animations[2];
-        ObjZeldaPopupItem* CurrentPopup;
-        INSERT_PADDING(4);
+        GameObjectHandleBase PopupHandle;
 
         void Initialize(GameDocument& gameDocument) override
         {
@@ -94,7 +93,7 @@ namespace app
     class ObjZeldaPopupItem : public GameObject3D
     {
     public:
-        zelda_popupitem::ZeldaPopupItemCinfo* CInfo{};
+        zelda_popupitem::ZeldaPopupItemCinfo* CInfo = new zelda_popupitem::ZeldaPopupItemCinfo();
         int field_320{};
         ObjZeldaPopupItemType Type{};
         int PlayerNumber{};
@@ -106,9 +105,16 @@ namespace app
 
         ObjZeldaPopupItem(zelda_popupitem::ZeldaPopupItemCinfo* cInfo)
         {
-            CInfo = cInfo;
+            *CInfo = *cInfo;
             Type = cInfo->Type;
             PlayerNumber = cInfo->PlayerNumber;
+        }
+
+        void Destructor(size_t deletingFlags)
+        {
+            delete CInfo;
+
+            GameObject3D::Destructor(deletingFlags);
         }
 
         void AddCallback(GameDocument* gameDocument) override
@@ -177,7 +183,7 @@ namespace app
             else
                 game::GOCSound::Play(gocSound, deviceTag, "obj_zeldarupy_get", 0);
 
-            xgame::MsgGetAnimal animalMessage { RUPEE_TO_ANIMAL[(int)Type] };
+            xgame::MsgGetAnimal animalMessage { RUPEE_TO_ANIMAL[(char)Type] };
             ObjUtil::SendMessageImmToGameActor(this, &animalMessage);
         }
 
@@ -202,17 +208,12 @@ namespace app
                 ObjZeldaPopupItem::toKill();
         }
 
-        void EndPopup()
-        {
-            toKill();
-            ObjZeldaPopupItemInfo* info = (ObjZeldaPopupItemInfo*)ObjUtil::GetObjectInfo(*app::Document, "ObjZeldaPopupItemInfo");
-            info->CurrentPopup = nullptr;
-        }
+        void EndPopup() { toKill(); }
 
     private:
         void toKill()
         {
-            GameObject::Kill(this);
+            GameObject::Kill(this); printf("asd");
         }
     };
 
@@ -230,9 +231,10 @@ namespace app
 
     inline void ObjZeldaPopupItemInfo::SetPopupItem(ObjZeldaPopupItem* object)
     {
-        if (CurrentPopup)
-            CurrentPopup->EndPopup();
-        
-        CurrentPopup = object;
+        ObjZeldaPopupItem* popupItem = (ObjZeldaPopupItem*)PopupHandle.Get();
+        if (popupItem)
+            popupItem->EndPopup();
+
+        PopupHandle = object;
     }
 }
