@@ -802,7 +802,7 @@ namespace app
 
          void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
          {
-             if (Direction & 8 && !ObjUtil::CheckShapeUserID(*message.field_18, 0))
+             if (Direction & 8 && !ObjUtil::CheckShapeUserID(message.field_18, 0))
              {
                  csl::math::Vector3 position{};
                  xgame::MsgDamage msgDamage{ 3, 8, 3, &message, &position };

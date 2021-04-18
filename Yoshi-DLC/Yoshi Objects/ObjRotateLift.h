@@ -192,9 +192,9 @@ namespace app
             if (!gocMotor)
                 return;
 
-            if (*message.field_18 == 1)
+            if (message.field_18 == 1)
                 game::GOCMotor::RequestEnable(gocMotor, true);
-            else if (*message.field_18 == 2)
+            else if (message.field_18 == 2)
                 game::GOCMotor::RequestEnable(gocMotor, false);
         }
     };
