@@ -183,7 +183,10 @@ namespace app
             else
                 game::GOCSound::Play(gocSound, deviceTag, "obj_zeldarupy_get", 0);
 
-            xgame::MsgGetAnimal animalMessage { RUPEE_TO_ANIMAL[(char)Type] };
+            if (Type == ObjZeldaPopupItemType::HEART)
+                return;
+
+            xgame::MsgGetAnimal animalMessage{ RUPEE_TO_ANIMAL[(char)Type] };
             ObjUtil::SendMessageImmToGameActor(this, &animalMessage);
         }
 

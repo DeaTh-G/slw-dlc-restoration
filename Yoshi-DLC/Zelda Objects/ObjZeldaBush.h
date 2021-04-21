@@ -4,11 +4,19 @@ namespace app
 {
     inline static const char* ZELDA_BUSH_NAMES[] = { "zdlc03_obj_bushA", "zdlc03_obj_bushB" };
     inline static const char* ZELDA_BUSH_SHADOW_NAMES[] = { "zdlc03_obj_bushA_shadow", "zdlc03_obj_bushA_shadow" };
+    inline static int ZELDA_BUSH_ODDS[] = { 35, 20, 15, 30};
+    inline static ObjZeldaPopupItemType ZELDA_BUSH_ITEMS[] =
+    {
+        ObjZeldaPopupItemType::RUPEE_GREEN,
+        ObjZeldaPopupItemType::RUPEE_BLUE,
+        ObjZeldaPopupItemType::RUPEE_RED,
+        ObjZeldaPopupItemType::HEART
+    };
 
     enum class ObjZeldaBushType : char
     {
-        RUPEE,
-        HEART
+        A,
+        B
     };
 
     struct ObjZeldaBushData
@@ -101,7 +109,7 @@ namespace app
                 csl::math::Vector3 sizeA { 7.5f, 7.5f, 7.5f };
                 csl::math::Vector3 sizeB { 11, 11, 11 };
                 csl::math::Vector3 offset{};
-                offset.Y = Type == ObjZeldaBushType::RUPEE ? 11 : 25;
+                offset.Y = Type == ObjZeldaBushType::A ? 11 : 15;
                 game::ColliBoxShapeCInfo collisionInfo;
 
                 int shapeCount = 1;
@@ -110,12 +118,24 @@ namespace app
 
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_BOX;
                 collisionInfo.MotionType = 2;
-                collisionInfo.Size = Type == ObjZeldaBushType::RUPEE ? sizeA : sizeB;
+                collisionInfo.Size = Type == ObjZeldaBushType::A ? sizeA : sizeB;
                 ObjUtil::SetupCollisionFilter(0, &collisionInfo);
                 collisionInfo.field_04 |= 1;
                 game::CollisionObjCInfo::SetLocalPosition(&collisionInfo, &offset);
 
                 game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
+            }
+
+            int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
+            if (gocShadow)
+            {
+                game::ShadowModelShapeCInfo shadowInfo;
+
+                game::ShadowModelShapeCInfo::__ct(&shadowInfo, Type == ObjZeldaBushType::A ? &info->Shadows[0] : &info->Shadows[1]);
+                shadowInfo.field_04 = 6;
+
+                game::ShadowModelShapeCInfo* ppShadowInfo = &shadowInfo;
+                game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
             }
 
             game::GOCEffect::SimpleSetup(this);
@@ -166,6 +186,48 @@ namespace app
 
         void ProcMsgDamage(xgame::MsgDamage& message)
         {
+            if (!(message.AttackType & 0x40))
+                return;
+
+            unsigned int random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
+            random = floorf((random * 2.328306436538696e-10f) * 100);
+
+            int deviceTag[3];
+            int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+            if (!gocSound)
+                return;
+
+            game::GOCSound::Play(gocSound, deviceTag, "obj_zeldabush_cut", 0);
+            CSetObjectListener::SetStatusRetire(this);
+            GameObject::Kill(this);
+
+            if (random < 60)
+            {
+                unsigned int typeRand = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
+                typeRand = floorf((typeRand * 2.328306436538696e-10f) * 100);
+
+                int ModelType = 0;
+                int limit = 0;
+                for (size_t i = 0; i < 4; i++)
+                {
+                    limit += ZELDA_BUSH_ODDS[i];
+                    if (typeRand > limit)
+                    {
+                        ModelType++;
+                        continue;
+                    }
+
+                    int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], message.field_50);
+                    if (!playerInfo)
+                        return;
+
+                    csl::math::Matrix34 playerMatrix{};
+                    math::Matrix34AffineTransformation(&playerMatrix, (csl::math::Vector3*)(playerInfo + 4), (csl::math::Quaternion*)(playerInfo + 8));
+                    zelda_popupitem::ZeldaPopupItemCinfo popupInfo{ &playerMatrix, ZELDA_BUSH_ITEMS[ModelType], message.field_50 };
+                    zelda_popupitem::CreateZeldaPopupItem((GameDocument&)field_24[1], &popupInfo);
+                    return;
+                }
+            }
         }
     };
 

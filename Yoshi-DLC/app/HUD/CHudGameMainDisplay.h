@@ -82,6 +82,21 @@ namespace app
         public:
             static void __ct();
             static void SpecialRingUpdate();
+
+            void HeartLifeUpdate(int a2, float a3)
+            {
+                if (!(*((int*)this + 0x7A) & 0x100))
+                    return;
+
+                if (*((int*)this + 0x7B) & 1)
+                {
+                    *((float*)this + 0x6E) += a3;
+                    if (*((float*)this + 0x6E) <= 0 && !((game::HudLayerController*)((int*)this + 0x36))->IsCurrentAnimation("Hide_Anim"))
+                    {
+
+                    }
+                }
+            }
         };
     }
 }
