@@ -34,11 +34,14 @@ void app::GameModeStage::StateWarp()
 
 bool IsZeldaStage()
 {
+    if (LinkSonicPlayType == PlayType::NEVER)
+        return false;
+
     const char* packFileName = app::ObjUtil::GetStagePackName(*app::Document);
     if (strncmp(packFileName, "zdlc03", 6) == 0)
         return true;
 
-    if (IsAlwaysLinkSonic)
+    if (LinkSonicPlayType == PlayType::ALWAYS)
         return true;
 
     return false;

@@ -2,6 +2,13 @@
 
 namespace app
 {
+    class CObjInfoFileLoader
+    {
+    public:
+        virtual void Load(const char* name, int a2) = 0;
+        virtual void LoadEx(const char* name, const fnd::FileLoaderParam& params) = 0;
+    };
+
     class CObjInfo : public fnd::ReferencedObject
     {
     public:

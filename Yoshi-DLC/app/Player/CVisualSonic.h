@@ -7,6 +7,7 @@ namespace app
         class CVisualSonic
         {
         public:
+            static void ActivateSub();
             static void RegisterResource();
         };
     }

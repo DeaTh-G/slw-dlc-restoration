@@ -145,7 +145,7 @@ namespace app
 
         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
         {
-            int someType = message.field_18[0x2F];
+            int someType = ((int*)message.field_18)[0x2F];
 
             if (someType == 1)
             {

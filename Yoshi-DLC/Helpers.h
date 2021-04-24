@@ -1,9 +1,16 @@
 #pragma once
 
-inline static bool DisablePipeTransition = false;
-inline static bool IsConsistentShadow = false;
-inline static bool IsAlwaysLinkSonic = true;
+enum class PlayType : int
+{
+    DEFAULT,
+    ALWAYS,
+    NEVER
+};
 
+extern bool DisablePipeTransition;
+extern bool IsConsistentShadow;
+extern PlayType LinkSonicPlayType;
+extern bool IsLinkSonicFixed;
 
 static csl::math::Quaternion GetRotationFromMatrix(csl::math::Matrix34* matrix)
 {

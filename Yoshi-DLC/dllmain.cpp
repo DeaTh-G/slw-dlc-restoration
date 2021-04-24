@@ -4,6 +4,11 @@
 #include "LostCodeLoader.h"
 #include "Dependencies/INIReader.h"
 
+bool DisablePipeTransition = false;
+bool IsConsistentShadow = false;
+PlayType LinkSonicPlayType = PlayType::DEFAULT;
+bool IsLinkSonicFixed = false;
+
 char IsYoshiIslandStage()
 {
     const char* packFileName = app::ObjUtil::GetStagePackName((app::GameDocument*)*app::Document);
@@ -92,7 +97,7 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2C4AF), *(void**)&createObjInfo_ObjZeldaRupeeInfo);
     WRITE_FUNCTION(ASLR(0x00D2C36F), *(void**)&createObjInfo_ObjZeldaBushInfo);
 
-    // Install Hooks
+    // Install Yoshi Hooks
     app::xgame::IsDLCStagePurchase::Func();
     app::HUD::CHudGameMainDisplay::__ct();
     app::HUD::CHudGameMainDisplay::SpecialRingUpdate();
@@ -106,8 +111,22 @@ void Initialize()
     if (!DisablePipeTransition)
         app::GameModeStage::StateWarp();
 
+    // Install Zelda Hooks
+    app::Player::CVisualSonic::ActivateSub();
     app::Player::CVisualSonic::RegisterResource();
+    app::Player::CVisualBase::IsLinkCostume();
     app::GameModeStage::RegisterObjInfos();
+
+    if (IsLinkSonicFixed)
+        app::Player::SonicZeldaInfo::Initialize();
+
+    if (LinkSonicPlayType == PlayType::ALWAYS)
+    {
+        app::WorldAreaMapInfo::Load();
+        app::WorldAreaMapInfo::Initialize();
+        app::MinigameCharacterInfo::Load();
+        app::MinigameCharacterInfo::Initialize();
+    }
 }
 
 extern "C"
@@ -123,10 +142,10 @@ extern "C"
         if (reader->ParseError() != 0)
             MessageBox(NULL, L"Failed to parse DLCRestoration.ini", NULL, MB_ICONERROR);
 
-        IsConsistentShadow = reader->GetBoolean("Tweaks", "isConsistentShadows", false);
-        DisablePipeTransition = reader->GetBoolean("Tweaks", "disablePipeTransition", false);
-
-        //ScoreToUnlockLevel = reader->GetInteger("Misc", "scoreToUnlockLevel", 1000000);
+        IsConsistentShadow = reader->GetBoolean("YoshiTweaks", "isConsistentShadows", false);
+        DisablePipeTransition = reader->GetBoolean("YoshiTweaks", "disablePipeTransition", false);
+        LinkSonicPlayType = (PlayType)reader->GetInteger("ZeldaTweaks", "linkSonicPlayType", (uint32_t)PlayType::DEFAULT);
+        IsLinkSonicFixed = reader->GetBoolean("ZeldaTweaks", "isLinkSonicFixed", false);
 
         Initialize();
     }

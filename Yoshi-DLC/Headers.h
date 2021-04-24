@@ -111,6 +111,10 @@
 #include "app/Player/CStateBase.h"
 #include "app/Player/CStateGOC.h"
 #include "app/Player/CVisualSonic.h"
+#include "app/Player/CVisualBase.h"
+#include "app/WorldAreaMap.h"
+#include "app/MinigameCharacter.h"
+#include "app/Player/SonicZelda.h"
 
 #include "app/xgame.h"
 #include "app/xgame/Blackboard.h"
