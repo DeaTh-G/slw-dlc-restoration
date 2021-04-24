@@ -220,32 +220,49 @@ namespace app
 
         void StateInactive(const fnd::SUpdateInfo& updateInfo)
         {
-            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
-            if (!gocVisual)
-                return;
+            if (!NotifyMessage->field_18)
+            {
+                int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+                if (!gocVisual)
+                    return;
 
-            fnd::GOCVisual::SetVisible(gocVisual, false);
+                fnd::GOCVisual::SetVisible(gocVisual, false);
 
-            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
-            if (!gocCollider)
-                return;
+                int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+                if (!gocCollider)
+                    return;
 
-            game::GOCCollider::SetEnable(gocCollider, false);
+                game::GOCCollider::SetEnable(gocCollider, false);
 
-            int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
-            if (!gocShadow)
-                return;
+                int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
+                if (!gocShadow)
+                    return;
 
-            game::GOCShadowSimple::SetVisible(gocShadow, false);
+                game::GOCShadowSimple::SetVisible(gocShadow, false);
+            }
 
-            if (NotifyMessage->field_18 == 1)
+            if (NotifyMessage->field_18)
             {
                 State = ObjZeldaRupeeState::STATE_ACTIVE;
+                Time = 0;
+
+                int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+                if (!gocVisual)
+                    return;
 
                 fnd::GOCVisual::SetVisible(gocVisual, true);
+
+                int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+                if (!gocCollider)
+                    return;
+
                 game::GOCCollider::SetEnable(gocCollider, true);
+
+                int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
+                if (!gocShadow)
+                    return;
+
                 game::GOCShadowSimple::SetVisible(gocShadow, true);
-                Time = 0;
             }
         }
     };
