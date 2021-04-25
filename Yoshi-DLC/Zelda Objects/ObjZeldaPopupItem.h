@@ -216,7 +216,7 @@ namespace app
     private:
         void toKill()
         {
-            GameObject::Kill(this); printf("asd");
+            GameObject::Kill(this);
         }
     };
 

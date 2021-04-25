@@ -16,32 +16,32 @@ HOOK(int*, __fastcall, CHudGameMainDisplayHook, ASLR(0x00503290), int* This, int
     originalCHudGameMainDisplayHook(This, edx, a2, a3, a4, a5, a6, a7);
 
     const char* packFileName = app::ObjUtil::GetStagePackName((app::GameDocument*) * app::Document);
-    if (strncmp(packFileName, "zdlc02", 6) == 0)
+    if (strncmp(packFileName, "zdlc02", 6) == 0 || strncmp(packFileName, "zdlc03", 6) == 0)
     {
-        // Force Depth of Field Off (Thanks to Sajidur78: https://twitter.com/Sajidur78)
+        // Disable DOF in Yoshi and Zelda DLC
         WRITE_MEMORY(ASLR(0x00FEFC7C), 0);
-        WRITE_MEMORY(ASLR(0x0040498C), 0x909090909090);
-        WRITE_MEMORY(ASLR(0x00404C3E), 0x909090909090);
+        WRITE_MEMORY(ASLR(0x00404C3E), 0x90, 0x90, 0x90, 0x90, 0x90, 0x90);
+        WRITE_MEMORY(ASLR(0x0040498C), 0x90, 0x90, 0x90, 0x90, 0x90, 0x90);
+        WRITE_MEMORY(ASLR(0x00404C3E), 0x90, 0x90, 0x90, 0x90, 0x90, 0x90);
 
-        *(This + 0x7A) |= 0x40;
-        *(This + 0x7A) |= 0x20;
-    }
-    else if (strncmp(packFileName, "zdlc03", 6) == 0)
-    {
-        // Force Depth of Field Off (Thanks to Sajidur78: https://twitter.com/Sajidur78)
-        WRITE_MEMORY(ASLR(0x00FEFC7C), 0);
-        WRITE_MEMORY(ASLR(0x0040498C), 0x909090909090);
-        WRITE_MEMORY(ASLR(0x00404C3E), 0x909090909090);
-
-        *(This + 0x7A) |= 0x80;
-        *(This + 0x7A) |= 0x100;
+        if (strncmp(packFileName, "zdlc02", 6) == 0)
+        {
+            *(This + 0x7A) |= 0x40;
+            *(This + 0x7A) |= 0x20;
+        }
+        else if (strncmp(packFileName, "zdlc03", 6) == 0)
+        {
+            *(This + 0x7A) |= 0x80;
+            *(This + 0x7A) |= 0x100;
+        }
     }
     else
     {
-        // Turn Depth of Field On if not Yoshi's Island Zone
-        WRITE_MEMORY(ASLR(0x00FEFC7C), 1);
-        WRITE_MEMORY(ASLR(0x0040498C), 0x880D7CFCFE00);
-        WRITE_MEMORY(ASLR(0x00404C3E), 0x88157CFCFE00);
+        // Restore DOF Code if not Yoshi or Zelda DLC
+        WRITE_MEMORY(ASLR(0x00FEFC7C), ((char*)ASLR(0x00F6072C))[9]);
+        WRITE_MEMORY(ASLR(0x00404C3E), 0x88, 0x15, 0x7C, 0xFC, 0xFE, 0x00);
+        WRITE_MEMORY(ASLR(0x0040498C), 0x88, 0x0D, 0x7C, 0xFC, 0xFE, 0x00);
+        WRITE_MEMORY(ASLR(0x00404C3E), 0x88, 0x15, 0x7C, 0xFC, 0xFE, 0x00);
     }
 
     return This;
