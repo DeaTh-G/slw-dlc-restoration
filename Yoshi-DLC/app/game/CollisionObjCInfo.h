@@ -38,6 +38,7 @@ namespace app
 
             inline static FUNCTION_PTR(int*, __thiscall, __ct, ASLR(0x004B6190), CollisionObjCInfo* This);
             inline static FUNCTION_PTR(void, __thiscall, SetLocalPosition, ASLR(0x004B61D0), CollisionObjCInfo* This, csl::math::Vector3* position);
+            inline static FUNCTION_PTR(void, __thiscall, SetLocalRotation, ASLR(0x004B61F0), CollisionObjCInfo* This, csl::math::Quaternion* rotation);
         };
 
         class ColliShapeCInfo : public CollisionObjCInfo
@@ -76,6 +77,12 @@ namespace app
         public:
             float Radius;
             float Height;
+        };
+
+        class ColliMeshShapeCInfo : public ColliShapeCInfo
+        {
+        public:
+            int* Mesh;
         };
     }
 }

@@ -30,6 +30,7 @@
 #include "app/EnemyState.h"
 #include "app/GameDocument.h"
 #include "app/fnd/GOCTransform.h"
+#include "app/Game.h"
 #include "app/GameObject.h"
 #include "app/GameObject3D.h"
 #include "app/CGOCCollectionImpl.h"
@@ -105,7 +106,9 @@
 #include "app/math/math.h"
 #include "app/math/CalculatedTransform.h"
 
+#include "app/Player/PluginStateHeartLife.h"
 #include "app/Player/CPhysics.h"
+#include "app/Player/CSonic.h"
 #include "app/Player/StateUtil.h"
 #include "app/Player/CPlayer.h"
 #include "app/Player/CStateBase.h"
@@ -146,8 +149,12 @@
 #include "app/xgame/MsgGetClimbObjectInfo.h"
 #include "app/xgame/MsgItemTreeWobblePoint.h"
 #include "app/xgame/MsgPLChangeAreaTopView.h"
+#include "app/xgame/MsgPLSendGameInfo.h"
 
 #include "SonicUSA/System/Random.h"
+
+#include "app/debris/ResRandomSpaceDebris.h"
+#include "app/debrisUtil.h"
 
 // hh:ut
 #include "hh/ut/Packfile.h"
@@ -191,3 +198,4 @@
 #include "Zelda Objects/ObjZeldaRupee.h"
 #include "Zelda Objects/ObjChangeTopViewCollision.h"
 #include "Zelda Objects/ObjZeldaBush.h"
+#include "Zelda Objects/ObjOccludeStone.h"

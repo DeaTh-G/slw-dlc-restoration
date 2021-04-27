@@ -44,6 +44,7 @@ namespace app
             PROC_MSG_GET_GROUND_INFO							= 0x5007,
             PROC_MSG_GET_EXTERNAL_MOVE_POSITION					= 0x500D,
             PROC_MSG_PL_GET_PLAYER								= 0x5010,
+            PROC_MSG_PL_SEND_GAME_INFO                          = 0x5013,
             PROC_MSG_PL_GET_RING_NUM							= 0x5014,
             PROC_MSG_PL_TRANSFORM_PHANTOM						= 0x5016,
             PROC_MSG_PL_START_PHANTOM_POSE						= 0x5017,

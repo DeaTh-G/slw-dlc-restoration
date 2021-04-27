@@ -19,6 +19,8 @@ char IsYoshiIslandStage()
 
 void Initialize()
 {
+    MessageBox(NULL, L"AAAAAAAAAA", NULL, MB_ICONERROR);
+
     /* TODO: Please replace this with sane code. */
     WRITE_MEMORY(ASLR(0x00D41252),
         0x68,
@@ -82,20 +84,24 @@ void Initialize()
     auto create_ObjZeldaItemTree = &app::create_ObjZeldaItemTree;
     auto create_ObjZeldaRupee = &app::create_ObjZeldaRupee;
     auto create_ObjZeldaBush = &app::create_ObjZeldaBush;
+    auto create_ObjOccludeStone = &app::create_ObjOccludeStone;
 
     auto createObjInfo_ObjZeldaItemTreeInfo = &app::createObjInfo_ObjZeldaItemTreeInfo;
     auto createObjInfo_ObjZeldaRupeeInfo = &app::createObjInfo_ObjZeldaRupeeInfo;
     auto createObjInfo_ObjZeldaBushInfo = &app::createObjInfo_ObjZeldaBushInfo;
+    auto createObjInfo_ObjOccludeStoneInfo = &app::createObjInfo_ObjOccludeStoneInfo;
 
     WRITE_FUNCTION(ASLR(0x00D2BA61), *(void**)&create_ObjChangeTopViewCollision);
     WRITE_FUNCTION(ASLR(0x00D28691), *(void**)&create_ObjZeldaWarpCollision);
     WRITE_FUNCTION(ASLR(0x00D2C414), *(void**)&create_ObjZeldaItemTree);
     WRITE_FUNCTION(ASLR(0x00D2C4B4), *(void**)&create_ObjZeldaRupee);
     WRITE_FUNCTION(ASLR(0x00D2C374), *(void**)&create_ObjZeldaBush);
+    WRITE_FUNCTION(ASLR(0x00D2C054), *(void**)&create_ObjOccludeStone);
 
     WRITE_FUNCTION(ASLR(0x00D2C40F), *(void**)&createObjInfo_ObjZeldaItemTreeInfo);
     WRITE_FUNCTION(ASLR(0x00D2C4AF), *(void**)&createObjInfo_ObjZeldaRupeeInfo);
     WRITE_FUNCTION(ASLR(0x00D2C36F), *(void**)&createObjInfo_ObjZeldaBushInfo);
+    WRITE_FUNCTION(ASLR(0x00D2C04F), *(void**)&createObjInfo_ObjOccludeStoneInfo);
 
     // Install Yoshi Hooks
     app::xgame::IsDLCStagePurchase::Func();
@@ -112,10 +118,14 @@ void Initialize()
         app::GameModeStage::StateWarp();
 
     // Install Zelda Hooks
+    app::Player::CSonic::AddCallback();
+    app::Player::CSonic::SendPlayerInfo();
     app::Player::CVisualSonic::ActivateSub();
     app::Player::CVisualSonic::RegisterResource();
     app::Player::CVisualBase::IsLinkCostume();
     app::GameModeStage::RegisterObjInfos();
+    /*app::HUD::CHudGameMainDisplay::InitLayer();
+    app::HUD::CHudGameMainDisplay::SetInfo();*/
 
     if (IsLinkSonicFixed)
         app::Player::SonicZeldaInfo::Initialize();

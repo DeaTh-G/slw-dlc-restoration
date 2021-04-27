@@ -21,6 +21,8 @@ inline static char* const GOCEnemyTargetString = (char*)ASLR(0x00D9C6A0);
 inline static char* const GOCEnemyHsmString = (char*)ASLR(0x00D9C674);
 inline static char* const GOCMotorString = (char*)ASLR(0x00D66438);
 
+inline static char* const PluginStateHeartLifeString = (char*)ASLR(0x00E00630);
+
 inline static int* GOCTransform = (int*)ASLR(0x00F68ED4);
 inline static int* GOCAnimationScript = (int*)ASLR(0x00FD7518);
 inline static int* GOCVisualContainer = (int*)ASLR(0x00FD4254);

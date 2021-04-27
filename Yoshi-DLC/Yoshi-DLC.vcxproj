@@ -185,6 +185,8 @@
     <ClInclude Include="app\CSetAdapter.h" />
     <ClInclude Include="app\CSetObjClass.h" />
     <ClInclude Include="app\CSetObjectListener.h" />
+    <ClInclude Include="app\debrisUtil.h" />
+    <ClInclude Include="app\debris\ResRandomSpaceDebris.h" />
     <ClInclude Include="app\egg.h" />
     <ClInclude Include="app\EnemyBase.h" />
     <ClInclude Include="app\EnemyBlowOffObjectCInfo.h" />
@@ -209,6 +211,7 @@
     <ClInclude Include="app\fnd\ReferencedObject.h" />
     <ClInclude Include="app\fnd\SoundPlayerCri.h" />
     <ClInclude Include="app\fnd\TexSrtControlHH.h" />
+    <ClInclude Include="app\Game.h" />
     <ClInclude Include="app\GameDocument.h" />
     <ClInclude Include="app\GameMode.h" />
     <ClInclude Include="app\GameModeStage.h" />
@@ -257,10 +260,12 @@
     <ClInclude Include="app\ObjUtil.h" />
     <ClInclude Include="app\Player\CPhysics.h" />
     <ClInclude Include="app\Player\CPlayer.h" />
+    <ClInclude Include="app\Player\CSonic.h" />
     <ClInclude Include="app\Player\CStateBase.h" />
     <ClInclude Include="app\Player\CStateGOC.h" />
     <ClInclude Include="app\Player\CVisualBase.h" />
     <ClInclude Include="app\Player\CVisualSonic.h" />
+    <ClInclude Include="app\Player\PluginStateHeartLife.h" />
     <ClInclude Include="app\Player\SonicZelda.h" />
     <ClInclude Include="app\Player\StateUtil.h" />
     <ClInclude Include="app\SetShotInfo.h" />
@@ -292,6 +297,7 @@
     <ClInclude Include="app\xgame\MsgPLGetInputButton.h" />
     <ClInclude Include="app\xgame\MsgPLHoldOn.h" />
     <ClInclude Include="app\xgame\MsgPLJumpToTargetPosition.h" />
+    <ClInclude Include="app\xgame\MsgPLSendGameInfo.h" />
     <ClInclude Include="app\xgame\MsgPLVisibleItemEffect.h" />
     <ClInclude Include="app\xgame\MsgResumeGameTimer.h" />
     <ClInclude Include="app\xgame\MsgSetPosition.h" />
@@ -339,6 +345,7 @@
     <ClInclude Include="Yoshi Objects\ObjYoshiJumpBoard.h" />
     <ClInclude Include="Yoshi Objects\ObjYoshiSpecialFlower.h" />
     <ClInclude Include="Zelda Objects\ObjChangeTopViewCollision.h" />
+    <ClInclude Include="Zelda Objects\ObjOccludeStone.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaBush.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaItemTree.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaRupee.h" />
@@ -354,6 +361,7 @@
     <ClCompile Include="app\Objects\CSharedObjInfo.cpp" />
     <ClCompile Include="app\Objects\EnemyBlowOffObject.cpp" />
     <ClCompile Include="app\Player\CPlayer.cpp" />
+    <ClCompile Include="app\Player\CSonic.cpp" />
     <ClCompile Include="app\Player\CStateBase.cpp" />
     <ClCompile Include="app\Player\CVisualBase.cpp" />
     <ClCompile Include="app\Player\CVisualSonic.cpp" />

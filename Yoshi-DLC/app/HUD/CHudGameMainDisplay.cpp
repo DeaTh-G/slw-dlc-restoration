@@ -47,6 +47,25 @@ HOOK(int*, __fastcall, CHudGameMainDisplayHook, ASLR(0x00503290), int* This, int
     return This;
 }
 
+HOOK(void, __fastcall, CHudGameMainDisplaySetInfoHook, ASLR(0x00505DF0), app::HUD::CHudGameMainDisplay* This, int* edx, int* a2, float a3)
+{
+    originalCHudGameMainDisplaySetInfoHook(This, edx, a2, a3);
+
+    This->HeartLifeUpdate(a2, a3);
+}
+
+HOOK(void, __fastcall, CHudGameMainDisplayInitLayerHook, ASLR(0x00503780), app::HUD::CHudGameMainDisplay* This, int* edx)
+{
+    originalCHudGameMainDisplayInitLayerHook(This, edx);
+
+    if ((This->Flags & 0x100))
+    {
+        This->LayerController = This->GOCHud->CreateLayerController(This->field_E0, "info_ring_zdlc03", 0x12);
+        This->LayerController->PlayAnimation("Intro_Anim", 0, 0);
+        This->LayerController->SetVisible(true);
+    }
+}
+
 void app::HUD::CHudGameMainDisplay::__ct()
 {
     INSTALL_HOOK(CHudGameMainDisplayHook);
@@ -55,4 +74,14 @@ void app::HUD::CHudGameMainDisplay::__ct()
 void app::HUD::CHudGameMainDisplay::SpecialRingUpdate()
 {
     INSTALL_HOOK(SpecialRingUpdateHook);
+}
+
+void app::HUD::CHudGameMainDisplay::InitLayer()
+{
+    INSTALL_HOOK(CHudGameMainDisplayInitLayerHook);
+}
+
+void app::HUD::CHudGameMainDisplay::SetInfo()
+{
+    INSTALL_HOOK(CHudGameMainDisplaySetInfoHook);
 }

@@ -4,6 +4,13 @@ namespace app
 {
     namespace HUD 
     {
+        inline static const char* HeartMode[] =
+        {
+            "mode_heart4",
+            "mode_heart5",
+            "mode_heart6"
+        };
+
         inline static int* SetSpecialFlower(int* This)
         {
             char DstBuf[32]{};
@@ -77,24 +84,172 @@ namespace app
             }
         }
 
-        class CHudGameMainDisplay
+        class CHudGameMainDisplay : public GameObject
         {
+        public:
+            game::GOCHud* GOCHud;
+            int field_D4;
+            game::HudLayerController* LayerController;
+            int field_DC;
+            int field_E0;
+            int field_E4;
+            int field_E8;
+            int field_EC;
+            int field_F0;
+            int field_F4;
+            int field_F8;
+            int field_FC;
+            int field_100;
+            int field_104;
+            int field_108;
+            int field_10C;
+            int field_110;
+            int field_114;
+            int field_118;
+            int field_11C;
+            int field_120;
+            int field_124;
+            int field_128;
+            int field_12C;
+            int field_130;
+            int field_134[17];
+            int field_178[2];
+            int field_180;
+            int field_184;
+            int field_188;
+            int field_18C;
+            int field_190;
+            int field_194;
+            int field_198;
+            int field_19C;
+            int field_1A0;
+            int field_1A4;
+            int field_1A8;
+            int field_1AC;
+            int field_1B0;
+            int field_1B4;
+            float Time;
+            float field_1BC;
+            float field_1C0;
+            int field_1C4;
+            int field_1C8;
+            int field_1CC;
+            int field_1D0;
+            int field_1D4;
+            int field_1D8;
+            int field_1DC;
+            int field_1E0;
+            int field_1E4;
+            int Flags;
+            int field_1EC;
+            int field_1F0;
+            int field_1F4;
+            int field_1F8;
+            int field_1FC;
+            int field_200;
+            int field_204;
+            int field_208;
+            int field_20C;
+            int field_210;
+            int field_214;
+            int field_218;
+            int field_21C;
+            int field_220;
+            int field_224;
+            float field_228;
+            int field_22C;
+            int field_230;
+            int field_234;
+            int field_238;
+            int field_23C;
+            int field_240;
+            int field_244;
+            int field_248;
+            int field_24C;
+            int field_250;
+            int field_254;
+            int field_258;
+            int field_25C;
+            int field_260;
+            int field_264;
+            float field_268;
+            int field_26C;
+            int field_270;
+            float field_274;
+            float field_278;
+            int field_27C;
+            int field_280;
+            int field_284;
+            int field_288;
+            int field_28C;
+            int field_290;
+            int field_294;
+
         public:
             static void __ct();
             static void SpecialRingUpdate();
+            static void InitLayer();
+            static void SetInfo();
 
-            void HeartLifeUpdate(int a2, float a3)
+            void HeartLifeUpdate(int* a2, float deltaTime)
             {
-                if (!(*((int*)this + 0x7A) & 0x100))
+                if (!(Flags & 0x100))
                     return;
 
-                if (*((int*)this + 0x7B) & 1)
+                if (field_1EC & 1)
                 {
-                    *((float*)this + 0x6E) += a3;
-                    if (*((float*)this + 0x6E) <= 0 && !((game::HudLayerController*)((int*)this + 0x36))->IsCurrentAnimation("Hide_Anim"))
+                    Time -= deltaTime;
+                    if (Time <= 0 && !LayerController->IsCurrentAnimation("Hide_Anim"))
                     {
-
+                        game::HudLayerController::PlayInfo playInfo{};
+                        playInfo.AnimationName = "Hide_Anim";
+                        LayerController->PlayAnimation(playInfo);
                     }
+                }
+
+                int numHeart = csl::math::Min(6, NUM_HEARTS);
+                int maxNumHeart = csl::math::Min(6, MAX_NUM_HEARTS);
+
+                if (field_27C)
+                {
+                    field_278 += deltaTime;
+                    if (field_278 < 0.3f)
+                        numHeart = field_1A8;
+
+                    field_278 -= deltaTime;
+                    if (field_1A8 < numHeart)
+                        numHeart = field_1A8 + 1;
+                    else
+                        field_27C = 0;
+                }
+
+                if (field_1AC != maxNumHeart)
+                {
+                    game::HudLayerController::PlayInfo playInfo{};
+                    if (maxNumHeart < 4 || 6 < maxNumHeart)
+                        playInfo.AnimationName = "mode_heart0";
+                    else
+                        playInfo.AnimationName = HeartMode[maxNumHeart & 3];
+                    LayerController->PlayAnimation(playInfo);
+                    field_1AC = maxNumHeart;
+                }
+
+                maxNumHeart = field_1A8;
+                if (maxNumHeart != numHeart)
+                {
+                    if (field_27C && !field_190 && (maxNumHeart < numHeart && maxNumHeart > 0))
+                        printf("obj_zeldaheart_get");
+                
+                    field_1A8 = numHeart;
+                    game::HudLayerController::PlayInfo playInfo{};
+                    playInfo.AnimationName = "life_volume";
+                    playInfo.field_0C = numHeart * 20;
+                    LayerController->PlayAnimation(playInfo);
+
+                    game::HudLayerController::PlayInfo playUsual{};
+                    playUsual.AnimationName = "Usual_Anim";
+                    playUsual.field_08 = 1;
+                    LayerController->PlayAnimation(playUsual);
                 }
             }
         };
