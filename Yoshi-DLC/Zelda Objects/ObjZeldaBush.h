@@ -198,6 +198,13 @@ namespace app
                 return;
 
             game::GOCSound::Play(gocSound, deviceTag, "obj_zeldabush_cut", 0);
+
+            int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
+            if (!gocEffect)
+                return;
+
+            app::game::GOCEffect::CreateEffect(gocEffect, Type == ObjZeldaBushType::A ? "ef_dl3_bush_break_a" : "ef_dl3_bush_break_b");
+
             CSetObjectListener::SetStatusRetire(this);
             GameObject::Kill(this);
 
