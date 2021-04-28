@@ -97,9 +97,7 @@ namespace app
         int field_320{};
         ObjZeldaPopupItemType Type{};
         int PlayerNumber{};
-        int field_32C{};
-        int field_330{};
-        int field_334{};
+        Effect::CEffectHandle EffectHandle{};
         int field_338{};
         int field_33C{};
 
@@ -167,11 +165,31 @@ namespace app
                 }
             }
 
-            game::GOCEffect::SimpleSetup(this);
+            game::GOCEffect::SimpleSetupEx(this, 1, 1);
             game::GOCSound::SimpleSetup(this, 0, 0);
 
             fnd::GOComponent::EndSetup(this);
             CInfo = nullptr;
+
+            Effect::CEffectHandle effectHandle{};
+            int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
+            if (!gocEffect)
+                return;
+
+            game::EffectCreateInfo effectInfo;
+            game::EffectCreateInfo::__ct(&effectInfo);
+            effectInfo.Name = "ef_dl3_itemget_locus";
+            effectInfo.field_04 = 1;
+            effectInfo.field_08 = 1;
+            effectInfo.Position = Vector3(0, 0, 0);
+            effectInfo.Rotation = Quaternion(0, 0, 0, 1);
+            effectInfo.field_30 = 0;
+            effectInfo.field_40 = GameObject::GetGOC(this, GOCVisual);
+            effectInfo.field_44 = "Body";
+            effectInfo.field_48 = -1;
+
+            game::GOCEffect::CreateEffectLoopEx(gocEffect, &effectHandle, &effectInfo);
+            EffectHandle = effectHandle;
 
             int deviceTag[3];
             int* gocSound = GameObject::GetGOC(this, GOCSoundString);
@@ -182,6 +200,7 @@ namespace app
                 game::GOCSound::Play(gocSound, deviceTag, "obj_zeldaheart_get", 0);
             else
                 game::GOCSound::Play(gocSound, deviceTag, "obj_zeldarupy_get", 0);
+
 
             if (Type == ObjZeldaPopupItemType::HEART)
                 return;

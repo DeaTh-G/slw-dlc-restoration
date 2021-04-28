@@ -4,6 +4,8 @@
 #include "LWVariables.h"
 #include "HH_ALLOC.h"
 
+#include "app/Effect/CEffectHandle.h"
+
 // csl
 #include "csl/fnd.h"
 #include "csl/math/math.h"

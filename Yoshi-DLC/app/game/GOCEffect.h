@@ -17,7 +17,7 @@ namespace app
             int	field_38;
             int	field_3C;
             int* field_40;
-            int	field_44;
+            const char* field_44;
             int	field_48;
             int	field_4C;
 
@@ -46,8 +46,10 @@ namespace app
         {
         public:
             inline static FUNCTION_PTR(void, __cdecl, SimpleSetup, ASLR(0x004BD980), GameObject* Object);
+            inline static FUNCTION_PTR(void, __cdecl, SimpleSetupEx, ASLR(0x004BD9D0), GameObject* Object, int a2, int a3);
             inline static FUNCTION_PTR(void, __thiscall, CreateEffect, ASLR(0x004BD5F0), int* This, const char* EffectName);
-            inline static FUNCTION_PTR(void, __thiscall, CreateEffectEx, ASLR(0x004BDA20), int* This, EffectCreateInfo* EffectName);
+            inline static FUNCTION_PTR(void, __thiscall, CreateEffectEx, ASLR(0x004BDA20), int* This, EffectCreateInfo* effectInfo);
+            inline static FUNCTION_PTR(void, __thiscall, CreateEffectLoopEx, ASLR(0x004BDDC0), int* This, Effect::CEffectHandle* a2, EffectCreateInfo* effectInfo);
         };
     }
 }

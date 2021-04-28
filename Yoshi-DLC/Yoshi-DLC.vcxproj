@@ -187,6 +187,7 @@
     <ClInclude Include="app\CSetObjectListener.h" />
     <ClInclude Include="app\debrisUtil.h" />
     <ClInclude Include="app\debris\ResRandomSpaceDebris.h" />
+    <ClInclude Include="app\Effect\CEffectHandle.h" />
     <ClInclude Include="app\egg.h" />
     <ClInclude Include="app\EnemyBase.h" />
     <ClInclude Include="app\EnemyBlowOffObjectCInfo.h" />

@@ -85,6 +85,9 @@
     <Filter Include="Header Files\app\debris">
       <UniqueIdentifier>{dfac294c-95bb-4f91-a544-b814a2f3f902}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\app\Effect">
+      <UniqueIdentifier>{f9e6acdf-fbb3-4161-9352-666234f60dd1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -623,6 +626,9 @@
     </ClInclude>
     <ClInclude Include="app\debrisUtil.h">
       <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Effect\CEffectHandle.h">
+      <Filter>Header Files\app\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
