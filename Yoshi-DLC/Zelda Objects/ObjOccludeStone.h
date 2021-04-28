@@ -100,7 +100,7 @@ namespace app
                 colliderInfo.field_04 |= 0x100;
                 colliderInfo.field_08 = 27;
                 colliderInfo.Mesh = (int*)info->Collision;
-                game::GOCCollider::CreateShape(gocCollider, &colliderInfo);
+                //game::GOCCollider::CreateShape(gocCollider, &colliderInfo);
             }
 
             game::GOCEffect::SimpleSetup(this);
@@ -170,6 +170,12 @@ namespace app
                 debrisInfo.field_CC = 15;
 
                 debrisUtil::CreateRandomSpaceDebris((GameDocument*)field_24[1], &debrisInfo);
+
+                int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
+                if (!gocEffect)
+                    return;
+
+                app::game::GOCEffect::CreateEffect(gocEffect, "ef_dl3_wall_break");
 
                 int deviceTag[3];
                 int* gocSound = GameObject::GetGOC(this, GOCSoundString);
