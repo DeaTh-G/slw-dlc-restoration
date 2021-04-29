@@ -8,7 +8,7 @@ namespace app
         {
         public:
             int field_18{};
-            int field_1C{};
+            Vector3* field_1C{};
 
             MsgGetClimbObjectInfo() : Message()
             {

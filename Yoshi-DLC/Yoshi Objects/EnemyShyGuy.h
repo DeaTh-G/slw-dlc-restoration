@@ -533,7 +533,7 @@ namespace app
             enemy::DeadEffectCInfo effectInfo{};
 
             math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
-            xgame::MsgDamage::SetReply(&message, &translation, 1);
+            message.SetReply(&translation, 1);
             ObjUtil::AddScore(this, "SHYGUY", &message);
 
             enemy::DeadEffectCInfo::__ct(&effectInfo);

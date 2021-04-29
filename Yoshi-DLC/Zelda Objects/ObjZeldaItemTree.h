@@ -27,7 +27,7 @@ namespace app
 
     class ObjZeldaItemTree : public CSetObjectListener
     {
-        INSERT_PADDING(64);
+        csl::math::Vector3 field_390[4];
 
         void AddCallback(GameDocument* gameDocument) override
         {
@@ -140,7 +140,6 @@ namespace app
     private:
         void ProcMsgGetClimbObjectInfo(xgame::MsgGetClimbObjectInfo& message)
         {
-
         }
 
         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)

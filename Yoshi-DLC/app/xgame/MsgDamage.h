@@ -13,6 +13,7 @@ namespace app
         {
         private:
             inline static FUNCTION_PTR(bool, __thiscall, __ct, ASLR(0x004D8580), MsgDamage* This, int a1, int a2, int a3, xgame::MsgHitEventCollision* hitMessage, csl::math::Vector3* position);
+            inline static FUNCTION_PTR(int, __thiscall, f_SetReply, ASLR(0x004D86C0), MsgDamage* message, csl::math::Vector3* translation, int a3);
 
         public:
             fnd::HandleBase field_18{};
@@ -53,7 +54,10 @@ namespace app
                 __ct(this, a1, a2, a3, hitMessage, position);
             }
 
-            inline static FUNCTION_PTR(int, __thiscall, SetReply, ASLR(0x004D86C0), MsgDamage* message, csl::math::Vector3* translation, int a3);
+            int SetReply(csl::math::Vector3* translation, int a2)
+            {
+                return f_SetReply(this, translation, a2);
+            }
         };
     }
 }

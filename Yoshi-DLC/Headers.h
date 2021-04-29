@@ -201,3 +201,4 @@
 #include "Zelda Objects/ObjChangeTopViewCollision.h"
 #include "Zelda Objects/ObjZeldaBush.h"
 #include "Zelda Objects/ObjOccludeStone.h"
+#include "Zelda Objects/ObjBreakFloor.h"

@@ -351,7 +351,7 @@ namespace app
 
                     fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
                     math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
-                    xgame::MsgDamage::SetReply(&message, &position, 1);
+                    message.SetReply(&position, 1);
 
                     int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
                     if (!gocEnemyHsm)
@@ -420,7 +420,7 @@ namespace app
 
                     fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
                     math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
-                    xgame::MsgDamage::SetReply(&message, &position, 1);
+                    message.SetReply(&position, 1);
 
                     int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
                     if (!gocEnemyHsm)
@@ -524,7 +524,7 @@ namespace app
 
                     fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
                     math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
-                    xgame::MsgDamage::SetReply(&message, &position, 1);
+                    message.SetReply(&position, 1);
 
                     int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
                     if (!gocEnemyHsm)
@@ -598,7 +598,7 @@ namespace app
 
                     fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
                     math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
-                    xgame::MsgDamage::SetReply(&message, &position, 1);
+                    message.SetReply(&position, 1);
 
                     int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
                     if (!gocEnemyHsm)

@@ -140,7 +140,7 @@ namespace app
 
                     game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggblock_hit", 0);
                     math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
-                    xgame::MsgDamage::SetReply(&message, &translation, 0);
+                    message.SetReply(&translation, 0);
                     State = STATE_DAMAGE;
                 }
             }
@@ -172,7 +172,7 @@ namespace app
 
                 game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggblock_hit", 0);
                 math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
-                xgame::MsgDamage::SetReply(&message, &translation, 0);
+                message.SetReply(&translation, 0);
                 State = STATE_DAMAGE;
             }
         }
