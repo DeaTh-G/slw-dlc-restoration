@@ -237,6 +237,7 @@
     <ClInclude Include="app\game\GOCSound.h" />
     <ClInclude Include="app\game\GOCVisual.h" />
     <ClInclude Include="app\game\GOCVisualModel.h" />
+    <ClInclude Include="app\game\GravityManager.h" />
     <ClInclude Include="app\game\HudLayerController.h" />
     <ClInclude Include="app\game\MoveBound.h" />
     <ClInclude Include="app\game\MoveController.h" />
@@ -255,10 +256,12 @@
     <ClInclude Include="app\math\math.h" />
     <ClInclude Include="app\math\Transform.h" />
     <ClInclude Include="app\MinigameCharacter.h" />
+    <ClInclude Include="app\ObjCrystalFloorBaseUtil.h" />
     <ClInclude Include="app\Objects\CObjDroppedRing.h" />
     <ClInclude Include="app\Objects\CSharedObjInfo.h" />
     <ClInclude Include="app\Objects\EnemyBlowOffObject.h" />
     <ClInclude Include="app\ObjUtil.h" />
+    <ClInclude Include="app\ObjUtil\LayoutCylinder.h" />
     <ClInclude Include="app\Player\CPhysics.h" />
     <ClInclude Include="app\Player\CPlayer.h" />
     <ClInclude Include="app\Player\CSonic.h" />

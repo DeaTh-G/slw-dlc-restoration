@@ -2,11 +2,13 @@
 
 namespace app
 {
+    inline static float BREAKFLOOR_LAYOUT[] = { 1, 3, 3, 1 };
+
     class ObjBreakFloorInfo : public CObjInfo
     {
     public:
         int Model;
-        int Skeleton;
+        int Skeleton{};
         int Collision;
         debris::ResRandomSpaceDebris Debris;
 
@@ -126,6 +128,51 @@ namespace app
             game::GOCEffect::SimpleSetup(this);
             game::GOCSound::SimpleSetup(this, 0, 0);
 
+            game::GravityManager* gravityManager = game::GravityManager::GetService((GameDocument*)field_24[1]);
+            if (gravityManager)
+            {
+                csl::math::Matrix34 transform;
+
+                int* object = gravityManager->GetObjectAtPoint(GameObject::GetGOC(this, GOCTransformString) + 0x18);
+                ObjUtil::LayoutCylinder layoutCylinder{};
+                ObjUtil::LayoutCylinder::Description description { transformFrame, object };
+                layoutCylinder.Setup(&description);
+
+                csl::math::Vector3 offset{};;
+                float xUp = 26;
+                float zDown = -30;
+                float xDown = xUp * -0.5f;
+                float xOffset{};
+                float zOffset{};
+
+                int frameID = 0;
+                for (size_t i = 0; i < 4; i++)
+                {
+                    xOffset = xDown * (BREAKFLOOR_LAYOUT[i] - 1);
+                    zOffset = zDown * i;
+
+                    if (!BREAKFLOOR_LAYOUT[i])
+                        continue;
+
+                    int count{};
+                    while (count < BREAKFLOOR_LAYOUT[i])
+                    {
+                        offset = Vector3(xOffset, 0, zOffset);
+                        if (!count)
+                            offset.X = 0;
+                        else if (count == 2)
+                            offset.X *= -1;
+
+                        *layoutCylinder.CalcTransform(&transform, &offset);
+                        fnd::HFrame::SetLocalTranslation(&Parts[frameID], (csl::math::Vector3*)&transform.data[0][0]);
+                        fnd::HFrame::SetLocalRotation(&Parts[frameID], (csl::math::Quaternion*)&transform.data[1][0]);
+
+                        count++;
+                        frameID++;
+                    }
+                }
+            }
+
             fnd::GOComponent::EndSetup(this);
         }
 
@@ -166,6 +213,14 @@ namespace app
                 ObjBreakFloorInfo* info = (ObjBreakFloorInfo*)ObjUtil::GetObjectInfo((GameDocument*)field_24[1], "ObjBreakFloorInfo");
                 if (!info)
                     return;
+
+                for (size_t i = 0; i < 8; i++)
+                {
+                    if (message.AttackType & 1)
+                        ObjCrystalFloorBaseUtil::CreateUpDebris((int*)&Parts[i].Transform, &message.field_30, &info->Debris, (GameDocument*)field_24[1]);
+                    else
+                        ObjCrystalFloorBaseUtil::CreateDownDebris((int*)&Parts[i].Transform, &message.field_30, &info->Debris, (GameDocument*)field_24[1]);
+                }
 
                 CSetObjectListener::SetStatusRetire(this);
                 GameObject::Kill(this);

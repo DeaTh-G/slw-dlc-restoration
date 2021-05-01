@@ -90,8 +90,10 @@
 #include "app/game/GOCMovement.h"
 #include "app/game/MoveStraight.h"
 #include "app/game/ShadowShapeCInfo.h"
+#include "app/game/GravityManager.h"
 #include "app/game/PathManager.h"
 #include "app/game/PathEvaluator.h"
+#include "app/ObjUtil/LayoutCylinder.h"
 #include "app/game/MoveController.h"
 #include "app/game/MoveBound.h"
 #include "app/game/MovePopup.h"
@@ -166,6 +168,7 @@
 
 #include "Helpers.h"
 
+#include "app/ObjCrystalFloorBaseUtil.h"
 #include "app/EnemyUvAnimLinkController.h"
 #include "app/CObjOneUp.h"
 #include "app/Objects/CSharedObjInfo.h"

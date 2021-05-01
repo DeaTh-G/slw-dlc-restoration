@@ -88,6 +88,9 @@
     <Filter Include="Header Files\app\Effect">
       <UniqueIdentifier>{f9e6acdf-fbb3-4161-9352-666234f60dd1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\app\ObjUtil">
+      <UniqueIdentifier>{2f04cf22-6d67-4ed3-baaf-71477161913d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -632,6 +635,15 @@
     </ClInclude>
     <ClInclude Include="Zelda Objects\ObjBreakFloor.h">
       <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\ObjCrystalFloorBaseUtil.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GravityManager.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\ObjUtil\LayoutCylinder.h">
+      <Filter>Header Files\app\ObjUtil</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
