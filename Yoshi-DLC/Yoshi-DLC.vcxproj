@@ -296,6 +296,7 @@
     <ClInclude Include="app\xgame\MsgItemTreeWobblePoint.h" />
     <ClInclude Include="app\xgame\MsgKick.h" />
     <ClInclude Include="app\xgame\MsgLeaveEventCollision.h" />
+    <ClInclude Include="app\xgame\MsgLoftBirdCollision.h" />
     <ClInclude Include="app\xgame\MsgNotifyObjectEvent.h" />
     <ClInclude Include="app\xgame\MsgPlayerReachGoal.h" />
     <ClInclude Include="app\xgame\MsgPLChangeAreaTopView.h" />
@@ -353,6 +354,7 @@
     <ClInclude Include="Zelda Objects\ObjBreakFloor.h" />
     <ClInclude Include="Zelda Objects\ObjBreakRoof.h" />
     <ClInclude Include="Zelda Objects\ObjChangeTopViewCollision.h" />
+    <ClInclude Include="Zelda Objects\ObjLoftBirdCollision.h" />
     <ClInclude Include="Zelda Objects\ObjOccludeStone.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaBush.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaItemTree.h" />

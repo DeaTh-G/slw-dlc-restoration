@@ -199,6 +199,7 @@
 #include "Yoshi Objects/ObjYoshiSpecialFlower.h"
 #include "Yoshi Objects/ObjYoshiGoal.h"
 
+#include "app/xgame/MsgLoftBirdCollision.h"
 #include "Zelda Objects/ObjZeldaWarpCollision.h"
 #include "Zelda Objects/ObjZeldaItemTree.h"
 #include "Zelda Objects/ObjZeldaPopupItem.h"
@@ -208,3 +209,4 @@
 #include "Zelda Objects/ObjOccludeStone.h"
 #include "Zelda Objects/ObjBreakFloor.h"
 #include "Zelda Objects/ObjBreakRoof.h"
+#include "Zelda Objects/ObjLoftBirdCollision.h"
