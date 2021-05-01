@@ -5,6 +5,7 @@ void** const MESSAGE_MANAGER = (void**)ASLR(0x00FD4300);
 float DEG_TO_RAD = 0.017453292f;
 
 inline static char* const GOCColliderString = (char*)ASLR(0x00D6425C);
+inline static char* const GOCPhysicsString = (char*)ASLR(0x00D64428);
 inline static char* const GOCVisual = (char*)ASLR(0x00D617C8);
 inline static char* const GOCGravityString = (char*)ASLR(0x00D64314);
 inline static char* const GOCShadowString = (char*)ASLR(0x00D64434);
@@ -30,6 +31,7 @@ inline static int* GOCVisualModel = (int*)ASLR(0x00FD4238);
 inline static int* GOCAnimationSimple = (int*)ASLR(0x00FD7534);
 inline static int* GOCGravity = (int*)ASLR(0x00FD76D8);
 inline static int* GOCCollider = (int*)ASLR(0x00FD75A4);
+inline static int* GOCPhysics = (int*)ASLR(0x00FD78B4);
 inline static int* GOCSound = (int*)ASLR(0x00FD7908);
 inline static int* GOCShadow = (int*)ASLR(0x00FD78D0);
 inline static int* GOCShadowSimple = (int*)ASLR(0x00FD78EC);

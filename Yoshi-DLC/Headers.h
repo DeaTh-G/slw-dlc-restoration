@@ -74,6 +74,7 @@
 #include "app/game/GOCAnimationSimple.h"
 #include "app/game/ColliShapeBase.h"
 #include "app/game/GOCCollider.h"
+#include "app/game/GOCPhysics.h"
 #include "app/game/GOCEffect.h"
 #include "app/game/GOCGravity.h"
 #include "app/game/HudLayerController.h"
@@ -154,6 +155,7 @@
 #include "app/xgame/MsgItemTreeWobblePoint.h"
 #include "app/xgame/MsgPLChangeAreaTopView.h"
 #include "app/xgame/MsgPLSendGameInfo.h"
+#include "app/xgame/MsgShakeCamera.h"
 
 #include "SonicUSA/System/Random.h"
 
@@ -205,3 +207,4 @@
 #include "Zelda Objects/ObjZeldaBush.h"
 #include "Zelda Objects/ObjOccludeStone.h"
 #include "Zelda Objects/ObjBreakFloor.h"
+#include "Zelda Objects/ObjBreakRoof.h"

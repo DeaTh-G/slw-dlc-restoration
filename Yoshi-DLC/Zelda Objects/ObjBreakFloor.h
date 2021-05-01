@@ -12,8 +12,6 @@ namespace app
         int Collision;
         debris::ResRandomSpaceDebris Debris;
 
-        ObjBreakFloorInfo() {}
-
         void Initialize(GameDocument& gameDocument) override
         {
             int packFile = 0;
@@ -163,7 +161,7 @@ namespace app
                         else if (count == 2)
                             offset.X *= -1;
 
-                        *layoutCylinder.CalcTransform(&transform, &offset);
+                        layoutCylinder.CalcTransform(&transform, &offset);
                         fnd::HFrame::SetLocalTranslation(&Parts[frameID], (csl::math::Vector3*)&transform.data[0][0]);
                         fnd::HFrame::SetLocalRotation(&Parts[frameID], (csl::math::Quaternion*)&transform.data[1][0]);
 

@@ -232,6 +232,7 @@
     <ClInclude Include="app\game\GOCMotor.h" />
     <ClInclude Include="app\game\GOCMotorRotate.h" />
     <ClInclude Include="app\game\GOCMovement.h" />
+    <ClInclude Include="app\game\GOCPhysics.h" />
     <ClInclude Include="app\game\GOCShadow.h" />
     <ClInclude Include="app\game\GOCShadowSimple.h" />
     <ClInclude Include="app\game\GOCSound.h" />
@@ -305,6 +306,7 @@
     <ClInclude Include="app\xgame\MsgPLVisibleItemEffect.h" />
     <ClInclude Include="app\xgame\MsgResumeGameTimer.h" />
     <ClInclude Include="app\xgame\MsgSetPosition.h" />
+    <ClInclude Include="app\xgame\MsgShakeCamera.h" />
     <ClInclude Include="app\xgame\MsgSpringImpulse.h" />
     <ClInclude Include="app\xgame\MsgStayTrigger.h" />
     <ClInclude Include="app\xgame\MsgStopBgm.h" />
@@ -349,6 +351,7 @@
     <ClInclude Include="Yoshi Objects\ObjYoshiJumpBoard.h" />
     <ClInclude Include="Yoshi Objects\ObjYoshiSpecialFlower.h" />
     <ClInclude Include="Zelda Objects\ObjBreakFloor.h" />
+    <ClInclude Include="Zelda Objects\ObjBreakRoof.h" />
     <ClInclude Include="Zelda Objects\ObjChangeTopViewCollision.h" />
     <ClInclude Include="Zelda Objects\ObjOccludeStone.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaBush.h" />

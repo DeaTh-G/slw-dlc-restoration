@@ -21,6 +21,7 @@ namespace app
         inline static FUNCTION_PTR(int, __cdecl, GetSetObjectTransform, ASLR(0x0073E040), GameDocument* gameDocument, int* objectID, csl::math::Vector3* position, csl::math::Quaternion* rotation);
         inline static FUNCTION_PTR(int, __cdecl, SendMessageImmToGameActor, ASLR(0x0073DB70), GameObject* gameObject, fnd::Message* message);
         inline static FUNCTION_PTR(int, __cdecl, SendMessageImmToSetObject, ASLR(0x0073DC90), GameObject* gameObject, int* objectID, fnd::Message* message, int a4);
+        inline static FUNCTION_PTR(int, __cdecl, SendMessageImmToCamera, ASLR(0x0073DBC0), GameObject* gameObject, int playerNo, fnd::Message* message);
         inline static FUNCTION_PTR(int, __cdecl, SetPropertyLockonTarget, ASLR(0x0073D280), GameObject* This);
         inline static FUNCTION_PTR(int, __cdecl, SetEnableColliShape, ASLR(0x0073D8D0), int* This, int colliNo, bool isEnable);
         inline static FUNCTION_PTR(bool, __cdecl, CheckShapeUserID, ASLR(0x0073D8B0), int a1, int a2);

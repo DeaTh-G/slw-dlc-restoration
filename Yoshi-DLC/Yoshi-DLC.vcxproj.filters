@@ -645,6 +645,15 @@
     <ClInclude Include="app\ObjUtil\LayoutCylinder.h">
       <Filter>Header Files\app\ObjUtil</Filter>
     </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjBreakRoof.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCPhysics.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgShakeCamera.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">
