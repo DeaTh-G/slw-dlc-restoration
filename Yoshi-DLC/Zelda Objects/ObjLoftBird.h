@@ -309,11 +309,18 @@ namespace app
                 csl::math::Vector3 objectPosition{};
                 game::PathEvaluator::SetDistance(&PathEvaluator, nextPos);
                 game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
+                math::Vector3CrossProduct(&someVector, &someVector2, &objectPosition);
                 *(csl::math::Vector3*)&matrix.data[0] = objectPosition;
                 *(csl::math::Vector3*)&matrix.data[1] = someVector;
                 *(csl::math::Vector3*)&matrix.data[2] = someVector2;
                 *(csl::math::Vector3*)&matrix.data[3] = Vector3(0, 0, 0);
                 csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
+                csl::math::Quaternion objectRotation = *(csl::math::Quaternion*)(gocTransform + 0x1C);
+
+                Eigen::Quaternionf qOR(objectRotation.X, objectRotation.Y, objectRotation.Z, objectRotation.W);
+                Eigen::Quaternionf q(rotation.X, rotation.Y, rotation.Z, rotation.W);
+                qOR = qOR.slerp(10 * updateInfo.deltaTime, q);
+                rotation = csl::math::Quaternion(qOR.w(), qOR.x(), qOR.y(), qOR.z());
 
                 fnd::GOCTransform::SetLocalTranslation(gocTransform, &splinePoint);
                 fnd::GOCTransform::SetLocalRotation(gocTransform, &rotation);
