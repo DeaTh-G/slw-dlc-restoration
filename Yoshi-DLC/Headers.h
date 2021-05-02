@@ -210,3 +210,4 @@
 #include "Zelda Objects/ObjBreakFloor.h"
 #include "Zelda Objects/ObjBreakRoof.h"
 #include "Zelda Objects/ObjLoftBirdCollision.h"
+#include "Zelda Objects/ObjLoftBird.h"

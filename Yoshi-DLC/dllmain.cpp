@@ -17,6 +17,14 @@ char IsYoshiIslandStage()
     return 0;
 }
 
+char IsZeldaStage()
+{
+    const char* packFileName = app::ObjUtil::GetStagePackName((app::GameDocument*) * app::Document);
+    if (strncmp(packFileName, "zdlc03", 6) == 0)
+        return 1;
+    return 0;
+}
+
 void Initialize()
 {
     MessageBox(NULL, L"AAAAAAAAAA", NULL, MB_ICONERROR);
@@ -33,6 +41,7 @@ void Initialize()
     WriteCall((void*)ASLR(0x009159F3), &IsYoshiIslandStage);
     WriteCall((void*)ASLR(0x00915A16), &IsYoshiIslandStage);
     WriteCall((void*)ASLR(0x00916EED), &IsYoshiIslandStage);
+    WriteCall((void*)ASLR(0x00916F00), &IsZeldaStage);
 
     auto create_EnemyShyGuy = &app::create_EnemyShyGuy;
     auto create_EnemyPiranhaPlant = &app::create_EnemyPiranhaPlant;

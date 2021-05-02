@@ -660,6 +660,9 @@
     <ClInclude Include="app\xgame\MsgLoftBirdCollision.h">
       <Filter>Header Files\app\xgame</Filter>
     </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjLoftBird.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">

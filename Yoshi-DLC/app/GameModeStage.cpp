@@ -38,15 +38,11 @@ bool IsZeldaStage()
         return false;
 
     const char* packFileName = app::ObjUtil::GetStagePackName(*app::Document);
-    if (strncmp(packFileName, "zdlc03", 6) == 0)
-        return true;
-
-    if (LinkSonicPlayType == PlayType::ALWAYS)
+    if (strncmp(packFileName, "zdlc03", 6) == 0 || LinkSonicPlayType == PlayType::ALWAYS)
         return true;
 
     return false;
 }
-
 
 __declspec(naked) void GameModeStageRegisterObjInfosAsmHook()
 {

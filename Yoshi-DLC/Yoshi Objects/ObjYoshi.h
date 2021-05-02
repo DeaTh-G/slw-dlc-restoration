@@ -65,7 +65,7 @@ namespace app
                 "yos_result06_start_Eye_L",
                 "yos_result06_start_Eye_R",
                 "yos_result06_loop_Eye_L",
-                "yos_result06_loop_Eye_R",
+                "yos_result06_loop_Eye_R"
             };
 
             int packFile = 0;

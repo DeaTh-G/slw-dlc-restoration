@@ -6,10 +6,7 @@ HOOK(bool, __cdecl, IsLinkCostumeHook, ASLR(0x008EFFB0), int* a1, void* edx)
         return false;
 
     const char* packFileName = app::ObjUtil::GetStagePackName(*app::Document);
-    if (strncmp(packFileName, "zdlc03", 6) == 0)
-        return true;
-
-    if (LinkSonicPlayType == PlayType::ALWAYS)
+    if (strncmp(packFileName, "zdlc03", 6) == 0 || LinkSonicPlayType == PlayType::ALWAYS)
         return true;
 
     return false;

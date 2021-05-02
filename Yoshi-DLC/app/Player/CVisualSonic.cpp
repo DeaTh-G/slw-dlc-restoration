@@ -3,10 +3,7 @@
 HOOK(void, __cdecl, RegisterResourceHook, ASLR(0x008FE300), int* a1, int* a2, int* a3, int a4)
 {
     const char* packFileName = app::ObjUtil::GetStagePackName(*app::Document);
-    if (strncmp(packFileName, "zdlc03", 6) == 0)
-        a4 = 1;
-
-    if (LinkSonicPlayType == PlayType::ALWAYS)
+    if (strncmp(packFileName, "zdlc03", 6) == 0 || LinkSonicPlayType == PlayType::ALWAYS)
         a4 = 1;
 
     if (LinkSonicPlayType == PlayType::NEVER)
@@ -17,15 +14,15 @@ HOOK(void, __cdecl, RegisterResourceHook, ASLR(0x008FE300), int* a1, int* a2, in
 
 HOOK(void, __fastcall, ActivateSubHook, ASLR(0x008FE290), int* a1, int* edx)
 {
-    const char* packFileName = app::ObjUtil::GetStagePackName(*app::Document);
-    if (strncmp(packFileName, "zdlc03", 6) == 0)
-        *(*((*(unsigned int***)(a1 + 4)) + 210) + 6) |= 0x80000000;
-
-    if (LinkSonicPlayType == PlayType::ALWAYS)
-        *(*((*(unsigned int***)(a1 + 4)) + 210) + 6) |= 0x80000000;
-
     if (LinkSonicPlayType == PlayType::NEVER)
-        *(*((*(unsigned int***)(a1 + 4)) + 210) + 6) |= 0;
+    {
+        originalActivateSubHook(a1, edx);
+        return;
+    }
+
+    const char* packFileName = app::ObjUtil::GetStagePackName(*app::Document);
+    if (strncmp(packFileName, "zdlc03", 6) == 0 || LinkSonicPlayType == PlayType::ALWAYS)
+        *(*((*(unsigned int***)(a1 + 4)) + 210) + 6) |= 0x80000000;
 
     originalActivateSubHook(a1, edx);
 }

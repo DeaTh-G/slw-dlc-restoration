@@ -100,7 +100,7 @@ namespace app
                 colliderInfo.field_04 |= 0x100;
                 colliderInfo.field_08 = 27;
                 colliderInfo.Mesh = (int*)info->Collision;
-                //game::GOCCollider::CreateShape(gocCollider, &colliderInfo);
+                game::GOCCollider::CreateShape(gocCollider, &colliderInfo);
             }
 
             game::GOCEffect::SimpleSetup(this);
