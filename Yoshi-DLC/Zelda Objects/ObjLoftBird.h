@@ -2,6 +2,8 @@
 
 namespace app
 {
+    inline static const char* LINK_ANIM_NAME[] = { "EVENT_ONE", "EVENT_TWO" };
+
     enum class ObjLoftBirdLightType : char
     {
         Zero,
@@ -60,10 +62,10 @@ namespace app
             ObjUtil::GetAnimationScriptResource(&animationScript, "zdlc03_obj_link", packFile);
             animationScript[1] = Skeletons[0];
 
-            animationScript[0] = 0; animationScript[1] = 0; animationScript[2] = 0;
             if (animationScript)
                 animation::AnimationResContainer::LoadFromBuffer(&LinkAnimationContainer, animationScript, packFile);
 
+            animationScript[0] = 0; animationScript[1] = 0; animationScript[2] = 0;
             ObjUtil::GetAnimationScriptResource(&animationScript, "zdlc03_obj_loftbird", packFile);
             animationScript[1] = Skeletons[1];
 
@@ -88,7 +90,7 @@ namespace app
         float EndDistance{};
         float MovementSpeed{};
         Listener AnimationListener{};
-        int field_3E0{};
+        int IsActive{};
         int SoundHandle[3]{};
         int field_3F0{};
         EnemyUvAnimLinkController UvLinkController{};
@@ -109,6 +111,8 @@ namespace app
         {
             sizeof(ObjLoftBird);
             fnd::GOComponent::Create(this, GOCVisualContainer);
+            fnd::GOComponent::Create(this, GOCAnimationContainer);
+            fnd::GOComponent::Create(this, GOCCollider);
             fnd::GOComponent::Create(this, GOCSound);
 
             fnd::GOComponent::BeginSetup(this);
@@ -122,36 +126,269 @@ namespace app
             else
                 field_420 = 0;
 
-            if (data->PointLight != ObjLoftBirdLightType::One)
+            int* gocVContainer = GameObject::GetGOC(this, GOCVisual);
+            if (gocVContainer)
             {
-                int* gocContainer = GameObject::GetGOC(this, GOCVisual);
-                if (gocContainer)
+                int modelCount = 2;
+                fnd::GOCVisualContainer::Setup(gocVContainer, &modelCount);
+
+                for (size_t i = 0; i < 2; i++)
                 {
-                    int modelCount = 2;
-                    fnd::GOCVisualContainer::Setup(gocContainer, &modelCount);
-
-                    for (size_t i = 0; i < 2; i++)
+                    int* gocVisual = fnd::GOComponent::CreateSingle(this, GOCVisualModel);
+                    if (gocVisual)
                     {
-                        int* gocVisual = fnd::GOComponent::CreateSingle(this, GOCVisualModel);
-                        if (gocVisual)
-                        {
-                            csl::math::Vector3 scale { 2, 2, 2 };
+                        csl::math::Vector3 scale{ 2, 2, 2 };
 
-                            fnd::GOCVisualModel::VisualDescription visualDescriptor{};
-                            fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
+                        fnd::GOCVisualModel::VisualDescription visualDescriptor{};
+                        fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
 
-                            visualDescriptor.Model = info->Models[i];
-                            visualDescriptor.Skeleton = info->Skeletons[i];
-                            fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
-                            fnd::GOCVisualContainer::Add(gocContainer, gocVisual);
-                            fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, &scale);
-                            fnd::GOCVisual::SetVisible(gocVisual, false);
-                        }
+                        visualDescriptor.Model = info->Models[i];
+                        visualDescriptor.Skeleton = info->Skeletons[i];
+                        fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
+                        fnd::GOCVisualContainer::Add(gocVContainer, gocVisual);
+                        fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
+                        fnd::GOCVisual::SetVisible(gocVisual, false);
+                    }
+                }
+
+                int* gocAContainer = GameObject::GetGOC(this, GOCAnimation);
+                if (gocAContainer)
+                {
+                    int animationCount = 2;
+                    game::GOCAnimationContainer::Setup(gocAContainer, &animationCount);
+
+                    int* gocAnimation = fnd::GOComponent::CreateSingle(this, GOCAnimationScript);
+                    if (gocAnimation)
+                    {
+                        animation::AnimationResContainer* animation = &(info->LinkAnimationContainer);
+
+                        game::GOCAnimationScript::Setup(gocAnimation, &animation);
+                        game::GOCAnimationContainer::Add(gocAContainer, gocAnimation);
+                        int* linkModel = *(int**)(*(gocVContainer + 0x10));
+                        fnd::GOCVisualModel::AttachAnimation(linkModel, gocAnimation);
+                        game::GOCAnimationScript::SetAnimation(gocAnimation, "IDLE_LOOP");
+
+                        game::GOCAnimationSimple::AddListener(gocAnimation, &AnimationListener);
+                    }
+
+                    gocAnimation = fnd::GOComponent::CreateSingle(this, GOCAnimationScript);
+                    if (gocAnimation)
+                    {
+                        animation::AnimationResContainer* animation = &(info->BirdAnimationContainer);
+
+                        game::GOCAnimationScript::Setup(gocAnimation, &animation);
+                        game::GOCAnimationContainer::Add(gocAContainer, gocAnimation);
+                        int* birdModel = *(int**)(*(gocVContainer + 0x10) + 4);
+                        fnd::GOCVisualModel::AttachAnimation(birdModel, gocAnimation);
+                        game::GOCAnimationScript::SetAnimation(gocAnimation, "FLY_LOOP");
                     }
                 }
             }
 
+            csl::fnd::IAllocator* pAllocator = GetAllocator();
+            EnemyUvAnimLinkController::Description description{ 2, 2 };
+            GameObjectHandleBase::__ct(description.field_0C, this);
+            UvLinkController.Setup(description, pAllocator);
+            for (size_t i = 0; i < 2; i++)
+                for (size_t j = 0; j < 2; j++)
+                    UvLinkController.Add((int*)info->TexSrtAnimContainer[2 * i + j], LINK_ANIM_NAME[i], 0);
+
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+            if (gocCollider)
+            {
+                int shapeCount = 1;
+                game::ColliSphereShapeCInfo collisionInfo{};
+                game::GOCCollider::Setup(gocCollider, &shapeCount);
+
+                // Search Collider
+                game::CollisionObjCInfo::__ct(&collisionInfo);
+                collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
+                collisionInfo.MotionType = 2;
+                collisionInfo.Radius = 20;
+                ObjUtil::SetupCollisionFilter(2, &collisionInfo);
+                game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
+            }
+
+            game::GOCSound::SimpleSetup(this, 1, 1);
+
+            game::PathManager* pathManager = game::PathManager::GetService(gameDocument);
+            if (!pathManager)
+            {
+                fnd::GOComponent::EndSetup(this);
+                return;
+            }
+
+            int* pathObject = pathManager->GetPathObject(data->ObjPathId);
+            if (!pathObject)
+            {
+                fnd::GOComponent::EndSetup(this);
+                return;
+            }
+
+            game::PathEvaluator::SetPathObject(&PathEvaluator, pathObject);
+            if (!fnd::HandleBase::IsValid(&PathEvaluator))
+            {
+                fnd::GOComponent::EndSetup(this);
+                return;
+            }
+
+            game::PathEvaluator::SetDistance(&PathEvaluator, data->StartDist);
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+            {
+                fnd::GOComponent::EndSetup(this);
+                return;
+            }
+
+            csl::math::Matrix34 matrix{};
+
+            csl::math::Vector3 splinePoint{};
+            csl::math::Vector3 someVector{};
+            csl::math::Vector3 someVector2{};
+            csl::math::Vector3 objectPosition{};
+            game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
+            fnd::GOCTransform::SetLocalTranslation(gocTransform, &splinePoint);
+            math::Vector3CrossProduct(&someVector, &someVector2, &objectPosition);
+            *(csl::math::Vector3*)&matrix.data[0] = objectPosition;
+            *(csl::math::Vector3*)&matrix.data[1] = someVector;
+            *(csl::math::Vector3*)&matrix.data[2] = someVector2;
+            *(csl::math::Vector3*)&matrix.data[3] = Vector3(0, 0, 0);
+            csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
+            fnd::GOCTransform::SetLocalRotation(gocTransform, &rotation);
+
             fnd::GOComponent::EndSetup(this);
+            GameObject::Sleep(this);
+        }
+
+        bool ProcessMessage(fnd::Message& message) override
+        {
+            if (PreProcessMessage(message))
+                return true;
+
+            switch (message.Type)
+            {
+            case fnd::PROC_MSG_NOTIFY_OBJECT_EVENT:
+                ProcMsgNotifyObjectEvent((xgame::MsgNotifyObjectEvent&)message);
+                return true;
+            case fnd::PROC_MSG_LOFT_BIRD_COLLISION:
+                ProcMsgLoftBirdCollision((xgame::MsgLoftBirdCollision&)message);
+                return true;
+            case fnd::PROC_MSG_DLC_ZELDA_NOTICE_STOP_ENEMY:
+                ProcMsgDlcZeldaNoticeStopEnemy();
+                return true;
+            default:
+                return CSetObjectListener::ProcessMessage(message);
+            }
+        }
+
+        void Update(const fnd::SUpdateInfo& updateInfo) override
+        {
+            if (!IsActive)
+                return;
+
+            float pathLength = game::PathEvaluator::GetLength(&PathEvaluator);
+            float nextPos = (MovementSpeed * updateInfo.deltaTime) + PathEvaluator.field_08;
+            if (nextPos >= pathLength || nextPos >= EndDistance)
+            {
+                //fnd::SoundHandle::StopImm();
+                CSetObjectListener::SetStatusRetire(this);
+                GameObject::Kill(this);
+            }
+            else
+            {
+                int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+                if (!gocTransform)
+                    return;
+
+                csl::math::Matrix34 matrix{};
+                nextPos = csl::math::Clamp(nextPos, 0, pathLength);
+
+                csl::math::Vector3 splinePoint{};
+                csl::math::Vector3 someVector{};
+                csl::math::Vector3 someVector2{};
+                csl::math::Vector3 objectPosition{};
+                game::PathEvaluator::SetDistance(&PathEvaluator, nextPos);
+                game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
+                *(csl::math::Vector3*)&matrix.data[0] = objectPosition;
+                *(csl::math::Vector3*)&matrix.data[1] = someVector;
+                *(csl::math::Vector3*)&matrix.data[2] = someVector2;
+                *(csl::math::Vector3*)&matrix.data[3] = Vector3(0, 0, 0);
+                csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
+
+                fnd::GOCTransform::SetLocalTranslation(gocTransform, &splinePoint);
+                fnd::GOCTransform::SetLocalRotation(gocTransform, &rotation);
+            }
+        }
+
+    private:
+        void ProcMsgLoftBirdCollision(xgame::MsgLoftBirdCollision& message)
+        {
+            switch (message.EventType)
+            {
+            case app::ObjLoftBirdCollisionType::FLAP_WING:
+            {
+                int* gocContainer = GameObject::GetGOC(this, GOCAnimation) + 0xF;
+                if (!gocContainer)
+                    break;
+
+                int* animation = *(int**)(*gocContainer + 4);
+                game::GOCAnimationScript::ChangeAnimation(animation, "FLAP_WING");
+                break;
+            }
+            case app::ObjLoftBirdCollisionType::LOFTBIRD_CRY:
+            {
+                int deviceTag[3];
+                int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+                if (gocSound)
+                    game::GOCSound::Play(gocSound, deviceTag, "obj_loftbird_cry", 0);
+
+                break;
+            }
+            case app::ObjLoftBirdCollisionType::EVENT_ONE:
+            {
+                int* gocContainer = GameObject::GetGOC(this, GOCAnimation) + 0xF;
+                if (!gocContainer)
+                    break;
+
+                int* animation = *(int**)(*gocContainer);
+                game::GOCAnimationScript::ChangeAnimation(animation, "EVENT_ONE");
+                break;
+            }
+            case app::ObjLoftBirdCollisionType::EVENT_TWO:
+            {
+                int* gocContainer = GameObject::GetGOC(this, GOCAnimation) + 0xF;
+                if (!gocContainer)
+                    break;
+
+                int* animation = *(int**)(*gocContainer);
+                game::GOCAnimationScript::ChangeAnimation(animation, "EVENT_TWO");
+                break;
+            }
+            }
+        }
+
+        void ProcMsgNotifyObjectEvent(xgame::MsgNotifyObjectEvent& message)
+        {
+            if (!message.field_18 || IsActive)
+                return;
+
+            int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
+            if (!gocContainer)
+                return;
+
+            for (size_t i = 0; i < 2; i++)
+            {
+                int* model = *(int**)(*gocContainer + 4 * i);
+                fnd::GOCVisual::SetVisible(model, true);
+            }
+
+            IsActive = 1;
+
+            GameObject::Resume(this);
+        }
+
+        void ProcMsgDlcZeldaNoticeStopEnemy()
+        {
         }
     };
 

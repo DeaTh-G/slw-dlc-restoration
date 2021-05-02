@@ -27,6 +27,7 @@ inline static char* const PluginStateHeartLifeString = (char*)ASLR(0x00E00630);
 inline static int* GOCTransform = (int*)ASLR(0x00F68ED4);
 inline static int* GOCAnimationScript = (int*)ASLR(0x00FD7518);
 inline static int* GOCVisualContainer = (int*)ASLR(0x00FD4254);
+inline static int* GOCAnimationContainer = (int*)ASLR(0x00FD7550);
 inline static int* GOCVisualModel = (int*)ASLR(0x00FD4238);
 inline static int* GOCAnimationSimple = (int*)ASLR(0x00FD7534);
 inline static int* GOCGravity = (int*)ASLR(0x00FD76D8);

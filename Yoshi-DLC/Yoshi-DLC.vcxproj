@@ -222,6 +222,7 @@
     <ClInclude Include="app\game\ColliShapeBase.h" />
     <ClInclude Include="app\game\CollisionObjCInfo.h" />
     <ClInclude Include="app\game\CollisionShapeType.h" />
+    <ClInclude Include="app\game\GOCAnimationContainer.h" />
     <ClInclude Include="app\game\GOCAnimationScript.h" />
     <ClInclude Include="app\game\GOCAnimationSimple.h" />
     <ClInclude Include="app\game\GOCCollider.h" />

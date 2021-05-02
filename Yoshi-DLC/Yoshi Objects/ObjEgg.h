@@ -478,7 +478,7 @@ namespace app
                     float length = game::PathEvaluator::GetLength(&pathEvaluator);
                     game::PathEvaluator::GetClosestPositionAlongSpline(&pathEvaluator, &objectPosition, &splinePoint, 0, &length);
                     game::PathEvaluator::SetDistance(&pathEvaluator, splinePoint.X);
-                    game::PathEvaluator::GetPNT(&pathEvaluator, &pathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
+                    game::PathEvaluator::GetPNT(&pathEvaluator, pathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
                     math::Vector3CrossProduct(&someVector, &someVector2, &objectPosition);
                     csl::math::Matrix34 pointMatrix{};
                     *(csl::math::Vector3*)&pointMatrix.data[0][0] = objectPosition;

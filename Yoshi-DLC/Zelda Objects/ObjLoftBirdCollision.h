@@ -2,17 +2,9 @@
 
 namespace app
 {
-    enum class ObjLoftBirdCollisionType : char
-    {
-        Zero,
-        One,
-        Two,
-        Three
-    };
-
     struct ObjLoftBirdCollisionData
     {
-        ObjLoftBirdCollisionType ActionType;
+        app::ObjLoftBirdCollisionType ActionType;
     };
 
     class ObjLoftBirdCollision : public CSetObjectListener
@@ -61,7 +53,7 @@ namespace app
         {
             ObjLoftBirdCollisionData* data = (ObjLoftBirdCollisionData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
 
-            xgame::MsgLoftBirdCollision loftMessage { (char)data->ActionType };
+            xgame::MsgLoftBirdCollision loftMessage { data->ActionType };
             SendMessageImm(message.ActorID, &loftMessage);
         }
     };

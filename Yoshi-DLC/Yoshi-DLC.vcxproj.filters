@@ -663,6 +663,9 @@
     <ClInclude Include="Zelda Objects\ObjLoftBird.h">
       <Filter>Header Files\Zelda Objects</Filter>
     </ClInclude>
+    <ClInclude Include="app\game\GOCAnimationContainer.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">

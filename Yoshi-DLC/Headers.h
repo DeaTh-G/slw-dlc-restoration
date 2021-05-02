@@ -72,6 +72,7 @@
 #include "app/game/CollisionShapeType.h"
 #include "app/game/GOCAnimationScript.h"
 #include "app/game/GOCAnimationSimple.h"
+#include "app/game/GOCAnimationContainer.h"
 #include "app/game/ColliShapeBase.h"
 #include "app/game/GOCCollider.h"
 #include "app/game/GOCPhysics.h"
