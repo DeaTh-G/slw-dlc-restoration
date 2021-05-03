@@ -4,6 +4,7 @@ namespace app
 {
     inline static const char* LINK_ANIM_NAME[] = { "EVENT_ONE", "EVENT_TWO" };
 
+
     enum class ObjLoftBirdLightType : char
     {
         Zero,
@@ -84,7 +85,20 @@ namespace app
 
     class ObjLoftBird : public CSetObjectListener
     {
-        class Listener : public animation::AnimationListener {};
+    public:
+        class Listener : public animation::AnimationListener
+        {
+        public:
+            ObjLoftBird* pLoftBird;
+
+            void OnEvent(int notifyTiming) override
+            {
+                if (!pLoftBird)
+                    return;
+                    
+                pLoftBird->UpdateNodeTransform();
+            }
+        };
 
         game::PathEvaluator PathEvaluator{};
         float EndDistance{};
@@ -107,9 +121,20 @@ namespace app
         int field_448{};
         int field_44C{};
 
+        ObjLoftBird()
+        {
+            AnimationListener.field_20 = 2;
+        }
+
+        void Destructor(size_t deletingFlags)
+        {
+            AnimationListener.Destructor(0);
+
+            CSetObjectListener::Destructor(deletingFlags);
+        }
+
         void AddCallback(GameDocument* gameDocument) override
         {
-            sizeof(ObjLoftBird);
             fnd::GOComponent::Create(this, GOCVisualContainer);
             fnd::GOComponent::Create(this, GOCAnimationContainer);
             fnd::GOComponent::Create(this, GOCCollider);
@@ -121,7 +146,7 @@ namespace app
             ObjLoftBirdData* data = (ObjLoftBirdData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
             EndDistance = data->EndDist;
             MovementSpeed = data->MoveSpeed;
-            if (data->PointLight != ObjLoftBirdLightType::Zero)
+            if (data->PointLight != ObjLoftBirdLightType::One)
                 field_420 = 1;
             else
                 field_420 = 0;
@@ -167,8 +192,6 @@ namespace app
                         int* linkModel = *(int**)(*(gocVContainer + 0x10));
                         fnd::GOCVisualModel::AttachAnimation(linkModel, gocAnimation);
                         game::GOCAnimationScript::SetAnimation(gocAnimation, "IDLE_LOOP");
-
-                        game::GOCAnimationSimple::AddListener(gocAnimation, &AnimationListener);
                     }
 
                     gocAnimation = fnd::GOComponent::CreateSingle(this, GOCAnimationScript);
@@ -181,6 +204,19 @@ namespace app
                         int* birdModel = *(int**)(*(gocVContainer + 0x10) + 4);
                         fnd::GOCVisualModel::AttachAnimation(birdModel, gocAnimation);
                         game::GOCAnimationScript::SetAnimation(gocAnimation, "FLY_LOOP");
+
+                        csl::fnd::IAllocator* allocator{};
+                        auto funcPtr = &ObjLoftBird::SoundCallback;
+                        animation::AnimCallbackBridge<ObjLoftBird>* callback =
+                            (animation::AnimCallbackBridge<ObjLoftBird>*)AnimCallbackBridge_Initialize(allocator);
+                        callback->GameObject = this;
+                        callback->field_10 = reinterpret_cast<void*&>(funcPtr);
+                        callback->field_14 = -1;
+
+                        game::GOCAnimationScript::RegisterCallback(gocAnimation, 0, callback);
+
+                        AnimationListener.pLoftBird = this;
+                        game::GOCAnimationSimple::AddListener(gocAnimation, &AnimationListener);
                     }
                 }
             }
@@ -396,6 +432,46 @@ namespace app
 
         void ProcMsgDlcZeldaNoticeStopEnemy()
         {
+        }
+
+        void SoundCallback(int a1, int a2, int a3)
+        {
+            if (a2 != 1)
+                return;
+
+            int deviceTag[3]{};
+            int* gocSound = GameObject::GetGOC((GameObject*)((char*)this + 1), GOCSoundString);
+            if (!gocSound)
+                return;
+
+            game::GOCSound::Play3D(gocSound, deviceTag, "obj_loftbird_flap", 0);
+        }
+
+        void UpdateNodeTransform()
+        {
+            int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
+            if (!gocContainer)
+                return;
+
+            int* birdModel = *(int**)(*gocContainer + 4);
+            if (!birdModel)
+                return;
+
+            math::Transform transform{};
+            fnd::GOCVisualModel::GetNodeTransform(birdModel, 1, "Const_link", &transform);
+
+            int* linkModel = *(int**)(*gocContainer);
+            if (!linkModel)
+                return;
+
+            fnd::GOCVisualModel::SetNodeTransform(linkModel, 1, "Reference", &transform);
+
+
+        }
+
+        inline static void* AnimCallbackBridge_Initialize(csl::fnd::IAllocator* pAllocator)
+        {
+            return new animation::AnimCallbackBridge<ObjLoftBird>();
         }
     };
 
