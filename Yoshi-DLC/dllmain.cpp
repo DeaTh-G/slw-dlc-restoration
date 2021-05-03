@@ -38,10 +38,15 @@ void Initialize()
         (const char)((uint32_t)app::construct_EggManager >> 24)
     );
 
+
     WriteCall((void*)ASLR(0x009159F3), &IsYoshiIslandStage);
     WriteCall((void*)ASLR(0x00915A16), &IsYoshiIslandStage);
     WriteCall((void*)ASLR(0x00916EED), &IsYoshiIslandStage);
     WriteCall((void*)ASLR(0x00916F00), &IsZeldaStage);
+
+    // Fix Keese Death Effect Not Being Visible
+    auto enemyKeese_ProcMsgDamage = &app::enemy::DeadEffectCInfo::SetZeldaKeese;
+    WriteCall((void*)ASLR(0x006C76EC), *(void**)&enemyKeese_ProcMsgDamage);
 
     auto create_EnemyShyGuy = &app::create_EnemyShyGuy;
     auto create_EnemyPiranhaPlant = &app::create_EnemyPiranhaPlant;
@@ -147,6 +152,7 @@ void Initialize()
     app::Player::CVisualSonic::RegisterResource();
     app::Player::CVisualBase::IsLinkCostume();
     app::GameModeStage::RegisterObjInfos();
+    //app::EnemyKeese::ProcMsgDamage();
     /*app::HUD::CHudGameMainDisplay::InitLayer();
     app::HUD::CHudGameMainDisplay::SetInfo();*/
 

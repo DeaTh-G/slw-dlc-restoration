@@ -36,6 +36,15 @@ namespace app
 
                 return &This->field_61;
             }
+
+            char* SetZeldaKeese()
+            {
+                field_62 &= ~(1 << 1);
+                field_62 |= 1 << 5;
+                field_61 = 3;
+
+                return &field_61;
+            }
         };
     }
 }
