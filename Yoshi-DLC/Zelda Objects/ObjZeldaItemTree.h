@@ -128,9 +128,6 @@ namespace app
                 return true;
             case fnd::PROC_MSG_HIT_EVENT_COLLISION:
                 ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
-                return false;
-            case fnd::PROC_MSG_LEAVE_EVENT_COLLISION:
-                ProcMsgLeaveEventCollision((xgame::MsgLeaveEventCollision&)message);
                 return true;
             default:
                 return CSetObjectListener::ProcessMessage(message);
@@ -177,18 +174,6 @@ namespace app
 
                 game::GOCAnimationSimple::SetAnimation(gocAnimation, "ACT");
             }
-        }
-
-        void ProcMsgLeaveEventCollision(xgame::MsgLeaveEventCollision& message)
-        {
-            /*csl::math::Vector3 playerPos{};
-            xgame::MsgGetPosition positionMessage { playerPos };
-            if (SendMessageImm(message.field_28, &positionMessage))
-            {
-                int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
-                if (!gocTransform)
-                    return;
-            }*/
         }
     };
 
