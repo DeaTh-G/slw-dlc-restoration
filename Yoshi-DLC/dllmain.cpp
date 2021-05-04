@@ -147,12 +147,11 @@ void Initialize()
 
     // Install Zelda Hooks
     app::Player::CSonic::AddCallback();
-    app::Player::CSonic::SendPlayerInfo();
+    //app::Player::CSonic::SendPlayerInfo();
     app::Player::CVisualSonic::ActivateSub();
     app::Player::CVisualSonic::RegisterResource();
     app::Player::CVisualBase::IsLinkCostume();
     app::GameModeStage::RegisterObjInfos();
-    //app::EnemyKeese::ProcMsgDamage();
     /*app::HUD::CHudGameMainDisplay::InitLayer();
     app::HUD::CHudGameMainDisplay::SetInfo();*/
 

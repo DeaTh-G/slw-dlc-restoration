@@ -140,6 +140,17 @@ namespace app
     private:
         void ProcMsgGetClimbObjectInfo(xgame::MsgGetClimbObjectInfo& message)
         {
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            csl::math::Matrix34 matrix = *(csl::math::Matrix34*)(gocTransform + 0x44);
+            field_390[0] = *(csl::math::Vector3*)(gocTransform + 0x50);
+            field_390[1] = field_390[0]; field_390[1].Y += 96.5f;
+            field_390[2] = Vector3(0, 1, 0);
+
+            message.field_1C = field_390;
+            message.field_18 = 1;
         }
 
         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)

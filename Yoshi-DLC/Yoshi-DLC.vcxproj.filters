@@ -666,9 +666,6 @@
     <ClInclude Include="app\game\GOCAnimationContainer.h">
       <Filter>Header Files\app\game</Filter>
     </ClInclude>
-    <ClInclude Include="Zelda Objects\EnemyKeese.h">
-      <Filter>Header Files\Zelda Objects</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">
@@ -726,9 +723,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="app\Player\CSonic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Zelda Objects\EnemyKeese.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

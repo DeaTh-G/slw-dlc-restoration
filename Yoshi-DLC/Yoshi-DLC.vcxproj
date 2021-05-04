@@ -352,7 +352,6 @@
     <ClInclude Include="Yoshi Objects\ObjYoshiCoin.h" />
     <ClInclude Include="Yoshi Objects\ObjYoshiJumpBoard.h" />
     <ClInclude Include="Yoshi Objects\ObjYoshiSpecialFlower.h" />
-    <ClInclude Include="Zelda Objects\EnemyKeese.h" />
     <ClInclude Include="Zelda Objects\ObjBreakFloor.h" />
     <ClInclude Include="Zelda Objects\ObjBreakRoof.h" />
     <ClInclude Include="Zelda Objects\ObjChangeTopViewCollision.h" />
@@ -390,7 +389,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Zelda Objects\EnemyKeese.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
