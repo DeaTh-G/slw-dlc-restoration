@@ -259,6 +259,7 @@
     <ClInclude Include="app\math\Transform.h" />
     <ClInclude Include="app\MinigameCharacter.h" />
     <ClInclude Include="app\ObjCrystalFloorBaseUtil.h" />
+    <ClInclude Include="app\ObjectPartPointLight.h" />
     <ClInclude Include="app\Objects\CObjDroppedRing.h" />
     <ClInclude Include="app\Objects\CSharedObjInfo.h" />
     <ClInclude Include="app\Objects\EnemyBlowOffObject.h" />

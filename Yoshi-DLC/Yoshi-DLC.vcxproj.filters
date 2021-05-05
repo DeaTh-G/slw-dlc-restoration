@@ -666,6 +666,9 @@
     <ClInclude Include="app\game\GOCAnimationContainer.h">
       <Filter>Header Files\app\game</Filter>
     </ClInclude>
+    <ClInclude Include="app\ObjectPartPointLight.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">

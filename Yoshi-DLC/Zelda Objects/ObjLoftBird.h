@@ -3,7 +3,11 @@
 namespace app
 {
     inline static const char* LINK_ANIM_NAME[] = { "EVENT_ONE", "EVENT_TWO" };
-
+    inline static Vector3 LOFTBIRD_LIGHT_SIZE[] = { Vector3(10, 10, 35), Vector3(-5, 0, 30), Vector3(-15, 6, 15), Vector3(-15, 15, 0) };
+    inline static float LOFTBIRD_LIGHT_VALUE1[] = { 35, 35, 30, 30 };
+    inline static float LOFTBIRD_LIGHT_VALUE2[] = { 1, 0.5f, 1, 0.4f };
+    inline static float LOFTBIRD_LIGHT_VALUE3[] = { 1, 0.5f, 0.7f, 0.3f };
+    inline static float LOFTBIRD_LIGHT_VALUE4[] = { 1, 0.5f, 0.3f, 0.3f };
 
     enum class ObjLoftBirdLightType : char
     {
@@ -294,6 +298,7 @@ namespace app
 
             fnd::GOComponent::EndSetup(this);
             GameObject::Sleep(this);
+            CreatePointLight();
         }
 
         bool ProcessMessage(fnd::Message& message) override
@@ -326,7 +331,6 @@ namespace app
             float nextPos = (MovementSpeed * updateInfo.deltaTime) + PathEvaluator.field_08;
             if (nextPos >= pathLength || nextPos >= EndDistance)
             {
-                //fnd::SoundHandle::StopImm();
                 CSetObjectListener::SetStatusRetire(this);
                 GameObject::Kill(this);
             }
@@ -432,6 +436,11 @@ namespace app
 
         void ProcMsgDlcZeldaNoticeStopEnemy()
         {
+            if (IsActive)
+            {
+                CSetObjectListener::SetStatusRetire(this);
+                GameObject::Kill(this);
+            }
         }
 
         void SoundCallback(int a1, int a2, int a3)
@@ -465,8 +474,49 @@ namespace app
                 return;
 
             fnd::GOCVisualModel::SetNodeTransform(linkModel, 1, "Reference", &transform);
+        }
 
+        void CreatePointLight()
+        {
+            int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
+            if (!gocContainer)
+                return;
 
+            int* birdModel = *(int**)(*gocContainer + 4);
+            if (!birdModel)
+                return;
+
+            math::Transform transform{};
+            fnd::GOCVisualModel::GetNodeTransform(birdModel, 1, "Const_link", &transform);
+
+            int* linkModel = *(int**)(*gocContainer);
+            if (!linkModel)
+                return;
+
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            for (size_t i = 0; i < 2; i++)
+            {
+                int lightCount = 2 * field_420 + i;
+
+                ObjectPartPointLight::CInfo lightInfo
+                {
+                    LOFTBIRD_LIGHT_SIZE[lightCount],
+                    LOFTBIRD_LIGHT_VALUE1[lightCount],
+                    1,
+                    LOFTBIRD_LIGHT_VALUE2[lightCount],
+                    LOFTBIRD_LIGHT_VALUE3[lightCount],
+                    LOFTBIRD_LIGHT_VALUE4[lightCount],
+                    -1,
+                    gocTransform,
+                    1
+                };
+
+                ObjectPartPointLight::Create((GameDocument*)field_24[1], &lightInfo);
+                break;
+            }
         }
 
         inline static void* AnimCallbackBridge_Initialize(csl::fnd::IAllocator* pAllocator)

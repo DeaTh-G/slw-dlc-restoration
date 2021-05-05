@@ -104,6 +104,7 @@
 #include "app/GOCEnemyTarget.h"
 #include "app/GOCEnemyHsm.h"
 #include "app/SetShotInfo.h"
+#include "app/ObjectPartPointLight.h"
 
 #include "app/Gimmick/CRingManager.h"
 
