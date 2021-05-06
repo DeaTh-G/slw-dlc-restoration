@@ -9,7 +9,7 @@ namespace app
 
     public:
         const char* PacfileName;
-        const char* field_14{};
+        const char* SoundfileName{};
 
         void Load(int& loader) override
         {

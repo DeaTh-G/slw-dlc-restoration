@@ -669,6 +669,9 @@
     <ClInclude Include="app\ObjectPartPointLight.h">
       <Filter>Header Files\app</Filter>
     </ClInclude>
+    <ClInclude Include="Zelda Objects\EnemyDekunuts.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">

@@ -24,6 +24,7 @@ namespace app
 
         void Destructor(size_t deletingFlags) override
         {
+            EnemyPiranhaPlantInfo::~EnemyPiranhaPlantInfo();
             animation::AnimationResContainer::__dt(&AnimationContainer);
             EnemyInfo::Destructor(deletingFlags);
         }
@@ -32,8 +33,6 @@ namespace app
         {
             int packFile = 0;
             int animationScript[3]{};
-
-            sizeof(EnemyInfo);
 
             EnemyInfo::GetModelResource(this, &Model, "enm_packunflower");
             EnemyInfo::GetSkeletonResource(this, &Skeleton, "enm_packunflower");
