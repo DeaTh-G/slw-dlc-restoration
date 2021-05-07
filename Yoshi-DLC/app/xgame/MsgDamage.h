@@ -12,6 +12,7 @@ namespace app
         class MsgDamage : public fnd::Message
         {
         private:
+            inline static FUNCTION_PTR(bool, __thiscall, __ct2, ASLR(0x004D8500), MsgDamage* This, int a1, int a2, int a3, csl::math::Vector3* a4, csl::math::Vector3* a5);
             inline static FUNCTION_PTR(bool, __thiscall, __ct, ASLR(0x004D8580), MsgDamage* This, int a1, int a2, int a3, xgame::MsgHitEventCollision* hitMessage, csl::math::Vector3* position);
             inline static FUNCTION_PTR(int, __thiscall, f_SetReply, ASLR(0x004D86C0), MsgDamage* message, csl::math::Vector3* translation, int a3);
 
@@ -47,6 +48,11 @@ namespace app
             MsgDamage() : Message()
             {
                 Type = fnd::PROC_MSG_DAMAGE;
+            }
+
+            MsgDamage(int a1, int a2, int a3, csl::math::Vector3* a4, csl::math::Vector3* a5) : MsgDamage()
+            {
+                __ct2(this, a1, a2, a3, a4, a5);
             }
 
             MsgDamage(int a1, int a2, int a3, xgame::MsgHitEventCollision* hitMessage, csl::math::Vector3* position) : MsgDamage()

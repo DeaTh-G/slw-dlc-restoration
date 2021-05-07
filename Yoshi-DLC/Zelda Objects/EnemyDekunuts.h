@@ -3,6 +3,7 @@
 namespace app
 {
     inline static const char* DEKUNUTS_MODEL_NAME[] = { "enm_dekunuts_base", "enm_dekunuts" };
+    inline static const char* DEKUNUTS_ANIM_NAME[] = { "IDLE_LOOP", "UNDERGROUND_LOOP", "APPEARE", "ESCAPE", "DAMAGE", "ATTACK" };
 
     struct EnemyDekunutsData
     {
@@ -86,7 +87,7 @@ namespace app
 
     public:
         float field_4D0;
-        bool IsMessageBoot;
+        int Flags;
         Listener AnimationListener{};
         float field_504;
         float field_508;
@@ -122,7 +123,7 @@ namespace app
 
             EnemyDekunutsData* data = (EnemyDekunutsData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
             EnemyDekunutsInfo* info = (EnemyDekunutsInfo*)ObjUtil::GetObjectInfo(gameDocument, "EnemyDekunutsInfo");
-            IsMessageBoot = data->MessageBoot != 0;
+            Flags |= data->MessageBoot != 0;
 
             fnd::GOComponent::BeginSetup(this);
 
@@ -130,7 +131,8 @@ namespace app
             if (!gocTransform)
                 return;
 
-            //fnd::HFrame::AddChild((fnd::HFrame*)(gocTransform + 0x28), &Parent);
+            fnd::HFrame* transformFrame = (fnd::HFrame*)(GameObject::GetGOC(this, GOCTransformString) + 0x28);
+            fnd::HFrame::AddChild(transformFrame, &Children);
             field_640 = *(csl::math::Matrix34*)(gocTransform + 0x44);
 
             int* gocVContainer = GameObject::GetGOC(this, GOCVisual);
@@ -209,6 +211,8 @@ namespace app
                 colliderInfo.Radius = data->AppearRange;
                 ObjUtil::SetupCollisionFilter(6, &colliderInfo);
                 game::CollisionObjCInfo::SetLocalPosition(&colliderInfo, &offset);
+                colliderInfo.field_04 = 6;
+                colliderInfo.field_0C = 0;
                 game::GOCCollider::CreateShape(gocCollider, &colliderInfo);
 
                 // Unknown Collider
@@ -217,6 +221,8 @@ namespace app
                 colliderInfo.MotionType = 2;
                 colliderInfo.Radius = 50;
                 ObjUtil::SetupCollisionFilter(6, &colliderInfo);
+                colliderInfo.field_04 = 6;
+                colliderInfo.field_0C = 1;
                 game::GOCCollider::CreateShape(gocCollider, &colliderInfo);
 
                 // Unknown Collider
@@ -250,17 +256,69 @@ namespace app
                 GOCEnemyHsm::Setup(gocEnemyHsm, &hsmDescription);
             }
 
-            if (IsMessageBoot)
+            if (Flags & 1)
                 game::GOCCollider::SetEnable(gocCollider, 0);
 
             fnd::GOComponent::EndSetup(this);
         }
+
+        bool ProcessMessage(fnd::Message& message) override
+        {
+            if (PreProcessMessage(message))
+                return true;
+
+            switch (message.Type)
+            {
+            case fnd::PROC_MSG_STAY_TRIGGER:
+                ProcMsgStayTrigger((xgame::MsgStayTrigger&)message);
+                return true;
+            default:
+                return CSetObjectListener::ProcessMessage(message);
+            }
+        }
+
+
         class State
         {
         public:
+            class Hide
+            {
+                char field_00[20];
+            public:
+                virtual ~Hide() {};
+                virtual int Trigger(EnemyDekunuts* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
+                virtual int Init(EnemyDekunuts* obj) { return 0; };
+                virtual int Enter(EnemyDekunuts* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
+                virtual int Leave(EnemyDekunuts* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
+                virtual int Update(EnemyDekunuts* obj, float a2) { return EnemyState::Update(this, obj, a2); };
+                virtual int ProcessMessage(EnemyDekunuts* obj, int a2) { return 0; };
+                virtual int OnEnter(EnemyDekunuts* obj, int a2)
+                {
+                    obj->SetBodyCollisionEnable(0);
+                    obj->SetAnimation(1);
+                    return 1;
+
+                    return 0;
+                };
+                virtual int OnLeave(EnemyDekunuts* obj, int a2) { return 0; };
+                virtual int Step(EnemyDekunuts* obj, float deltaTime)
+                {
+                    if ((obj->Flags & 4) == 4)
+                    {
+                        int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                        if (!gocEnemyHsm)
+                            return 0;
+
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 1);
+                    }
+                    return 1;
+                };
+            };
+
             class Appear
             {
                 char field_00[20];
+                float Time;
             public:
                 virtual ~Appear() {};
                 virtual int Trigger(EnemyDekunuts* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
@@ -269,14 +327,86 @@ namespace app
                 virtual int Leave(EnemyDekunuts* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyDekunuts* obj, float a2) { return EnemyState::Update(this, obj, a2); };
                 virtual int ProcessMessage(EnemyDekunuts* obj, int a2) { return 0; };
-                virtual int OnEnter(EnemyDekunuts* obj, int a2) { return 0; };
+                virtual int OnEnter(EnemyDekunuts* obj, int a2)
+                {
+                    obj->SetBodyCollisionEnable(0);
+                    obj->SetAnimation(2);
+
+                    int deviceTag[3]{};
+                    int* gocSound = GameObject::GetGOC(obj, GOCSoundString);
+                    if (!gocSound)
+                        return 0;
+
+                    game::GOCSound::Play3D(gocSound, deviceTag, "enm_dekunuts_appear", 0);
+
+                    return 1;
+                };
                 virtual int OnLeave(EnemyDekunuts* obj, int a2) { return 0; };
-                virtual int Step(EnemyDekunuts* obj, float deltaTime) { return 0; };
+                virtual int Step(EnemyDekunuts* obj, float deltaTime)
+                {
+                    Time += deltaTime;
+                    float rotateTime = csl::math::Clamp(deltaTime * 2, 0, 1);
+                    obj->RotateTarget(-1, rotateTime);
+                    if (Time > 0.5f)
+                    {
+                        int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                        if (!gocEnemyHsm)
+                            return 0;
+
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 3);
+                    }
+
+                    return 1;
+                };
+            };
+
+            class Retreat
+            {
+                char field_00[20];
+                float Time;
+            public:
+                virtual ~Retreat() {};
+                virtual int Trigger(EnemyDekunuts* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
+                virtual int Init(EnemyDekunuts* obj) { return 0; };
+                virtual int Enter(EnemyDekunuts* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
+                virtual int Leave(EnemyDekunuts* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
+                virtual int Update(EnemyDekunuts* obj, float a2) { return EnemyState::Update(this, obj, a2); };
+                virtual int ProcessMessage(EnemyDekunuts* obj, int a2) { return 0; };
+                virtual int OnEnter(EnemyDekunuts* obj, int a2)
+                {
+                    obj->SetBodyCollisionEnable(0);
+                    obj->SetAnimation(3);
+
+                    int deviceTag[3]{};
+                    int* gocSound = GameObject::GetGOC(obj, GOCSoundString);
+                    if (!gocSound)
+                        return 0;
+
+                    game::GOCSound::Play3D(gocSound, deviceTag, "enm_dekunuts_appear", 0);
+
+                    return 1;
+                };
+                virtual int OnLeave(EnemyDekunuts* obj, int a2) { return 0; };
+                virtual int Step(EnemyDekunuts* obj, float deltaTime)
+                {
+                    Time += deltaTime;
+                    if (Time > 0.416f)
+                    {
+                        int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                        if (!gocEnemyHsm)
+                            return 0;
+
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 0);
+                    }
+
+                    return 1;
+                };
             };
 
             class Attack
             {
                 char field_00[20];
+                float Time;
             public:
                 virtual ~Attack() {};
                 virtual int Trigger(EnemyDekunuts* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
@@ -285,9 +415,53 @@ namespace app
                 virtual int Leave(EnemyDekunuts* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyDekunuts* obj, float a2) { return EnemyState::Update(this, obj, a2); };
                 virtual int ProcessMessage(EnemyDekunuts* obj, int a2) { return 0; };
-                virtual int OnEnter(EnemyDekunuts* obj, int a2) { return 0; };
+                virtual int OnEnter(EnemyDekunuts* obj, int a2)
+                {
+                    obj->SetBodyCollisionEnable(1);
+                    Time = 0;
+
+                    return 1;
+                };
                 virtual int OnLeave(EnemyDekunuts* obj, int a2) { return 0; };
-                virtual int Step(EnemyDekunuts* obj, float deltaTime) { return 0; };
+                virtual int Step(EnemyDekunuts* obj, float deltaTime)
+                {
+                    int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                    if (!gocEnemyHsm)
+                        return 0;
+
+                    if ((obj->Flags & 8) == 8)
+                    {
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 4);
+                    }
+                    else if ((obj->Flags & 4) == 4)
+                    {
+                        obj->RotateTarget(2.7925267 * deltaTime, -1);
+
+                        int* gocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
+                        if (!gocEnemyTarget)
+                            return 0;
+
+                        bool isTargetFound = GOCEnemyTarget::IsFindTarget(gocEnemyTarget);
+                        if (!isTargetFound)
+                            return 0;
+
+                        if (obj->IsCurrentAnimation(5))
+                            return 0;
+
+                        Time -= deltaTime;
+                        if (Time < 0)
+                        {
+                            obj->SetAnimation(5);
+                            Time = 2;
+                        }
+                    }
+                    else
+                    {
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 2);
+                    }
+
+                    return 0;
+                };
             };
 
             class Disappear
@@ -301,45 +475,76 @@ namespace app
                 virtual int Leave(EnemyDekunuts* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyDekunuts* obj, float a2) { return EnemyState::Update(this, obj, a2); };
                 virtual int ProcessMessage(EnemyDekunuts* obj, int a2) { return 0; };
-                virtual int OnEnter(EnemyDekunuts* obj, int a2) { return 0; };
-                virtual int OnLeave(EnemyDekunuts* obj, int a2) { return 0; };
-                virtual int Step(EnemyDekunuts* obj, float deltaTime) { return 0; };
-            };
+                virtual int OnEnter(EnemyDekunuts* obj, int a2)
+                {
+                    obj->SetAnimation(4);
+                    obj->KillShots(true);
 
-            class Hide
-            {
-                char field_00[20];
-            public:
-                virtual ~Hide() {};
-                virtual int Trigger(EnemyDekunuts* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
-                virtual int Init(EnemyDekunuts* obj) { return 0; };
-                virtual int Enter(EnemyDekunuts* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
-                virtual int Leave(EnemyDekunuts* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
-                virtual int Update(EnemyDekunuts* obj, float a2) { return EnemyState::Update(this, obj, a2); };
-                virtual int ProcessMessage(EnemyDekunuts* obj, int a2) { return 0; };
-                virtual int OnEnter(EnemyDekunuts* obj, int a2) { return 0; };
-                virtual int OnLeave(EnemyDekunuts* obj, int a2) { return 0; };
-                virtual int Step(EnemyDekunuts* obj, float deltaTime) { return 0; };
-            };
+                    int deviceTag[3]{};
+                    int* gocSound = GameObject::GetGOC(obj, GOCSoundString);
+                    if (!gocSound)
+                        return 0;
 
-            class Retreat
-            {
-                char field_00[20];
-            public:
-                virtual ~Retreat() {};
-                virtual int Trigger(EnemyDekunuts* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
-                virtual int Init(EnemyDekunuts* obj) { return 0; };
-                virtual int Enter(EnemyDekunuts* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
-                virtual int Leave(EnemyDekunuts* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
-                virtual int Update(EnemyDekunuts* obj, float a2) { return EnemyState::Update(this, obj, a2); };
-                virtual int ProcessMessage(EnemyDekunuts* obj, int a2) { return 0; };
-                virtual int OnEnter(EnemyDekunuts* obj, int a2) { return 0; };
+                    game::GOCSound::Play3D(gocSound, deviceTag, "enm_dekunuts_appear", 0);
+
+                    return 1;
+                };
                 virtual int OnLeave(EnemyDekunuts* obj, int a2) { return 0; };
-                virtual int Step(EnemyDekunuts* obj, float deltaTime) { return 0; };
+                virtual int Step(EnemyDekunuts* obj, float deltaTime)
+                { 
+                    if (!obj->IsEndAnimation(4))
+                        return 0;
+                    
+                    int* gocContainer = GameObject::GetGOC(obj, GOCVisual) + 0x10;
+                    if (!gocContainer)
+                        return 0;
+
+                    for (size_t i = 0; i < 2; i++)
+                    {
+                        int* model = *(int**)(*gocContainer + 4 * i);
+                        fnd::GOCVisual::SetVisible(model, false);
+                    }
+
+                    int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                    if (!gocEnemyHsm)
+                        return 0;
+
+                    GOCEnemyHsm::SetEnableUpdate(gocEnemyHsm, false);
+
+                    csl::math::Vector3 vector{};
+                    enemy::DeadEffectCInfo effectInfo{};
+                    xgame::MsgDamage damageMessage { 2, 8, 2, &vector, &vector };
+                    enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, &damageMessage);
+                    enemy::DeadEffectCInfo::SetTransform(&effectInfo, &obj->Children.Transform);
+                    enemy::DeadEffectCInfo::SetZeldaDekunuts(&effectInfo);
+
+                    void* enemyManager = EnemyManager::GetService((GameDocument*)obj->field_24[1]);
+                    EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
+                    EnemyBase::ProcMission(obj, &damageMessage);
+                    CSetObjectListener::SetStatusRetire(obj);
+
+                    return 1;
+                };
             };
         };
 
     private:
+        void ProcMsgStayTrigger(xgame::MsgStayTrigger& message)
+        {
+            if (Flags & 1)
+                return;
+        
+            if (!ObjUtil::CheckShapeUserID(message.field_18, 0))
+                return;
+        
+            Flags |= 4;
+
+            if (!ObjUtil::CheckShapeUserID(message.field_18, 1))
+                return;
+
+            Flags &= ~4;
+        }
+
         void RequestShot()
         {
 
@@ -348,6 +553,80 @@ namespace app
         void Shot()
         {
 
+        }
+
+        void RotateTarget(float a1, float a2)
+        {
+
+        }
+
+        void KillShots(bool doKill)
+        {
+
+        }
+
+        void SetBodyCollisionEnable(int a2)
+        {
+            if (a2)
+                Flags |= 2;
+            else
+                Flags &= ~2;
+        }
+
+        void SetAnimation(int animationID)
+        {
+            int* gocContainer = GameObject::GetGOC(this, GOCAnimation) + 0xF;
+            if (!gocContainer)
+                return;
+
+            for (size_t i = 0; i < 2; i++)
+            {
+                int* animation = *(int**)(*gocContainer + 4 * i);
+                game::GOCAnimationScript::ChangeAnimation(animation, DEKUNUTS_ANIM_NAME[animationID]);
+            }
+        }
+
+        bool IsEndAnimation(int animationID)
+        {
+            if (!IsCurrentAnimation(animationID))
+                return false;
+
+            int* gocContainer = GameObject::GetGOC(this, GOCAnimation) + 0xF;
+            if (!gocContainer)
+                return false;
+
+            size_t i = 0;
+            while (true)
+            {
+                int* animation = *(int**)(*gocContainer + 4 * i);
+                if (!game::GOCAnimationScript::IsFinished(animation))
+                    break;
+
+                if (++i >= 2)
+                    return true;
+            }
+
+            return false;
+        }
+
+        bool IsCurrentAnimation(int animationID)
+        {
+            int* gocContainer = GameObject::GetGOC(this, GOCAnimation) + 0xF;
+            if (!gocContainer)
+                return false;
+
+            size_t i = 0;
+            while (true)
+            {
+                int* animation = *(int**)(*gocContainer + 4 * i);
+                if (!game::GOCAnimationScript::IsCurrentAnimation(animation, DEKUNUTS_ANIM_NAME[animationID]))
+                    break;
+                
+                if (++i >= 2)
+                    return true;
+            }
+
+            return false;
         }
 
         void AnimationCallback(int a1, int a2, int a3)
@@ -360,9 +639,19 @@ namespace app
             return new animation::AnimCallbackBridge<EnemyDekunuts>();
         }
 
+        inline static void* Hide_Initialize(csl::fnd::IAllocator* pAllocator)
+        {
+            return new EnemyDekunuts::State::Hide();
+        }
+
         inline static void* Appear_Initialize(csl::fnd::IAllocator* pAllocator)
         {
             return new EnemyDekunuts::State::Appear();
+        }
+
+        inline static void* Retreat_Initialize(csl::fnd::IAllocator* pAllocator)
+        {
+            return new EnemyDekunuts::State::Retreat();
         }
 
         inline static void* Attack_Initialize(csl::fnd::IAllocator* pAllocator)
@@ -375,23 +664,13 @@ namespace app
             return new EnemyDekunuts::State::Disappear();
         }
 
-        inline static void* Hide_Initialize(csl::fnd::IAllocator* pAllocator)
-        {
-            return new EnemyDekunuts::State::Hide();
-        }
-
-        inline static void* Retreat_Initialize(csl::fnd::IAllocator* pAllocator)
-        {
-            return new EnemyDekunuts::State::Retreat();
-        }
-
         inline static ut::internal::StateDescImpl States[] =
         {
-            { "Appear", &Appear_Initialize, -1 },
-            { "Attack", &Attack_Initialize, -1 },
-            { "Disappear", &Disappear_Initialize, -1 },
             { "Hide", &Hide_Initialize, -1 },
-            { "Retreat", &Retreat_Initialize, -1 }
+            { "Appear", &Appear_Initialize, -1 },
+            { "Retreat", &Retreat_Initialize, -1 },
+            { "Attack", &Attack_Initialize, -1 },
+            { "Disappear", &Disappear_Initialize, -1 }
         };
 
         inline static GOCEnemyHsm::StateDesc StateDescriptors[] =
