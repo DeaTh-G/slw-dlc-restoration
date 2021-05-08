@@ -105,6 +105,7 @@
 #include "app/GOCEnemyHsm.h"
 #include "app/SetShotInfo.h"
 #include "app/ObjectPartPointLight.h"
+#include "app/EnemyUtil.h"
 
 #include "app/Gimmick/CRingManager.h"
 
@@ -202,6 +203,8 @@
 #include "Yoshi Objects/ObjYoshiGoal.h"
 
 #include "app/xgame/MsgLoftBirdCollision.h"
+#include "app/xgame/MsgDlcZeldaNoticeStopEnemy.h"
+#include "app/xgame/MsgDlcZeldaNoticeActiveEnemy.h"
 #include "Zelda Objects/ObjZeldaWarpCollision.h"
 #include "Zelda Objects/ObjZeldaItemTree.h"
 #include "Zelda Objects/ObjZeldaPopupItem.h"
@@ -214,3 +217,4 @@
 #include "Zelda Objects/ObjLoftBirdCollision.h"
 #include "Zelda Objects/ObjLoftBird.h"
 #include "Zelda Objects/EnemyDekunuts.h"
+#include "Zelda Objects/EnemyDekunutsShot.h"

@@ -78,10 +78,15 @@ namespace app
         {
         public:
             EnemyDekunuts* pDekunuts;
+            bool doShoot;
 
             void OnEvent(int notifyTiming) override
             {
-                pDekunuts->Shot();
+                if (doShoot)
+                {
+                    pDekunuts->Shot();
+                    doShoot = false;
+                }
             }
         };
 
@@ -89,7 +94,6 @@ namespace app
         float field_4D0;
         int Flags;
         Listener AnimationListener{};
-        float field_504;
         float field_508;
         float field_50C;
         fnd::HFrame Children;
@@ -204,11 +208,14 @@ namespace app
                 game::GOCCollider::Setup(gocCollider, &shapeCount);
 
                 // Search Collider
-                csl::math::Vector3 offset { data->RangeAddX, data->RangeAddY, data->RangeAddZ };
+                csl::math::Vector3 offset{ data->RangeAddX, data->RangeAddY, data->RangeAddZ };
                 game::CollisionObjCInfo::__ct(&colliderInfo);
                 colliderInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
                 colliderInfo.MotionType = 2;
                 colliderInfo.Radius = data->AppearRange;
+                colliderInfo.field_54 = 0;
+                colliderInfo.field_48 = 0;
+                colliderInfo.field_44 = 0;
                 ObjUtil::SetupCollisionFilter(6, &colliderInfo);
                 game::CollisionObjCInfo::SetLocalPosition(&colliderInfo, &offset);
                 colliderInfo.field_04 = 6;
@@ -220,6 +227,9 @@ namespace app
                 colliderInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
                 colliderInfo.MotionType = 2;
                 colliderInfo.Radius = 50;
+                colliderInfo.field_54 = 0;
+                colliderInfo.field_48 = 0;
+                colliderInfo.field_44 = 0;
                 ObjUtil::SetupCollisionFilter(6, &colliderInfo);
                 colliderInfo.field_04 = 6;
                 colliderInfo.field_0C = 1;
@@ -231,6 +241,9 @@ namespace app
                 colliderInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
                 colliderInfo.MotionType = 2;
                 colliderInfo.Radius = 6.5f;
+                colliderInfo.field_54 = 0;
+                colliderInfo.field_48 = 0;
+                colliderInfo.field_44 = 0;
                 ObjUtil::SetupCollisionFilter(9, &colliderInfo);
                 game::CollisionObjCInfo::SetLocalPosition(&colliderInfo, &offset);
                 colliderInfo.field_04 = 1;
@@ -269,6 +282,24 @@ namespace app
 
             switch (message.Type)
             {
+            case fnd::PROC_MSG_DAMAGE:
+                ProcMsgDamage((xgame::MsgDamage&)message);
+                return true;
+            case fnd::PROC_MSG_DLC_ZELDA_NOTICE_ACTIVE_ENEMY:
+                ProcMsgDlcZeldaNoticeActiveEnemy((xgame::MsgDlcZeldaNoticeActiveEnemy&)message);
+                return true;
+            case fnd::PROC_MSG_DLC_ZELDA_NOTICE_STOP_ENEMY:
+                ProcMsgDlcZeldaNoticeStopEnemy((xgame::MsgDlcZeldaNoticeStopEnemy&)message);
+                return true;
+            case fnd::PROC_MSG_HIT_EVENT_COLLISION:
+                ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
+                return true;
+            case fnd::PROC_MSG_LEAVE_EVENT_COLLISION:
+                ProcMsgLeaveEventCollision((xgame::MsgLeaveEventCollision&)message);
+                return true;
+            case fnd::PROC_MSG_NOTIFY_OBJECT_EVENT:
+                ProcMsgNotifyObjectEvent((xgame::MsgNotifyObjectEvent&)message);
+                return true;
             case fnd::PROC_MSG_STAY_TRIGGER:
                 ProcMsgStayTrigger((xgame::MsgStayTrigger&)message);
                 return true;
@@ -276,7 +307,6 @@ namespace app
                 return CSetObjectListener::ProcessMessage(message);
             }
         }
-
 
         class State
         {
@@ -491,10 +521,10 @@ namespace app
                 };
                 virtual int OnLeave(EnemyDekunuts* obj, int a2) { return 0; };
                 virtual int Step(EnemyDekunuts* obj, float deltaTime)
-                { 
+                {
                     if (!obj->IsEndAnimation(4))
                         return 0;
-                    
+
                     int* gocContainer = GameObject::GetGOC(obj, GOCVisual) + 0x10;
                     if (!gocContainer)
                         return 0;
@@ -513,7 +543,7 @@ namespace app
 
                     csl::math::Vector3 vector{};
                     enemy::DeadEffectCInfo effectInfo{};
-                    xgame::MsgDamage damageMessage { 2, 8, 2, &vector, &vector };
+                    xgame::MsgDamage damageMessage{ 2, 8, 2, &vector, &vector };
                     enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, &damageMessage);
                     enemy::DeadEffectCInfo::SetTransform(&effectInfo, &obj->Children.Transform);
                     enemy::DeadEffectCInfo::SetZeldaDekunuts(&effectInfo);
@@ -529,15 +559,123 @@ namespace app
         };
 
     private:
+        void ProcMsgDamage(xgame::MsgDamage& message)
+        {
+            if (!(Flags & 1))
+                return;
+
+            if (!ObjUtil::CheckShapeUserID(message.field_18.field_00, 2))
+                return;
+
+            if (!EnemyUtil::IsDamage(message.field_2C, 0, message.AttackType))
+                return;
+            
+            if (!(Flags & 2))
+                return;
+        
+            if (message.field_28 != 2)
+                return;
+        
+            csl::math::Vector3 translation{};
+
+            math::CalculatedTransform::GetTranslation(&Children.Transform, &translation);
+            message.SetReply(&translation, 1);
+            ObjUtil::AddScore2(this, "DEKUNUTS", 0, &translation);
+
+            int deviceTag[3]{};
+            int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+            if (!gocSound)
+                return;
+
+            game::GOCSound::Play3D(gocSound, deviceTag, "enm_dekunuts_cry", 0);
+
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+            if (!gocCollider)
+                return;
+
+            game::GOCCollider::SetEnable(gocCollider, 0);
+
+            int* gocEnemyTarget = GameObject::GetGOC(this, GOCEnemyTargetString);
+            if (!gocEnemyTarget)
+                return;
+
+            GOCEnemyTarget::SetEnableEyesight(gocEnemyTarget, false);
+
+            Flags |= 8;
+        }
+
+        void ProcMsgDlcZeldaNoticeActiveEnemy(xgame::MsgDlcZeldaNoticeActiveEnemy& message)
+        {
+            if (!(Flags & 16))
+                return;
+        
+            Flags &= ~16;
+            Activate(true);
+        }
+
+        void ProcMsgDlcZeldaNoticeStopEnemy(xgame::MsgDlcZeldaNoticeStopEnemy& message)
+        {
+            if (Flags & 8)
+                return;
+
+            if (!Activate(false))
+                return;
+
+            KillShots(false);
+            Flags |= 16;
+        }
+
+        void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
+        {
+            csl::math::Vector3 vector{};
+
+            if (Flags & 1)
+                return;
+        
+            if (!(Flags & 2))
+                return;
+
+            if (!ObjUtil::CheckShapeUserID(message.field_18, 2))
+                return;
+        
+            xgame::MsgDamage damageMessage{ 3, 8, 1, &message, &vector};
+            SendMessageImm(message.ActorID, &damageMessage);
+        }
+
+        void ProcMsgLeaveEventCollision(xgame::MsgLeaveEventCollision& message)
+        {
+            if (Flags & 1)
+                return;
+            
+            if (ObjUtil::CheckShapeUserID(message.field_18, 1))
+                Flags |= 4;
+
+            if (!ObjUtil::CheckShapeUserID(message.field_18, 0))
+                return;
+
+            Flags &= ~4;
+        }
+
+        void ProcMsgNotifyObjectEvent(xgame::MsgNotifyObjectEvent& message)
+        {
+            if (message.field_18 != 1)
+            {
+                if (message.field_18 != 2)
+                    return;
+
+                message.field_18 = 0;
+            }
+
+            Activate(message.field_18);
+        }
+
         void ProcMsgStayTrigger(xgame::MsgStayTrigger& message)
         {
             if (Flags & 1)
                 return;
-        
-            if (!ObjUtil::CheckShapeUserID(message.field_18, 0))
-                return;
-        
-            Flags |= 4;
+
+            if (ObjUtil::CheckShapeUserID(message.field_18, 0))
+                Flags |= 4;
 
             if (!ObjUtil::CheckShapeUserID(message.field_18, 1))
                 return;
@@ -545,14 +683,56 @@ namespace app
             Flags &= ~4;
         }
 
+        bool Activate(bool doActivate)
+        {
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+            if (!gocCollider)
+                return false;
+
+            if (doActivate)
+            {
+                if (!(Flags & 1))
+                    return false;
+
+                game::GOCCollider::SetEnable(gocCollider, true);
+                Flags &= ~1;
+                return true;
+            }
+            else if (!(Flags & 1))
+            {
+                game::GOCCollider::SetEnable(gocCollider, false);
+                Flags |= 1;
+                Flags &= ~4;
+                return true;
+            }
+
+            return false;
+        }
+
         void RequestShot()
         {
-
+            AnimationListener.doShoot = true;
         }
 
         void Shot()
         {
+            game::ColliSphereShapeCInfo colliderInfo{};
+            game::CollisionObjCInfo::__ct(&colliderInfo);
 
+            // Bullet Collider
+            colliderInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
+            colliderInfo.MotionType = 2;
+            colliderInfo.Radius = 3;
+            ObjUtil::SetupCollisionFilter(6, &colliderInfo);
+            colliderInfo.field_04 |= 1;
+
+            math::Transform transform{};
+            int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
+            if (!gocContainer)
+                return;
+
+            int* shrubModel = *(int**)(*gocContainer + 4);
+            fnd::GOCVisualModel::GetNodeTransform(shrubModel, 10, "Muzzle", &transform);
         }
 
         void RotateTarget(float a1, float a2)
@@ -621,7 +801,7 @@ namespace app
                 int* animation = *(int**)(*gocContainer + 4 * i);
                 if (!game::GOCAnimationScript::IsCurrentAnimation(animation, DEKUNUTS_ANIM_NAME[animationID]))
                     break;
-                
+
                 if (++i >= 2)
                     return true;
             }
@@ -631,7 +811,8 @@ namespace app
 
         void AnimationCallback(int a1, int a2, int a3)
         {
-            RequestShot();
+            if (a3 == 1)
+                RequestShot();
         }
 
         inline static void* AnimCallbackBridge_Initialize(csl::fnd::IAllocator* pAllocator)

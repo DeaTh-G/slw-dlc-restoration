@@ -18,6 +18,7 @@ namespace app
         inline static FUNCTION_PTR(int*, __cdecl, GetPlayerInformation, ASLR(0x0073DE10), GameDocument* a1, int PlayerNumber);
         inline static FUNCTION_PTR(int, __cdecl, AddScorePlayerAction, ASLR(0x0073EA60), GameObject* Object, const char* name, int playerNo);
         inline static FUNCTION_PTR(int, __cdecl, AddScore, ASLR(0x0073EB10), GameObject* Object, const char* name, fnd::Message* message);
+        inline static FUNCTION_PTR(int, __cdecl, AddScore2, ASLR(0x0073E940), GameObject* Object, const char* name, int a3, csl::math::Vector3* a4); // Overload to AddScore
         inline static FUNCTION_PTR(int, __cdecl, GetSetObjectTransform, ASLR(0x0073E040), GameDocument* gameDocument, int* objectID, csl::math::Vector3* position, csl::math::Quaternion* rotation);
         inline static FUNCTION_PTR(int, __cdecl, SendMessageImmToGameActor, ASLR(0x0073DB70), GameObject* gameObject, fnd::Message* message);
         inline static FUNCTION_PTR(int, __cdecl, SendMessageImmToSetObject, ASLR(0x0073DC90), GameObject* gameObject, int* objectID, fnd::Message* message, int a4);

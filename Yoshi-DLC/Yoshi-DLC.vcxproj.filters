@@ -672,6 +672,18 @@
     <ClInclude Include="Zelda Objects\EnemyDekunuts.h">
       <Filter>Header Files\Zelda Objects</Filter>
     </ClInclude>
+    <ClInclude Include="Zelda Objects\EnemyDekunutsShot.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgDlcZeldaNoticeActiveEnemy.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgDlcZeldaNoticeStopEnemy.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\EnemyUtil.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">
