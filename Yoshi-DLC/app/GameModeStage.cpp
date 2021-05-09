@@ -27,11 +27,6 @@ __declspec(naked) void GameModStageStateWarpMidAsmHook()
     }
 }
 
-void app::GameModeStage::StateWarp()
-{
-    WRITE_JUMP(ASLR(0x0091805B), &GameModStageStateWarpMidAsmHook);
-}
-
 bool IsZeldaStage()
 {
     if (LinkSonicPlayType == PlayType::NEVER)
@@ -51,6 +46,11 @@ __declspec(naked) void GameModeStageRegisterObjInfosAsmHook()
         call IsZeldaStage
         jmp[OA_REGISTEROBJINFOS]
     }
+}
+
+void app::GameModeStage::StateWarp()
+{
+    WRITE_JUMP(ASLR(0x0091805B), &GameModStageStateWarpMidAsmHook);
 }
 
 void app::GameModeStage::RegisterObjInfos()

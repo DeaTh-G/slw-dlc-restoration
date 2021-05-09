@@ -8,6 +8,7 @@ bool DisablePipeTransition = false;
 bool IsConsistentShadow = false;
 PlayType LinkSonicPlayType = PlayType::DEFAULT;
 bool IsLinkSonicFixed = false;
+bool IsVirtualLinkSonic = false;
 
 char IsYoshiIslandStage()
 {
@@ -169,6 +170,15 @@ void Initialize()
         app::MinigameCharacterInfo::Load();
         app::MinigameCharacterInfo::Initialize();
     }
+
+    app::GameModeStageBattle::InitFirst();
+    app::GameModeStageBattle::RegisterObjInfos();
+    if (IsVirtualLinkSonic)
+    {
+        app::Player::VirtualSonicInfo::Load();
+        app::Player::VirtualSonicInfo::Initialize();
+        app::Player::VisualVirtualSonic::ActivateSub();
+    }
 }
 
 extern "C"
@@ -188,6 +198,7 @@ extern "C"
         DisablePipeTransition = reader->GetBoolean("YoshiTweaks", "disablePipeTransition", false);
         LinkSonicPlayType = (PlayType)reader->GetInteger("ZeldaTweaks", "linkSonicPlayType", (uint32_t)PlayType::DEFAULT);
         IsLinkSonicFixed = reader->GetBoolean("ZeldaTweaks", "isLinkSonicFixed", false);
+        IsVirtualLinkSonic = reader->GetBoolean("ZeldaTweaks", "isVirtualLinkSonic", false);
 
         Initialize();
     }

@@ -126,6 +126,8 @@
 #include "app/WorldAreaMap.h"
 #include "app/MinigameCharacter.h"
 #include "app/Player/SonicZelda.h"
+#include "app/Player/VirtualSonic.h"
+#include "app/Player/VisualVirtualSonic.h"
 
 #include "app/xgame.h"
 #include "app/xgame/Blackboard.h"

@@ -684,6 +684,12 @@
     <ClInclude Include="app\EnemyUtil.h">
       <Filter>Header Files\app</Filter>
     </ClInclude>
+    <ClInclude Include="app\Player\VirtualSonic.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Player\VisualVirtualSonic.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">
@@ -741,6 +747,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="app\Player\CSonic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Player\VirtualSonic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Player\VisualVirtualSonic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

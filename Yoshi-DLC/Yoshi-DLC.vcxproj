@@ -276,6 +276,8 @@
     <ClInclude Include="app\Player\PluginStateHeartLife.h" />
     <ClInclude Include="app\Player\SonicZelda.h" />
     <ClInclude Include="app\Player\StateUtil.h" />
+    <ClInclude Include="app\Player\VirtualSonic.h" />
+    <ClInclude Include="app\Player\VisualVirtualSonic.h" />
     <ClInclude Include="app\SetShotInfo.h" />
     <ClInclude Include="app\ut\internal\StateImpl.h" />
     <ClInclude Include="app\ut\StateBase.h" />
@@ -384,6 +386,8 @@
     <ClCompile Include="app\Player\CVisualBase.cpp" />
     <ClCompile Include="app\Player\CVisualSonic.cpp" />
     <ClCompile Include="app\Player\SonicZelda.cpp" />
+    <ClCompile Include="app\Player\VirtualSonic.cpp" />
+    <ClCompile Include="app\Player\VisualVirtualSonic.cpp" />
     <ClCompile Include="app\WorldAreaMap.cpp" />
     <ClCompile Include="app\xgame.cpp" />
     <ClCompile Include="dllmain.cpp" />
