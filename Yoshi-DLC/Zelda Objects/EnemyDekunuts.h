@@ -91,14 +91,14 @@ namespace app
         };
 
     public:
-        float field_4D0;
+        float field_4D0{};
         int Flags;
         Listener AnimationListener{};
-        float field_508;
+        int ActorID;
         float field_50C;
         fnd::HFrame Children;
         csl::math::Matrix34 field_640;
-        long long field_680[64];
+        INSERT_PADDING(128);
 
         EnemyDekunuts()
         {
@@ -131,13 +131,14 @@ namespace app
 
             fnd::GOComponent::BeginSetup(this);
 
-            fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
-            if (!gocTransform)
-                return;
-
-            fnd::HFrame* transformFrame = (fnd::HFrame*)(GameObject::GetGOC(this, GOCTransformString) + 0x28);
-            fnd::HFrame::AddChild(transformFrame, &Children);
-            field_640 = *(csl::math::Matrix34*)(gocTransform + 0x44);
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (gocTransform)
+            {
+                fnd::HFrame* transformFrame = (fnd::HFrame*)(GameObject::GetGOC(this, GOCTransformString) + 0x28);
+                fnd::HFrame::AddChild(transformFrame, &Children);
+                field_640 = *(csl::math::Matrix34*)(gocTransform + 0x44);
+                csl::math::Matrix34Inverse(&field_640, &field_640);
+            }
 
             int* gocVContainer = GameObject::GetGOC(this, GOCVisual);
             if (gocVContainer)
@@ -162,6 +163,8 @@ namespace app
 
                         visualDescriptor.Model = info->Models[i];
                         visualDescriptor.Skeleton = info->Skeletons[i];
+                        if (i)
+                            visualDescriptor.Parent = &Children;
                         fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
                         fnd::GOCVisualContainer::Add(gocVContainer, gocVisual);
 
@@ -462,35 +465,36 @@ namespace app
                     if ((obj->Flags & 8) == 8)
                     {
                         GOCEnemyHsm::ChangeState(gocEnemyHsm, 4);
+                        return 0;
                     }
-                    else if ((obj->Flags & 4) == 4)
-                    {
-                        obj->RotateTarget(2.7925267 * deltaTime, -1);
 
-                        int* gocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
-                        if (!gocEnemyTarget)
-                            return 0;
-
-                        bool isTargetFound = GOCEnemyTarget::IsFindTarget(gocEnemyTarget);
-                        if (!isTargetFound)
-                            return 0;
-
-                        if (obj->IsCurrentAnimation(5))
-                            return 0;
-
-                        Time -= deltaTime;
-                        if (Time < 0)
-                        {
-                            obj->SetAnimation(5);
-                            Time = 2;
-                        }
-                    }
-                    else
+                    if (!(obj->Flags & 4))
                     {
                         GOCEnemyHsm::ChangeState(gocEnemyHsm, 2);
+                        return 1;
                     }
 
-                    return 0;
+                    obj->RotateTarget(2.7925267 * deltaTime, -1);
+
+                    int* gocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
+                    if (!gocEnemyTarget)
+                        return 0;
+
+                    bool isTargetFound = GOCEnemyTarget::IsFindTarget(gocEnemyTarget);
+                    if (!isTargetFound)
+                        return 0;
+
+                    if (obj->IsCurrentAnimation(5))
+                        return 0;
+
+                    Time -= deltaTime;
+                    if (Time < 0)
+                    {
+                        obj->SetAnimation(5);
+                        Time = 2;
+                    }
+
+                    return 1;
                 };
             };
 
@@ -644,6 +648,10 @@ namespace app
 
         void ProcMsgLeaveEventCollision(xgame::MsgLeaveEventCollision& message)
         {
+            // Clear ActorID for Multiplayer Support
+            if (ObjUtil::CheckShapeUserID(message.field_18, 0))
+                ActorID = 0;
+
             if (Flags & 1)
                 return;
             
@@ -671,6 +679,10 @@ namespace app
 
         void ProcMsgStayTrigger(xgame::MsgStayTrigger& message)
         {
+            // Store ActorID for Multiplayer Support
+            if (ObjUtil::CheckShapeUserID(message.field_18, 0) && !ActorID)
+                ActorID = message.field_20;
+
             if (Flags & 1)
                 return;
 
@@ -737,7 +749,46 @@ namespace app
 
         void RotateTarget(float a1, float a2)
         {
+            int playerNo = ObjUtil::GetPlayerNo(field_24[1], ActorID);
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], playerNo);
+            if (!playerInfo)
+                return;
 
+            csl::math::Vector3 upVec { 0, 1, 0 };
+            csl::math::Vector3 depthVec { 0, 0, 1 };
+            csl::math::Vector3 scaledUpVec{};
+            csl::math::Vector3 playerDistance{};
+            csl::math::Vector3 rotationAngle{};
+            playerDistance = MultiplyMatrixByVector(&field_640, (csl::math::Vector3*)(playerInfo + 0x3C));
+            float playerDir = math::Vector3DotProduct(&playerDistance, &upVec);
+            math::Vector3Scale(&upVec, playerDir, &scaledUpVec);
+            math::Vector3Subtract(&playerDistance, &scaledUpVec, &playerDistance);
+            bool isNormalized = math::Vector3NormalizeIfNotZero(&playerDistance, &playerDistance);
+            if (!isNormalized)
+                return;
+            
+            math::Vector3RotateY(&rotationAngle, field_4D0, &depthVec);
+            float playerDist = math::Vector3DotProduct(&rotationAngle, &playerDistance);
+            float clampedDist = csl::math::Clamp(playerDist, -1, 1);
+            float dist = acosf(clampedDist);
+            if (a1 > 0)
+                csl::math::Min(dist, a1);
+            if (a2 > 1)
+                dist *= a2;
+
+            Eigen::Vector3f v(0, 1, 0);
+            Eigen::Vector3f rv(rotationAngle.X, rotationAngle.Y, rotationAngle.Z);
+            v = v.cross(rv);
+            csl::math::Vector3 posDifference { v.x(), v.y(), v.z() };
+            float posDiff = math::Vector3DotProduct(&posDifference, &playerDistance);
+            float diff = csl::math::Select(posDiff, fabs(dist), -abs(dist));
+            field_4D0 += diff;
+
+            Eigen::Quaternion<float> q;
+            q = Eigen::AngleAxis<float>(field_4D0, Eigen::Vector3f(0, 1, 0));
+            csl::math::Quaternion rotation{ q.x(), q.y(), q.z(), q.w() };
+
+            fnd::HFrame::SetLocalRotation(&Children, &rotation);
         }
 
         void KillShots(bool doKill)
