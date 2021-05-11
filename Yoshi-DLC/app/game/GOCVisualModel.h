@@ -43,6 +43,7 @@ namespace app
         public:
             inline static FUNCTION_PTR(void, __thiscall, SetLocalTranslation, ASLR(0x00495EA0), int* This, csl::math::Vector3* translation);
             inline static FUNCTION_PTR(void, __thiscall, SetLocalRotation, ASLR(0x00495ED0), int* This, csl::math::Quaternion* rotation);
+            inline static FUNCTION_PTR(void, __thiscall, SetLocalRotationXYZ, ASLR(0x00495F00), int* This, float X, float Y, float Z);
             inline static FUNCTION_PTR(void, __thiscall, SetLocalScale, ASLR(0x00496240), int* This, csl::math::Vector3* scale);
         };
     }

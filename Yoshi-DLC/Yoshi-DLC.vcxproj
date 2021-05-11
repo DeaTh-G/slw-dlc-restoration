@@ -246,6 +246,7 @@
     <ClInclude Include="app\game\MoveController.h" />
     <ClInclude Include="app\game\MovePopup.h" />
     <ClInclude Include="app\game\MoveStraight.h" />
+    <ClInclude Include="app\game\MoveVelocityReference.h" />
     <ClInclude Include="app\game\PathEvaluator.h" />
     <ClInclude Include="app\game\PathManager.h" />
     <ClInclude Include="app\game\ShadowShape.h" />
@@ -289,6 +290,7 @@
     <ClInclude Include="app\xgame\MsgCatchEndPlayer.h" />
     <ClInclude Include="app\xgame\MsgCatchPlayer.h" />
     <ClInclude Include="app\xgame\MsgDamage.h" />
+    <ClInclude Include="app\xgame\MsgDamageBase.h" />
     <ClInclude Include="app\xgame\MsgDisableItemBag.h" />
     <ClInclude Include="app\xgame\MsgDlcChangeEggRotation.h" />
     <ClInclude Include="app\xgame\MsgDlcZeldaNoticeActiveEnemy.h" />
@@ -307,9 +309,11 @@
     <ClInclude Include="app\xgame\MsgNotifyObjectEvent.h" />
     <ClInclude Include="app\xgame\MsgPlayerReachGoal.h" />
     <ClInclude Include="app\xgame\MsgPLChangeAreaTopView.h" />
+    <ClInclude Include="app\xgame\MsgPLGetHomingTargetInfo.h" />
     <ClInclude Include="app\xgame\MsgPLGetInputButton.h" />
     <ClInclude Include="app\xgame\MsgPLHoldOn.h" />
     <ClInclude Include="app\xgame\MsgPLJumpToTargetPosition.h" />
+    <ClInclude Include="app\xgame\MsgPLKickTargetting.h" />
     <ClInclude Include="app\xgame\MsgPLSendGameInfo.h" />
     <ClInclude Include="app\xgame\MsgPLVisibleItemEffect.h" />
     <ClInclude Include="app\xgame\MsgResumeGameTimer.h" />
@@ -335,6 +339,7 @@
     <ClInclude Include="hh\base.h" />
     <ClInclude Include="hh\ut\Packfile.h" />
     <ClInclude Include="InfoFileLoader.h" />
+    <ClInclude Include="SonicUSA\System.h" />
     <ClInclude Include="SonicUSA\System\Random.h" />
     <ClInclude Include="Yoshi Objects\EnemyPiranhaPlant.h" />
     <ClInclude Include="Yoshi Objects\HudWipeCrayPipe.h" />

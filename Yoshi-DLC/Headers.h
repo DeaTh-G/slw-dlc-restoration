@@ -51,6 +51,7 @@
 #include "app/enemy/DeadEffectCInfo.h"
 #include "app/EnemyBlowOffObjectCInfo.h"
 #include "app/xgame/MsgHitEventCollision.h"
+#include "app/xgame/MsgDamageBase.h"
 #include "app/xgame/MsgDamage.h"
 #include "app/xgame/MsgPLHoldOn.h"
 #include "app/xgame/MsgGetAnimal.h"
@@ -91,6 +92,7 @@
 #include "app/game/GOCVisualModel.h"
 #include "app/game/GOCMovement.h"
 #include "app/game/MoveStraight.h"
+#include "app/game/MoveVelocityReference.h"
 #include "app/game/ShadowShapeCInfo.h"
 #include "app/game/GravityManager.h"
 #include "app/game/PathManager.h"
@@ -161,7 +163,10 @@
 #include "app/xgame/MsgPLChangeAreaTopView.h"
 #include "app/xgame/MsgPLSendGameInfo.h"
 #include "app/xgame/MsgShakeCamera.h"
+#include "app/xgame/MsgPLGetHomingTargetInfo.h"
+#include "app/xgame/MsgPLKickTargetting.h"
 
+#include "SonicUSA/System.h"
 #include "SonicUSA/System/Random.h"
 
 #include "app/debris/ResRandomSpaceDebris.h"
@@ -218,5 +223,5 @@
 #include "Zelda Objects/ObjBreakRoof.h"
 #include "Zelda Objects/ObjLoftBirdCollision.h"
 #include "Zelda Objects/ObjLoftBird.h"
-#include "Zelda Objects/EnemyDekunuts.h"
 #include "Zelda Objects/EnemyDekunutsShot.h"
+#include "Zelda Objects/EnemyDekunuts.h"

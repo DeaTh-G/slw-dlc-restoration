@@ -9,7 +9,7 @@ namespace app
 
     namespace xgame
     {
-        class MsgDamage : public fnd::Message
+        class MsgDamage : public MsgDamageBase
         {
         private:
             inline static FUNCTION_PTR(bool, __thiscall, __ct2, ASLR(0x004D8500), MsgDamage* This, int a1, int a2, int a3, csl::math::Vector3* a4, csl::math::Vector3* a5);
@@ -17,17 +17,6 @@ namespace app
             inline static FUNCTION_PTR(int, __thiscall, f_SetReply, ASLR(0x004D86C0), MsgDamage* message, csl::math::Vector3* translation, int a3);
 
         public:
-            fnd::HandleBase field_18{};
-            int field_20{};
-            int field_24{};
-            int field_28{};
-            int field_2C{};
-            csl::math::Vector3 field_30{};
-            csl::math::Vector3 field_40{};
-            int field_50{};
-            int field_54{};
-            int field_58{};
-            int field_5C{};
             int AttackType{};
             int field_64{};
             int field_68{};
@@ -45,7 +34,7 @@ namespace app
             int field_98{};
             int field_9C{};
 
-            MsgDamage() : Message()
+            MsgDamage() : MsgDamageBase()
             {
                 Type = fnd::PROC_MSG_DAMAGE;
             }

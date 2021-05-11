@@ -207,9 +207,6 @@
     <ClInclude Include="app\game\GOCSound.h">
       <Filter>Header Files\app\game</Filter>
     </ClInclude>
-    <ClInclude Include="app\game\GOCVisualModel.h">
-      <Filter>Header Files\app\game</Filter>
-    </ClInclude>
     <ClInclude Include="app\game\ShadowShapeCInfo.h">
       <Filter>Header Files\app\game</Filter>
     </ClInclude>
@@ -689,6 +686,24 @@
     </ClInclude>
     <ClInclude Include="app\Player\VisualVirtualSonic.h">
       <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgPLGetHomingTargetInfo.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgPLKickTargetting.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\MoveVelocityReference.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgDamageBase.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="SonicUSA\System.h">
+      <Filter>Header Files\SonicUSA\System</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCVisualModel.h">
+      <Filter>Header Files\app\fnd</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

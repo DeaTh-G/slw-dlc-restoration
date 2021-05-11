@@ -78,32 +78,38 @@ namespace app
         {
         public:
             EnemyDekunuts* pDekunuts;
-            bool doShoot;
+            bool DoShoot{};
 
             void OnEvent(int notifyTiming) override
             {
-                if (doShoot)
+                if (DoShoot)
                 {
                     pDekunuts->Shot();
-                    doShoot = false;
+                    DoShoot = false;
                 }
             }
         };
 
     public:
         float field_4D0{};
-        int Flags;
+        int Flags{};
         Listener AnimationListener{};
-        int ActorID;
-        float field_50C;
-        fnd::HFrame Children;
-        csl::math::Matrix34 field_640;
-        INSERT_PADDING(128);
+        int ActorID{};
+        float field_50C{};
+        fnd::HFrame Children{};
+        csl::math::Matrix34 field_640{};
+        GameObjectHandleBase Shots[64]{};
 
         EnemyDekunuts()
         {
             AnimationListener.field_20 = 2;
+            AnimationListener.DoShoot = false;
             fnd::HFrame::__ct(&Children);
+
+            for (size_t i = 0; i < 64; i++)
+            {
+                GameObjectHandleBase::__ct(&Shots[i], nullptr);
+            }
         }
 
         void Destructor(size_t deletingFlags)
@@ -533,11 +539,8 @@ namespace app
                     if (!gocContainer)
                         return 0;
 
-                    for (size_t i = 0; i < 2; i++)
-                    {
-                        int* model = *(int**)(*gocContainer + 4 * i);
-                        fnd::GOCVisual::SetVisible(model, false);
-                    }
+                    int* baseModel = *(int**)(*gocContainer + 4);
+                    fnd::GOCVisual::SetVisible(baseModel, false);
 
                     int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
                     if (!gocEnemyHsm)
@@ -565,11 +568,11 @@ namespace app
     private:
         void ProcMsgDamage(xgame::MsgDamage& message)
         {
-            if (!(Flags & 1))
+            if (Flags & 1)
                 return;
 
-            if (!ObjUtil::CheckShapeUserID(message.field_18.field_00, 2))
-                return;
+            /*if (!ObjUtil::CheckShapeUserID(*(int*)&message.field_18, 2))
+                return;*/
 
             if (!EnemyUtil::IsDamage(message.field_2C, 0, message.AttackType))
                 return;
@@ -723,20 +726,12 @@ namespace app
 
         void RequestShot()
         {
-            AnimationListener.doShoot = true;
+            ((EnemyDekunuts*)((char*)this + 1))->AnimationListener.DoShoot = true;
         }
 
         void Shot()
         {
-            game::ColliSphereShapeCInfo colliderInfo{};
-            game::CollisionObjCInfo::__ct(&colliderInfo);
-
-            // Bullet Collider
-            colliderInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
-            colliderInfo.MotionType = 2;
-            colliderInfo.Radius = 3;
-            ObjUtil::SetupCollisionFilter(6, &colliderInfo);
-            colliderInfo.field_04 |= 1;
+            EnemyDekunutsInfo* info = (EnemyDekunutsInfo*)ObjUtil::GetObjectInfo((GameDocument*)field_24[1], "EnemyDekunutsInfo");
 
             math::Transform transform{};
             int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
@@ -744,7 +739,30 @@ namespace app
                 return;
 
             int* shrubModel = *(int**)(*gocContainer + 4);
-            fnd::GOCVisualModel::GetNodeTransform(shrubModel, 10, "Muzzle", &transform);
+            fnd::GOCVisualModel::GetNodeTransform(shrubModel, 0, "Muzzle", &transform);
+
+            csl::math::Matrix34 matrix{};
+            math::Matrix34AffineTransformation(&matrix, &transform.Position, &transform.Rotation);
+            dekunuts_shot::CreateInfo shotInfo{&matrix, info->BulletModel, 80, 3.5f};
+            EnemyDekunutsShot* shot = dekunuts_shot::Create(&shotInfo, *(GameDocument*)field_24[1]);
+            if (!shot)
+                return;
+            
+            for (size_t i = 0; i < 64; i++)
+            {
+                if (!Shots[i].IsValid())
+                {
+                    Shots[i] = shot;
+
+                    int deviceTag[3]{};
+                    int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+                    if (!gocSound)
+                        continue;
+
+                    game::GOCSound::Play3D(gocSound, deviceTag, "enm_dekunuts_bullet", 0);
+                    break;
+                }
+            }
         }
 
         void RotateTarget(float a1, float a2)
@@ -791,9 +809,34 @@ namespace app
             fnd::HFrame::SetLocalRotation(&Children, &rotation);
         }
 
-        void KillShots(bool doKill)
+        void KillShots(bool notKill)
         {
-
+            if (notKill)
+            {
+                for (size_t i = 0; i < 64; i++)
+                {
+                    if (Shots[i].Get())
+                    {
+                        ((EnemyDekunutsShot*)Shots[i].Get())->Explosion();
+                        continue;
+                    }
+                    
+                    break;
+                }
+            }
+            else
+            {
+                for (size_t i = 0; i < 64; i++)
+                {
+                    if (Shots[i].Get())
+                    {
+                        Kill((EnemyDekunutsShot*)Shots[i].Get());
+                        continue;
+                    }
+                    
+                    break;
+                }
+            }
         }
 
         void SetBodyCollisionEnable(int a2)
@@ -862,7 +905,7 @@ namespace app
 
         void AnimationCallback(int a1, int a2, int a3)
         {
-            if (a3 == 1)
+            if (a2 == 1)
                 RequestShot();
         }
 
