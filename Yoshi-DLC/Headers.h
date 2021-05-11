@@ -225,3 +225,4 @@
 #include "Zelda Objects/ObjLoftBird.h"
 #include "Zelda Objects/EnemyDekunutsShot.h"
 #include "Zelda Objects/EnemyDekunuts.h"
+#include "Zelda Objects/ObjZeldaGoal.h"
