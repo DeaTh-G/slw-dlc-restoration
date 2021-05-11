@@ -102,6 +102,7 @@ void Initialize()
     auto create_ObjLoftBirdCollision = &app::create_ObjLoftBirdCollision;
     auto create_ObjOccludeStone = &app::create_ObjOccludeStone;
     auto create_ObjZeldaBush = &app::create_ObjZeldaBush;
+    auto create_ObjZeldaGoal = &app::create_ObjZeldaGoal;
     auto create_ObjZeldaItemTree = &app::create_ObjZeldaItemTree;
     auto create_ObjZeldaRupee = &app::create_ObjZeldaRupee;
     auto create_ObjZeldaWarpCollision = &app::create_ObjZeldaWarpCollision;
@@ -112,6 +113,7 @@ void Initialize()
     auto createObjInfo_ObjLoftBirdInfo = &app::createObjInfo_ObjLoftBirdInfo;
     auto createObjInfo_ObjOccludeStoneInfo = &app::createObjInfo_ObjOccludeStoneInfo;
     auto createObjInfo_ObjZeldaBushInfo = &app::createObjInfo_ObjZeldaBushInfo;
+    auto createObjInfo_ObjZeldaGoalInfo = &app::createObjInfo_ObjZeldaGoalInfo;
     auto createObjInfo_ObjZeldaItemTreeInfo = &app::createObjInfo_ObjZeldaItemTreeInfo;
     auto createObjInfo_ObjZeldaRupeeInfo = &app::createObjInfo_ObjZeldaRupeeInfo;
 
@@ -123,6 +125,7 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2BE21), *(void**)&create_ObjLoftBirdCollision);
     WRITE_FUNCTION(ASLR(0x00D2C054), *(void**)&create_ObjOccludeStone);
     WRITE_FUNCTION(ASLR(0x00D2C374), *(void**)&create_ObjZeldaBush);
+    WRITE_FUNCTION(ASLR(0x00D2C3C4), *(void**)&create_ObjZeldaGoal);
     WRITE_FUNCTION(ASLR(0x00D2C414), *(void**)&create_ObjZeldaItemTree);
     WRITE_FUNCTION(ASLR(0x00D2C4B4), *(void**)&create_ObjZeldaRupee);
     WRITE_FUNCTION(ASLR(0x00D28691), *(void**)&create_ObjZeldaWarpCollision);
@@ -133,6 +136,7 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2BDCF), *(void**)&createObjInfo_ObjLoftBirdInfo);
     WRITE_FUNCTION(ASLR(0x00D2C04F), *(void**)&createObjInfo_ObjOccludeStoneInfo);
     WRITE_FUNCTION(ASLR(0x00D2C36F), *(void**)&createObjInfo_ObjZeldaBushInfo);
+    WRITE_FUNCTION(ASLR(0x00D2C3BF), *(void**)&createObjInfo_ObjZeldaGoalInfo);
     WRITE_FUNCTION(ASLR(0x00D2C40F), *(void**)&createObjInfo_ObjZeldaItemTreeInfo);
     WRITE_FUNCTION(ASLR(0x00D2C4AF), *(void**)&createObjInfo_ObjZeldaRupeeInfo);
 

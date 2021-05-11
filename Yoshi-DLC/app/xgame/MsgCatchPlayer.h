@@ -29,6 +29,12 @@ namespace app
             {
                 field_60 = a1;
             }
+
+            MsgCatchPlayer(csl::math::Matrix34 a1, int a2) : MsgCatchPlayer()
+            {
+                field_20 = a1;
+                field_60 = a2;
+            }
         };
     }
 
