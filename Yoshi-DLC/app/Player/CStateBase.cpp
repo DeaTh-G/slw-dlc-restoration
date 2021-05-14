@@ -1,5 +1,10 @@
 #include "pch.h"
 
+static void* ReturnAddressProcMsgPlayerReachGoal = (void*)ASLR(0x008976BA);
+static void* ReturnAddressCheckHitDamage = (void*)ASLR(0x0089469A);
+static void* ReturnAddressReduceHeartLife = (void*)ASLR(0x008946BC);
+static void* StateUtilIsBarrierOffset = (void*)ASLR(0x008D7470);
+
 HOOK(int, __fastcall, ProcMsgTakeObjectHook, ASLR(0x008947B0), int* This, void* edx, int* cStateGOC, app::xgame::MsgTakeObject& message)
 {
     int result{};
@@ -45,7 +50,69 @@ HOOK(int, __fastcall, ProcMsgTakeObjectHook, ASLR(0x008947B0), int* This, void* 
     }
 }
 
+static char IsNotZeldaGoal()
+{
+    const char* packFileName = app::ObjUtil::GetStagePackName(*app::Document);
+    if (strncmp(packFileName, "zdlc03", 6) == 0)
+        return 0;
+
+    return 1;
+}
+
+__declspec(naked) void StateBaseProcMsgPlayerReachGoalMidAsmHook()
+{
+    __asm
+    {
+        mov al, [ebp + 0x8]
+        call IsNotZeldaGoal
+        mov ecx, [ebp + 0xC]
+        jmp [ReturnAddressProcMsgPlayerReachGoal]
+    }
+}
+
+__declspec(naked) void StateBaseCheckHitDamageMidAsmHook()
+{
+    __asm
+    {
+        call [StateUtilIsBarrierOffset]
+        add esp, 4
+        push eax
+        push esi
+        call app::Player::StateUtil::IsHeartLife
+        add esp, 4
+        pop ecx
+        or eax, ecx
+
+        jmp [ReturnAddressCheckHitDamage]
+    }
+}
+
+__declspec(naked) void StateBaseCheckHitDamageReduceHeartLife()
+{
+    __asm
+    {
+        push esi
+        call app::Player::StateUtil::ReduceHeartLife
+        add esp, 4
+        mov ecx, [ebp + 0xC]
+        mov byte ptr [ecx], 01
+
+        jmp[ReturnAddressReduceHeartLife]
+    }
+}
+
 void app::Player::CStateBase::ProcMsgTakeObject()
 {
     INSTALL_HOOK(ProcMsgTakeObjectHook);
+}
+
+void app::Player::CStateBase::CheckHitDamage()
+{
+    WRITE_JUMP(ASLR(0x00894692), &StateBaseCheckHitDamageMidAsmHook);
+    WRITE_JUMP(ASLR(0x008946B6), &StateBaseCheckHitDamageReduceHeartLife);
+}
+
+void app::Player::CStateBase::ProcMsgPlayerReachGoal()
+{
+    WRITE_JUMP(ASLR(0x008976B4), &StateBaseProcMsgPlayerReachGoalMidAsmHook);
 }

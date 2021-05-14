@@ -8,6 +8,8 @@ namespace app
         {
         public:
             static void ProcMsgTakeObject();
+            static void ProcMsgPlayerReachGoal();
+            static void CheckHitDamage();
         };
     }
 }

@@ -279,12 +279,14 @@
     <ClInclude Include="app\Player\StateUtil.h" />
     <ClInclude Include="app\Player\VirtualSonic.h" />
     <ClInclude Include="app\Player\VisualVirtualSonic.h" />
+    <ClInclude Include="app\res\ResShadowModel.h" />
     <ClInclude Include="app\SetShotInfo.h" />
     <ClInclude Include="app\ut\internal\StateImpl.h" />
     <ClInclude Include="app\ut\StateBase.h" />
     <ClInclude Include="app\WorldAreaMap.h" />
     <ClInclude Include="app\xgame.h" />
     <ClInclude Include="app\xgame\Blackboard.h" />
+    <ClInclude Include="app\xgame\CStageSoundDirector.h" />
     <ClInclude Include="app\xgame\MsgCameraOff.h" />
     <ClInclude Include="app\xgame\MsgCameraOn.h" />
     <ClInclude Include="app\xgame\MsgCatchEndPlayer.h" />
@@ -333,6 +335,7 @@
     <ClInclude Include="csl\math\Vector3.h" />
     <ClInclude Include="csl\ut\NonCopyable.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="hh\mr\CVertexDeclarationPtr.h" />
     <ClInclude Include="HH_ALLOC.h" />
     <ClInclude Include="Headers.h" />
     <ClInclude Include="Helpers.h" />
@@ -392,10 +395,12 @@
     <ClCompile Include="app\Player\CVisualBase.cpp" />
     <ClCompile Include="app\Player\CVisualSonic.cpp" />
     <ClCompile Include="app\Player\SonicZelda.cpp" />
+    <ClCompile Include="app\Player\StateUtil.cpp" />
     <ClCompile Include="app\Player\VirtualSonic.cpp" />
     <ClCompile Include="app\Player\VisualVirtualSonic.cpp" />
     <ClCompile Include="app\WorldAreaMap.cpp" />
     <ClCompile Include="app\xgame.cpp" />
+    <ClCompile Include="app\xgame\CStageSoundDirector.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Yoshi Objects\EggManager.cpp" />
     <ClCompile Include="Yoshi-DLC.cpp" />

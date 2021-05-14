@@ -6,6 +6,8 @@
 
 #include "app/Effect/CEffectHandle.h"
 
+#include "app/res/ResShadowModel.h"
+
 // csl
 #include "csl/fnd.h"
 #include "csl/math/math.h"
@@ -16,6 +18,7 @@
 
 // hh
 #include "hh/base.h"
+#include "hh/mr/CVertexDeclarationPtr.h"
 
 // app
 #include "app/ut/internal/StateImpl.h"
@@ -119,10 +122,10 @@
 #include "app/Player/PluginStateHeartLife.h"
 #include "app/Player/CPhysics.h"
 #include "app/Player/CSonic.h"
+#include "app/Player/CStateGOC.h"
 #include "app/Player/StateUtil.h"
 #include "app/Player/CPlayer.h"
 #include "app/Player/CStateBase.h"
-#include "app/Player/CStateGOC.h"
 #include "app/Player/CVisualSonic.h"
 #include "app/Player/CVisualBase.h"
 #include "app/WorldAreaMap.h"
@@ -133,6 +136,7 @@
 
 #include "app/xgame.h"
 #include "app/xgame/Blackboard.h"
+#include "app/xgame/CStageSoundDirector.h"
 #include "app/xgame/MsgCatchEndPlayer.h"
 #include "app/xgame/MsgCatchPlayer.h"
 #include "app/xgame/MsgExtendPlayer.h"

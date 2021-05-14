@@ -12,6 +12,7 @@ extern bool IsConsistentShadow;
 extern PlayType LinkSonicPlayType;
 extern bool IsLinkSonicFixed;
 extern bool IsVirtualLinkSonic;
+extern bool IsAlwaysHeartLife;
 
 static csl::math::Quaternion GetRotationFromMatrix(csl::math::Matrix34* matrix)
 {

@@ -40,6 +40,6 @@ namespace app
             }
         };
 
-        inline static FUNCTION_PTR(CInfo*, __cdecl, Create, ASLR(0x00740A10), GameDocument* document, CInfo* info);
+        inline static FUNCTION_PTR(ObjectPartPointLight*, __cdecl, Create, ASLR(0x00740A10), GameDocument* document, CInfo* info);
     };
 }

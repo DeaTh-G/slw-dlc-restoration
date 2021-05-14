@@ -9,6 +9,7 @@ bool IsConsistentShadow = false;
 PlayType LinkSonicPlayType = PlayType::DEFAULT;
 bool IsLinkSonicFixed = false;
 bool IsVirtualLinkSonic = false;
+bool IsAlwaysHeartLife = false;
 
 char IsYoshiIslandStage()
 {
@@ -155,6 +156,7 @@ void Initialize()
         app::GameModeStage::StateWarp();
 
     // Install Zelda Hooks
+    app::Player::CStateBase::ProcMsgPlayerReachGoal();
     app::Player::CSonic::AddCallback();
     //app::Player::CSonic::SendPlayerInfo();
     app::Player::CVisualSonic::ActivateSub();
@@ -163,6 +165,9 @@ void Initialize()
     app::GameModeStage::RegisterObjInfos();
     /*app::HUD::CHudGameMainDisplay::InitLayer();
     app::HUD::CHudGameMainDisplay::SetInfo();*/
+    app::Player::CStateBase::CheckHitDamage();
+    app::Player::StateUtil::ScatterRingForDamage();
+    app::xgame::CStageSoundDirector::LoadData();
 
     if (IsLinkSonicFixed)
         app::Player::SonicZeldaInfo::Initialize();
@@ -200,9 +205,11 @@ extern "C"
 
         IsConsistentShadow = reader->GetBoolean("YoshiTweaks", "isConsistentShadows", false);
         DisablePipeTransition = reader->GetBoolean("YoshiTweaks", "disablePipeTransition", false);
+
         LinkSonicPlayType = (PlayType)reader->GetInteger("ZeldaTweaks", "linkSonicPlayType", (uint32_t)PlayType::DEFAULT);
         IsLinkSonicFixed = reader->GetBoolean("ZeldaTweaks", "isLinkSonicFixed", false);
         IsVirtualLinkSonic = reader->GetBoolean("ZeldaTweaks", "isVirtualLinkSonic", false);
+        IsAlwaysHeartLife = reader->GetBoolean("ZeldaTweaks", "isAlwaysHeartLife", false);
 
         Initialize();
     }

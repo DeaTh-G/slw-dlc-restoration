@@ -4,6 +4,7 @@ namespace app
 {
     inline static size_t ZELDA_GOAL_BGM_IDS[3] = { 0, 1, 2 };
     inline static float ZELDA_GOAL_BGM_VALUES[3] = { 0.2f, 0, 0 };
+    inline static const char* ZELDA_GOAL_NODE_NAMES[3] = { "power", "courage", "wisdom" };
 
     enum class ObjZeldaGoalState : int
     {
@@ -31,11 +32,11 @@ namespace app
         int Model;
         int Skeleton;
         animation::AnimationResContainer AnimationContainer{};
-        int ShadowModel[3];
+        res::ResShadowModel ShadowModel{0};
 
         ObjZeldaGoalInfo()
         {
-            animation::AnimationResContainer::__ct(&AnimationContainer, (csl::fnd::IAllocator*)pAllocator);
+                animation::AnimationResContainer::__ct(&AnimationContainer, (csl::fnd::IAllocator*)pAllocator);
         }
 
         void Destructor(size_t deletingFlags) override
@@ -58,6 +59,8 @@ namespace app
             ObjUtil::GetAnimationScriptResource(animationScript, "zdlc03_obj_triforce", packFile);
             if (animationScript)
                 animation::AnimationResContainer::LoadFromBuffer(&AnimationContainer, animationScript, packFile);
+
+            ObjUtil::GetShadowModel(&ShadowModel, "zdlc03_obj_triforce", packFile);
         }
 
         const char* GetInfoName() override
@@ -80,28 +83,49 @@ namespace app
 
             void OnEvent(int notifyTiming) override
             {
+                if (!pZeldaGoal)
+                    return;
+            
+                if (field_2C)
+                {
+                    pZeldaGoal->CreatePointLights();
+                    field_2C = 0;
+                }
             }
         };
 
         INSERT_PADDING(16); // TinyFsm
-        ObjZeldaGoalState State;
-        int CameraID;
-        int field_3B8;
-        int field_3BC;
-        csl::math::Matrix34 field_3C0;
-        int PlayerNumber;
-        float Time;
-        bool DoCreateModel;
-        char field_409;
-        char field_40A;
-        char field_40B;
-        Listener AnimationListener;
-        fnd::HandleBase PointLights[3];
-        int field_454;
-        int field_458;
-        int field_45C;
-        int field_460;
-        int SoundHandle[3];
+        ObjZeldaGoalState State{};
+        int CameraID{};
+        int field_3B8{};
+        int field_3BC{};
+        csl::math::Matrix34 field_3C0{};
+        int PlayerNumber{};
+        float Time{};
+        bool DoCreateModel{};
+        char field_409{};
+        char field_40A{};
+        char field_40B{};
+        Listener AnimationListener{};
+        fnd::HandleBase PointLights[3]{};
+        int field_454{};
+        int field_458{};
+        int field_45C{};
+        int field_460{};
+        int SoundHandle[3]{};
+
+        ObjZeldaGoal()
+        {
+            AnimationListener.field_20 = 2;
+            AnimationListener.field_2C = 0;
+        }
+
+        void Destructor(size_t deletingFlags)
+        {
+            AnimationListener.Destructor(0);
+
+            CSetObjectListener::Destructor(deletingFlags);
+        }
 
         void AddCallback(GameDocument* gameDocument) override
         {
@@ -169,6 +193,19 @@ namespace app
                 game::GOCCollider::CreateShape(gocCollider, &colliderInfo);
             }
 
+            int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
+            if (gocShadow)
+            {
+                game::ShadowModelShapeCInfo shadowInfo;
+
+                game::ShadowModelShapeCInfo::__ct2(&shadowInfo, gocVisual, &info->ShadowModel, 50);
+                shadowInfo.ShadowQualityType = 4;
+
+                game::ShadowModelShapeCInfo* ppShadowInfo = &shadowInfo;
+                game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
+                game::GOCShadowSimple::SetVisible(gocShadow, 0);
+            }
+
             fnd::GOComponent::EndSetup(this);
         }
 
@@ -192,26 +229,22 @@ namespace app
 
         void Update(const fnd::SUpdateInfo& updateInfo) override
         {
-            if (State == ObjZeldaGoalState::STATE_IDLE)
-                StateIdle();
-
             if (State == ObjZeldaGoalState::STATE_WAIT_END_EVENT)
-                StateWaitEndEvent();
+                StateWaitEndEvent(updateInfo);
 
             if (State == ObjZeldaGoalState::STATE_WHITE_OUT)
-                StateIdle();
+                StateWhiteOut();
 
             if (State == ObjZeldaGoalState::STATE_FADE_IN)
-                StateIdle();
-
-            if (State == ObjZeldaGoalState::STATE_END_UP)
-                StateIdle();
+                StateFadeIn(updateInfo);
         }
 
     private:
         void ProcMsgGetExternalMovePosition(xgame::MsgGetExternalMovePosition& message)
         {
-            message.Transform = &field_3C0;
+            for (size_t i = 0; i < 4; i++)
+                for (size_t j = 0; j < 4; j++)
+                    message.Transform->data[i][j] = field_3C0.data[i][j];
         }
 
         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
@@ -242,18 +275,16 @@ namespace app
             game::GOCAnimationScript::SetAnimation(gocAnimation, "TRIFORCE");
             AnimationListener.field_2C = 1;
             /*for (size_t i = 0; i < 4; i++)
-            {
-                xgame::MsgStopBgm stopBgmMessage{ ZELDA_GOAL_BGM_VALUES[i], ZELDA_GOAL_BGM_IDS[i] };
+            {*/
+                xgame::MsgStopBgm stopBgmMessage{ ZELDA_GOAL_BGM_VALUES[0], ZELDA_GOAL_BGM_IDS[0] };
                 ObjUtil::SendMessageImmToGameActor(this, &stopBgmMessage);
-            }*/
+            /*}*/
 
             State = ObjZeldaGoalState::STATE_WAIT_END_EVENT;
             DoCreateModel = true;
         }
 
-        void StateIdle() { return; }
-
-        void StateWaitEndEvent()
+        void StateWaitEndEvent(const fnd::SUpdateInfo& updateInfo)
         {
             if (DoCreateModel)
             {
@@ -261,24 +292,126 @@ namespace app
                 if (!gocVisual)
                     return;
 
+                int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
+                if (!gocShadow)
+                    return;
+
                 fnd::GOCVisual::SetVisible(gocVisual, true);
+                game::GOCShadowSimple::SetVisible(gocShadow, true);
                 DoCreateModel = false;
+            }
+
+            int deviceTag[3]{};
+            void* soundPlayer = *(void**)ASLR(0x00FD3CB8);
+            if (!soundPlayer)
+                return;
+
+            fnd::SoundParam soundParam{ 1, 0, 0, 0x80000000, 0, 0, 0 };
+            fnd::SoundPlayerCri::Play(soundPlayer, deviceTag, 0, "bgm_result_zdlc03", soundParam);
+            fnd::HandleBase::__as(SoundHandle, deviceTag);
+            SoundHandle[2] = deviceTag[2];
+
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimation);
+            if (!gocAnimation)
+                return;
+
+            if (game::GOCAnimationScript::IsFinished(gocAnimation))
+            {
+                State = ObjZeldaGoalState::STATE_WHITE_OUT;
+                GameMode::WhiteOut(1, 1);
             }
         }
 
         void StateWhiteOut()
         {
+            if (!GameMode::IsFadeFinished(3))
+                return;
 
+            State = ObjZeldaGoalState::STATE_FADE_IN;
+            GameMode::FadeIn(1, 1);
+            Time = 0;
         }
 
-        void StateFadeIn()
+        void StateFadeIn(const fnd::SUpdateInfo& updateInfo)
         {
+            if (!GameMode::IsFadeFinished(3))
+                return;
 
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 1);
+            if (playerInfo)
+            {
+                xgame::MsgGoalForBattle goalMessage{ PlayerNumber };
+                SendMessageImm(*(int*)(field_24[1] + 0x10), &goalMessage);
+            }
+            else
+            {
+                xgame::MsgPlayerReachGoal goalMessage{};
+                ObjUtil::SendMessageImmToPlayer(this, PlayerNumber, &goalMessage); 
+            }
+
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimation);
+            if (!gocAnimation)
+                return;
+
+            game::GOCAnimationScript::SetAnimation(gocAnimation, "TRIFORCE_RESULT");
+
+            if (!playerInfo)
+            {
+                State = ObjZeldaGoalState::STATE_IDLE;
+                return;
+            }
+
+            Time += updateInfo.deltaTime;
+            if (Time > 3.35f)
+            {
+                int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+                if (!gocVisual)
+                    return;
+
+                xgame::MsgCameraOn cameraMessage{ 0, 3001, 1, PlayerNumber ^ 1, 0, 0 };
+                ObjUtil::SendMessageImmToSetObject(this, &CameraID, &cameraMessage, 0);
+
+                fnd::GOCVisual::SetVisible(gocVisual, false);
+                State = ObjZeldaGoalState::STATE_IDLE;
+            }
         }
 
-        void StateEndUp()
+        void CreatePointLights()
         {
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
 
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+            if (!gocVisual)
+                return;
+
+            for (size_t i = 0; i < 3; i++)
+            {
+                math::Transform transform{};
+                fnd::GOCVisualModel::GetNodeTransform(gocVisual, 1, ZELDA_GOAL_NODE_NAMES[i], &transform);
+
+                ObjectPartPointLight::CInfo lightInfo
+                {
+                    transform.Position,
+                    25,
+                    1,
+                    0.7f,
+                    0.6f,
+                    0.4f,
+                    -1,
+                    gocTransform,
+                    1
+                };
+
+                ObjectPartPointLight* lightObject = ObjectPartPointLight::Create((GameDocument*)field_24[1], &lightInfo);
+                fnd::HandleBase::__as(&PointLights[i], lightObject);
+            }
+        }
+
+        inline static void* AnimCallbackBridge_Initialize(csl::fnd::IAllocator* pAllocator)
+        {
+            return new animation::AnimCallbackBridge<ObjZeldaGoal>();
         }
     };
 

@@ -10,7 +10,7 @@ void GetHeartData(int* This)
     if (!playerGOC)
         return;
 
-    int* pluginState = app::Player::CStateGOC::GetStatePluginPtr(playerGOC, PluginStateHeartLifeString);
+    app::Player::PluginStateHeartLife* pluginState = (app::Player::PluginStateHeartLife*)app::Player::CStateGOC::GetStatePluginPtr(playerGOC, PluginStateHeartLifeString);
     if (!pluginState)
         return;
 
@@ -41,7 +41,7 @@ HOOK(void, __fastcall, CSonicAddCallbackHook, ASLR(0x00861B00), int* This, void*
     }
 
     const char* packFileName = app::ObjUtil::GetStagePackName(*app::Document);
-    if (strncmp(packFileName, "zdlc03", 6) == 0 || LinkSonicPlayType == PlayType::ALWAYS)
+    if (strncmp(packFileName, "zdlc03", 6) == 0 || IsAlwaysHeartLife)
         *(short*)(This[215] + 56) |= 0x1000;
 
     originalCSonicAddCallbackHook(This, edx, a2);

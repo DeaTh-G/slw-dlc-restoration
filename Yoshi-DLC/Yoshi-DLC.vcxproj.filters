@@ -91,6 +91,12 @@
     <Filter Include="Header Files\app\ObjUtil">
       <UniqueIdentifier>{2f04cf22-6d67-4ed3-baaf-71477161913d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\app\res">
+      <UniqueIdentifier>{5a36eb5d-7911-475f-a5a0-a8d3d32d39b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\hh\mr">
+      <UniqueIdentifier>{a9a2f64f-a25d-4575-a3f6-7bfd8a0d23ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -708,6 +714,15 @@
     <ClInclude Include="Zelda Objects\ObjZeldaGoal.h">
       <Filter>Header Files\Zelda Objects</Filter>
     </ClInclude>
+    <ClInclude Include="app\res\ResShadowModel.h">
+      <Filter>Header Files\app\res</Filter>
+    </ClInclude>
+    <ClInclude Include="hh\mr\CVertexDeclarationPtr.h">
+      <Filter>Header Files\hh\mr</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\CStageSoundDirector.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">
@@ -771,6 +786,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="app\Player\VisualVirtualSonic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Player\StateUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\xgame\CStageSoundDirector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

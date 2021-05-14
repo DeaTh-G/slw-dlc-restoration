@@ -22,5 +22,12 @@ namespace app
             FileLoaderParam() { __ct(this); }
             int SetMultiLanguageAttr(bool a2, int a3) { return f_SetMultiLanguageAttr(this, a2, a3); }
         };
+
+        class FileLoader
+        {
+        public:
+            inline static FUNCTION_PTR(void, __thiscall, LoadFile, ASLR(0x00490D90), FileLoader* This, int* a2, const char* fileName, FileLoaderParam* loaderParam);
+        };
+
     }
 }
