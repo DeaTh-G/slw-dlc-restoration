@@ -6,6 +6,8 @@ namespace app
     {
     public:
 
+        ObjTreasureBoxInfo() {}
+
         void Initialize(GameDocument& gameDocument) override
         {
         }
@@ -13,6 +15,13 @@ namespace app
         const char* GetInfoName() override
         {
             return "ObjTreasureBoxInfo";
+        }
+
+        void RegistCallback(int& container) override
+        {
+            ObjZeldaPopupItemInfo* popupObject = new(pAllocator) ObjZeldaPopupItemInfo();
+            if (popupObject)
+                CObjInfoContainer::Register(&container, popupObject->GetInfoName(), popupObject);
         }
     };
 
