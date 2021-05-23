@@ -723,6 +723,18 @@
     <ClInclude Include="app\xgame\CStageSoundDirector.h">
       <Filter>Header Files\app\xgame</Filter>
     </ClInclude>
+    <ClInclude Include="app\xgame\MsgDlcZeldaTakeHeartContainer.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgDlcZeldaHeartAllRecovery.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgDlcZeldaTakeHeart.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Player\CStateSonicBase.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">
@@ -792,6 +804,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="app\xgame\CStageSoundDirector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Player\CStateSonicBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

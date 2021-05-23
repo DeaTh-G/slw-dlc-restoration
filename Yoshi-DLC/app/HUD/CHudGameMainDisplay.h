@@ -188,10 +188,11 @@ namespace app
         public:
             static void __ct();
             static void SpecialRingUpdate();
+            static void ProcessMessage();
             static void InitLayer();
-            static void SetInfo();
+            static void RingUpdate();
 
-            void HeartLifeUpdate(int* a2, float deltaTime)
+            void HeartLifeUpdate(int a2, float deltaTime, int a4)
             {
                 if (!(Flags & 0x100))
                     return;
@@ -201,56 +202,40 @@ namespace app
                     Time -= deltaTime;
                     if (Time <= 0 && !LayerController->IsCurrentAnimation("Hide_Anim"))
                     {
-                        game::HudLayerController::PlayInfo playInfo{};
-                        playInfo.AnimationName = "Hide_Anim";
-                        LayerController->PlayAnimation(playInfo);
+                        app::game::HudLayerController::PlayInfo hideInfo{};
+                        hideInfo.AnimationName = "Hide_Anim";
+                        LayerController->PlayAnimation(hideInfo);
                     }
                 }
 
-                int numHeart = csl::math::Min(6, NUM_HEARTS);
-                int maxNumHeart = csl::math::Min(6, MAX_NUM_HEARTS);
-
-                if (field_27C)
+                if (field_1A8 != NUM_HEARTS)
                 {
-                    field_278 += deltaTime;
-                    if (field_278 < 0.3f)
-                        numHeart = field_1A8;
+                    field_1A8 = NUM_HEARTS;
+                    
+                    app::game::HudLayerController::PlayInfo volumeInfo{};
+                    volumeInfo.AnimationName = "life_volume";
+                    volumeInfo.field_0C = field_1A8 * 20;
+                    LayerController->PlayAnimation(volumeInfo);
 
-                    field_278 -= deltaTime;
-                    if (field_1A8 < numHeart)
-                        numHeart = field_1A8 + 1;
-                    else
-                        field_27C = 0;
-                }
-
-                if (field_1AC != maxNumHeart)
-                {
-                    game::HudLayerController::PlayInfo playInfo{};
-                    if (maxNumHeart < 4 || 6 < maxNumHeart)
-                        playInfo.AnimationName = "mode_heart0";
-                    else
-                        playInfo.AnimationName = HeartMode[maxNumHeart & 3];
-                    LayerController->PlayAnimation(playInfo);
-                    field_1AC = maxNumHeart;
-                }
-
-                maxNumHeart = field_1A8;
-                if (maxNumHeart != numHeart)
-                {
-                    if (field_27C && !field_190 && (maxNumHeart < numHeart && maxNumHeart > 0))
-                        printf("obj_zeldaheart_get");
-                
-                    field_1A8 = numHeart;
-                    game::HudLayerController::PlayInfo playInfo{};
-                    playInfo.AnimationName = "life_volume";
-                    playInfo.field_0C = numHeart * 20;
-                    LayerController->PlayAnimation(playInfo);
-
-                    game::HudLayerController::PlayInfo playUsual{};
+                    app::game::HudLayerController::PlayInfo playUsual{};
                     playUsual.AnimationName = "Usual_Anim";
-                    playUsual.field_08 = 1;
+                    playUsual.IsLooping = true;
                     LayerController->PlayAnimation(playUsual);
                 }
+
+                LayerController->SetVisible(true);
+            }
+
+            void ProcMsgDlcZeldaHeartAllRecovery(xgame::MsgDlcZeldaHeartAllRecovery& message)
+            {
+                field_278 = 0;
+                field_27C = 1;
+            }
+
+            void ProcMsgDlcZeldaTakeHeartContainer(xgame::MsgDlcZeldaTakeHeartContainer& message)
+            {
+                field_278 = 0;
+                field_27C = 1;
             }
         };
     }

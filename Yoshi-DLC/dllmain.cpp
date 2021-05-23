@@ -10,6 +10,7 @@ PlayType LinkSonicPlayType = PlayType::DEFAULT;
 bool IsLinkSonicFixed = false;
 bool IsVirtualLinkSonic = false;
 bool IsAlwaysHeartLife = false;
+bool DoesPointMarkerRestoreLife = true;
 
 char IsYoshiIslandStage()
 {
@@ -39,7 +40,6 @@ void Initialize()
         (const char)((uint32_t)app::construct_EggManager >> 16),
         (const char)((uint32_t)app::construct_EggManager >> 24)
     );
-
 
     WriteCall((void*)ASLR(0x009159F3), &IsYoshiIslandStage);
     WriteCall((void*)ASLR(0x00915A16), &IsYoshiIslandStage);
@@ -141,6 +141,8 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2C40F), *(void**)&createObjInfo_ObjZeldaItemTreeInfo);
     WRITE_FUNCTION(ASLR(0x00D2C4AF), *(void**)&createObjInfo_ObjZeldaRupeeInfo);
 
+    //WRITE_FUNCTION(ASLR(0x00D280A4), *(void**)&create_ObjZeldaRupee);
+    //WRITE_FUNCTION(ASLR(0x00D2809F), *(void**)&createObjInfo_ObjZeldaRupeeInfo);
     // Install Yoshi Hooks
     app::xgame::IsDLCStagePurchase::Func();
     app::HUD::CHudGameMainDisplay::__ct();
@@ -156,16 +158,19 @@ void Initialize()
         app::GameModeStage::StateWarp();
 
     // Install Zelda Hooks
+    app::Player::CStateSonicBase::ProcessMessage();
     app::Player::CStateBase::ProcMsgPlayerReachGoal();
     app::Player::CSonic::AddCallback();
-    //app::Player::CSonic::SendPlayerInfo();
+    app::Player::CSonic::SendPlayerInfo();
     app::Player::CVisualSonic::ActivateSub();
     app::Player::CVisualSonic::RegisterResource();
     app::Player::CVisualBase::IsLinkCostume();
     app::GameModeStage::RegisterObjInfos();
-    /*app::HUD::CHudGameMainDisplay::InitLayer();
-    app::HUD::CHudGameMainDisplay::SetInfo();*/
+    app::GameModeStage::LoadLevel();
+    app::HUD::CHudGameMainDisplay::InitLayer();
+    app::HUD::CHudGameMainDisplay::RingUpdate();
     app::Player::CStateBase::CheckHitDamage();
+    app::Player::CStateBase::ProcessMessage();
     app::Player::StateUtil::ScatterRingForDamage();
     app::xgame::CStageSoundDirector::LoadData();
 
@@ -210,6 +215,7 @@ extern "C"
         IsLinkSonicFixed = reader->GetBoolean("ZeldaTweaks", "isLinkSonicFixed", false);
         IsVirtualLinkSonic = reader->GetBoolean("ZeldaTweaks", "isVirtualLinkSonic", false);
         IsAlwaysHeartLife = reader->GetBoolean("ZeldaTweaks", "isAlwaysHeartLife", false);
+        DoesPointMarkerRestoreLife = reader->GetBoolean("ZeldaTweaks", "doesPointMarkerRestoreLife", true);
 
         Initialize();
     }

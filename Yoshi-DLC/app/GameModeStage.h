@@ -7,5 +7,6 @@ namespace app
     public:
         static void StateWarp();
         static void RegisterObjInfos();
+        static void LoadLevel();
     };
 }

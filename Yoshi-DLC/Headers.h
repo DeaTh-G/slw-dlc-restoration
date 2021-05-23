@@ -126,6 +126,7 @@
 #include "app/Player/StateUtil.h"
 #include "app/Player/CPlayer.h"
 #include "app/Player/CStateBase.h"
+#include "app/Player/CStateSonicBase.h"
 #include "app/Player/CVisualSonic.h"
 #include "app/Player/CVisualBase.h"
 #include "app/WorldAreaMap.h"
@@ -191,6 +192,13 @@
 #include "app/Objects/EnemyBlowOffObject.h"
 #include "app/Objects/CObjDroppedRing.h"
 
+#include "app/xgame/MsgLoftBirdCollision.h"
+#include "app/xgame/MsgDlcZeldaNoticeStopEnemy.h"
+#include "app/xgame/MsgDlcZeldaNoticeActiveEnemy.h"
+#include "app/xgame/MsgDlcZeldaTakeHeart.h"
+#include "app/xgame/MsgDlcZeldaTakeHeartContainer.h"
+#include "app/xgame/MsgDlcZeldaHeartAllRecovery.h"
+
 // Yoshi Objects
 #include "app/egg.h"
 
@@ -213,9 +221,6 @@
 #include "Yoshi Objects/ObjYoshiSpecialFlower.h"
 #include "Yoshi Objects/ObjYoshiGoal.h"
 
-#include "app/xgame/MsgLoftBirdCollision.h"
-#include "app/xgame/MsgDlcZeldaNoticeStopEnemy.h"
-#include "app/xgame/MsgDlcZeldaNoticeActiveEnemy.h"
 #include "Zelda Objects/ObjZeldaWarpCollision.h"
 #include "Zelda Objects/ObjZeldaItemTree.h"
 #include "Zelda Objects/ObjZeldaPopupItem.h"

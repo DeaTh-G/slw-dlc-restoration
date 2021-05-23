@@ -1,5 +1,17 @@
 #include "pch.h"
 
+static void* ReturnAddressSetInfo = (void*)ASLR(0x00505E75);
+static void* ReturnAddressIsZeldaInitLayer = (void*)ASLR(0x00503993);
+static void* RingUpdateOffset = (void*)ASLR(0x005025D0);
+static void* SetAnimationOffset = (void*)ASLR(0x00525070);
+
+HOOK(void, __fastcall, RingUpdateHook, ASLR(0x005025D0), app::HUD::CHudGameMainDisplay* This, void* edx, int a2, float deltaTime, int a4)
+{
+    originalRingUpdateHook(This, edx, a2, deltaTime, a4);
+
+    This->HeartLifeUpdate(a2, deltaTime, a4);
+}
+
 HOOK(int*, __fastcall, SpecialRingUpdateHook, ASLR(0x005027A0), int* This, void* edx, float a2, char a3)
 {
     int* result = 0;
@@ -33,6 +45,7 @@ HOOK(int*, __fastcall, CHudGameMainDisplayHook, ASLR(0x00503290), int* This, int
         {
             *(This + 0x7A) |= 0x80;
             *(This + 0x7A) |= 0x100;
+            return This;
         }
     }
     else
@@ -44,14 +57,52 @@ HOOK(int*, __fastcall, CHudGameMainDisplayHook, ASLR(0x00503290), int* This, int
         WRITE_MEMORY(ASLR(0x00404C3E), 0x88, 0x15, 0x7C, 0xFC, 0xFE, 0x00);
     }
 
+    if (IsAlwaysHeartLife)
+    {
+        strcpy((char*)(This + 0x60), "zdlc03");
+        *(This + 0x7A) |= 0x80;
+        *(This + 0x7A) |= 0x100;
+    }
+
     return This;
 }
 
-HOOK(void, __fastcall, CHudGameMainDisplaySetInfoHook, ASLR(0x00505DF0), app::HUD::CHudGameMainDisplay* This, int* edx, int* a2, float a3)
+char IsZeldaHud()
 {
-    originalCHudGameMainDisplaySetInfoHook(This, edx, a2, a3);
+    const char* packFileName = app::ObjUtil::GetStagePackName((app::GameDocument*) * app::Document);
+    if (strncmp(packFileName, "zdlc03", 6) == 0 || IsAlwaysHeartLife)
+        return 1;
+    return 0;
+}
 
-    This->HeartLifeUpdate(a2, a3);
+HOOK(bool, __fastcall, CHudGameMainDisplayProcessMessageHook, ASLR(0x005060D0), app::HUD::CHudGameMainDisplay* This, int* edx, app::fnd::Message& message)
+{
+    switch (message.Type)
+    {
+    case app::fnd::PROC_MSG_DLC_ZELDA_HEART_ALL_RECOVERY:
+        This->ProcMsgDlcZeldaHeartAllRecovery((app::xgame::MsgDlcZeldaHeartAllRecovery&)message);
+        return true;
+    case app::fnd::PROC_MSG_DLC_ZELDA_TAKE_HEART_CONTAINER:
+        This->ProcMsgDlcZeldaTakeHeartContainer((app::xgame::MsgDlcZeldaTakeHeartContainer&)message);
+        return true;
+    default:
+        return originalCHudGameMainDisplayProcessMessageHook(This, edx, message);
+    }
+}
+
+__declspec(naked) void CHudGameMainDisplayInitLayerMidAsmHook()
+{
+    __asm
+    {
+        call IsZeldaHud
+        test al, al
+        jne isZelda
+        call[SetAnimationOffset]
+        jmp[ReturnAddressIsZeldaInitLayer]
+
+        isZelda:
+        jmp[ReturnAddressIsZeldaInitLayer]
+    }
 }
 
 HOOK(void, __fastcall, CHudGameMainDisplayInitLayerHook, ASLR(0x00503780), app::HUD::CHudGameMainDisplay* This, int* edx)
@@ -60,6 +111,8 @@ HOOK(void, __fastcall, CHudGameMainDisplayInitLayerHook, ASLR(0x00503780), app::
 
     if ((This->Flags & 0x100))
     {
+        This->field_1A8 = 0;
+        ++((int*)This->field_E0)[1];
         This->LayerController = This->GOCHud->CreateLayerController(This->field_E0, "info_ring_zdlc03", 0x12);
         This->LayerController->PlayAnimation("Intro_Anim", 0, 0);
         This->LayerController->SetVisible(true);
@@ -76,12 +129,18 @@ void app::HUD::CHudGameMainDisplay::SpecialRingUpdate()
     INSTALL_HOOK(SpecialRingUpdateHook);
 }
 
+void app::HUD::CHudGameMainDisplay::ProcessMessage()
+{
+    INSTALL_HOOK(CHudGameMainDisplayProcessMessageHook);
+}
+
 void app::HUD::CHudGameMainDisplay::InitLayer()
 {
+    WRITE_JUMP(ASLR(0x0050398E), &CHudGameMainDisplayInitLayerMidAsmHook);
     INSTALL_HOOK(CHudGameMainDisplayInitLayerHook);
 }
 
-void app::HUD::CHudGameMainDisplay::SetInfo()
+void app::HUD::CHudGameMainDisplay::RingUpdate()
 {
-    INSTALL_HOOK(CHudGameMainDisplaySetInfoHook);
+    INSTALL_HOOK(RingUpdateHook);
 }

@@ -272,6 +272,7 @@
     <ClInclude Include="app\Player\CSonic.h" />
     <ClInclude Include="app\Player\CStateBase.h" />
     <ClInclude Include="app\Player\CStateGOC.h" />
+    <ClInclude Include="app\Player\CStateSonicBase.h" />
     <ClInclude Include="app\Player\CVisualBase.h" />
     <ClInclude Include="app\Player\CVisualSonic.h" />
     <ClInclude Include="app\Player\PluginStateHeartLife.h" />
@@ -297,6 +298,8 @@
     <ClInclude Include="app\xgame\MsgDlcChangeEggRotation.h" />
     <ClInclude Include="app\xgame\MsgDlcZeldaNoticeActiveEnemy.h" />
     <ClInclude Include="app\xgame\MsgDlcZeldaNoticeStopEnemy.h" />
+    <ClInclude Include="app\xgame\MsgDlcZeldaTakeHeart.h" />
+    <ClInclude Include="app\xgame\MsgDlcZeldaTakeHeartContainer.h" />
     <ClInclude Include="app\xgame\MsgExtendPlayer.h" />
     <ClInclude Include="app\xgame\MsgGetAnimal.h" />
     <ClInclude Include="app\xgame\MsgGetClimbObjectInfo.h" />
@@ -327,6 +330,7 @@
     <ClInclude Include="app\xgame\MsgStopGameTimer.h" />
     <ClInclude Include="app\xgame\MsgTakeObject.h" />
     <ClInclude Include="app\xgame\MsgWarpNewArea.h" />
+    <ClInclude Include="app\xgame\MsgDlcZeldaHeartAllRecovery.h" />
     <ClInclude Include="csl\fnd.h" />
     <ClInclude Include="csl\math\math.h" />
     <ClInclude Include="csl\math\Matrix34.h" />
@@ -392,6 +396,7 @@
     <ClCompile Include="app\Player\CPlayer.cpp" />
     <ClCompile Include="app\Player\CSonic.cpp" />
     <ClCompile Include="app\Player\CStateBase.cpp" />
+    <ClCompile Include="app\Player\CStateSonicBase.cpp" />
     <ClCompile Include="app\Player\CVisualBase.cpp" />
     <ClCompile Include="app\Player\CVisualSonic.cpp" />
     <ClCompile Include="app\Player\SonicZelda.cpp" />

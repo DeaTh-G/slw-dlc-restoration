@@ -3,6 +3,7 @@
 static void* FadeInAddress = (void*)ASLR(0x004AC5C0);
 static void* OA_STATEWARP = (void*)ASLR(0x00918060);
 static void* OA_REGISTEROBJINFOS = (void*)ASLR(0x00916113);
+static const char* ZeldaUIPac = "ui/ui_zdlc03_gamemodestage.pac";
 
 void create_crayPipeWipe()
 {
@@ -48,6 +49,18 @@ __declspec(naked) void GameModeStageRegisterObjInfosAsmHook()
     }
 }
 
+HOOK(int, __fastcall, GameModeStageLoadLevelHook, ASLR(0x00917730), int* This, void* edx)
+{
+    int result = originalGameModeStageLoadLevelHook(This, edx);
+    if (!IsAlwaysHeartLife)
+        return result;
+
+    app::fnd::FileLoaderParam loader{};
+    loader.SetMultiLanguageAttr(true, 0);
+    app::GameMode::LoadFile("ui/ui_zdlc03_gamemodestage.pac", &loader);
+    return result;
+}
+
 void app::GameModeStage::StateWarp()
 {
     WRITE_JUMP(ASLR(0x0091805B), &GameModStageStateWarpMidAsmHook);
@@ -56,4 +69,9 @@ void app::GameModeStage::StateWarp()
 void app::GameModeStage::RegisterObjInfos()
 {
     WRITE_JUMP(ASLR(0x0091610E), &GameModeStageRegisterObjInfosAsmHook);
+}
+
+void app::GameModeStage::LoadLevel()
+{
+    INSTALL_HOOK(GameModeStageLoadLevelHook);
 }

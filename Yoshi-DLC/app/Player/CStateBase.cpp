@@ -50,7 +50,15 @@ HOOK(int, __fastcall, ProcMsgTakeObjectHook, ASLR(0x008947B0), int* This, void* 
     }
 }
 
-static char IsNotZeldaGoal()
+HOOK(bool, __stdcall, CStateBaseProcessMessageHook, ASLR(0x008981A0), app::Player::CStateGOC* a1, app::fnd::Message& message)
+{
+    if (message.Type == 0x6017 && DoesPointMarkerRestoreLife)
+        app::Player::StateUtil::AllRecoveryHeartLife(a1);
+        
+    return originalCStateBaseProcessMessageHook(a1, message);
+}
+
+static int IsNotZeldaGoal()
 {
     const char* packFileName = app::ObjUtil::GetStagePackName(*app::Document);
     if (strncmp(packFileName, "zdlc03", 6) == 0)
@@ -63,10 +71,17 @@ __declspec(naked) void StateBaseProcMsgPlayerReachGoalMidAsmHook()
 {
     __asm
     {
-        mov al, [ebp + 0x8]
         call IsNotZeldaGoal
+        test eax, eax
+        je zeldaGoal
+        mov al, [ebp + 0x8]
         mov ecx, [ebp + 0xC]
         jmp [ReturnAddressProcMsgPlayerReachGoal]
+
+        zeldaGoal:
+        mov al, 0
+        mov ecx, [ebp + 0xC]
+        jmp[ReturnAddressProcMsgPlayerReachGoal]
     }
 }
 
@@ -99,6 +114,11 @@ __declspec(naked) void StateBaseCheckHitDamageReduceHeartLife()
 
         jmp[ReturnAddressReduceHeartLife]
     }
+}
+
+void app::Player::CStateBase::ProcessMessage()
+{
+    INSTALL_HOOK(CStateBaseProcessMessageHook);
 }
 
 void app::Player::CStateBase::ProcMsgTakeObject()

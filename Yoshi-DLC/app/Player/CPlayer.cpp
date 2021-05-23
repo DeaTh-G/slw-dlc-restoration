@@ -18,6 +18,12 @@ HOOK(int*, __fastcall, UpdatePlayerInformationHook, ASLR(0x00851F20), int* This)
             int* cStateGOC = app::CGOCCollectionImpl::GetGOC((void*)(This + 0xCB), CStateGOC);
             unsigned int isMovGround = app::Player::StateUtil::IsLandOnMovableGround(cStateGOC);
             *((char*)playerInfo + 0x145) = isMovGround;
+
+            app::Player::PluginStateHeartLife* pluginState = (app::Player::PluginStateHeartLife*)app::Player::CStateGOC::GetStatePluginPtr(cStateGOC, PluginStateHeartLifeString);
+            if (!pluginState)
+                return result;
+
+            NUM_HEARTS = app::Player::PluginStateHeartLife::GetNumHearts(pluginState);
         }
     }
 

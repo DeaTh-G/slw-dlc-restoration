@@ -36,7 +36,7 @@ namespace app
     class ObjZeldaRupeeInfo : public CObjInfo
     {
     public:
-        int Models[5];
+        int Models[5]{};
 
         ObjZeldaRupeeInfo() {}
 

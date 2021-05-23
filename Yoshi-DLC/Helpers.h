@@ -13,6 +13,7 @@ extern PlayType LinkSonicPlayType;
 extern bool IsLinkSonicFixed;
 extern bool IsVirtualLinkSonic;
 extern bool IsAlwaysHeartLife;
+extern bool DoesPointMarkerRestoreLife;
 
 static csl::math::Quaternion GetRotationFromMatrix(csl::math::Matrix34* matrix)
 {

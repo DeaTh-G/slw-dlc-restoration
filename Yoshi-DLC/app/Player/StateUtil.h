@@ -21,7 +21,7 @@ namespace app
                 if (!pluginState)
                     return false;
 
-                return Player::PluginStateHeartLife::GetNumHearts(pluginState) > 1; 
+                return Player::PluginStateHeartLife::GetNumHearts(pluginState) > 1;
             }
 
             static int ReduceHeartLife(CStateGOC* This)
@@ -31,10 +31,28 @@ namespace app
                     return 1;
 
                 if (!pluginState || (IsNowPhantom(This)
-                    && Player::PluginStateHeartLife::GetNumHearts(pluginState) <= 1))
+                    && Player::PluginStateHeartLife::GetNumHearts(pluginState) < 1))
                     return 1;
                 else
                     return Player::PluginStateHeartLife::Damaged(pluginState);
+            }
+
+            static int AllRecoveryHeartLife(CStateGOC* This)
+            {
+                Player::PluginStateHeartLife* pluginState = (Player::PluginStateHeartLife*)app::Player::CStateGOC::GetStatePluginPtr(This, PluginStateHeartLifeString);
+                if (!pluginState)
+                    return 1;
+
+                Player::PluginStateHeartLife::AllRecovery(pluginState);
+            }
+
+            static int RecoveryHeartLife(CStateGOC* This)
+            {
+                Player::PluginStateHeartLife* pluginState = (Player::PluginStateHeartLife*)app::Player::CStateGOC::GetStatePluginPtr(This, PluginStateHeartLifeString);
+                if (!pluginState)
+                    return 1;
+
+                Player::PluginStateHeartLife::Recovery(pluginState);
             }
         };
     }

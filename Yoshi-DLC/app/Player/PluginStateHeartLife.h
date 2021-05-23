@@ -19,8 +19,23 @@ namespace app
             static int Damaged(PluginStateHeartLife* This)
             {
                 This->NumHearts--;
-                printf("NumHearts: %d\n", GetNumHearts(This));
                 return ((This->NumHearts - 1) | (This->NumHearts - 2)) >> 31;
+            }
+            static bool AllRecovery(PluginStateHeartLife* This)
+            {
+                if (This->NumHearts >= This->MaxNumHearts)
+                    return false;
+            
+                This->NumHearts = This->MaxNumHearts;
+                return true;
+            }
+            static bool Recovery(PluginStateHeartLife* This)
+            {
+                if (This->NumHearts >= This->MaxNumHearts)
+                    return false;
+
+                This->NumHearts++;
+                return true;
             }
         };
     }
