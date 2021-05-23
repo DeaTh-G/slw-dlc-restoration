@@ -102,6 +102,7 @@ void Initialize()
     auto create_ObjLoftBird = &app::create_ObjLoftBird;
     auto create_ObjLoftBirdCollision = &app::create_ObjLoftBirdCollision;
     auto create_ObjOccludeStone = &app::create_ObjOccludeStone;
+    auto create_ObjTreasureBox = &app::create_ObjTreasureBox;
     auto create_ObjZeldaBush = &app::create_ObjZeldaBush;
     auto create_ObjZeldaGoal = &app::create_ObjZeldaGoal;
     auto create_ObjZeldaItemTree = &app::create_ObjZeldaItemTree;
@@ -113,6 +114,7 @@ void Initialize()
     auto createObjInfo_ObjBreakRoofInfo = &app::createObjInfo_ObjBreakRoofInfo;
     auto createObjInfo_ObjLoftBirdInfo = &app::createObjInfo_ObjLoftBirdInfo;
     auto createObjInfo_ObjOccludeStoneInfo = &app::createObjInfo_ObjOccludeStoneInfo;
+    auto createObjInfo_ObjTreasureBoxInfo = &app::createObjInfo_ObjTreasureBoxInfo;
     auto createObjInfo_ObjZeldaBushInfo = &app::createObjInfo_ObjZeldaBushInfo;
     auto createObjInfo_ObjZeldaGoalInfo = &app::createObjInfo_ObjZeldaGoalInfo;
     auto createObjInfo_ObjZeldaItemTreeInfo = &app::createObjInfo_ObjZeldaItemTreeInfo;
@@ -125,6 +127,7 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2BDD4), *(void**)&create_ObjLoftBird);
     WRITE_FUNCTION(ASLR(0x00D2BE21), *(void**)&create_ObjLoftBirdCollision);
     WRITE_FUNCTION(ASLR(0x00D2C054), *(void**)&create_ObjOccludeStone);
+    WRITE_FUNCTION(ASLR(0x00D2C144), *(void**)&create_ObjTreasureBox);
     WRITE_FUNCTION(ASLR(0x00D2C374), *(void**)&create_ObjZeldaBush);
     WRITE_FUNCTION(ASLR(0x00D2C3C4), *(void**)&create_ObjZeldaGoal);
     WRITE_FUNCTION(ASLR(0x00D2C414), *(void**)&create_ObjZeldaItemTree);
@@ -136,6 +139,7 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2BA0F), *(void**)&createObjInfo_ObjBreakRoofInfo);
     WRITE_FUNCTION(ASLR(0x00D2BDCF), *(void**)&createObjInfo_ObjLoftBirdInfo);
     WRITE_FUNCTION(ASLR(0x00D2C04F), *(void**)&createObjInfo_ObjOccludeStoneInfo);
+    WRITE_FUNCTION(ASLR(0x00D2C13F), *(void**)&createObjInfo_ObjTreasureBoxInfo);
     WRITE_FUNCTION(ASLR(0x00D2C36F), *(void**)&createObjInfo_ObjZeldaBushInfo);
     WRITE_FUNCTION(ASLR(0x00D2C3BF), *(void**)&createObjInfo_ObjZeldaGoalInfo);
     WRITE_FUNCTION(ASLR(0x00D2C40F), *(void**)&createObjInfo_ObjZeldaItemTreeInfo);

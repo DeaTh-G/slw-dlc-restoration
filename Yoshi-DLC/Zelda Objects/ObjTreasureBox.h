@@ -2,6 +2,22 @@
 
 namespace app
 {
+    enum class ObjTreasureBoxState : int
+    {
+        STATE_INITIALIZE,
+        STATE_WAIT,
+        STATE_HITOFF,
+        STATE_OPEN_CONTROL_CAMERA,
+        STATE_OPEN_WAIT_ANIM,
+        STATE_OPEN_END,
+        STATE_OPENED
+    };
+
+    struct ObjTreasureBoxData
+    {
+        int ItemType;
+    };
+
     class ObjTreasureBoxInfo : public CObjInfo
     {
     public:
@@ -39,11 +55,58 @@ namespace app
     class ObjTreasureBox : public CSetObjectListener
     {
     public:
+        class Listener : public animation::AnimationListener
+        {
+        public:
+            ObjTreasureBox* pTreasureBox;
+
+            void OnEvent(int notifyTiming) override
+            {
+                if (!pTreasureBox)
+                    return;
+
+
+            }
+        };
+
+        INSERT_PADDING(20);
+        Listener AnimationListener{};
+        void* pTreasureBoxCamera{};
+        INSERT_PADDING(12);
+        csl::math::Vector3 field_3F0{};
+        csl::math::Vector3 field_400{};
+        csl::math::Matrix34 field_410{};
+        int field_450{};
+        int field_454{};
+        INSERT_PADDING(4);
+        int field_45C{};
+
+        ObjTreasureBox()
+        {
+            AnimationListener.field_20 = 2;
+        }
+
+        void Destructor(size_t deletingFlags)
+        {
+            AnimationListener.Destructor(0);
+
+            CSetObjectListener::Destructor(deletingFlags);
+        }
+
         void AddCallback(GameDocument* gameDocument) override
         {
+            fnd::GOComponent::Create(this, GOCVisualContainer);
+            fnd::GOComponent::Create(this, GOCAnimationSimple);
+            fnd::GOComponent::Create(this, GOCCollider);
+            fnd::GOComponent::Create(this, GOCSound);
+            fnd::GOComponent::Create(this, GOCEffect);
+            fnd::GOComponent::Create(this, GOCHud);
+
             ObjTreasureBoxInfo* info = (ObjTreasureBoxInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjTreasureBoxInfo");
+            ObjTreasureBoxData* data = (ObjTreasureBoxData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
 
             fnd::GOComponent::BeginSetup(this);
+
 
 
             fnd::GOComponent::EndSetup(this);
