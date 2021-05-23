@@ -234,3 +234,4 @@
 #include "Zelda Objects/EnemyDekunutsShot.h"
 #include "Zelda Objects/EnemyDekunuts.h"
 #include "Zelda Objects/ObjZeldaGoal.h"
+#include "Zelda Objects/ObjTreasureBox.h"
