@@ -732,6 +732,9 @@
     <ClInclude Include="app\xgame\MsgDlcZeldaTakeHeart.h">
       <Filter>Header Files\app\xgame</Filter>
     </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjTreasureBox.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">

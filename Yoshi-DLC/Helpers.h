@@ -14,6 +14,7 @@ extern bool IsLinkSonicFixed;
 extern bool IsVirtualLinkSonic;
 extern bool IsAlwaysHeartLife;
 extern bool DoesPointMarkerRestoreLife;
+extern bool DisableChestLetterboxing;
 
 static csl::math::Quaternion GetRotationFromMatrix(csl::math::Matrix34* matrix)
 {

@@ -377,6 +377,7 @@
     <ClInclude Include="Zelda Objects\ObjLoftBird.h" />
     <ClInclude Include="Zelda Objects\ObjLoftBirdCollision.h" />
     <ClInclude Include="Zelda Objects\ObjOccludeStone.h" />
+    <ClInclude Include="Zelda Objects\ObjTreasureBox.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaBush.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaGoal.h" />
     <ClInclude Include="Zelda Objects\ObjZeldaItemTree.h" />
