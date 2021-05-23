@@ -5,11 +5,22 @@ namespace app
     class ObjTreasureBoxInfo : public CObjInfo
     {
     public:
+        int Model{};
+        int Skeleton{};
+        int Animation{};
+        int HeartModel{};
 
         ObjTreasureBoxInfo() {}
 
         void Initialize(GameDocument& gameDocument) override
         {
+            int packFile = 0;
+            ObjUtil::GetPackFile(&packFile, ObjUtil::GetStagePackName(&gameDocument));
+
+            ObjUtil::GetModelResource(&Model, "zdlc03_obj_treasurebox", &packFile);
+            ObjUtil::GetSkeletonResource(&Skeleton, "zdlc03_obj_treasurebox", packFile);
+            ObjUtil::GetAnimationResource(&Animation, "treasurebox_open", &packFile);
+            ObjUtil::GetModelResource(&HeartModel, "zdlc03_obj_heartcase", &packFile);
         }
 
         const char* GetInfoName() override
