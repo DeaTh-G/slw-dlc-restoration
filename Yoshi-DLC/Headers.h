@@ -126,7 +126,6 @@
 #include "app/Player/StateUtil.h"
 #include "app/Player/CPlayer.h"
 #include "app/Player/CStateBase.h"
-#include "app/Player/CStateSonicBase.h"
 #include "app/Player/CVisualSonic.h"
 #include "app/Player/CVisualBase.h"
 #include "app/WorldAreaMap.h"

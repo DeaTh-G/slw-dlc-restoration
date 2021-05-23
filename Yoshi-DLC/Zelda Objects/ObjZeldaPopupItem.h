@@ -203,7 +203,11 @@ namespace app
 
 
             if (Type == ObjZeldaPopupItemType::HEART)
+            {
+                xgame::MsgDlcZeldaTakeHeart takeHeartMessage{};
+                ObjUtil::SendMessageImmToPlayer(this, PlayerNumber, &takeHeartMessage);
                 return;
+            }
 
             xgame::MsgGetAnimal animalMessage{ RUPEE_TO_ANIMAL[(char)Type] };
             ObjUtil::SendMessageImmToGameActor(this, &animalMessage);

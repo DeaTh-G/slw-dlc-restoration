@@ -19,6 +19,7 @@ HOOK(int*, __fastcall, UpdatePlayerInformationHook, ASLR(0x00851F20), int* This)
             unsigned int isMovGround = app::Player::StateUtil::IsLandOnMovableGround(cStateGOC);
             *((char*)playerInfo + 0x145) = isMovGround;
 
+            /* Store Heart Count for the Player */
             app::Player::PluginStateHeartLife* pluginState = (app::Player::PluginStateHeartLife*)app::Player::CStateGOC::GetStatePluginPtr(cStateGOC, PluginStateHeartLifeString);
             if (!pluginState)
                 return result;
@@ -28,6 +29,23 @@ HOOK(int*, __fastcall, UpdatePlayerInformationHook, ASLR(0x00851F20), int* This)
     }
 
     return result;
+}
+
+HOOK(bool, __fastcall, CPlayerProcessMessageHook, ASLR(0x008514B0), int* This, void* edx, app::fnd::Message& message)
+{
+    if (message.Type == app::fnd::PROC_MSG_DLC_ZELDA_TAKE_HEART)
+    {
+        app::Player::CStateGOC* cStateGOC = (app::Player::CStateGOC*)app::CGOCCollectionImpl::GetGOC((void*)(This + 0xC9), CStateGOC);
+        app::Player::StateUtil::RecoveryHeartLife(cStateGOC);
+        return 1;
+    }
+
+    return originalCPlayerProcessMessageHook(This, edx, message);
+}
+
+void app::Player::CPlayer::ProcessMessage()
+{
+    INSTALL_HOOK(CPlayerProcessMessageHook);
 }
 
 void app::Player::CPlayer::UpdatePlayerInformation()

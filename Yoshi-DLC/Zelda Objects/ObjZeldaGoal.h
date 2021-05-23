@@ -111,7 +111,7 @@ namespace app
         int field_454{};
         int field_458{};
         int field_45C{};
-        int field_460{};
+        int IsSoundPlaying{};
         int SoundHandle[3]{};
 
         ObjZeldaGoal()
@@ -306,10 +306,14 @@ namespace app
             if (!soundPlayer)
                 return;
 
-            fnd::SoundParam soundParam{ 1, 0, 0, 0x80000000, 0, 0, 0 };
-            fnd::SoundPlayerCri::Play(soundPlayer, deviceTag, 0, "bgm_result_zdlc03", soundParam);
-            fnd::HandleBase::__as(SoundHandle, deviceTag);
-            SoundHandle[2] = deviceTag[2];
+            if (!IsSoundPlaying)
+            {
+                fnd::SoundParam soundParam{ 1, 0, 0, 0x80000000, 0, 0, 0 };
+                fnd::SoundPlayerCri::Play(soundPlayer, deviceTag, 0, "bgm_result_zdlc03", soundParam);
+                fnd::HandleBase::__as(SoundHandle, deviceTag);
+                SoundHandle[2] = deviceTag[2];
+            }
+            IsSoundPlaying = true;
 
             int* gocAnimation = GameObject::GetGOC(this, GOCAnimation);
             if (!gocAnimation)

@@ -158,10 +158,10 @@ void Initialize()
         app::GameModeStage::StateWarp();
 
     // Install Zelda Hooks
-    app::Player::CStateSonicBase::ProcessMessage();
+    app::Player::CPlayer::ProcessMessage();
     app::Player::CStateBase::ProcMsgPlayerReachGoal();
     app::Player::CSonic::AddCallback();
-    app::Player::CSonic::SendPlayerInfo();
+    //app::Player::CSonic::SendPlayerInfo();
     app::Player::CVisualSonic::ActivateSub();
     app::Player::CVisualSonic::RegisterResource();
     app::Player::CVisualBase::IsLinkCostume();
