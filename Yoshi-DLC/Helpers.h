@@ -9,12 +9,14 @@ enum class PlayType : int
 
 extern bool DisablePipeTransition;
 extern bool IsConsistentShadow;
+
 extern PlayType LinkSonicPlayType;
 extern bool IsLinkSonicFixed;
 extern bool IsVirtualLinkSonic;
 extern bool IsAlwaysHeartLife;
 extern bool DoesPointMarkerRestoreLife;
 extern bool DisableChestLetterboxing;
+extern bool IsRupeeCountInChestFixed;
 
 static csl::math::Quaternion GetRotationFromMatrix(csl::math::Matrix34* matrix)
 {

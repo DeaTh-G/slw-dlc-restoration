@@ -84,12 +84,13 @@ namespace app
         Listener AnimationListener{};
         void* pTreasureBoxCamera{};
         INSERT_PADDING(12);
-        csl::math::Vector3 field_3F0{};
-        csl::math::Vector3 field_400{};
+        csl::math::Vector3 CameraPosition{};
+        csl::math::Vector3 CameraTargetPosition{};
         csl::math::Matrix34 TransformMatrix{};
-        int field_450{};
+        int PlayerNumber{};
         ObjTreasureBoxType ItemType{};
-        INSERT_PADDING(7);
+        INSERT_PADDING(3);
+        float Time{};
         game::HudLayerController* LayerController;
 
         ObjTreasureBox()
@@ -186,7 +187,7 @@ namespace app
                     int animCount = 1;
                     game::GOCAnimationSimple::Setup(gocAnimation, &animCount);
                     fnd::GOCVisualModel::AttachAnimation(chestModel, gocAnimation);
-                    game::GOCAnimationSimple::Add(gocAnimation, "OPEN", treasureInfo->Animation, 1);
+                    game::GOCAnimationSimple::Add(gocAnimation, "OPEN", treasureInfo->Animation, 0);
                 }
 
                 int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
@@ -246,10 +247,18 @@ namespace app
                 gocHud->Setup(&hudDescription);
 
                 ObjUtil::GetPackFile(&packFile, "ui_zdlc03_gamemodestage.pac");
+                if (!packFile)
+                {
+                    fnd::GOComponent::EndSetup(this);
+                    return;
+                }
+
                 gocHud->SetupProject(&refCount, "ui_wipe_zdlc03", packFile);
                 if (refCount)
                 {
                     LayerController = gocHud->CreateLayerController(refCount, "ui_wipe_zdlc03", "wipe_mask", 0);
+                    
+                    /* TODO: Do this but better */
                     LayerController->ReserveAnimation("Outro_Anim", 0, 0);
                     LayerController->PlayReservedAnimation();
                 }
@@ -268,7 +277,7 @@ namespace app
             case fnd::PROC_MSG_HIT_EVENT_COLLISION:
                 ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
                 return true;
-            case fnd::PROC_MSG_NOTIFY_OBJECT_EVENT:
+            case fnd::PROC_MSG_GET_EXTERNAL_MOVE_POSITION:
                 ProcMsgGetExternalMovePosition((xgame::MsgGetExternalMovePosition&)message);
                 return true;
             default:
@@ -291,14 +300,13 @@ namespace app
                 StateOpenControlCamera();
 
             if (State == ObjTreasureBoxState::STATE_OPEN_WAIT_ANIM)
-                StateOpenWaitAnim();
+                StateOpenWaitAnim(updateInfo);
 
             if (State == ObjTreasureBoxState::STATE_OPEN_END)
                 StateOpenEnd();
 
             if (State == ObjTreasureBoxState::STATE_OPENED)
-                StateOpened();
-
+                StateOpened(updateInfo);
         }
 
     private:
@@ -310,16 +318,68 @@ namespace app
         void ProcMsgGetExternalMovePosition(xgame::MsgGetExternalMovePosition& message)
         {
             *ExternalMoveMessage = message;
+            *ExternalMoveMessage->Transform = TransformMatrix;
         }
 
         void StateInitialize()
         {
-
+            State = ObjTreasureBoxState::STATE_WAIT;
         }
 
         void StateWait()
         {
+            if (!HitMessage->ActorID)
+                return;
 
+            int playerNo = ObjUtil::GetPlayerNo(field_24[1], HitMessage->ActorID);
+            PlayerNumber = playerNo;
+
+            xgame::MsgCatchPlayer catchMessage { 32, TransformMatrix, 19 };
+            if (!ObjUtil::SendMessageImmToPlayer(this, playerNo, &catchMessage) || !catchMessage.field_64)
+                return;
+
+            xgame::MsgStopGameTimer stopTimerMessage{};
+            ObjUtil::SendMessageImmToGameActor(this, &stopTimerMessage);
+
+            xgame::MsgDlcZeldaNoticeStopEnemy stopEnemyMessage{};
+            ObjUtil::SendMessageImmToGameActor(this, &stopEnemyMessage);
+
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+            if (!gocCollider)
+                return;
+            
+            game::GOCCollider::SetEnable(gocCollider, false);
+
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimation);
+            if (!gocAnimation)
+                return;
+
+            game::GOCAnimationSimple::SetAnimation(gocAnimation, "OPEN");
+
+            if (LayerController)
+            {
+                LayerController->ReserveAnimation("Intro_Anim", 0, 0);
+                LayerController->ReserveAnimation("Usual_Anim", 1, 0);
+                LayerController->PlayReservedAnimation();
+            }
+
+            int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
+            if (!gocEffect)
+                return;
+
+            app::game::GOCEffect::CreateEffect(gocEffect, "ef_dl3_treasurebox_open");
+
+            int deviceTag[3];
+            int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+            if (!gocSound)
+                return;
+
+            game::GOCSound::Play(gocSound, deviceTag, "obj_zeldatreasure_open", 0);
+
+            xgame::MsgChangeBGMVolume changeBGMVolumeMessage { 0, 0.2f };
+            ObjUtil::SendMessageImmToGameActor(this, &changeBGMVolumeMessage);
+
+            State = ObjTreasureBoxState::STATE_OPEN_CONTROL_CAMERA;
         }
 
         void StateHitoff()
@@ -329,22 +389,151 @@ namespace app
 
         void StateOpenControlCamera()
         {
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimation);
+            if (!gocAnimation)
+                return;
 
+            if (game::GOCAnimationSimple::GetFrame(gocAnimation) < 460)
+                return;
+
+            int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
+            if (!gocContainer)
+                return;
+
+            int* treasureModel = *(int**)(*gocContainer + 4);
+            fnd::GOCVisual::SetVisible(treasureModel, true);
+
+            int deviceTag[3];
+            int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+            if (!gocSound)
+                return;
+
+            game::GOCSound::Play(gocSound, deviceTag, "obj_zeldaitem_get", 0);
+
+            // CreateEffectEx
+
+            State = ObjTreasureBoxState::STATE_OPEN_WAIT_ANIM;
         }
 
-        void StateOpenWaitAnim()
+        void StateOpenWaitAnim(const fnd::SUpdateInfo& updateInfo)
         {
+            Time += updateInfo.deltaTime;
 
+            Eigen::Quaternion<float> q;
+            q = Eigen::AngleAxis<float>(2.2689281 * Time, Eigen::Vector3f(0, 1, 0));
+            csl::math::Quaternion rotation { q.x(), q.y(), q.z(), q.w() };
+
+
+            int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
+            if (!gocContainer)
+                return;
+
+            int* treasureModel = *(int**)(*gocContainer + 4);
+            fnd::GOCVisualTransformed::SetLocalRotation(treasureModel, &rotation);
+
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimation);
+            if (!gocAnimation)
+                return;
+
+            if (!game::GOCAnimationSimple::IsFinished(gocAnimation))
+                return;
+
+            State = ObjTreasureBoxState::STATE_OPEN_END;
         }
 
         void StateOpenEnd()
         {
+            fnd::Message* treasureMessage = NULL;
 
+            switch (ItemType)
+            {
+            case app::ObjTreasureBoxType::HEART_CONTAINER:
+                treasureMessage = new xgame::MsgDlcZeldaTakeHeartContainer();
+                break;
+            case app::ObjTreasureBoxType::RUPEE_PURPLE:
+                treasureMessage = new xgame::MsgGetAnimal(50);
+                break;
+            case app::ObjTreasureBoxType::RUPEE_GOLD:
+                if (IsRupeeCountInChestFixed)
+                    treasureMessage = new xgame::MsgGetAnimal(200);
+                else
+                    treasureMessage = new xgame::MsgGetAnimal(50);
+                break;
+            case app::ObjTreasureBoxType::RUPEE_GREEN:
+            default:
+                if (IsRupeeCountInChestFixed)
+                    treasureMessage = new xgame::MsgGetAnimal(1);
+                break;
+            }
+
+            ObjUtil::SendMessageImmToGameActor(this, treasureMessage);
+            delete treasureMessage;
+
+            // ObjZeldaOneUp
+
+            int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
+            if (!gocContainer)
+                return;
+
+            for (size_t i = 0; i < 2; i++)
+            {
+                int* gocVisual = *(int**)(*gocContainer + 4 * i);
+                fnd::GOCVisual::SetVisible(gocVisual, false);
+            }
+
+            int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
+            if (!gocEffect)
+                return;
+
+            app::game::GOCEffect::CreateEffect(gocEffect, "ef_dl3_treasurebox_vanish");
+
+            if (LayerController)
+            {
+                LayerController->ClearReservedAnimation();
+                LayerController->PlayAnimation("Outro_Anim", 0, 0);
+            }
+
+            xgame::MsgDlcZeldaNoticeActiveEnemy activateEnemyMessage{};
+            ObjUtil::SendMessageImmToGameActor(this, &activateEnemyMessage);
+
+            xgame::MsgResumeGameTimer resumeTimerMessage{};
+            ObjUtil::SendMessageImmToGameActor(this, &resumeTimerMessage);
+
+            // PopCamera
+
+            xgame::MsgCatchEndPlayer catchEndMessage { false };
+            ObjUtil::SendMessageImmToPlayer(this, PlayerNumber, &catchEndMessage);
+
+            State = ObjTreasureBoxState::STATE_OPENED;
+            PlayerNumber = -1;
+            Time = 0;
         }
 
-        void StateOpened()
+        void StateOpened(const fnd::SUpdateInfo& updateInfo)
         {
+            if (Time > 0)
+            {
+                if (LayerController)
+                {
+                    if (LayerController->IsEndAnimation())
+                    {
+                        CSetObjectListener::SetStatusRetire(this);
+                        GameObject::Kill(this);
+                        return;
+                    }
+                    return;
+                }
 
+                CSetObjectListener::SetStatusRetire(this);
+                GameObject::Kill(this);
+                return;
+            }
+            else
+            {
+                Time += updateInfo.deltaTime;
+                xgame::MsgChangeBGMVolume changeBGMVolumeMessage{ 1, 2 };
+                ObjUtil::SendMessageImmToGameActor(this, &changeBGMVolumeMessage);
+            }
         }
     };
 

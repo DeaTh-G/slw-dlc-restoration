@@ -169,6 +169,7 @@
 #include "app/xgame/MsgShakeCamera.h"
 #include "app/xgame/MsgPLGetHomingTargetInfo.h"
 #include "app/xgame/MsgPLKickTargetting.h"
+#include "app/xgame/MsgChangeBGMVolume.h"
 
 #include "SonicUSA/System.h"
 #include "SonicUSA/System/Random.h"

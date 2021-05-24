@@ -15,6 +15,11 @@ HOOK(int, __fastcall, LoadLoadingScreenDataHook, ASLR(0x0093A6D0), int* This, vo
     app::GameMode::LoadFile("ui/ui_zdlc03_load_all.pac", &loader);
     loader.SetMultiLanguageAttr(0, 0);
 
+
+    loader.SetMultiLanguageAttr(true, 0);
+    app::GameMode::LoadFile("ui/ui_zdlc03_gamemodestage.pac", &loader);
+    loader.SetMultiLanguageAttr(0, 0);
+
     int result = originalLoadLoadingScreenDataHook(This, edx, a2);
     return result;
 }

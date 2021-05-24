@@ -12,6 +12,7 @@ bool IsVirtualLinkSonic = false;
 bool IsAlwaysHeartLife = false;
 bool DoesPointMarkerRestoreLife = true;
 bool DisableChestLetterboxing = false;
+bool IsRupeeCountInChestFixed = false;
 
 char IsYoshiIslandStage()
 {
@@ -222,6 +223,7 @@ extern "C"
         IsAlwaysHeartLife = reader->GetBoolean("ZeldaTweaks", "isAlwaysHeartLife", false);
         DoesPointMarkerRestoreLife = reader->GetBoolean("ZeldaTweaks", "doesPointMarkerRestoreLife", true);
         DisableChestLetterboxing = reader->GetBoolean("ZeldaTweaks", "disableChestLetterboxing", true);
+        IsRupeeCountInChestFixed = reader->GetBoolean("ZeldaTweaks", "disableChestLetterboxing", true);
 
         Initialize();
     }

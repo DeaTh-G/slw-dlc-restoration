@@ -291,6 +291,7 @@
     <ClInclude Include="app\xgame\MsgCameraOn.h" />
     <ClInclude Include="app\xgame\MsgCatchEndPlayer.h" />
     <ClInclude Include="app\xgame\MsgCatchPlayer.h" />
+    <ClInclude Include="app\xgame\MsgChangeBgmVolume.h" />
     <ClInclude Include="app\xgame\MsgDamage.h" />
     <ClInclude Include="app\xgame\MsgDamageBase.h" />
     <ClInclude Include="app\xgame\MsgDisableItemBag.h" />
