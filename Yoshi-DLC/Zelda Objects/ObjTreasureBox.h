@@ -77,7 +77,10 @@ namespace app
             }
         };
 
-        INSERT_PADDING(20);
+        INSERT_PADDING(8);
+        xgame::MsgHitEventCollision* HitMessage = new xgame::MsgHitEventCollision();
+        xgame::MsgGetExternalMovePosition* ExternalMoveMessage = new xgame::MsgGetExternalMovePosition();
+        ObjTreasureBoxState State{};
         Listener AnimationListener{};
         void* pTreasureBoxCamera{};
         INSERT_PADDING(12);
@@ -91,12 +94,13 @@ namespace app
 
         ObjTreasureBox()
         {
-            sizeof(ObjTreasureBox);
             AnimationListener.field_20 = 2;
         }
 
         void Destructor(size_t deletingFlags)
         {
+            delete HitMessage;
+            delete ExternalMoveMessage;
             AnimationListener.Destructor(0);
 
             CSetObjectListener::Destructor(deletingFlags);
@@ -259,13 +263,89 @@ namespace app
             if (PreProcessMessage(message))
                 return true;
 
-            if (true)
+            switch (message.Type)
+            {
+            case fnd::PROC_MSG_HIT_EVENT_COLLISION:
+                ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
+                return true;
+            case fnd::PROC_MSG_NOTIFY_OBJECT_EVENT:
+                ProcMsgGetExternalMovePosition((xgame::MsgGetExternalMovePosition&)message);
+                return true;
+            default:
                 return CSetObjectListener::ProcessMessage(message);
+            }
+        }
 
-            return 1;
+        void Update(const fnd::SUpdateInfo& updateInfo) override
+        {
+            if (State == ObjTreasureBoxState::STATE_INITIALIZE)
+                StateInitialize();
+
+            if (State == ObjTreasureBoxState::STATE_WAIT)
+                StateWait();
+
+            if (State == ObjTreasureBoxState::STATE_HITOFF)
+                StateHitoff();
+
+            if (State == ObjTreasureBoxState::STATE_OPEN_CONTROL_CAMERA)
+                StateOpenControlCamera();
+
+            if (State == ObjTreasureBoxState::STATE_OPEN_WAIT_ANIM)
+                StateOpenWaitAnim();
+
+            if (State == ObjTreasureBoxState::STATE_OPEN_END)
+                StateOpenEnd();
+
+            if (State == ObjTreasureBoxState::STATE_OPENED)
+                StateOpened();
+
         }
 
     private:
+        void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
+        {
+            *HitMessage = message;
+        }
+
+        void ProcMsgGetExternalMovePosition(xgame::MsgGetExternalMovePosition& message)
+        {
+            *ExternalMoveMessage = message;
+        }
+
+        void StateInitialize()
+        {
+
+        }
+
+        void StateWait()
+        {
+
+        }
+
+        void StateHitoff()
+        {
+
+        }
+
+        void StateOpenControlCamera()
+        {
+
+        }
+
+        void StateOpenWaitAnim()
+        {
+
+        }
+
+        void StateOpenEnd()
+        {
+
+        }
+
+        void StateOpened()
+        {
+
+        }
     };
 
     inline static ObjTreasureBox* create_ObjTreasureBox() { return new ObjTreasureBox(); }
