@@ -25,6 +25,7 @@ HOOK(int*, __fastcall, UpdatePlayerInformationHook, ASLR(0x00851F20), int* This)
                 return result;
 
             NUM_HEARTS = app::Player::PluginStateHeartLife::GetNumHearts(pluginState);
+            MAX_NUM_HEARTS = app::Player::PluginStateHeartLife::GetMaxNumHearts(pluginState);
         }
     }
 
@@ -37,6 +38,13 @@ HOOK(bool, __fastcall, CPlayerProcessMessageHook, ASLR(0x008514B0), int* This, v
     {
         app::Player::CStateGOC* cStateGOC = (app::Player::CStateGOC*)app::CGOCCollectionImpl::GetGOC((void*)(This + 0xC9), CStateGOC);
         app::Player::StateUtil::RecoveryHeartLife(cStateGOC);
+        return 1;
+    }
+    else if (message.Type == app::fnd::PROC_MSG_DLC_ZELDA_TAKE_HEART_CONTAINER)
+    {
+        app::Player::CStateGOC* cStateGOC = (app::Player::CStateGOC*)app::CGOCCollectionImpl::GetGOC((void*)(This + 0xC9), CStateGOC);
+        app::Player::StateUtil::IncrementMaxHeartLife(cStateGOC);
+        app::HUD::DO_RECOVER_LIFE = true;
         return 1;
     }
 

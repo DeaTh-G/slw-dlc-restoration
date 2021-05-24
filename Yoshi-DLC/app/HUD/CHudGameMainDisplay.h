@@ -84,6 +84,7 @@ namespace app
             }
         }
 
+        extern bool DO_RECOVER_LIFE;
         class CHudGameMainDisplay : public GameObject
         {
         public:
@@ -194,6 +195,14 @@ namespace app
 
             void HeartLifeUpdate(int a2, float deltaTime, int a4)
             {
+                if (DO_RECOVER_LIFE)
+                {
+                    field_278 = 0;
+                    field_27C = 1;
+                    DO_RECOVER_LIFE = false;
+                    return;
+                }
+
                 if (!(Flags & 0x100))
                     return;
 
@@ -206,6 +215,30 @@ namespace app
                         hideInfo.AnimationName = "Hide_Anim";
                         LayerController->PlayAnimation(hideInfo);
                     }
+                }
+
+                if (field_27C)
+                {
+                    field_278 += deltaTime;
+                    if (field_278 >= 0.3f)
+                    {
+                        field_278 -= 0.3f;
+                        if (MAX_NUM_HEARTS > field_1A8)
+                            MAX_NUM_HEARTS = field_1A8 + 1;
+                        else
+                            field_27C = false;
+                    }
+                }
+
+                if (field_1AC != MAX_NUM_HEARTS)
+                {
+                    app::game::HudLayerController::PlayInfo modeInfo{};
+                    if ((MAX_NUM_HEARTS & 3) == 3)
+                        modeInfo.AnimationName = "mode_heart0";
+                    else
+                        modeInfo.AnimationName = HeartMode[MAX_NUM_HEARTS & 3];
+                    LayerController->PlayAnimation(modeInfo);
+                    field_1AC = MAX_NUM_HEARTS;
                 }
 
                 if (field_1A8 != NUM_HEARTS)
@@ -222,6 +255,16 @@ namespace app
                     playUsual.IsLooping = true;
                     LayerController->PlayAnimation(playUsual);
                 }
+
+                printf("%d\n", field_1AC);
+
+                /*if (field_1AC)
+                {
+                    app::game::HudLayerController::PlayInfo modeInfo{};
+                    modeInfo.AnimationName = HeartMode[(NUM_HEARTS + 1) & 3];
+                    LayerController->PlayAnimation(modeInfo);
+                    field_1AC = 0;
+                }*/
 
                 LayerController->SetVisible(true);
             }

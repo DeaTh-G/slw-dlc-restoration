@@ -201,7 +201,6 @@ namespace app
             else
                 game::GOCSound::Play(gocSound, deviceTag, "obj_zeldarupy_get", 0);
 
-
             if (Type == ObjZeldaPopupItemType::HEART)
             {
                 xgame::MsgDlcZeldaTakeHeart takeHeartMessage{};

@@ -4,6 +4,7 @@
 #include "LostCodeLoader.h"
 #include "Dependencies/INIReader.h"
 
+bool app::HUD::DO_RECOVER_LIFE = false;
 bool DisablePipeTransition = false;
 bool IsConsistentShadow = false;
 PlayType LinkSonicPlayType = PlayType::DEFAULT;
@@ -222,8 +223,8 @@ extern "C"
         IsVirtualLinkSonic = reader->GetBoolean("ZeldaTweaks", "isVirtualLinkSonic", false);
         IsAlwaysHeartLife = reader->GetBoolean("ZeldaTweaks", "isAlwaysHeartLife", false);
         DoesPointMarkerRestoreLife = reader->GetBoolean("ZeldaTweaks", "doesPointMarkerRestoreLife", true);
-        DisableChestLetterboxing = reader->GetBoolean("ZeldaTweaks", "disableChestLetterboxing", true);
-        IsRupeeCountInChestFixed = reader->GetBoolean("ZeldaTweaks", "disableChestLetterboxing", true);
+        DisableChestLetterboxing = reader->GetBoolean("ZeldaTweaks", "disableChestLetterboxing", false);
+        IsRupeeCountInChestFixed = reader->GetBoolean("ZeldaTweaks", "isRupeeCountInChestFixed", false);
 
         Initialize();
     }
@@ -236,7 +237,7 @@ BOOL WINAPI DllMain(_In_ HINSTANCE instance, _In_ DWORD reason, _In_ LPVOID rese
     case DLL_PROCESS_ATTACH:
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
+    case DLL_PROCESS_DETACH: 
         break;
     }
     return TRUE;

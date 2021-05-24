@@ -54,6 +54,15 @@ namespace app
 
                 Player::PluginStateHeartLife::Recovery(pluginState);
             }
+
+            static int IncrementMaxHeartLife(CStateGOC* This)
+            {
+                Player::PluginStateHeartLife* pluginState = (Player::PluginStateHeartLife*)app::Player::CStateGOC::GetStatePluginPtr(This, PluginStateHeartLifeString);
+                if (!pluginState)
+                    return 1;
+
+                Player::PluginStateHeartLife::IncrementMaxHearts(pluginState);
+            }
         };
     }
 }

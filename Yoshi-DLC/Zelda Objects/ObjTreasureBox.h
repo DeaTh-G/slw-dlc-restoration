@@ -463,10 +463,15 @@ namespace app
             default:
                 if (IsRupeeCountInChestFixed)
                     treasureMessage = new xgame::MsgGetAnimal(1);
+                else
+                    treasureMessage = new xgame::MsgGetAnimal(0);
                 break;
             }
 
-            ObjUtil::SendMessageImmToGameActor(this, treasureMessage);
+            if (ItemType == app::ObjTreasureBoxType::HEART_CONTAINER)
+                ObjUtil::SendMessageImmToPlayer(this, PlayerNumber, treasureMessage);
+            else
+                ObjUtil::SendMessageImmToGameActor(this, treasureMessage);
             delete treasureMessage;
 
             // ObjZeldaOneUp
