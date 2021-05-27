@@ -256,16 +256,6 @@ namespace app
                     LayerController->PlayAnimation(playUsual);
                 }
 
-                printf("%d\n", field_1AC);
-
-                /*if (field_1AC)
-                {
-                    app::game::HudLayerController::PlayInfo modeInfo{};
-                    modeInfo.AnimationName = HeartMode[(NUM_HEARTS + 1) & 3];
-                    LayerController->PlayAnimation(modeInfo);
-                    field_1AC = 0;
-                }*/
-
                 LayerController->SetVisible(true);
             }
 

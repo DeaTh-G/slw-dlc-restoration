@@ -134,6 +134,8 @@
 #include "app/Player/VirtualSonic.h"
 #include "app/Player/VisualVirtualSonic.h"
 
+#include "app/Camera/CCameraController.h"
+
 #include "app/xgame.h"
 #include "app/xgame/Blackboard.h"
 #include "app/xgame/CStageSoundDirector.h"
@@ -170,6 +172,8 @@
 #include "app/xgame/MsgPLGetHomingTargetInfo.h"
 #include "app/xgame/MsgPLKickTargetting.h"
 #include "app/xgame/MsgChangeBGMVolume.h"
+#include "app/xgame/MsgPushCameraController.h"
+#include "app/xgame/MsgPopCameraController.h"
 
 #include "SonicUSA/System.h"
 #include "SonicUSA/System/Random.h"
@@ -235,4 +239,5 @@
 #include "Zelda Objects/EnemyDekunutsShot.h"
 #include "Zelda Objects/EnemyDekunuts.h"
 #include "Zelda Objects/ObjZeldaGoal.h"
+#include "Zelda Objects/TreasureBoxCamera.h"
 #include "Zelda Objects/ObjTreasureBox.h"

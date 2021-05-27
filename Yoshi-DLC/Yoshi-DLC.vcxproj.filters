@@ -97,6 +97,9 @@
     <Filter Include="Header Files\hh\mr">
       <UniqueIdentifier>{a9a2f64f-a25d-4575-a3f6-7bfd8a0d23ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\app\Camera">
+      <UniqueIdentifier>{ebda2c55-7fe0-4d1c-be40-0b9ee87105af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -736,6 +739,18 @@
       <Filter>Header Files\Zelda Objects</Filter>
     </ClInclude>
     <ClInclude Include="app\xgame\MsgChangeBgmVolume.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Camera\CCameraController.h">
+      <Filter>Header Files\app\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\TreasureBoxCamera.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgPushCameraController.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgPopCameraController.h">
       <Filter>Header Files\app\xgame</Filter>
     </ClInclude>
   </ItemGroup>

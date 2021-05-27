@@ -73,7 +73,7 @@ namespace app
                 if (!pTreasureBox)
                     return;
 
-
+                pTreasureBox->UpdateCameraParameter();
             }
         };
 
@@ -82,7 +82,7 @@ namespace app
         xgame::MsgGetExternalMovePosition* ExternalMoveMessage = new xgame::MsgGetExternalMovePosition();
         ObjTreasureBoxState State{};
         Listener AnimationListener{};
-        void* pTreasureBoxCamera{};
+        Camera::TreasureBoxCamera* pTreasureBoxCamera = NULL;
         INSERT_PADDING(12);
         csl::math::Vector3 CameraPosition{};
         csl::math::Vector3 CameraTargetPosition{};
@@ -188,6 +188,9 @@ namespace app
                     game::GOCAnimationSimple::Setup(gocAnimation, &animCount);
                     fnd::GOCVisualModel::AttachAnimation(chestModel, gocAnimation);
                     game::GOCAnimationSimple::Add(gocAnimation, "OPEN", treasureInfo->Animation, 0);
+
+                    AnimationListener.pTreasureBox = this;
+                    game::GOCAnimationSimple::AddListener(gocAnimation, &AnimationListener);
                 }
 
                 int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
@@ -323,6 +326,13 @@ namespace app
 
         void StateInitialize()
         {
+            math::Transform transform{};
+            GetNodeTransform("Const_Camera", &transform);
+            CameraPosition = transform.Position;
+
+            GetNodeTransform("Const_Target", &transform);
+            CameraTargetPosition = transform.Position;
+
             State = ObjTreasureBoxState::STATE_WAIT;
         }
 
@@ -333,6 +343,8 @@ namespace app
 
             int playerNo = ObjUtil::GetPlayerNo(field_24[1], HitMessage->ActorID);
             PlayerNumber = playerNo;
+
+            PushCamera();
 
             xgame::MsgCatchPlayer catchMessage { 32, TransformMatrix, 19 };
             if (!ObjUtil::SendMessageImmToPlayer(this, playerNo, &catchMessage) || !catchMessage.field_64)
@@ -410,7 +422,18 @@ namespace app
 
             game::GOCSound::Play(gocSound, deviceTag, "obj_zeldaitem_get", 0);
 
-            // CreateEffectEx
+            int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
+            if (gocEffect)
+            {
+                game::EffectCreateInfo effectInfo;
+                game::EffectCreateInfo::__ct(&effectInfo);
+                effectInfo.Name = "ef_dl3_treasurebox_twinkle";
+                effectInfo.field_04 = 0.8f;
+                effectInfo.Position = Vector3(0, 11.2f, 13);
+                effectInfo.field_30 = true;
+
+                game::GOCEffect::CreateEffectEx(gocEffect, &effectInfo);
+            }
 
             State = ObjTreasureBoxState::STATE_OPEN_WAIT_ANIM;
         }
@@ -504,7 +527,7 @@ namespace app
             xgame::MsgResumeGameTimer resumeTimerMessage{};
             ObjUtil::SendMessageImmToGameActor(this, &resumeTimerMessage);
 
-            // PopCamera
+            PopCamera();
 
             xgame::MsgCatchEndPlayer catchEndMessage { false };
             ObjUtil::SendMessageImmToPlayer(this, PlayerNumber, &catchEndMessage);
@@ -539,6 +562,58 @@ namespace app
                 xgame::MsgChangeBGMVolume changeBGMVolumeMessage{ 1, 2 };
                 ObjUtil::SendMessageImmToGameActor(this, &changeBGMVolumeMessage);
             }
+        }
+
+        void GetNodeTransform(char const* nodeName, math::Transform* transform)
+        {
+            int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
+            if (!gocContainer)
+                return;
+
+            int* gocVisual = *(int**)(*gocContainer);
+            fnd::GOCVisualModel::GetNodeTransform(gocVisual, 0, nodeName, transform);
+        }
+
+        void PushCamera()
+        {
+            pTreasureBoxCamera = new Camera::TreasureBoxCamera();
+
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            pTreasureBoxCamera->SetCameraParameter(CameraPosition, *(csl::math::Vector3*)(gocTransform + 0x48), CameraTargetPosition);
+            pTreasureBoxCamera->SetFovy(35);
+            xgame::MsgPushCameraController cameraMessage { pTreasureBoxCamera, 0, 4000, 1, 1, 0 };
+            ObjUtil::SendMessageImmToCamera(this, PlayerNumber, &cameraMessage);
+        }
+
+        void PopCamera()
+        {
+            if (!pTreasureBoxCamera)
+                return;
+            
+            xgame::MsgPopCameraController cameraMessage { pTreasureBoxCamera, 0, 1, 1, 0 };
+            ObjUtil::SendMessageImmToCamera(this, PlayerNumber, &cameraMessage);
+        }
+
+        void UpdateCameraParameter()
+        {
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            math::Transform transform{};
+            GetNodeTransform("Const_Camera", &transform);
+            CameraPosition = transform.Position;
+
+            GetNodeTransform("Const_Target", &transform);
+            CameraTargetPosition = transform.Position;
+
+            if (!pTreasureBoxCamera)
+                return;
+
+            pTreasureBoxCamera->SetCameraParameter(CameraPosition, *(csl::math::Vector3*)(gocTransform + 0x48), CameraTargetPosition);
         }
     };
 

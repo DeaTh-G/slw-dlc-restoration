@@ -31,10 +31,10 @@ HOOK(int*, __fastcall, CHudGameMainDisplayHook, ASLR(0x00503290), int* This, int
     if (strncmp(packFileName, "zdlc02", 6) == 0 || strncmp(packFileName, "zdlc03", 6) == 0)
     {
         // Disable DOF in Yoshi and Zelda DLC
-        WRITE_MEMORY(ASLR(0x00FEFC7C), 0);
+        /*WRITE_MEMORY(ASLR(0x00FEFC7C), 0);
         WRITE_MEMORY(ASLR(0x00404C3E), 0x90, 0x90, 0x90, 0x90, 0x90, 0x90);
         WRITE_MEMORY(ASLR(0x0040498C), 0x90, 0x90, 0x90, 0x90, 0x90, 0x90);
-        WRITE_MEMORY(ASLR(0x00404C3E), 0x90, 0x90, 0x90, 0x90, 0x90, 0x90);
+        WRITE_MEMORY(ASLR(0x00404C3E), 0x90, 0x90, 0x90, 0x90, 0x90, 0x90);*/
 
         if (strncmp(packFileName, "zdlc02", 6) == 0)
         {
@@ -51,10 +51,10 @@ HOOK(int*, __fastcall, CHudGameMainDisplayHook, ASLR(0x00503290), int* This, int
     else
     {
         // Restore DOF Code if not Yoshi or Zelda DLC
-        WRITE_MEMORY(ASLR(0x00FEFC7C), ((char*)ASLR(0x00F6072C))[9]);
+        /*WRITE_MEMORY(ASLR(0x00FEFC7C), ((char*)ASLR(0x00F6072C))[9]);
         WRITE_MEMORY(ASLR(0x00404C3E), 0x88, 0x15, 0x7C, 0xFC, 0xFE, 0x00);
         WRITE_MEMORY(ASLR(0x0040498C), 0x88, 0x0D, 0x7C, 0xFC, 0xFE, 0x00);
-        WRITE_MEMORY(ASLR(0x00404C3E), 0x88, 0x15, 0x7C, 0xFC, 0xFE, 0x00);
+        WRITE_MEMORY(ASLR(0x00404C3E), 0x88, 0x15, 0x7C, 0xFC, 0xFE, 0x00);*/
     }
 
     if (IsAlwaysHeartLife)

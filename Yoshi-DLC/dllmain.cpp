@@ -200,6 +200,9 @@ void Initialize()
         app::Player::VirtualSonicInfo::Initialize();
         app::Player::VisualVirtualSonic::ActivateSub();
     }
+
+    if (IsAlwaysHeartLife)
+        WRITE_MEMORY(ASLR(0x008946A0), 0x90, 0x90, 0x90, 0x90, 0x90);
 }
 
 extern "C"
