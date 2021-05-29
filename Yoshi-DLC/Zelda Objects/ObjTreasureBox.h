@@ -446,7 +446,6 @@ namespace app
             q = Eigen::AngleAxis<float>(2.2689281 * Time, Eigen::Vector3f(0, 1, 0));
             csl::math::Quaternion rotation { q.x(), q.y(), q.z(), q.w() };
 
-
             int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
             if (!gocContainer)
                 return;
@@ -461,11 +460,32 @@ namespace app
             if (!game::GOCAnimationSimple::IsFinished(gocAnimation))
                 return;
 
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            csl::math::Quaternion oR = GetRotationFromMatrix((csl::math::Matrix34*)(gocTransform + 0x44));
+            csl::math::Vector3 vector { 0, 0, 10 };
+            vector = MultiplyMatrixByVector((csl::math::Matrix34*)(gocTransform + 0x44), &vector);
+
+            q = Eigen::AngleAxis<float>(3.1415927f, Eigen::Vector3f(0, 1, 0));
+            rotation = csl::math::Quaternion(q.x(), q.y(), q.z(), q.w());
+            csl::math::Quaternion::QuaternionMultiply(&rotation, &oR, &rotation);
+            csl::math::QuaternionNormalize(&rotation, &rotation);
+            math::Matrix34AffineTransformation(&TransformMatrix,
+                &vector, &rotation);
+
             State = ObjTreasureBoxState::STATE_OPEN_END;
         }
 
         void StateOpenEnd()
         {
+            if (Time != 0)
+            {
+                Time = 0;
+                return;
+            }
+
             fnd::Message* treasureMessage = NULL;
 
             switch (ItemType)
@@ -492,23 +512,25 @@ namespace app
             }
 
             if (ItemType == app::ObjTreasureBoxType::HEART_CONTAINER)
+            {
                 ObjUtil::SendMessageImmToPlayer(this, PlayerNumber, treasureMessage);
+
+                int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], PlayerNumber);
+                if (playerInfo)
+                {
+                    ObjZeldaOneUp::CInfo* oneUpInfo = new ObjZeldaOneUp::CInfo
+                    (
+                        PlayerNumber,
+                        *(csl::math::Vector3*)(playerInfo + 4),
+                        *(csl::math::Quaternion*)(playerInfo + 8)
+                    );
+
+                    ObjZeldaOneUp::Create(*(GameDocument*)field_24[1], *oneUpInfo);
+                }
+            }
             else
                 ObjUtil::SendMessageImmToGameActor(this, treasureMessage);
             delete treasureMessage;
-
-            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], PlayerNumber);
-            if (playerInfo)
-            {
-                ObjZeldaOneUp::CInfo* oneUpInfo = new ObjZeldaOneUp::CInfo
-                (
-                    PlayerNumber,
-                    *(csl::math::Vector3*)(playerInfo + 4),
-                    *(csl::math::Quaternion*)(playerInfo + 8)
-                );
-
-                ObjZeldaOneUp::Create(*(GameDocument*)field_24[1], *oneUpInfo);
-            }
 
             int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
             if (!gocContainer)
@@ -545,7 +567,6 @@ namespace app
 
             State = ObjTreasureBoxState::STATE_OPENED;
             PlayerNumber = -1;
-            Time = 0;
         }
 
         void StateOpened(const fnd::SUpdateInfo& updateInfo)

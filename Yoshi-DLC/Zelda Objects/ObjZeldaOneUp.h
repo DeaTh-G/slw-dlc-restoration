@@ -135,7 +135,7 @@ namespace app
             if (playerInfo)
                 ((game::MovePopup*)controller)->SetBaseTransform((csl::math::Vector3*)(playerInfo + 4), (csl::math::Quaternion*)(playerInfo + 8));
 
-            if (controller[19] >= 0.5f)
+            if (*(float*)&controller[19] < 0.5f)
                 return;
 
             xgame::MsgTakeObject takeMessage{ xgame::MsgTakeObject::EType::ZELDA_ONE_UP };
