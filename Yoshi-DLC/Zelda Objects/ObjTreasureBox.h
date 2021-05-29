@@ -497,7 +497,18 @@ namespace app
                 ObjUtil::SendMessageImmToGameActor(this, treasureMessage);
             delete treasureMessage;
 
-            // ObjZeldaOneUp
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], PlayerNumber);
+            if (playerInfo)
+            {
+                ObjZeldaOneUp::CInfo* oneUpInfo = new ObjZeldaOneUp::CInfo
+                (
+                    PlayerNumber,
+                    *(csl::math::Vector3*)(playerInfo + 4),
+                    *(csl::math::Quaternion*)(playerInfo + 8)
+                );
+
+                ObjZeldaOneUp::Create(*(GameDocument*)field_24[1], *oneUpInfo);
+            }
 
             int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
             if (!gocContainer)

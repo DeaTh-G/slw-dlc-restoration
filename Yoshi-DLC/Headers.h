@@ -239,5 +239,6 @@
 #include "Zelda Objects/EnemyDekunutsShot.h"
 #include "Zelda Objects/EnemyDekunuts.h"
 #include "Zelda Objects/ObjZeldaGoal.h"
+#include "Zelda Objects/ObjZeldaOneUp.h"
 #include "Zelda Objects/TreasureBoxCamera.h"
 #include "Zelda Objects/ObjTreasureBox.h"

@@ -44,6 +44,21 @@ HOOK(int, __fastcall, ProcMsgTakeObjectHook, ASLR(0x008947B0), int* This, void* 
 
         return 1;
     }
+    else if (message.TakeType == app::xgame::MsgTakeObject::EType::ZELDA_ONE_UP)
+    {
+        if (app::Player::StateUtil::IsDead(cStateGOC) || (app::Player::CStateGOC::GetBlackBoard(cStateGOC)[6] & 0x4000000))
+            return 1;
+
+        int hudPlayerNo = app::Player::CStateGOC::GetToHudPlayerNumber(cStateGOC);
+        app::xgame::MsgExtendPlayer extendMessage{ hudPlayerNo, 10 };
+        for (size_t i = 0; i < 10; i++)
+            app::Player::StateUtil::SendMission(cStateGOC, 2);
+
+        app::Player::CStateGOC::SendMessageImmToGame(cStateGOC, &extendMessage);
+        message.field_20 = 1;
+
+        return 1;
+    }
     else
     {
         return result = originalProcMsgTakeObjectHook(This, edx, cStateGOC, message);
