@@ -242,3 +242,5 @@
 #include "Zelda Objects/ObjZeldaOneUp.h"
 #include "Zelda Objects/TreasureBoxCamera.h"
 #include "Zelda Objects/ObjTreasureBox.h"
+#include "Zelda Objects/ObjGossipStoneFairy.h"
+#include "Zelda Objects/ObjGossipStone.h"
