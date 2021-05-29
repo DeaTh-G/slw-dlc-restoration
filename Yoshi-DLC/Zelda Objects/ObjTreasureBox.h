@@ -297,7 +297,7 @@ namespace app
                 StateWait();
 
             if (State == ObjTreasureBoxState::STATE_HITOFF)
-                StateHitoff();
+                StateHitoff(updateInfo);
 
             if (State == ObjTreasureBoxState::STATE_OPEN_CONTROL_CAMERA)
                 StateOpenControlCamera();
@@ -338,6 +338,12 @@ namespace app
 
         void StateWait()
         {
+            if (IsPlayerPhantom())
+            {
+                State = ObjTreasureBoxState::STATE_HITOFF;
+                return;
+            }
+
             if (!HitMessage->ActorID)
                 return;
 
@@ -394,9 +400,25 @@ namespace app
             State = ObjTreasureBoxState::STATE_OPEN_CONTROL_CAMERA;
         }
 
-        void StateHitoff()
+        void StateHitoff(const fnd::SUpdateInfo& updateInfo)
         {
-
+            if (IsPlayerPhantom())
+            {
+                Time = 0;
+            }
+            else
+            {
+                Time += updateInfo.deltaTime;
+                if (Time > 0.25f)
+                {
+                    int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+                    if (!gocCollider)
+                        return;
+                
+                    ObjUtil::SetEnableColliShape(gocCollider, 0, true);
+                    State = ObjTreasureBoxState::STATE_HITOFF;
+                }
+            }
         }
 
         void StateOpenControlCamera()
@@ -530,6 +552,7 @@ namespace app
             }
             else
                 ObjUtil::SendMessageImmToGameActor(this, treasureMessage);
+            
             delete treasureMessage;
 
             int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
@@ -594,6 +617,13 @@ namespace app
                 xgame::MsgChangeBGMVolume changeBGMVolumeMessage{ 1, 2 };
                 ObjUtil::SendMessageImmToGameActor(this, &changeBGMVolumeMessage);
             }
+        }
+
+        bool IsPlayerPhantom()
+        {
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], PlayerNumber);
+        
+            return playerInfo && (playerInfo[0x58] != -1);
         }
 
         void GetNodeTransform(char const* nodeName, math::Transform* transform)
