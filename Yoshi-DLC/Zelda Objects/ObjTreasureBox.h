@@ -338,14 +338,14 @@ namespace app
 
         void StateWait()
         {
+            if (!HitMessage->ActorID)
+                return;
+
             if (IsPlayerPhantom())
             {
                 State = ObjTreasureBoxState::STATE_HITOFF;
                 return;
             }
-
-            if (!HitMessage->ActorID)
-                return;
 
             int playerNo = ObjUtil::GetPlayerNo(field_24[1], HitMessage->ActorID);
             PlayerNumber = playerNo;
@@ -427,8 +427,18 @@ namespace app
             if (!gocAnimation)
                 return;
 
-            if (game::GOCAnimationSimple::GetFrame(gocAnimation) < 460)
+            float currentFrame = game::GOCAnimationSimple::GetFrame(gocAnimation);
+            if (currentFrame < 460)
+            {
+                if (currentFrame <= 430)
+                    return;
+                
+                float multiplier = csl::math::Clamp((currentFrame - 430) / 30, 0, 1);
+                if (pTreasureBoxCamera)
+                    pTreasureBoxCamera->SetFovy(csl::math::Lerp(35, 25, multiplier));
+
                 return;
+            }
 
             int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
             if (!gocContainer)
