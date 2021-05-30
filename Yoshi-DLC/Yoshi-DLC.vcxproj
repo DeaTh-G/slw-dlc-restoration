@@ -288,6 +288,7 @@
     <ClInclude Include="app\xgame.h" />
     <ClInclude Include="app\xgame\Blackboard.h" />
     <ClInclude Include="app\xgame\CStageSoundDirector.h" />
+    <ClInclude Include="app\xgame\MsgAppeareKnockback.h" />
     <ClInclude Include="app\xgame\MsgCameraOff.h" />
     <ClInclude Include="app\xgame\MsgCameraOn.h" />
     <ClInclude Include="app\xgame\MsgCatchEndPlayer.h" />
@@ -308,6 +309,7 @@
     <ClInclude Include="app\xgame\MsgGetPosition.h" />
     <ClInclude Include="app\xgame\MsgGoalForBattle.h" />
     <ClInclude Include="app\xgame\MsgHitEventCollision.h" />
+    <ClInclude Include="app\xgame\MsgHitTriggerBase.h" />
     <ClInclude Include="app\xgame\MsgItemTreeWobblePoint.h" />
     <ClInclude Include="app\xgame\MsgKick.h" />
     <ClInclude Include="app\xgame\MsgLeaveEventCollision.h" />
@@ -378,6 +380,8 @@
     <ClInclude Include="Zelda Objects\ObjBreakFloor.h" />
     <ClInclude Include="Zelda Objects\ObjBreakRoof.h" />
     <ClInclude Include="Zelda Objects\ObjChangeTopViewCollision.h" />
+    <ClInclude Include="Zelda Objects\ObjGossipStone.h" />
+    <ClInclude Include="Zelda Objects\ObjGossipStoneFairy.h" />
     <ClInclude Include="Zelda Objects\ObjLoftBird.h" />
     <ClInclude Include="Zelda Objects\ObjLoftBirdCollision.h" />
     <ClInclude Include="Zelda Objects\ObjOccludeStone.h" />

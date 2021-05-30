@@ -756,6 +756,18 @@
     <ClInclude Include="Zelda Objects\ObjZeldaOneUp.h">
       <Filter>Header Files\Zelda Objects</Filter>
     </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjGossipStone.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjGossipStoneFairy.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgHitTriggerBase.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgAppeareKnockback.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">

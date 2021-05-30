@@ -53,6 +53,8 @@
 #include "app/CSetObjectListener.h"
 #include "app/enemy/DeadEffectCInfo.h"
 #include "app/EnemyBlowOffObjectCInfo.h"
+#include "app/xgame/MsgHitTriggerBase.h"
+#include "app/xgame/MsgAppeareKnockback.h"
 #include "app/xgame/MsgHitEventCollision.h"
 #include "app/xgame/MsgDamageBase.h"
 #include "app/xgame/MsgDamage.h"

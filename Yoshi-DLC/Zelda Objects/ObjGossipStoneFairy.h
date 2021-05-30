@@ -8,9 +8,22 @@ namespace app
         class CInfo
         {
         public:
+            float field_00{};
+            INSERT_PADDING(12);
+            csl::math::Matrix34 field_10{};
+
+            CInfo(csl::math::Matrix34 a1)
+            {
+                field_10 = a1;
+            }
         };
 
         INSERT_PADDING(96);
+
+        ObjGossipStoneFairy(CInfo& info)
+        {
+
+        }
 
         void AddCallback(GameDocument* gameDocument) override
         {
@@ -26,7 +39,11 @@ namespace app
 
         static ObjGossipStoneFairy* Create(GameDocument& gameDocument, CInfo& info)
         {
-
+            ObjGossipStoneFairy* object = new ObjGossipStoneFairy(info);
+            if (!object)
+                return 0;
+            //GameDocument::AddGameObject(*(GameDocument**)&gameDocument, object);
+            return object;
         }
     };
 }

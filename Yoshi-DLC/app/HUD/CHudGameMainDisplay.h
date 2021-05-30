@@ -196,12 +196,7 @@ namespace app
             void HeartLifeUpdate(int a2, float deltaTime, int a4)
             {
                 if (DO_RECOVER_LIFE)
-                {
-                    field_278 = 0;
                     field_27C = 1;
-                    DO_RECOVER_LIFE = false;
-                    return;
-                }
 
                 if (!(Flags & 0x100))
                     return;
@@ -226,8 +221,34 @@ namespace app
                         if (MAX_NUM_HEARTS > field_1A8)
                             MAX_NUM_HEARTS = field_1A8 + 1;
                         else
+                        {
+                            field_278 = 0;
                             field_27C = false;
+                            DO_RECOVER_LIFE = false;
+                        }
+
+                        if (field_1A8 != NUM_HEARTS)
+                        {
+                            field_1A8++;
+
+                            if (field_1A8 > NUM_HEARTS)
+                                field_1A8 = NUM_HEARTS;
+
+                            app::game::HudLayerController::PlayInfo volumeInfo{};
+                            volumeInfo.AnimationName = "life_volume";
+                            volumeInfo.field_0C = field_1A8 * 20;
+                            LayerController->PlayAnimation(volumeInfo);
+
+                            app::game::HudLayerController::PlayInfo playUsual{};
+                            playUsual.AnimationName = "Usual_Anim";
+                            playUsual.IsLooping = true;
+                            LayerController->PlayAnimation(playUsual);
+                        }
+
+                        LayerController->SetVisible(true);
+                        return;
                     }
+                    return;
                 }
 
                 if (field_1AC != MAX_NUM_HEARTS)

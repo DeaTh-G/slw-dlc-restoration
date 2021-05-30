@@ -67,8 +67,12 @@ HOOK(int, __fastcall, ProcMsgTakeObjectHook, ASLR(0x008947B0), int* This, void* 
 
 HOOK(bool, __stdcall, CStateBaseProcessMessageHook, ASLR(0x008981A0), app::Player::CStateGOC* a1, app::fnd::Message& message)
 {
-    if (message.Type == 0x6017 && DoesPointMarkerRestoreLife)
+    if ((message.Type == app::fnd::PROC_MSG_PLAYER_PASS_POINT_MARKER && DoesPointMarkerRestoreLife) ||
+        message.Type == app::fnd::PROC_MSG_DLC_ZELDA_HEART_ALL_RECOVERY)
+    {
         app::Player::StateUtil::AllRecoveryHeartLife(a1);
+        app::HUD::DO_RECOVER_LIFE = true;
+    }
         
     return originalCStateBaseProcessMessageHook(a1, message);
 }
