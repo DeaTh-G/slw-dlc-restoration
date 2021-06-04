@@ -195,6 +195,8 @@ namespace app
 
             void HeartLifeUpdate(int a2, float deltaTime, int a4)
             {
+                int maxHeartNum = MAX_NUM_HEARTS;
+
                 if (DO_RECOVER_LIFE)
                     field_27C = 1;
 
@@ -218,8 +220,8 @@ namespace app
                     if (field_278 >= 0.3f)
                     {
                         field_278 -= 0.3f;
-                        if (MAX_NUM_HEARTS > field_1A8)
-                            MAX_NUM_HEARTS = field_1A8 + 1;
+                        if (maxHeartNum > field_1A8)
+                            maxHeartNum = field_1A8 + 1;
                         else
                         {
                             field_278 = 0;
@@ -227,8 +229,25 @@ namespace app
                             DO_RECOVER_LIFE = false;
                         }
 
+                        if (field_1AC != MAX_NUM_HEARTS)
+                        {
+                            app::game::HudLayerController::PlayInfo modeInfo{};
+                            if (MAX_NUM_HEARTS >= 4 && MAX_NUM_HEARTS <= 6)
+                                modeInfo.AnimationName = HeartMode[MAX_NUM_HEARTS & 3];
+                            else
+                                modeInfo.AnimationName = "mode_heart0";
+                            LayerController->PlayAnimation(modeInfo);
+                            field_1AC = MAX_NUM_HEARTS;
+                            return;
+                        }
+
                         if (field_1A8 != NUM_HEARTS)
                         {
+                            if (field_27C && !field_190 && field_1A8 < maxHeartNum && field_1A8 > 0)
+                            {
+                                printf("obj_zeldaheart_get\n");
+                            }
+
                             field_1A8++;
 
                             if (field_1A8 > NUM_HEARTS)
@@ -248,18 +267,23 @@ namespace app
                         LayerController->SetVisible(true);
                         return;
                     }
+
+                    maxHeartNum = field_1A8;
                     return;
                 }
 
                 if (field_1AC != MAX_NUM_HEARTS)
                 {
-                    app::game::HudLayerController::PlayInfo modeInfo{};
-                    if ((MAX_NUM_HEARTS & 3) == 3)
-                        modeInfo.AnimationName = "mode_heart0";
-                    else
-                        modeInfo.AnimationName = HeartMode[MAX_NUM_HEARTS & 3];
-                    LayerController->PlayAnimation(modeInfo);
-                    field_1AC = MAX_NUM_HEARTS;
+                    if (MAX_NUM_HEARTS >= 3)
+                    {
+                        app::game::HudLayerController::PlayInfo modeInfo{};
+                        if ((MAX_NUM_HEARTS & 3) == 3)
+                            modeInfo.AnimationName = "mode_heart0";
+                        else
+                            modeInfo.AnimationName = HeartMode[MAX_NUM_HEARTS & 3];
+                        LayerController->PlayAnimation(modeInfo);
+                        field_1AC = MAX_NUM_HEARTS;
+                    }
                 }
 
                 if (field_1A8 != NUM_HEARTS)
