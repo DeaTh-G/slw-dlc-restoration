@@ -24,13 +24,12 @@ HOOK(int*, __fastcall, UpdatePlayerInformationHook, ASLR(0x00851F20), int* This)
             if (!pluginState)
                 return result;
 
-            NUM_HEARTS = app::Player::PluginStateHeartLife::GetNumHearts(pluginState);
-
             if (MAX_NUM_HEARTS < AFTER_DEATH_MAX_NUM_HEARTS)
             {
                 app::Player::PluginStateHeartLife::SetMaxNumHearts(pluginState, AFTER_DEATH_MAX_NUM_HEARTS);
                 app::Player::PluginStateHeartLife::SetNumHearts(pluginState, AFTER_DEATH_MAX_NUM_HEARTS);
             }
+            NUM_HEARTS = app::Player::PluginStateHeartLife::GetNumHearts(pluginState);
             MAX_NUM_HEARTS = app::Player::PluginStateHeartLife::GetMaxNumHearts(pluginState);
         }
     }
