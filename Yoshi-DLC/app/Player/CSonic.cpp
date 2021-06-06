@@ -3,6 +3,7 @@
 static void* OA_SENDPLAYERINFO = (void*)ASLR(0x00861AC3);
 int NUM_HEARTS{};
 int MAX_NUM_HEARTS{};
+int AFTER_DEATH_MAX_NUM_HEARTS{};
 
 void GetHeartData(int* This)
 {
@@ -15,6 +16,9 @@ void GetHeartData(int* This)
         return;
 
     NUM_HEARTS = app::Player::PluginStateHeartLife::GetNumHearts(pluginState);
+
+    if (MAX_NUM_HEARTS > AFTER_DEATH_MAX_NUM_HEARTS)
+        app::Player::PluginStateHeartLife::SetMaxNumHearts(pluginState, AFTER_DEATH_MAX_NUM_HEARTS);
     MAX_NUM_HEARTS = app::Player::PluginStateHeartLife::GetMaxNumHearts(pluginState);
 }
 

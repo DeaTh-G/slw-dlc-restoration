@@ -50,6 +50,9 @@ namespace app
 
                 This->NumHearts = This->MaxNumHearts;
             }
+
+            static void SetMaxNumHearts(PluginStateHeartLife* This, int numHearts) { This->MaxNumHearts = numHearts; }
+            static void SetNumHearts(PluginStateHeartLife* This, int numHearts) { This->NumHearts = numHearts; }
         };
     }
 }

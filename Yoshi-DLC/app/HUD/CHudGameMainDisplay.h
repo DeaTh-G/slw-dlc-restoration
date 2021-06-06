@@ -196,7 +196,11 @@ namespace app
             void HeartLifeUpdate(int a2, float deltaTime, int a4)
             {
                 if (!strncmp((const char*)*(*(((int***)*app::Document) + 3) + 5), "GameModeStage", 13))
+                {
                     *(*(((int**)*app::Document) + 3) + 0x8D) = NUM_HEARTS;
+                    *(*(((int**)*app::Document) + 3) + 0x8E) = MAX_NUM_HEARTS;
+                    AFTER_DEATH_MAX_NUM_HEARTS = *(*(((int**)*app::Document) + 3) + 0x8F);
+                }
 
                 int maxHeartNum = MAX_NUM_HEARTS;
 
