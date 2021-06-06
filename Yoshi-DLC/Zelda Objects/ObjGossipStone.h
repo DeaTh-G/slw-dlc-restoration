@@ -204,7 +204,7 @@ namespace app
         {
             if (ObjUtil::CheckShapeUserID(message.field_18, 0))
             {
-                OnSnapShot();
+                OnSnapShot(message);
                 return;
             }
             
@@ -282,7 +282,7 @@ namespace app
 
         }
 
-        void OnSnapShot()
+        void OnSnapShot(xgame::MsgHitEventCollision& message)
         {
             if (ObjectHandle.IsValid())
                 return;
@@ -297,7 +297,8 @@ namespace app
                 ObjectHandle = fairy;
             
             xgame::MsgDlcZeldaHeartAllRecovery recoverMessage{};
-            SendMessageImm((int)HitMessage, &recoverMessage);
+            int playerNo = ObjUtil::GetPlayerNo(field_24[1], message.ActorID);
+            ObjUtil::SendMessageImmToPlayer(this, playerNo, &recoverMessage);
 
             int deviceTag[3];
             int* gocSound = GameObject::GetGOC(this, GOCSoundString);

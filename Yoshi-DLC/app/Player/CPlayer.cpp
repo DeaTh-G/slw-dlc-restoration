@@ -52,6 +52,13 @@ HOOK(bool, __fastcall, CPlayerProcessMessageHook, ASLR(0x008514B0), int* This, v
         app::HUD::DO_RECOVER_LIFE = true;
         return 1;
     }
+    else if (message.Type == app::fnd::PROC_MSG_DLC_ZELDA_HEART_ALL_RECOVERY)
+    {
+        app::Player::CStateGOC* cStateGOC = (app::Player::CStateGOC*)app::CGOCCollectionImpl::GetGOC((void*)(This + 0xC9), CStateGOC);
+        app::Player::StateUtil::AllRecoveryHeartLife(cStateGOC);
+        app::HUD::DO_RECOVER_LIFE = true;
+        return 1;
+    }
 
     return originalCPlayerProcessMessageHook(This, edx, message);
 }
