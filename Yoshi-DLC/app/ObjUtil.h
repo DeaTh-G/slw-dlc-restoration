@@ -29,6 +29,7 @@ namespace app
         inline static FUNCTION_PTR(bool, __cdecl, CheckShapeUserID, ASLR(0x0073D8B0), int a1, int a2);
         inline static FUNCTION_PTR(int*, __cdecl, GetSVPath, ASLR(0x0073E6C0), GameDocument* gameDocumnet, csl::math::Vector3* a1, csl::math::Vector3* a2);
         inline static FUNCTION_PTR(int*, __cdecl, RaycastHitCollision, ASLR(0x0073D980), GameDocument* gameDocumnet, csl::math::Vector3* a1, csl::math::Vector3* a2, int a3);
+        inline static FUNCTION_PTR(int, __cdecl, PlaySE2D, ASLR(0x0073EB70), int* a1, const char* cueName, int a3);
 
         static int SendMessageImmToPlayer(GameObject* gameObject, int playerNo, fnd::Message* message)
         {

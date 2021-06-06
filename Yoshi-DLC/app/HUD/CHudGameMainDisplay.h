@@ -195,6 +195,9 @@ namespace app
 
             void HeartLifeUpdate(int a2, float deltaTime, int a4)
             {
+                if (!strncmp((const char*)*(*(((int***)*app::Document) + 3) + 5), "GameModeStage", 13))
+                    *(*(((int**)*app::Document) + 3) + 0x8D) = NUM_HEARTS;
+
                 int maxHeartNum = MAX_NUM_HEARTS;
 
                 if (DO_RECOVER_LIFE)
@@ -245,7 +248,8 @@ namespace app
                         {
                             if (field_27C && !field_190 && field_1A8 < maxHeartNum && field_1A8 > 0)
                             {
-                                printf("obj_zeldaheart_get\n");
+                                int soundStruct[6]{};
+                                ObjUtil::PlaySE2D(soundStruct, "obj_zeldaheart_get", 0x80000000);
                             }
 
                             field_1A8++;
