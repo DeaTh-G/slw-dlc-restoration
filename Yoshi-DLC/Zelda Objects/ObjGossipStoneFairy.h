@@ -161,8 +161,14 @@ namespace app
             fnd::GOCTransform::SetLocalTranslation(gocTransform, &translation);
             fnd::GOCTransform::SetLocalRotation(gocTransform, &rotation);
 
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+            if (!gocVisual)
+                return;
+
             float timeScale = csl::math::Clamp(Time / 0.2f, 0, 1);
-            timeScale = csl::math::Clamp(sinf(timeScale * 1.5707964f), 0.01f, 1);
+            timeScale = csl::math::Clamp(sinf(timeScale * 1.5707964f), 0.01f, 1) * 2;
+            csl::math::Vector3 scale { timeScale, timeScale, timeScale };
+            fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
         }
 
         static ObjGossipStoneFairy* Create(GameDocument& gameDocument, CInfo& info)
