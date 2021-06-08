@@ -274,11 +274,11 @@ namespace app
 
             game::GOCAnimationScript::SetAnimation(gocAnimation, "TRIFORCE");
             AnimationListener.field_2C = 1;
-            /*for (size_t i = 0; i < 4; i++)
-            {*/
+            for (size_t i = 0; i < 4; i++)
+            {
                 xgame::MsgStopBgm stopBgmMessage{ ZELDA_GOAL_BGM_VALUES[0], ZELDA_GOAL_BGM_IDS[0] };
                 ObjUtil::SendMessageImmToGameActor(this, &stopBgmMessage);
-            /*}*/
+            }
 
             State = ObjZeldaGoalState::STATE_WAIT_END_EVENT;
             DoCreateModel = true;

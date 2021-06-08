@@ -8,6 +8,7 @@ namespace app
         {
         public:
             static void LoadData();
+            static void PlayResultBGM();
         };
     }
 }

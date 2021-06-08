@@ -156,6 +156,7 @@ void Initialize()
     //WRITE_FUNCTION(ASLR(0x00D2809F), *(void**)&createObjInfo_ObjZeldaRupeeInfo);
     // Install Yoshi Hooks
     app::xgame::IsDLCStagePurchase::Func();
+    app::xgame::CStageSoundDirector::PlayResultBGM();
     app::HUD::CHudGameMainDisplay::__ct();
     app::HUD::CHudGameMainDisplay::SpecialRingUpdate();
     app::CSharedObjInfo::Initialize();
