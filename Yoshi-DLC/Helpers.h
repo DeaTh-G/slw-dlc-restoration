@@ -43,3 +43,17 @@ static csl::math::Vector3 MultiplyMatrixByVector(csl::math::Matrix34* matrix, cs
     v = m * Eigen::Vector4f(vector->X, vector->Y, vector->Z, 1);
     return csl::math::Vector3(v.x(), v.y(), v.z());
 }
+
+static csl::math::Vector3 MultiplyMatrixSRByVector(csl::math::Matrix34* matrix, csl::math::Vector3* vector)
+{
+    Eigen::Matrix3f m;
+    m.setIdentity();
+    Eigen::Vector3f v;
+
+    for (size_t i = 0; i < 3; i++)
+        for (size_t j = 0; j < 3; j++)
+            m(j, i) = matrix->data[i][j];
+
+    v = m * Eigen::Vector3f(vector->X, vector->Y, vector->Z);
+    return csl::math::Vector3(v.x(), v.y(), v.z());
+}

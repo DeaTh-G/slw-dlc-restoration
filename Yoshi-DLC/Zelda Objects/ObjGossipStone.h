@@ -16,43 +16,6 @@ namespace app
         float CheckRadius;
     };
 
-    class ObjGossipStoneInfo : public CObjInfo
-    {
-    public:
-        int BaseModel{};
-        int BaseSkeleton{};
-        int BaseAnimation{};
-        int FairyModel{};
-        int FairySkeleton{};
-        int FairyAnimation{};
-
-        ObjGossipStoneInfo() {}
-
-        void Initialize(GameDocument& gameDocument) override
-        {
-            int packFile = 0;
-            ObjUtil::GetPackFile(&packFile, ObjUtil::GetStagePackName(&gameDocument));
-
-            ObjUtil::GetModelResource(&BaseModel, "zdlc03_obj_gossipstone", &packFile);
-            ObjUtil::GetSkeletonResource(&BaseSkeleton, "zdlc03_obj_gossipstone", packFile);
-            ObjUtil::GetAnimationResource(&BaseAnimation, "zdlc03_obj_gossipstone", &packFile);
-
-            ObjUtil::GetModelResource(&FairyModel, "zdlc03_obj_fairy", &packFile);
-            ObjUtil::GetSkeletonResource(&FairySkeleton, "zdlc03_obj_fairy", packFile);
-            ObjUtil::GetAnimationResource(&FairyAnimation, "zdlc03_obj_fairy", &packFile);
-        }
-
-        const char* GetInfoName() override
-        {
-            return "ObjGossipStoneInfo";
-        }
-
-        void RegistCallback(int& container) override
-        {
-            // TODO: ItemBoxInfo
-        }
-    };
-
     class ObjGossipStone : public CSetObjectListener
     {
     public:
@@ -292,7 +255,7 @@ namespace app
                 return;
 
             ObjGossipStoneFairy::CInfo* fairyInfo = new ObjGossipStoneFairy::CInfo(*(csl::math::Matrix34*)(gocTransform + 0x44));
-            ObjGossipStoneFairy* fairy = ObjGossipStoneFairy::Create(*(GameDocument*)field_24[1], *fairyInfo);
+            ObjGossipStoneFairy* fairy = ObjGossipStoneFairy::Create((GameDocument&)field_24[1], *fairyInfo);
             if (fairy)
                 ObjectHandle = fairy;
             
