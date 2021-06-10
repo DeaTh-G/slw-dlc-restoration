@@ -24,12 +24,12 @@ namespace app
         xgame::MsgHitEventCollision* HitMessage = new xgame::MsgHitEventCollision();
         xgame::MsgDamage* DamageMessage = new xgame::MsgDamage();
         ObjGossipStoneState State{};
-        GameObjectHandleBase ObjectHandle;
-        INSERT_PADDING(8); // CInstanceHandle
+        GameObjectHandleBase ObjectHandle{};
+        Effect::CEffectHandle EffectHandle{};
         INSERT_PADDING(4);
         bool field_3C8;
         INSERT_PADDING(3);
-        float field_3CC;
+        float Time;
         INSERT_PADDING(4);
         float field_3D4;
         INSERT_PADDING(8);
@@ -80,9 +80,9 @@ namespace app
             if (gocCollider)
             {
                 int shapeCount = 3;
-
                 game::GOCCollider::Setup(gocCollider, &shapeCount);
 
+                // Hit Collider
                 game::ColliSphereShapeCInfo checkCollisionInfo;
                 game::CollisionObjCInfo::__ct(&checkCollisionInfo);
                 checkCollisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_SPHERE;
@@ -93,6 +93,7 @@ namespace app
                 ObjUtil::SetupCollisionFilter(7, &checkCollisionInfo);
                 game::GOCCollider::CreateShape(gocCollider, &checkCollisionInfo);
 
+                // Damage Collider
                 game::ColliCapsuleShapeCInfo collisionInfo;
                 csl::math::Vector3 colliderOffset { 0, 5, 0 };
                 game::CollisionObjCInfo::__ct(&collisionInfo);
@@ -100,12 +101,13 @@ namespace app
                 collisionInfo.MotionType = 2;
                 collisionInfo.Radius = 8;
                 collisionInfo.Height = 10;
+                ObjUtil::SetupCollisionFilter(0, &collisionInfo);
                 collisionInfo.field_04 |= 1;
                 collisionInfo.field_0C = 1;
-                ObjUtil::SetupCollisionFilter(0, &checkCollisionInfo);
                 game::CollisionObjCInfo::SetLocalPosition(&collisionInfo, &colliderOffset);
                 game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 
+                // Solid Collider
                 colliderOffset = Vector3(0, 4, 0);
                 game::CollisionObjCInfo::__ct(&collisionInfo);
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_CAPSULE;
@@ -136,7 +138,7 @@ namespace app
             case fnd::PROC_MSG_HIT_EVENT_COLLISION:
                 ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
                 return true;
-            case fnd::PROC_MSG_GET_EXTERNAL_MOVE_POSITION:
+            case fnd::PROC_MSG_DAMAGE:
                 ProcMsgDamage((xgame::MsgDamage&)message);
                 return true;
             default:
@@ -153,7 +155,7 @@ namespace app
                 StateShake();
 
             if (State == ObjGossipStoneState::STATE_COUNTDOWN)
-                StateCountdown();
+                StateCountdown(updateInfo);
 
             if (State == ObjGossipStoneState::STATE_ROCKET)
                 StateRocket();
@@ -205,7 +207,34 @@ namespace app
 
         void ProcMsgDamage(xgame::MsgDamage& message)
         {
-            *DamageMessage = message;
+            int playerNo = ObjUtil::GetPlayerNo(field_24[1], message.field_08);
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], playerNo);
+            if (!playerInfo)
+                return;
+
+            if (playerInfo[0x58] == -1)
+            {
+                int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+                if (!gocTransform)
+                    return;
+
+                float distance = math::Vector3DotProduct(&message.field_40, (csl::math::Vector3*)(gocTransform + 0x48));
+                if (distance < 0.9f)
+                {
+                    *DamageMessage = message;
+
+                    message.SetReply(&message.field_30, 0);
+                    message.field_90 |= 1;
+                }
+            }
+            else
+            {
+                *DamageMessage = message;
+
+                message.SetReply(&message.field_30, 0);
+                message.field_90 |= 1;
+                message.field_90 |= 32;
+            }
         }
 
         void StateIdle()
@@ -215,13 +244,22 @@ namespace app
                 if (MessageType != fnd::PROC_MSG_HIT_EVENT_COLLISION)
                     return;
 
-                /*State = ObjGossipStoneState::STATE_SHAKE;
-                return;*/
-            }
-
-            if (DamageMessage->field_54 == 3)
-            {
+                //State = ObjGossipStoneState::STATE_SHAKE;
+                HitMessage->field_0C = 1;
                 return;
+            }
+            int playerNo = ObjUtil::GetPlayerNo(field_24[1], DamageMessage->field_08);
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], playerNo);
+
+            if (DamageMessage->field_54 == 3 && playerInfo && playerInfo[0x58] == 7)
+            {
+                State = ObjGossipStoneState::STATE_COUNTDOWN;
+                DamageMessage->field_0C = 1;
+            }
+            else
+            {
+                //State = ObjGossipStoneState::STATE_SHAKE;
+                DamageMessage->field_0C = 1;
             }
         }
 
@@ -230,9 +268,58 @@ namespace app
 
         }
 
-        void StateCountdown()
+        void StateCountdown(const fnd::SUpdateInfo& updateInfo)
         {
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+            if (!gocVisual)
+                return;
 
+            int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+            if (!gocSound)
+                return;
+
+            float oldTime = Time;
+            Time += updateInfo.deltaTime;
+
+            if (Time >= 5)
+            {
+                State = ObjGossipStoneState::STATE_ROCKET;
+                return;
+            }
+
+            if ((int)oldTime < (int)Time)
+            {
+                if ((int)Time == 4)
+                {
+                    float color[] { 2, 0.5f, 0.5f, 1 };
+                    fnd::GOCVisualModel::SetMaterialColor(gocVisual, color);
+
+                    int deviceTag[3];
+                    game::GOCSound::Play(gocSound, deviceTag, "obj_gossipstone_count1", 0);
+                }
+                else
+                {
+                    float color[] { 0.55f, 0.55f, 0.55f, 1 };
+                    fnd::GOCVisualModel::SetMaterialColor(gocVisual, color);
+
+                    int deviceTag[3];
+                    game::GOCSound::Play(gocSound, deviceTag, "obj_gossipstone_count2", 0);
+                }
+                return;
+            }
+
+            fnd::GOCVisualModel::SetMaterialColor(gocVisual, nullptr);
+            /*if ((int)Time == 4)
+            {
+                int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
+                if (!gocEffect)
+                    return;
+
+                Effect::CEffectHandle effectHandle{};
+
+                game::GOCEffect::CreateEffectLoop(gocEffect, &effectHandle, "ef_dl3_gossipstone_fog");
+                EffectHandle = effectHandle;
+            }*/
         }
 
         void StateRocket()

@@ -36,6 +36,7 @@ namespace app
             inline static FUNCTION_PTR(void, __thiscall, SetNodeTransform, ASLR(0x00495240), int* This, int a2, const char* nodeName, math::Transform* transform);
             inline static FUNCTION_PTR(void*, __thiscall, SetTexSrtAnimation, ASLR(0x00495890), int* This, void* animation);
             inline static FUNCTION_PTR(void*, __thiscall, GetTexSrtControl, ASLR(0x004954E0), int* This);
+            inline static FUNCTION_PTR(void*, __thiscall, SetMaterialColor, ASLR(0x00495140), int* This, float* a2);
         };
 
         class GOCVisualTransformed

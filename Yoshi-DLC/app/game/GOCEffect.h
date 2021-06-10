@@ -49,6 +49,7 @@ namespace app
             inline static FUNCTION_PTR(void, __cdecl, SimpleSetupEx, ASLR(0x004BD9D0), GameObject* Object, int a2, int a3);
             inline static FUNCTION_PTR(void, __thiscall, CreateEffect, ASLR(0x004BD5F0), int* This, const char* EffectName);
             inline static FUNCTION_PTR(void, __thiscall, CreateEffectEx, ASLR(0x004BDA20), int* This, EffectCreateInfo* effectInfo);
+            inline static FUNCTION_PTR(void, __thiscall, CreateEffectLoop, ASLR(0x0048DFD0), int* This, Effect::CEffectHandle* a2, const char* effectName);
             inline static FUNCTION_PTR(void, __thiscall, CreateEffectLoopEx, ASLR(0x004BDDC0), int* This, Effect::CEffectHandle* a2, EffectCreateInfo* effectInfo);
         };
     }
