@@ -27,11 +27,13 @@ namespace app
         GameObjectHandleBase ObjectHandle{};
         Effect::CEffectHandle EffectHandle{};
         INSERT_PADDING(4);
-        bool field_3C8;
-        INSERT_PADDING(3);
-        float Time;
-        INSERT_PADDING(4);
-        float field_3D4;
+        bool IsDamaged{};
+        bool IsRocket{};
+        bool IsAnimationSet{};
+        INSERT_PADDING(1);
+        float Time{};
+        float BlinkTime{};
+        float VerticalPosition{};
         INSERT_PADDING(8);
 
         void Destructor(size_t deletingFlags)
@@ -158,10 +160,7 @@ namespace app
                 StateCountdown(updateInfo);
 
             if (State == ObjGossipStoneState::STATE_ROCKET)
-                StateRocket();
-
-            if (State == ObjGossipStoneState::STATE_LOST)
-                StateLost();
+                StateRocket(updateInfo);
         }
 
     private:
@@ -244,10 +243,11 @@ namespace app
                 if (MessageType != fnd::PROC_MSG_HIT_EVENT_COLLISION)
                     return;
 
-                //State = ObjGossipStoneState::STATE_SHAKE;
+                State = ObjGossipStoneState::STATE_SHAKE;
                 HitMessage->field_0C = 1;
                 return;
             }
+
             int playerNo = ObjUtil::GetPlayerNo(field_24[1], DamageMessage->field_08);
             int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], playerNo);
 
@@ -258,14 +258,69 @@ namespace app
             }
             else
             {
-                //State = ObjGossipStoneState::STATE_SHAKE;
+                State = ObjGossipStoneState::STATE_SHAKE;
                 DamageMessage->field_0C = 1;
             }
         }
 
         void StateShake()
         {
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimation);
+            if (!gocAnimation)
+                return;
 
+            if (MessageType != fnd::PROC_MSG_DAMAGE)
+            {
+                if (MessageType != fnd::PROC_MSG_HIT_EVENT_COLLISION)
+                    return;
+
+                State = ObjGossipStoneState::STATE_SHAKE;
+                HitMessage->field_0C = 1;
+                return;
+            }
+
+            int playerNo = ObjUtil::GetPlayerNo(field_24[1], DamageMessage->field_08);
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], playerNo);
+
+            if (DamageMessage->field_54 == 3 && playerInfo && playerInfo[0x58] == 7)
+            {
+                IsDamaged = true;
+                DamageMessage->field_0C = 1;
+            }
+            else
+            {
+                if (!IsDamaged)
+                {
+                    game::GOCAnimationSimple::SetAnimation(gocAnimation, "ACTION");
+                    IsAnimationSet = true;
+
+                    int deviceTag[3];
+                    int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+                    if (!gocSound)
+                        return;
+
+                    game::GOCSound::Play3D(gocSound, deviceTag, "obj_gossipstone_bibe", 0);
+                }
+
+                DamageMessage->field_0C = 1;
+            }
+
+            if (!game::GOCAnimationSimple::IsFinished(gocAnimation))
+                return;
+
+            if (IsDamaged)
+            {
+                State = ObjGossipStoneState::STATE_COUNTDOWN;
+                IsAnimationSet = false;
+                return;
+            }
+            else
+            {
+                State = ObjGossipStoneState::STATE_IDLE;
+                IsAnimationSet = false;
+                MessageType = (fnd::MessageType)0;
+                return;
+            }
         }
 
         void StateCountdown(const fnd::SUpdateInfo& updateInfo)
@@ -280,6 +335,7 @@ namespace app
 
             float oldTime = Time;
             Time += updateInfo.deltaTime;
+            BlinkTime += updateInfo.deltaTime;
 
             if (Time >= 5)
             {
@@ -308,28 +364,69 @@ namespace app
                 return;
             }
 
-            fnd::GOCVisualModel::SetMaterialColor(gocVisual, nullptr);
-            /*if ((int)Time == 4)
+            if (BlinkTime > 0.3f && BlinkTime <= 0.31f)
             {
+                fnd::GOCVisualModel::SetMaterialColor(gocVisual, nullptr);
+                /*if ((int)Time == 4)
+                {
+                    int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
+                    if (!gocEffect)
+                        return;
+
+                    Effect::CEffectHandle effectHandle{};
+
+                    game::GOCEffect::CreateEffectLoop(gocEffect, &effectHandle, "ef_dl3_gossipstone_fog");
+                    EffectHandle = effectHandle;
+                }*/
+            }
+
+            if (BlinkTime >= 1)
+            {
+                BlinkTime = 0;
+            }
+        }
+
+        void StateRocket(const fnd::SUpdateInfo& updateInfo)
+        {
+            if (!IsRocket)
+            {
+                Time = 0;
+                VerticalPosition = 0;
+
+                //Effect::CEffectHandle::Stop(EffectHandle, 0);
+
                 int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
                 if (!gocEffect)
                     return;
 
-                Effect::CEffectHandle effectHandle{};
+                // game::GOCEffect::CreateEffectLoop
 
-                game::GOCEffect::CreateEffectLoop(gocEffect, &effectHandle, "ef_dl3_gossipstone_fog");
-                EffectHandle = effectHandle;
-            }*/
-        }
+                int deviceTag[3];
+                int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+                if (!gocSound)
+                    return;
 
-        void StateRocket()
-        {
+                game::GOCSound::Play3D(gocSound, deviceTag, "obj_gossipstone_rocket", 0);
+                IsRocket = true;
+                return;
+            }
 
-        }
+            Time += updateInfo.deltaTime;
+            VerticalPosition += 100 * updateInfo.deltaTime;
 
-        void StateLost()
-        {
-
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+            
+            csl::math::Vector3 upVec { 0, VerticalPosition * updateInfo.deltaTime, 0 };
+            csl::math::Vector3 position = MultiplyMatrixByVector((csl::math::Matrix34*)(gocTransform + 0x44), &upVec);
+            fnd::GOCTransform::SetLocalTranslation(gocTransform, &position);
+            if (Time >= 5)
+            {
+                CSetObjectListener::SetStatusRetire(this);
+                GameObject::Kill(this);
+                State = ObjGossipStoneState::STATE_LOST;
+            }
         }
 
         void OnSnapShot(xgame::MsgHitEventCollision& message)

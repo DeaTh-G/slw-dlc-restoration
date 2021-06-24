@@ -38,12 +38,6 @@ __declspec(naked) void CSonicSendPlayerInfoMidAsmHook()
 
 HOOK(void, __fastcall, CSonicAddCallbackHook, ASLR(0x00861B00), int* This, void* edx, int* a2)
 {
-    if (LinkSonicPlayType == PlayType::NEVER)
-    {
-        originalCSonicAddCallbackHook(This, edx, a2);
-        return;
-    }
-
     const char* packFileName = app::ObjUtil::GetStagePackName(*app::Document);
     if (strncmp(packFileName, "zdlc03", 6) == 0 || IsAlwaysHeartLife)
         *(short*)(This[215] + 56) |= 0x1000;
