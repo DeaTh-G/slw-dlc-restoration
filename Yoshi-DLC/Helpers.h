@@ -2,6 +2,7 @@
 
 inline static bool DisablePipeTransition = false;
 inline static bool IsConsistentShadow = false;
+inline static bool IsSHC2021Build = false;
 
 static csl::math::Quaternion GetRotationFromMatrix(csl::math::Matrix34* matrix)
 {

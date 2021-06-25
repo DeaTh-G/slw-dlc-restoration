@@ -85,6 +85,9 @@ void Initialize()
 
     if (!DisablePipeTransition)
         app::GameModeStage::StateWarp();
+
+    if (IsSHCBuild)
+        app::CGameSequence::CompleteDLCStage();
 }
 
 extern "C"

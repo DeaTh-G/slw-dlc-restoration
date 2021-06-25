@@ -177,6 +177,7 @@
     <ClInclude Include="app\animation\AnimationObj.h" />
     <ClInclude Include="app\animation\AnimationResContainer.h" />
     <ClInclude Include="app\animation\AnimCallbackBridge.h" />
+    <ClInclude Include="app\CGameSequence.h" />
     <ClInclude Include="app\CGOCCollectionImpl.h" />
     <ClInclude Include="app\CLevelInfo.h" />
     <ClInclude Include="app\CObjInfo.h" />
@@ -330,6 +331,7 @@
     <ClInclude Include="Yoshi Objects\ObjYoshiSpecialFlower.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="app\CGameSequence.cpp" />
     <ClCompile Include="app\GameModeStage.cpp" />
     <ClCompile Include="app\GameModeStageBattle.cpp" />
     <ClCompile Include="app\HUD\CHudGameMainDisplay.cpp" />

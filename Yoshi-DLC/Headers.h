@@ -16,6 +16,8 @@
 #include "hh/base.h"
 
 // app
+#include "app/CGameSequence.h"
+
 #include "app/ut/internal/StateImpl.h"
 #include "app/animation/AnimationResContainer.h"
 #include "app/animation/AnimCallbackBridge.h"

@@ -549,6 +549,9 @@
     <ClInclude Include="HH_ALLOC.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="app\CGameSequence.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">
@@ -588,6 +591,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="app\GameModeStageBattle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\CGameSequence.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
