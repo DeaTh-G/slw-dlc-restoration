@@ -86,7 +86,7 @@ void Initialize()
     if (!DisablePipeTransition)
         app::GameModeStage::StateWarp();
 
-    if (IsSHCBuild)
+    if (IsSHC2021Build)
         app::CGameSequence::CompleteDLCStage();
 }
 
