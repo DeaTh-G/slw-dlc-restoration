@@ -260,10 +260,7 @@ namespace app
                 if (refCount)
                 {
                     LayerController = gocHud->CreateLayerController(refCount, "ui_wipe_zdlc03", "wipe_mask", 0);
-                    
-                    /* TODO: Do this but better */
-                    LayerController->ReserveAnimation("Outro_Anim", 0, 0);
-                    LayerController->PlayReservedAnimation();
+                    LayerController->SetVisible(false);
                 }
             }
 
