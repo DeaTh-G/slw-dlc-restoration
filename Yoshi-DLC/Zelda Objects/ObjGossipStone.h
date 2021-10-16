@@ -289,7 +289,7 @@ namespace app
             }
             else
             {
-                if (!IsDamaged)
+                if (!IsAnimationSet && DamageMessage->AttackType != 0)
                 {
                     game::GOCAnimationSimple::SetAnimation(gocAnimation, "ACTION");
                     IsAnimationSet = true;
@@ -305,22 +305,25 @@ namespace app
                 DamageMessage->field_0C = 1;
             }
 
-            if (!game::GOCAnimationSimple::IsFinished(gocAnimation))
-                return;
+            /*if (!game::GOCAnimationSimple::IsFinished(gocAnimation))
+                return;*/ 
 
-            if (IsDamaged)
+            if (DamageMessage->field_54 == 3 && playerInfo && playerInfo[0x58] == 7)
             {
                 State = ObjGossipStoneState::STATE_COUNTDOWN;
                 IsAnimationSet = false;
-                return;
+                DamageMessage->field_0C = 1;
             }
             else
             {
                 State = ObjGossipStoneState::STATE_IDLE;
                 IsAnimationSet = false;
                 MessageType = (fnd::MessageType)0;
-                return;
+                DamageMessage->field_0C = 1;
             }
+
+            delete DamageMessage;
+            DamageMessage = new xgame::MsgDamage();
         }
 
         void StateCountdown(const fnd::SUpdateInfo& updateInfo)
