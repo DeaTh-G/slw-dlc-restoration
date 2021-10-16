@@ -192,6 +192,9 @@ namespace app
 
                 if (LifeTime > MaxLifeTime)
                     doKill = true;
+
+                if ((Flags & 1) == 1)
+                    doKill = true;
             }
             else
             {
@@ -201,7 +204,7 @@ namespace app
                 fnd::GOCVisualTransformed::SetLocalRotationXYZ(gocVisual, Rotation, 0, 0);
 
                 if (LifeTime <= MaxLifeTime)
-                    if (Flags & 1)
+                    if ((Flags & 1) == 1)
                         doKill = true;
             }
 
