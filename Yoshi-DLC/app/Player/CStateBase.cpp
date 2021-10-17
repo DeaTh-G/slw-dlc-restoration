@@ -71,6 +71,7 @@ HOOK(bool, __stdcall, CStateBaseProcessMessageHook, ASLR(0x008981A0), app::Playe
     {
         app::Player::StateUtil::AllRecoveryHeartLife(a1);
         app::HUD::DO_RECOVER_LIFE = true;
+        AFTER_DEATH_MAX_NUM_HEARTS = MAX_NUM_HEARTS;
     }
         
     return originalCStateBaseProcessMessageHook(a1, message);

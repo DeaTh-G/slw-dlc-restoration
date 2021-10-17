@@ -16,9 +16,6 @@ void GetHeartData(int* This)
         return;
 
     NUM_HEARTS = app::Player::PluginStateHeartLife::GetNumHearts(pluginState);
-
-    if (MAX_NUM_HEARTS > AFTER_DEATH_MAX_NUM_HEARTS)
-        app::Player::PluginStateHeartLife::SetMaxNumHearts(pluginState, AFTER_DEATH_MAX_NUM_HEARTS);
     MAX_NUM_HEARTS = app::Player::PluginStateHeartLife::GetMaxNumHearts(pluginState);
 }
 
