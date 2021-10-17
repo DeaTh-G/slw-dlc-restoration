@@ -16,7 +16,7 @@ HOOK(void, __fastcall, ActivateSubHook, ASLR(0x008FE290), int* a1, int* edx)
 {
     if (LinkSonicPlayType == PlayType::NEVER)
     {
-        *(*((*(unsigned int***)(a1 + 4)) + 210) + 6) = 0;
+        *(*((*(unsigned int***)(a1 + 4)) + 210) + 6) &= ~0x80000000;
         originalActivateSubHook(a1, edx);
         return;
     }
