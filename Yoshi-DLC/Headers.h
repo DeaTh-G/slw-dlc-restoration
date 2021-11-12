@@ -246,3 +246,4 @@
 #include "Zelda Objects/ObjTreasureBox.h"
 #include "Zelda Objects/ObjGossipStoneFairy.h"
 #include "Zelda Objects/ObjGossipStone.h"
+#include "Zelda Objects/EnemyStalBaby.h"
