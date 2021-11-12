@@ -123,7 +123,7 @@ namespace app
                 game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
             }
 
-            game::GOCEffect::SimpleSetup(this);
+            game::GOCEffect::SimpleSetupEx(this, 2, 0);
             game::GOCSound::SimpleSetup(this, 0, 0);
 
             fnd::GOComponent::EndSetup(this);
@@ -370,7 +370,7 @@ namespace app
             if (BlinkTime > 0.3f && BlinkTime <= 0.31f)
             {
                 fnd::GOCVisualModel::SetMaterialColor(gocVisual, nullptr);
-                /*if ((int)Time == 4)
+                if ((int)Time == 4)
                 {
                     int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
                     if (!gocEffect)
@@ -380,7 +380,8 @@ namespace app
 
                     game::GOCEffect::CreateEffectLoop(gocEffect, &effectHandle, "ef_dl3_gossipstone_fog");
                     EffectHandle = effectHandle;
-                }*/
+
+                }
             }
 
             if (BlinkTime >= 1)
@@ -396,18 +397,19 @@ namespace app
                 Time = 0;
                 VerticalPosition = 0;
 
-                //Effect::CEffectHandle::Stop(EffectHandle, 0);
+                EffectHandle.Stop(0);
 
                 int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
                 if (!gocEffect)
                     return;
 
-                // game::GOCEffect::CreateEffectLoop
-
                 int deviceTag[3];
                 int* gocSound = GameObject::GetGOC(this, GOCSoundString);
                 if (!gocSound)
                     return;
+
+                Effect::CEffectHandle effectHandle{};
+                game::GOCEffect::CreateEffectLoop(gocEffect, &effectHandle, "ef_dl3_gossipstone_fire");
 
                 game::GOCSound::Play3D(gocSound, deviceTag, "obj_gossipstone_rocket", 0);
                 IsRocket = true;
