@@ -41,6 +41,25 @@ namespace app
             inline static FUNCTION_PTR(void, __thiscall, SetLocalRotation, ASLR(0x004B61F0), CollisionObjCInfo* This, csl::math::Quaternion* rotation);
         };
 
+        class CharacterRigidBodyCInfo : public CollisionObjCInfo
+        {
+        public:
+            float field_40;
+            float field_44;
+            float field_48;
+            float field_4C;
+            float field_50;
+            INSERT_PADDING(12);
+
+            CharacterRigidBodyCInfo()
+            {
+                __ct(this);
+                field_48 = 0.78539819;
+                field_4C = 1000;
+                field_50 = 1;
+            }
+        };
+
         class ColliShapeCInfo : public CollisionObjCInfo
         {
         public:
