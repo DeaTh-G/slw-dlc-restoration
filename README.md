@@ -7,3 +7,5 @@ The mod was released on [GameBanana](https://gamebanana.com/maps/216170) on the 
 1. Download Source Code
 2. Open the .sln file [Visual Studio 2019](https://visualstudio.microsoft.com/vs/)
 3. Build for x86
+
+# [Development History](https://docs.google.com/document/d/1x-BSqP11XWgherDbQqTM6RD0AfNC1mxdWl5zRWHa6dg)
