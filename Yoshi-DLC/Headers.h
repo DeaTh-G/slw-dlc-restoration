@@ -29,6 +29,8 @@
 #include "app/fnd/Handle.h"
 #include "csl/ut/NonCopyable.h"
 #include "app/fnd/Message.h"
+#include "app/xgame/MsgDlcZeldaNoticeStopEnemy.h"
+#include "app/xgame/MsgDlcZeldaNoticeActiveEnemy.h"
 #include "app/fnd/CActor.h"
 #include "app/fnd/CLeafActor.h"
 #include "app/ut/StateBase.h"
@@ -202,8 +204,6 @@
 #include "app/Objects/CObjDroppedRing.h"
 
 #include "app/xgame/MsgLoftBirdCollision.h"
-#include "app/xgame/MsgDlcZeldaNoticeStopEnemy.h"
-#include "app/xgame/MsgDlcZeldaNoticeActiveEnemy.h"
 #include "app/xgame/MsgDlcZeldaTakeHeart.h"
 #include "app/xgame/MsgDlcZeldaTakeHeartContainer.h"
 #include "app/xgame/MsgDlcZeldaHeartAllRecovery.h"

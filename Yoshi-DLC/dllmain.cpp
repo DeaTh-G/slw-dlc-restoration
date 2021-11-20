@@ -181,8 +181,10 @@ void Initialize()
     app::Player::CSonic::SendPlayerInfo();
     app::Player::CVisualSonic::RegisterResource();
     app::Player::CVisualBase::IsLinkCostume();
+    app::GameModeStage::StatePlay();
     app::GameModeStage::RegisterObjInfos();
     app::GameModeStage::LoadLevel();
+    app::GameModeStage::ResetStage();
     app::HUD::CHudGameMainDisplay::InitLayer();
     app::HUD::CHudGameMainDisplay::RingUpdate();
     app::Player::CStateBase::CheckHitDamage();

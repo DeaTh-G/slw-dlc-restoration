@@ -17,7 +17,15 @@ namespace app
 
         bool IsPlayingZeldaEvent()
         {
-            return ((*(int*)this + 36) & (1 << 20)) != 0;
+            return (*(((int*)this) + 36) & (1 << 20)) != 0;
+        }
+
+        void SetPlayingZeldaEvent(bool isEnable)
+        {
+            if (isEnable)
+                *(((int*)this) + 36) |= (1 << 20);
+            else
+                *(((int*)this) + 36) &= ~(1 << 20);
         }
     };
 }

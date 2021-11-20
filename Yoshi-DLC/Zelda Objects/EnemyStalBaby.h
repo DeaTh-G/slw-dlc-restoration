@@ -134,7 +134,7 @@ namespace app
                 visualDescriptor.Skeleton = info->Skeleton;
                 visualDescriptor.Animation |= 0x400000;
                 fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
-                fnd::GOCVisual::SetVisible(gocVisual, 0);
+                //fnd::GOCVisual::SetVisible(gocVisual, 0);
 
                 int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
                 if (gocAnimation)
@@ -290,13 +290,14 @@ namespace app
                 return;
             }
 
-            /*app::CLevelInfo* levelInfo = (app::CLevelInfo*)app::CLevelInfo::GetService(gameDocument);
-            int asd = levelInfo->IsPlayingZeldaEvent();
-            if (levelInfo)
+            app::CLevelInfo* levelInfo = (app::CLevelInfo*)app::CLevelInfo::GetService(gameDocument);
+            if (levelInfo && levelInfo->IsPlayingZeldaEvent())
             {
+                Flags |= 8;
+                Sleep(this);
+            }
 
-            }*/
-            fnd::GOComponent::EndSetup(this);
+            fnd::GOComponent::EndSetup(this); 
         }
 
 
