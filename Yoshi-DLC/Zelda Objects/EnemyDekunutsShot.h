@@ -302,7 +302,7 @@ namespace app
             if (!ObjUtil::CheckShapeUserID(message.field_18, 0))
                 return;
         
-            if (!(Flags && 2))
+            if (!(Flags & 2))
                 message.field_34 = 1;
         }
 
