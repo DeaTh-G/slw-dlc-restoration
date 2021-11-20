@@ -99,7 +99,7 @@ namespace app
             fnd::GOComponent::Create(this, GOCSound);
             fnd::GOComponent::Create(this, EnemyTargetGOC);
             fnd::GOComponent::Create(this, GOCEnemyHSM);
-            //fnd::GOComponent::Create(this, GOCMovementComplex);
+            fnd::GOComponent::Create(this, GOCMovementComplex);
 
             EnemyStalBabyData* data = (EnemyStalBabyData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
             EnemyStalBabyInfo* info = (EnemyStalBabyInfo*)ObjUtil::GetObjectInfo(gameDocument, "EnemyStalBabyInfo");
@@ -253,19 +253,17 @@ namespace app
                 movement = new(movementMem) game::MoveCharacterRigidBody();
                 game::GOCMovement::SetupController(gocMovement, movement);
 
+                game::MoveCharacterRigidBody::Description description { 2, 1 };
+                movement->Setup(&description);
+
                 CSetAdapter::GetPosition(*(int**)((char*)this + 0x324), &position);
                 movement->SetMoveRangeBasePosition(position);
                 movement->SetMoveRange(data->MoveRange);
 
                 auto funcPtr = &EnemyStalBaby::NotifyMovementRangeOutCallback;
-                /*game::MoveStraight::FunctionPair functions{(void*)ASLR(0x0070F590), reinterpret_cast<void*&>(funcPtr)};
-                game::MoveStraight::unkStruct unknown{ 0, data->MaxMoveDistance };
-                game::MoveStraight::SetNotifyStopCallback(moveStraight, functions, unknown, 0);
-
-                int* contextParam = game::GOCMovement::GetContextParam(gocMovement);
-                *((float*)(contextParam + 8)) = data->Speed * -1;
-                if ((Flags & 4) == 4)
-                    *((float*)(contextParam + 8)) = data->Speed;*/
+                game::MoveCharacterRigidBody::FunctionPair functions{ (void*)ASLR(0x0070F590), reinterpret_cast<void*&>(funcPtr) };
+                game::MoveCharacterRigidBody::unkStruct unknown{ 0, data->MoveRange };
+                movement->SetNotifyMoveRangeOutCallback(functions, unknown, 0);
             }
 
             int* gocEnemyTarget = GameObject::GetGOC(this, GOCEnemyTargetString);

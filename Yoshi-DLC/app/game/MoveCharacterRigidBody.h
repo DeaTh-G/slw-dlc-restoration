@@ -20,6 +20,24 @@ namespace app
             {
                 int field_00;
                 int field_04;
+
+                Description(int a1, int a2)
+                {
+                    field_00 = a1;
+                    field_04 = a2;
+                }
+            };
+
+            struct FunctionPair
+            {
+                void* field_00;
+                void* field_04;
+            };
+
+            struct unkStruct
+            {
+                int field_00;
+                float field_04;
             };
 
             int field_10;
@@ -39,10 +57,8 @@ namespace app
             int field_E4;
             int field_E8;
             int field_EC;
-            int field_F0;
-            int field_F4;
-            int field_F8;
-            int field_FC;
+            FunctionPair field_F0;
+            unkStruct field_F8;
             int field_100;
             int field_104;
             char field_108;
@@ -95,6 +111,13 @@ namespace app
             {
                 field_80.field_10 = range * range;
                 field_80.field_14 = range * range;
+            }
+
+            void SetNotifyMoveRangeOutCallback(FunctionPair a2, unkStruct a3, int a4)
+            {
+                field_F0 = a2;
+                field_F8 = a3;
+                field_100 = a4;
             }
         };
     }
