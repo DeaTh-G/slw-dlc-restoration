@@ -234,7 +234,7 @@ namespace app
                 for (size_t j = 0; j < 2; j++)
                     UvLinkController.Add((int*)info->TexSrtAnimContainer[2 * i + j], Y_ANIM_NAME[i], 0);
 
-            int* gocMovement = GameObject::GetGOC (this, GOCMovementString);
+            int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
             if (gocMovement)
             {
                 unsigned int random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
