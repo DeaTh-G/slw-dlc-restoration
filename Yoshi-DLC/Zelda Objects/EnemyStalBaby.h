@@ -622,10 +622,10 @@ namespace app
                 Eigen::Vector4f(offsetAppear.X, offsetAppear.Y, offsetAppear.Z, 1)).head<3>();
             csl::math::Vector3 rayBasePosition { rayBase.x(), rayBase.y(), rayBase.z() };
 
-            csl::math::Vector3 transformCol1 = { -m.data[0][1], m.data[1][1], -m.data[2][1] };
-            math::Vector3Scale(&transformCol1, 50, &transformCol1);
-            math::Vector3Add(&rayBasePosition, &transformCol1, &rayEndPosition);
-            math::Vector3Subtract(&rayBasePosition, &transformCol1, &rayStartPosition);
+            csl::math::Vector3 leftVector = { -m.data[0][1], m.data[1][1], -m.data[2][1] };
+            math::Vector3Scale(&leftVector, 50, &leftVector);
+            math::Vector3Add(&rayBasePosition, &leftVector, &rayEndPosition);
+            math::Vector3Subtract(&rayBasePosition, &leftVector, &rayStartPosition);
             int* rayResult = ObjUtil::RaycastNearestCollision(&m, (GameDocument*)field_24[1], &rayEndPosition, &rayStartPosition, 0xC996);
             offsetAppear = csl::math::Vector3(m.data[0][0], m.data[0][1], m.data[0][2]);
             fnd::GOCTransform::SetLocalTranslation((int*)gocTransform, &offsetAppear);
