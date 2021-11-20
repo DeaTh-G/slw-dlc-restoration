@@ -187,8 +187,8 @@ namespace app
             }
 
             message.SetReply((csl::math::Vector3*)(gocTransform + 0x18), 1);
-            CSetObjectListener::SetStatusRetire(this);
-            GameObject::Kill(this);
+            SetStatusRetire();
+            GameObject::Kill();
         }
     };
 

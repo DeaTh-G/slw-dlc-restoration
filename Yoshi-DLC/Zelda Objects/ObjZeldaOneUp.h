@@ -149,7 +149,7 @@ namespace app
                 return;
 
             game::GOCEffect::CreateEffect(gocEffect, "ef_ob_com_yh1_1up");
-            GameObject::Kill(this);
+            GameObject::Kill();
         }
 
         static ObjZeldaOneUp* Create(GameDocument& gameDocument, CInfo& info)

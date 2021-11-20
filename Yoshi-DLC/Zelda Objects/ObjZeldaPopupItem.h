@@ -238,7 +238,7 @@ namespace app
     private:
         void toKill()
         {
-            GameObject::Kill(this);
+            GameObject::Kill();
         }
     };
 

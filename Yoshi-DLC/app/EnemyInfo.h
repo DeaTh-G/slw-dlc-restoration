@@ -5,13 +5,13 @@ namespace app
     class EnemyInfo : public CObjInfo
     {
     private:
-        inline static FUNCTION_PTR(void, __thiscall, f_Load, ASLR(0x00671D90), EnemyInfo* This, int& loader);
+        inline static FUNCTION_PTR(void, __thiscall, f_Load, ASLR(0x00671D90), EnemyInfo* This, app::CObjInfoFileLoader& loader);
 
     public:
         const char* PacfileName;
         const char* SoundfileName{};
 
-        void Load(int& loader) override
+        void Load(app::CObjInfoFileLoader& loader) override
         {
             f_Load(this, loader);
         }

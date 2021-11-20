@@ -10,11 +10,11 @@ namespace app
         inline static FUNCTION_PTR(void, __thiscall, __ct, ASLR(0x0049CD60), GameObject* This);
         inline static FUNCTION_PTR(void, __thiscall, __dt, ASLR(0x0049D070), GameObject* This, size_t flags);
         inline static FUNCTION_PTR(GameObject*, __cdecl, f_new, ASLR(0x0049CAD0), size_t size);
+        inline static FUNCTION_PTR(bool, __thiscall, f_Kill, ASLR(0x0049CCA0), GameObject* This);
 
     public:
         inline static FUNCTION_PTR(void, __thiscall, SetObjectCategory, ASLR(0x0049CAB0), GameObject* This, char category);
         inline static FUNCTION_PTR(int*, __thiscall, GetGOC, ASLR(0x0049D430), GameObject* This, char* component);
-        inline static FUNCTION_PTR(bool, __thiscall, Kill, ASLR(0x0049CCA0), GameObject* This);
         inline static FUNCTION_PTR(bool, __thiscall, Sleep, ASLR(0x0049CCB0), GameObject* This);
         inline static FUNCTION_PTR(int, __thiscall, Resume, ASLR(0x0049CCC0), GameObject* This);
         inline static FUNCTION_PTR(bool, __thiscall, IsKilled, ASLR(0x0079A150), GameObject* This);
@@ -43,6 +43,8 @@ namespace app
         {
             (*(*(csl::fnd::IAllocator***)ASLR(0x00FD3FC4) + 3))->Free(obj);
         }
+
+        bool Kill() { return f_Kill(this); }
     };
 
     class GameObjectHandleBase

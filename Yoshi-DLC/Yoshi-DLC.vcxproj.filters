@@ -771,6 +771,15 @@
     <ClInclude Include="Zelda Objects\EnemyStalBaby.h">
       <Filter>Header Files\Zelda Objects</Filter>
     </ClInclude>
+    <ClInclude Include="app\game\MoveCharacterRigidBody.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\MovementUtility.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\BarrierChecker.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">

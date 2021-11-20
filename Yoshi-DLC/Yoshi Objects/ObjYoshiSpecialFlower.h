@@ -123,8 +123,8 @@ namespace app
             if (gocSound)
                 game::GOCSound::Play(gocSound, deviceTag, "obj_specialflower_get", 0);
 
-            GameObject::Kill(this);
-            CSetObjectListener::SetStatusRetire(this);
+            GameObject::Kill();
+            SetStatusRetire();
         }
     };
 

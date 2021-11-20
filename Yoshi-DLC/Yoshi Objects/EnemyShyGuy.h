@@ -156,7 +156,7 @@ namespace app
                 ObjUtil::SetupCollisionFilter(9, &collisionInfo);
                 collisionInfo.field_08 = 0x20000;
                 collisionInfo.field_04 |= 1;
-                collisionInfo.Parent = EnemyBase::GetCenterPositionFrame(this);
+                collisionInfo.Parent = GetCenterPositionFrame();
 
                 game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
             }
@@ -555,8 +555,8 @@ namespace app
             void* enemyManager = EnemyManager::GetService((GameDocument*)field_24[1]);
             EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
             EnemyBase::ProcMission(this, &message);
-            CSetObjectListener::SetStatusRetire(this);
-            GameObject::Kill(this);
+            SetStatusRetire();
+            Kill();
         }
 
         void ProcMsgKick(xgame::MsgKick& message)
@@ -581,8 +581,8 @@ namespace app
             EnemyBase::CreateEnemyBlowOffObject(this, &blowOffInfo);
             xgame::MsgKick::SetReplyForSucceed(&message);
             ObjUtil::AddScore(this, "SHYGUY", &message);
-            CSetObjectListener::SetStatusRetire(this);
-            GameObject::Kill(this);
+            SetStatusRetire();
+            Kill();
         }
 
         void ProcMsgNotifyObjectEvent(xgame::MsgNotifyObjectEvent& message)

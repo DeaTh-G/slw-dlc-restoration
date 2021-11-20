@@ -558,7 +558,7 @@ namespace app
                     void* enemyManager = EnemyManager::GetService((GameDocument*)obj->field_24[1]);
                     EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
                     EnemyBase::ProcMission(obj, &damageMessage);
-                    CSetObjectListener::SetStatusRetire(obj);
+                    obj->SetStatusRetire();
 
                     return 1;
                 };
@@ -830,7 +830,7 @@ namespace app
                 {
                     if (Shots[i].Get())
                     {
-                        Kill((EnemyDekunutsShot*)Shots[i].Get());
+                        (EnemyDekunutsShot*)Shots[i].Get()->Kill();
                         continue;
                     }
                     

@@ -14,5 +14,10 @@ namespace app
             void* service = GameDocument::GetServiceByClass(gameDocument, levelInfo);
             return service;
         }
+
+        bool IsPlayingZeldaEvent()
+        {
+            return ((*(int*)this + 36) & (1 << 20)) != 0;
+        }
     };
 }

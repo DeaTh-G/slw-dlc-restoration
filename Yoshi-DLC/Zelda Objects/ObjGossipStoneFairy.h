@@ -103,7 +103,7 @@ namespace app
 
             if (timeThird >= 3)
             {
-                GameObject::Kill(this);
+                GameObject::Kill();
                 return;
             }
 

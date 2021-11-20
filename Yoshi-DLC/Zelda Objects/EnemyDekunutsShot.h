@@ -212,7 +212,7 @@ namespace app
             {
                 game::GOCSound::Play3D(gocSound, deviceTag, "enm_cmn_bullet_landing", 0);
                 game::GOCEffect::CreateEffect(gocEffect, "ef_dl3_dekunuts_hit");
-                Kill(this);
+                Kill();
             }
         }
 

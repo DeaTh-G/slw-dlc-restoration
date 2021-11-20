@@ -169,11 +169,11 @@ namespace app
         void SetStatusToKill()
         {
             if (IsReset)
-                CSetObjectListener::SetStatusTemporaryRetire(this, ResetTime);
+                SetStatusTemporaryRetire(ResetTime);
             else
-                CSetObjectListener::SetStatusRetire(this);
+                SetStatusRetire();
 
-            GameObject::Kill(this);
+            GameObject::Kill();
         }
 
         void ProcMsgNotifyObjectEvent(xgame::MsgNotifyObjectEvent& message)

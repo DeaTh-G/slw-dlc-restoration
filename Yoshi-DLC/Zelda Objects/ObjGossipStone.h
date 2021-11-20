@@ -428,8 +428,8 @@ namespace app
             fnd::GOCTransform::SetLocalTranslation(gocTransform, &position);
             if (Time >= 5)
             {
-                CSetObjectListener::SetStatusRetire(this);
-                GameObject::Kill(this);
+                SetStatusRetire();
+                GameObject::Kill();
                 State = ObjGossipStoneState::STATE_LOST;
             }
         }

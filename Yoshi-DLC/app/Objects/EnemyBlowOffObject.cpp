@@ -11,7 +11,7 @@ HOOK(char, __fastcall, EnemyBlowOffObjectOnDeadHook, ASLR(0x0072BA70), app::Game
 
         void* enemyManager = app::EnemyManager::GetService(*app::Document);
         app::EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
-        app::GameObject::Kill(This);
+        This->Kill();
     }
 
     return originalEnemyBlowOffObjectOnDeadHook(This, edx, a2);

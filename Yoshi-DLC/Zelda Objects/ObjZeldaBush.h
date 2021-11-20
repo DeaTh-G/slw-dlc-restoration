@@ -205,8 +205,8 @@ namespace app
 
             app::game::GOCEffect::CreateEffect(gocEffect, Type == ObjZeldaBushType::A ? "ef_dl3_bush_break_a" : "ef_dl3_bush_break_b");
 
-            CSetObjectListener::SetStatusRetire(this);
-            GameObject::Kill(this);
+            SetStatusRetire();
+            GameObject::Kill();
 
             if (random < 60)
             {

@@ -214,8 +214,8 @@ namespace app
 
             zelda_popupitem::ZeldaPopupItemCinfo popupInfo { (csl::math::Matrix34*)(gocTransform + 0x44), (ObjZeldaPopupItemType)((int)Type), playerNo };
             zelda_popupitem::CreateZeldaPopupItem((GameDocument&)field_24[1], &popupInfo);
-            GameObject::Kill(this);
-            CSetObjectListener::SetStatusRetire(this);
+            GameObject::Kill();
+            SetStatusRetire();
         }
 
         void StateInactive(const fnd::SUpdateInfo& updateInfo)

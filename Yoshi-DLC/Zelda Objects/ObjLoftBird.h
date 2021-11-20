@@ -331,8 +331,8 @@ namespace app
             float nextPos = (MovementSpeed * updateInfo.deltaTime) + PathEvaluator.field_08;
             if (nextPos >= pathLength || nextPos >= EndDistance)
             {
-                CSetObjectListener::SetStatusRetire(this);
-                GameObject::Kill(this);
+                SetStatusRetire();
+                GameObject::Kill();
             }
             else
             {
@@ -438,8 +438,8 @@ namespace app
         {
             if (IsActive)
             {
-                CSetObjectListener::SetStatusRetire(this);
-                GameObject::Kill(this);
+                SetStatusRetire();
+                GameObject::Kill();
             }
         }
 

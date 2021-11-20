@@ -184,8 +184,8 @@ namespace app
 
                 game::GOCSound::Play(gocSound, deviceTag, "obj_zeldapuzzle_solution", 0);
                 game::GOCSound::Play3D(gocSound, deviceTag, "obj_zeldabreakfloor", 0);
-                CSetObjectListener::SetStatusRetire(this);
-                GameObject::Kill(this);
+                SetStatusRetire();
+                GameObject::Kill();
             }
         }
     };

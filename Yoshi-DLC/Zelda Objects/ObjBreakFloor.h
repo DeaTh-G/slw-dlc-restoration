@@ -220,8 +220,8 @@ namespace app
                         ObjCrystalFloorBaseUtil::CreateDownDebris((int*)&Parts[i].Transform, &message.field_30, &info->Debris, (GameDocument*)field_24[1]);
                 }
 
-                CSetObjectListener::SetStatusRetire(this);
-                GameObject::Kill(this);
+                SetStatusRetire();
+                GameObject::Kill();
             }
         }
     };

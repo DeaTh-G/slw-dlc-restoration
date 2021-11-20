@@ -10,12 +10,12 @@ namespace app
         inline static FUNCTION_PTR(CSetObjectListener*, __thiscall, __dt, ASLR(0x00844A70), CSetObjectListener* This, int a2);
         inline static FUNCTION_PTR(uint32_t, __thiscall, f_GetExtUserData, ASLR(0x00844830), CSetObjectListener* This, int a2);
         inline static FUNCTION_PTR(uint32_t, __thiscall, f_SetExtUserData, ASLR(0x00844850), CSetObjectListener* This, int a2, int a3);
+        inline static FUNCTION_PTR(void, __thiscall, f_SetStatusRetire, ASLR(0x00844790), CSetObjectListener* This);
+        inline static FUNCTION_PTR(void, __thiscall, f_SetStatusTemporaryRetire, ASLR(0x008447B0), CSetObjectListener* This, float a2);
 
     public:
         char field_031C[0x80]{};
 
-        inline static FUNCTION_PTR(void, __thiscall, SetStatusRetire, ASLR(0x00844790), CSetObjectListener* This);
-        inline static FUNCTION_PTR(void, __thiscall, SetStatusTemporaryRetire, ASLR(0x008447B0), CSetObjectListener* This, float a2);
         inline static FUNCTION_PTR(CSetObjectListener*, __thiscall, GetParentObject, ASLR(0x00844AE0), CSetObjectListener* This);
 
     protected:
@@ -39,5 +39,7 @@ namespace app
 
         uint32_t GetExtUserData(int a1) { return f_GetExtUserData(this, a1); }
         uint32_t SetExtUserData(int a1, int a2) { return f_SetExtUserData(this, a1, a2); }
+        void SetStatusRetire() { return f_SetStatusRetire(this); }
+        void SetStatusTemporaryRetire(float time) { return f_SetStatusTemporaryRetire(this, time); }
     };
 }

@@ -53,7 +53,7 @@ namespace app
             if (!LayerController->IsEndReservedAnimation())
                 return;
 
-            Kill(this);
+            Kill();
         }
     };
 }

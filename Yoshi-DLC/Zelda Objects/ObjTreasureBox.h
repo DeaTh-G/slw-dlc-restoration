@@ -607,15 +607,15 @@ namespace app
                 {
                     if (LayerController->IsEndAnimation())
                     {
-                        CSetObjectListener::SetStatusRetire(this);
-                        GameObject::Kill(this);
+                        SetStatusRetire();
+                        GameObject::Kill();
                         return;
                     }
                     return;
                 }
 
-                CSetObjectListener::SetStatusRetire(this);
-                GameObject::Kill(this);
+                SetStatusRetire();
+                GameObject::Kill();
                 return;
             }
             else

@@ -221,6 +221,7 @@
     <ClInclude Include="app\GameModeStageBattle.h" />
     <ClInclude Include="app\GameObject.h" />
     <ClInclude Include="app\GameObject3D.h" />
+    <ClInclude Include="app\game\BarrierChecker.h" />
     <ClInclude Include="app\game\ColliShapeBase.h" />
     <ClInclude Include="app\game\CollisionObjCInfo.h" />
     <ClInclude Include="app\game\CollisionShapeType.h" />
@@ -244,7 +245,9 @@
     <ClInclude Include="app\game\GravityManager.h" />
     <ClInclude Include="app\game\HudLayerController.h" />
     <ClInclude Include="app\game\MoveBound.h" />
+    <ClInclude Include="app\game\MoveCharacterRigidBody.h" />
     <ClInclude Include="app\game\MoveController.h" />
+    <ClInclude Include="app\game\MovementUtility.h" />
     <ClInclude Include="app\game\MovePopup.h" />
     <ClInclude Include="app\game\MoveStraight.h" />
     <ClInclude Include="app\game\MoveVelocityReference.h" />
