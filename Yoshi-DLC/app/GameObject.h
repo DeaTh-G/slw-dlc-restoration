@@ -11,6 +11,7 @@ namespace app
         inline static FUNCTION_PTR(void, __thiscall, __dt, ASLR(0x0049D070), GameObject* This, size_t flags);
         inline static FUNCTION_PTR(GameObject*, __cdecl, f_new, ASLR(0x0049CAD0), size_t size);
         inline static FUNCTION_PTR(bool, __thiscall, f_Kill, ASLR(0x0049CCA0), GameObject* This);
+        inline static FUNCTION_PTR(void, __thiscall, f_Resume, ASLR(0x0049CCC0), GameObject* This);
 
     public:
         inline static FUNCTION_PTR(void, __thiscall, SetObjectCategory, ASLR(0x0049CAB0), GameObject* This, char category);
@@ -45,6 +46,7 @@ namespace app
         }
 
         bool Kill() { return f_Kill(this); }
+        void Resume() { f_Resume(this); }
     };
 
     class GameObjectHandleBase

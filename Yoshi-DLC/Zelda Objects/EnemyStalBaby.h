@@ -304,11 +304,14 @@ namespace app
 
             switch (message.Type)
             {
-            case fnd::PROC_MSG_PL_GET_HOMING_TARGET_INFO:
-                ProcMsgPLGetHomingTargetInfo((xgame::MsgPLGetHomingTargetInfo&)message);
-                return true;
             case fnd::PROC_MSG_KILL:
                 ProcMsgKick((xgame::MsgKick&)message);
+                return true;
+            case fnd::PROC_MSG_NOTIFY_OBJECT_EVENT:
+                ProcMsgNotifyObjectEvent((xgame::MsgNotifyObjectEvent&)message);
+                return true;
+            case fnd::PROC_MSG_PL_GET_HOMING_TARGET_INFO:
+                ProcMsgPLGetHomingTargetInfo((xgame::MsgPLGetHomingTargetInfo&)message);
                 return true;
             default:
                 EnemyBase::ProcessMessage(message);
@@ -953,6 +956,12 @@ namespace app
                 return;
 
             GOCEnemyHsm::ChangeState(gocEnemyHsm, 7);
+        }
+
+        void ProcMsgNotifyObjectEvent(xgame::MsgNotifyObjectEvent& message)
+        {
+            if (message.field_18 == 1)
+                Resume();
         }
     };
 
