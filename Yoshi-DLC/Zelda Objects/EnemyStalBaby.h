@@ -316,7 +316,7 @@ namespace app
             case fnd::PROC_MSG_HIT_EVENT_COLLISION:
                 ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
                 return true;
-            case fnd::PROC_MSG_KILL:
+            case fnd::PROC_MSG_KICK:
                 ProcMsgKick((xgame::MsgKick&)message);
                 return true;
             case fnd::PROC_MSG_NOTIFY_OBJECT_EVENT:
