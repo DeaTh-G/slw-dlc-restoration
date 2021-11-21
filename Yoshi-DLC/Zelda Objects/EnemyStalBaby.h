@@ -641,6 +641,7 @@ namespace app
                 virtual int Leave(EnemyStalBaby* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyStalBaby* obj, float a2) { return EnemyState::Update(this, obj, a2); };
                 virtual bool ProcessMessage(EnemyStalBaby* obj, fnd::Message& message) { return 0; };
+
                 virtual int OnEnter(EnemyStalBaby* obj, int a2)
                 {
                     GOCAnimation = GameObject::GetGOC(obj, GOCAnimationString);
@@ -680,6 +681,10 @@ namespace app
 
             class Gap
             {
+                char field_00[20];
+                int* GocEnemyTarget;
+                float Countdown;
+
             public:
                 virtual ~Gap() {};
                 virtual int Trigger(EnemyStalBaby* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
@@ -688,9 +693,55 @@ namespace app
                 virtual int Leave(EnemyStalBaby* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyStalBaby* obj, float a2) { return EnemyState::Update(this, obj, a2); };
                 virtual bool ProcessMessage(EnemyStalBaby* obj, fnd::Message& message) { return 0; };
-                virtual int OnEnter(EnemyStalBaby* obj, int a2) { return 0; };
+
+                virtual int OnEnter(EnemyStalBaby* obj, int a2)
+                {
+                    int* gocAnimation = GameObject::GetGOC(obj, GOCAnimationString);
+                    if (!gocAnimation)
+                        return 0;
+
+                    game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK");
+
+                    GocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
+                    Countdown = 2;
+
+                    MoveStop(obj);
+
+                    return 1;
+                };
+
                 virtual int OnLeave(EnemyStalBaby* obj, int a2) { return 0; };
-                virtual int Step(EnemyStalBaby* obj, float deltaTime) { return 0; };
+
+                virtual int Step(EnemyStalBaby* obj, float deltaTime)
+                {
+                    csl::math::Vector3 targetPosition{};
+
+                    Countdown -= deltaTime;
+                    if (Countdown > 0)
+                        return 0;
+
+                    int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                    if (!gocEnemyHsm)
+                        return 0;
+
+                    if ((obj->Flags & 1))
+                    {
+                        obj->Flags &= ~1;
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 6);
+                    }
+                    else if (GOCEnemyTarget::IsFindTarget(GocEnemyTarget) &&
+                        GOCEnemyTarget::GetTargetCenterPosition(GocEnemyTarget, &targetPosition) &&
+                        IsInRangeAttack(obj, targetPosition))
+                    {
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 3);
+                    }
+                    else
+                    {
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 2);
+                    }
+
+                    return 0;
+                };
             };
 
             class Stagger
