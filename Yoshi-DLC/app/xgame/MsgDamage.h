@@ -5,6 +5,7 @@ namespace app
     namespace AttackType
     {
         inline static FUNCTION_PTR(bool, __cdecl, IsDamaged, ASLR(0x00844C60), int AttackType, int a2);
+        inline static FUNCTION_PTR(bool, __cdecl, And, ASLR(0x00844C30), int AttackType, int a2);
     }
 
     namespace xgame

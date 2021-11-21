@@ -223,6 +223,7 @@
     <ClInclude Include="app\GameObject3D.h" />
     <ClInclude Include="app\game\BarrierChecker.h" />
     <ClInclude Include="app\game\ColliShapeBase.h" />
+    <ClInclude Include="app\game\ColliShapeHavok.h" />
     <ClInclude Include="app\game\CollisionObjCInfo.h" />
     <ClInclude Include="app\game\CollisionShapeType.h" />
     <ClInclude Include="app\game\GOCAnimationContainer.h" />

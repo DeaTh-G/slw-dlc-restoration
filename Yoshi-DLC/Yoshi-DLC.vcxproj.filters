@@ -780,6 +780,9 @@
     <ClInclude Include="app\game\BarrierChecker.h">
       <Filter>Header Files\app\game</Filter>
     </ClInclude>
+    <ClInclude Include="app\game\ColliShapeHavok.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">

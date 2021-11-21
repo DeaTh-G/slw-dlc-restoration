@@ -304,6 +304,9 @@ namespace app
 
             switch (message.Type)
             {
+            case fnd::PROC_MSG_DAMAGE:
+                ProcMsgDamage((xgame::MsgDamage&)message);
+                return true;
             case fnd::PROC_MSG_DLC_ZELDA_NOTICE_ACTIVE_ENEMY:
                 ProcMsgDlcZeldaNoticeActiveEnemy((xgame::MsgDlcZeldaNoticeActiveEnemy&)message);
                 return true;
@@ -444,10 +447,6 @@ namespace app
 
                     csl::math::Matrix34 m{};
                     m = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
-                    Eigen::MatrixXf transformMatrix(4, 4);
-                    for (size_t i = 0; i < 4; i++)
-                        for (size_t j = 0; j < 4; j++)
-                            transformMatrix(i, j) = m.data[i][j];
 
                     csl::math::Vector3 position = Vector3(m.data[3][0], m.data[3][1], m.data[3][2]);
                     math::Vector3Subtract(&targetPosition, &position, &position);
@@ -945,6 +944,98 @@ namespace app
             }
         }
 
+        void ProcMsgDamage(xgame::MsgDamage& message)
+        {
+            if (!EnemyUtil::IsDamage(message.field_2C, 0, message.AttackType))
+                return;
+
+            int* gocEnemyHsm = GameObject::GetGOC(this, GOCEnemyHsmString);
+            if (!gocEnemyHsm)
+                return;
+
+            fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            if (EnemyUtil::IsFatalDamage(message) || GOCEnemyHsm::GetCurrentStateID(gocEnemyHsm) == 5)
+            {
+                csl::math::Vector3 position{};
+
+                math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)((int*)gocTransform + 0x44), &position);
+                message.SetReply(&position, 1);
+                enemy::DeadEffectCInfo effectInfo{};
+                enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, &message);
+                enemy::DeadEffectCInfo::SetZeldaStalBaby(&effectInfo);
+
+                void* enemyManager = EnemyManager::GetService((GameDocument*)field_24[1]);
+                EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
+                EnemyBase::ProcMission(this, &message);
+                ObjUtil::AddScore(this, "STALBABY", &message);
+
+                GOCEnemyHsm::ChangeState(gocEnemyHsm, 7);
+            }
+            else if (message.field_28 == 3)
+            {
+                csl::math::Vector3 position{};
+
+                math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)((int*)gocTransform + 0x44), &position);
+                message.SetReply(&position, 1);
+                ObjUtil::AddScore(this, "STALBABY", &message);
+                enemy::DeadEffectCInfo effectInfo{};
+                enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, &message);
+                enemy::DeadEffectCInfo::SetZeldaStalBaby(&effectInfo);
+
+                void* enemyManager = EnemyManager::GetService((GameDocument*)field_24[1]);
+                EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
+                EnemyBase::ProcMission(this, &message);
+                ObjUtil::AddScore(this, "STALBABY", &message);
+
+                GOCEnemyHsm::ChangeState(gocEnemyHsm, 7);
+            }
+            else
+            {
+                if (GOCEnemyHsm::GetCurrentStateID(gocEnemyHsm) == 7)
+                    return;
+            
+                int* colli1 = fnd::Handle::Get(&message.field_18);
+                int* colli2 = fnd::Handle::Get(&message.field_20);
+                float contactPoint[9]{};
+                if (colli1 && colli2 && game::ColliShapeHavok::GetClosestPoint(colli1, colli2, contactPoint))
+                {
+                    if (AttackType::And(message.AttackType, 64))
+                        message.field_90 |= 1;
+
+                    csl::math::Vector3 position{};
+                    math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)((int*)gocTransform + 0x44), &position);
+                    message.SetReply(&position, 0);
+
+                    int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
+                    if (!gocEffect)
+                        return;
+
+                    csl::math::Matrix34 m{};
+                    m = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
+                    *(csl::math::Vector3*)(&m.data[3][0]) = *(csl::math::Vector3*)&contactPoint;
+                    game::GOCEffect::CreateEffectWorld(gocEffect, "ef_en_com_wt1_hit", &m, 1);
+                }
+
+                int* gocEnemyTarget = GameObject::GetGOC(this, GOCEnemyTargetString);
+                if (!gocEnemyTarget)
+                    return;
+
+                if (GOCEnemyTarget::IsFindTarget(gocEnemyTarget))
+                    GOCEnemyTarget::LockTarget(gocEnemyTarget);
+            
+                int deviceTag[3]{};
+                int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+                if (!gocSound)
+                    return;
+
+                game::GOCSound::Play3D(gocSound, deviceTag, "enm_cmn_damage", 0);
+                GOCEnemyHsm::ChangeState(gocEnemyHsm, 5);
+            }
+        }
+
         void ProcMsgDlcZeldaNoticeActiveEnemy(xgame::MsgDlcZeldaNoticeActiveEnemy& message)
         {
             int* gocEnemyHsm = GameObject::GetGOC(this, GOCEnemyHsmString);
@@ -1035,7 +1126,7 @@ namespace app
 
         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
         {
-            if (!((Flags >> 3) & 1))
+            if (((Flags >> 3) & 1))
                 return;
          
             csl::math::Vector3 vector{};

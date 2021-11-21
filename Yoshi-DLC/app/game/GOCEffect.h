@@ -51,6 +51,7 @@ namespace app
             inline static FUNCTION_PTR(void, __thiscall, CreateEffectEx, ASLR(0x004BDA20), int* This, EffectCreateInfo* effectInfo);
             inline static FUNCTION_PTR(Effect::CEffectHandle*, __thiscall, CreateEffectLoop, ASLR(0x004BDFD0), int* This, Effect::CEffectHandle* a2, const char* effectName);
             inline static FUNCTION_PTR(void, __thiscall, CreateEffectLoopEx, ASLR(0x004BDDC0), int* This, Effect::CEffectHandle* a2, EffectCreateInfo* effectInfo);
+            inline static FUNCTION_PTR(void, __thiscall, CreateEffectWorld, ASLR(0x004BD330), int* This, const char* name, csl::math::Matrix34* a3, float a4);
         };
     }
 }
