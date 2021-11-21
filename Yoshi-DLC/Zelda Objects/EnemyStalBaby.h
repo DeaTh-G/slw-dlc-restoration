@@ -300,6 +300,21 @@ namespace app
             fnd::GOComponent::EndSetup(this); 
         }
 
+        bool ProcessMessage(fnd::Message& message) override
+        {
+            if (PreProcessMessage(message))
+                return true;
+
+            switch (message.Type)
+            {
+            case fnd::PROC_MSG_PL_GET_HOMING_TARGET_INFO:
+                ProcMsgPLGetHomingTargetInfo((xgame::MsgPLGetHomingTargetInfo&)message);
+                return true;
+            default:
+                EnemyBase::ProcessMessage(message);
+                return true;
+            }
+        }
 
         class State
         {
@@ -916,6 +931,14 @@ namespace app
                     math::Vector3Rotate(turnDirection, &rotation, &forwardVector);
                 }
             }
+        }
+
+        void ProcMsgPLGetHomingTargetInfo(xgame::MsgPLGetHomingTargetInfo& message)
+        {
+            if (((Flags >> 2) & 1))
+                EnemyBase::ProcessMessage(message);
+            else
+                message.field_18 |= 1;
         }
     };
 
