@@ -413,6 +413,7 @@ namespace app
                 virtual int Enter(EnemyStalBaby* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
                 virtual int Leave(EnemyStalBaby* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyStalBaby* obj, float a2) { return EnemyState::Update(this, obj, a2); };
+
                 virtual bool ProcessMessage(EnemyStalBaby* obj, fnd::Message& message)
                 {
                     // No message is arriving
@@ -740,12 +741,18 @@ namespace app
                         GOCEnemyHsm::ChangeState(gocEnemyHsm, 2);
                     }
 
-                    return 0;
+                    return 1;
                 };
             };
 
             class Stagger
             {
+                char field_00[20];
+                int* GOCAnimation;
+                float Countdown;
+                char field_1C;
+                INSERT_PADDING(3);
+
             public:
                 virtual ~Stagger() {};
                 virtual int Trigger(EnemyStalBaby* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
@@ -754,13 +761,69 @@ namespace app
                 virtual int Leave(EnemyStalBaby* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyStalBaby* obj, float a2) { return EnemyState::Update(this, obj, a2); };
                 virtual bool ProcessMessage(EnemyStalBaby* obj, fnd::Message& message) { return 0; };
-                virtual int OnEnter(EnemyStalBaby* obj, int a2) { return 0; };
+
+                virtual int OnEnter(EnemyStalBaby* obj, int a2)
+                {
+                    GOCAnimation = GameObject::GetGOC(obj, GOCAnimationString);
+                    if (!GOCAnimation)
+                        return 0;
+
+                    game::GOCAnimationScript::ChangeAnimation(GOCAnimation, "HITBACK");
+                    Countdown = 4;
+                    field_1C = 0;
+                    MoveStop(obj);
+
+                    return 1;
+                };
+
                 virtual int OnLeave(EnemyStalBaby* obj, int a2) { return 0; };
-                virtual int Step(EnemyStalBaby* obj, float deltaTime) { return 0; };
+
+                virtual int Step(EnemyStalBaby* obj, float deltaTime)
+                {
+                    Countdown -= deltaTime;
+                    if (Countdown > 0)
+                        return 0;
+
+                    int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                    if (!gocEnemyHsm)
+                        return 0;
+
+                    if (!field_1C)
+                    {
+                        game::GOCAnimationScript::ExitLoop(GOCAnimation);
+                        field_1C = 1;
+                        return 0;
+                    }
+
+                    if (!game::GOCAnimationScript::IsFinished(GOCAnimation))
+                        return 0;
+
+                    if ((obj->Flags & 1))
+                    {
+                        obj->Flags &= ~1;
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 6);
+                        return 0;
+                    }
+
+                    int* gocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
+                    if (gocEnemyTarget && GOCEnemyTarget::IsFindTarget(gocEnemyTarget))
+                    {
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 2);
+                        return 0;
+                    }
+
+                    GOCEnemyHsm::ChangeState(gocEnemyHsm, 0);
+
+                    return 1;
+                };
             };
 
             class Hide
             {
+                char field_00[20];
+                Effect::CEffectHandle EffectHandle{};
+                float Time;
+
             public:
                 virtual ~Hide() {};
                 virtual int Trigger(EnemyStalBaby* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
@@ -768,14 +831,89 @@ namespace app
                 virtual int Enter(EnemyStalBaby* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
                 virtual int Leave(EnemyStalBaby* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyStalBaby* obj, float a2) { return EnemyState::Update(this, obj, a2); };
-                virtual bool ProcessMessage(EnemyStalBaby* obj, fnd::Message& message) { return 0; };
-                virtual int OnEnter(EnemyStalBaby* obj, int a2) { return 0; };
+
+                virtual bool ProcessMessage(EnemyStalBaby* obj, fnd::Message& message)
+                {
+                    if (message.Type == fnd::PROC_MSG_DLC_ZELDA_NOTICE_STOP_ENEMY)
+                        return ProcMsgDlcZeldaNoticeStopEnemy((xgame::MsgDlcZeldaNoticeStopEnemy&)message);
+                    else if (message.Type == fnd::PROC_MSG_DLC_ZELDA_NOTICE_ACTIVE_ENEMY)
+                        return ProcMsgDlcZeldaNoticeActiveEnemy((xgame::MsgDlcZeldaNoticeActiveEnemy&)message);
+                    else
+                        return false;
+                    return 0;
+                };
+
+                virtual int OnEnter(EnemyStalBaby* obj, int a2)
+                {
+                    int* gocAnimation = GameObject::GetGOC(obj, GOCAnimationString);
+                    if (!gocAnimation)
+                        return 0;
+
+                    game::GOCAnimationScript::ChangeAnimation(gocAnimation, "IDLE");
+                    obj->SetEnableCollision(false, 0);
+
+                    int* gocEffect = GameObject::GetGOC(obj, GOCEffectString);
+                    if (!gocEffect)
+                        return 0;
+
+                    game::GOCEffect::CreateEffectLoop(gocEffect, &EffectHandle, "ef_dl3_stalbaby_appear");
+
+                    MoveStop(obj);
+
+                    return 0;
+                };
+
                 virtual int OnLeave(EnemyStalBaby* obj, int a2) { return 0; };
-                virtual int Step(EnemyStalBaby* obj, float deltaTime) { return 0; };
+
+                virtual int Step(EnemyStalBaby* obj, float deltaTime)
+                {
+                    Time += deltaTime;
+                    float heightOffset = -(Time * 30);
+                    csl::math::Vector3 height { 0, heightOffset, 0 };
+
+                    int* gocVisual = GameObject::GetGOC(obj, GOCVisual);
+                    if (!gocVisual)
+                        return 0;
+
+                    fnd::GOCVisualTransformed::SetLocalTranslation(gocVisual, &height);
+
+                    int* gocShadow = GameObject::GetGOC(obj, GOCShadowString);
+                    if (!gocShadow)
+                        return 0;
+
+                    game::GOCShadowSimple::SetLocalOffsetPosition(gocShadow, &height);
+
+                    if (heightOffset <= -15)
+                    {
+                        EffectHandle.Stop(0);
+                        obj->OnDead();
+                    }
+
+                    return 1;
+                };
+
+            private:
+                bool ProcMsgDlcZeldaNoticeStopEnemy(xgame::MsgDlcZeldaNoticeStopEnemy& message)
+                {
+                    EffectHandle.SetVisible(false);
+                    return true;
+                }
+
+                bool ProcMsgDlcZeldaNoticeActiveEnemy(xgame::MsgDlcZeldaNoticeActiveEnemy& message)
+                {
+                    EffectHandle.SetVisible(true);
+                    return true;
+                }
             };
 
             class Dead
             {
+                char field_00[20];
+                int* GOCAnimation;
+                float Time;
+                char field_1C;
+                INSERT_PADDING(3);
+
             public:
                 virtual ~Dead() {};
                 virtual int Trigger(EnemyStalBaby* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
@@ -784,9 +922,66 @@ namespace app
                 virtual int Leave(EnemyStalBaby* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyStalBaby* obj, float a2) { return EnemyState::Update(this, obj, a2); };
                 virtual bool ProcessMessage(EnemyStalBaby* obj, fnd::Message& message) { return 0; };
-                virtual int OnEnter(EnemyStalBaby* obj, int a2) { return 0; };
+
+                virtual int OnEnter(EnemyStalBaby* obj, int a2)
+                {
+                    GOCAnimation = GameObject::GetGOC(obj, GOCAnimationString);
+                    if (!GOCAnimation)
+                        return 0;
+
+                    Time = 0;
+                    field_1C = (obj->Flags >> 1) & 1;
+                    if (field_1C)
+                        game::GOCAnimationScript::ChangeAnimation(GOCAnimation, "DEAD_NO_HEAD");
+
+
+                    int* gocEffect = GameObject::GetGOC(obj, GOCEffectString);
+                    if (!gocEffect)
+                        return 0;
+
+                    game::GOCEffect::CreateEffect(gocEffect, "ef_dl3_stalbaby_dead");
+                    obj->SetEnableCollision(false, 0);
+                    MoveStop(obj);
+
+                    return 0;
+                };
+
                 virtual int OnLeave(EnemyStalBaby* obj, int a2) { return 0; };
-                virtual int Step(EnemyStalBaby* obj, float deltaTime) { return 0; };
+
+                virtual int Step(EnemyStalBaby* obj, float deltaTime)
+                {
+                    if (field_1C)
+                    {
+                        EnemyStalBabyInfo* info = (EnemyStalBabyInfo*)ObjUtil::GetObjectInfo((GameDocument*)obj->field_24[1], "EnemyStalBabyInfo");
+
+                        int* gocVisual = GameObject::GetGOC(obj, GOCVisual);
+                        if (!gocVisual)
+                            return 0;
+
+                        math::Transform transform{};
+                        fnd::GOCVisualModel::GetNodeTransform(gocVisual, 0, "head", &transform);
+
+                        csl::math::Matrix34 m{};
+                        math::Transform::GetTransformMatrix(&transform, &m);
+
+                        EnemyBlowOffObjectCInfo blowOffInfo{};
+                        EnemyBlowOffObjectCInfo::__ct(&blowOffInfo);
+                        blowOffInfo.Model = info->HeadModel;
+                        blowOffInfo.field_10 = m;
+                        blowOffInfo.field_60 = 4;
+                        blowOffInfo.field_6C = 5;
+                        blowOffInfo.field_70 = obj->deathPosition;
+                        blowOffInfo.field_80 = 0;
+
+                        EnemyBase::CreateEnemyBlowOffObject(obj, &blowOffInfo);
+
+                        field_1C = 0;
+                    }
+
+                    if (game::GOCAnimationScript::IsFinished(GOCAnimation))
+                        obj->OnDead();
+                    return 1;
+                };
             };
 
         private:
@@ -842,6 +1037,21 @@ namespace app
     private:
         void AttackCallback(int a1, int a2, int a3)
         {
+            int* gocCollider = GameObject::GetGOC((GameObject*)((char*)this + 1), GOCColliderString);
+            if (!gocCollider)
+                return;
+
+            if (!a2)
+            {
+                if (a3 == 1)
+                {
+                    ObjUtil::SetEnableColliShape(gocCollider, 1, false);
+                }
+                else
+                {
+                    ObjUtil::SetEnableColliShape(gocCollider, 1, true);
+                }
+            }
         }
 
         void SoundCallback(int a1, int a2, int a3)
