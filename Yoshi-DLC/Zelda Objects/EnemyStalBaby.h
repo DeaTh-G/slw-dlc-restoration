@@ -304,6 +304,9 @@ namespace app
 
             switch (message.Type)
             {
+            case fnd::PROC_MSG_DLC_ZELDA_NOTICE_ACTIVE_ENEMY:
+                ProcMsgDlcZeldaNoticeActiveEnemy((xgame::MsgDlcZeldaNoticeActiveEnemy&)message);
+                return true;
             case fnd::PROC_MSG_DLC_ZELDA_NOTICE_STOP_ENEMY:
                 ProcMsgDlcZeldaNoticeStopEnemy((xgame::MsgDlcZeldaNoticeStopEnemy&)message);
                 return true;
@@ -942,6 +945,50 @@ namespace app
             }
         }
 
+        void ProcMsgDlcZeldaNoticeActiveEnemy(xgame::MsgDlcZeldaNoticeActiveEnemy& message)
+        {
+            int* gocEnemyHsm = GameObject::GetGOC(this, GOCEnemyHsmString);
+            if (!gocEnemyHsm)
+                return;
+
+            if (!GOCEnemyHsm::GetCurrentStateID(gocEnemyHsm))
+                return;
+
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+            if (!gocVisual)
+                return;
+
+            fnd::GOCVisual::SetVisible(gocVisual, true);
+
+            int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
+            if (!gocShadow)
+                return;
+
+            game::GOCShadow::SetVisible(gocShadow, true);
+
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
+            if (!gocAnimation)
+                return;
+
+            game::GOCAnimationScript::SetSpeed(gocAnimation, 1);
+
+            int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
+            if (!gocMovement)
+                return;
+
+            game::GOCMovement::EnableMovementFlag(gocMovement, false);
+
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+            if (!gocCollider)
+                return;
+
+            game::GOCCollider::SetEnable(gocCollider, 1);
+
+            GOCEnemyHsm::Dispatch(gocEnemyHsm, &message);
+
+            Resume();
+        }
+
         void ProcMsgDlcZeldaNoticeStopEnemy(xgame::MsgDlcZeldaNoticeStopEnemy& message)
         {
             int* gocEnemyHsm = GameObject::GetGOC(this, GOCEnemyHsmString);
@@ -982,6 +1029,8 @@ namespace app
             game::GOCCollider::SetEnable(gocCollider, 0);
 
             GOCEnemyHsm::Dispatch(gocEnemyHsm, &message);
+
+            Sleep(this);
         }
 
         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
