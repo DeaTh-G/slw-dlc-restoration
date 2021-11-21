@@ -8,6 +8,7 @@ namespace app
         {
         private:
             inline static FUNCTION_PTR(void, __thiscall, f_Stop, ASLR(0x0047EEA0), CEffectHandle* This, int a2);
+            inline static FUNCTION_PTR(void, __thiscall, f_SetVisible, ASLR(0x0047EF60), CEffectHandle* This, bool isVisible);
 
         public:
             void* field_00;
@@ -21,10 +22,8 @@ namespace app
                 field_08 = 0;
             }
 
-            void Stop(int a1)
-            {
-                f_Stop(this, a1);
-            }
+            void Stop(int a1) { f_Stop(this, a1); }
+            void SetVisible(bool isVisible) { f_SetVisible(this, isVisible); }
         };
     }
 }

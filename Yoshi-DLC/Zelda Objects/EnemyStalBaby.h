@@ -172,6 +172,7 @@ namespace app
                 game::ColliCapsuleShapeCInfo collisionInfo{};
                 game::GOCCollider::Setup(gocCollider, &shapeCount);
 
+                // Lockon Collider
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_CAPSULE;
                 collisionInfo.MotionType = 2;
                 collisionInfo.Radius = 10;
@@ -182,7 +183,7 @@ namespace app
                 collisionInfo.Parent = GetCenterPositionFrame();
                 int* shape = game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
                 if (shape)
-                    ObjUtil::SetEnableColliShape(shape, 0, 0);
+                    ObjUtil::SetEnableColliShape(gocCollider, 0, false);
 
                 collisionInfo = game::ColliCapsuleShapeCInfo();
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_CAPSULE;
@@ -197,7 +198,7 @@ namespace app
                 collisionInfo.Parent = GetCenterPositionFrame();
                 shape = game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
                 if (shape)
-                    ObjUtil::SetEnableColliShape(shape, 0, 0);
+                    ObjUtil::SetEnableColliShape(gocCollider, 1, false);
 
                 game::CharacterRigidBodyCInfo rigidBodyInfo{};
                 rigidBodyInfo.field_02 = 30;
@@ -209,6 +210,7 @@ namespace app
                 game::CollisionObjCInfo::SetLocalPosition(&rigidBodyInfo, &position);
                 game::GOCCollider::CreateCharacterRigidBody(gocCollider, &rigidBodyInfo);
 
+                // Search Collider
                 collisionInfo = game::ColliCapsuleShapeCInfo();
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_CAPSULE;
                 collisionInfo.MotionType = 2;
@@ -313,10 +315,7 @@ namespace app
                 virtual int Init(EnemyStalBaby* obj) { return 0; };
                 virtual int Enter(EnemyStalBaby* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
                 virtual int Leave(EnemyStalBaby* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
-                virtual int Update(EnemyStalBaby* obj, float a2)
-                {
-                    return EnemyState::Update(this, obj, a2);
-                };
+                virtual int Update(EnemyStalBaby* obj, float a2) { return EnemyState::Update(this, obj, a2); };
                 virtual bool ProcessMessage(EnemyStalBaby* obj, fnd::Message& message) { return 0; };
                 virtual int OnEnter(EnemyStalBaby* obj, int a2)
                 {
@@ -373,7 +372,8 @@ namespace app
             class Find
             {
                 char field_00[20];
-                int GOCAnimation;
+                int* GOCAnimation;
+                Effect::CEffectHandle EffectHandle{};
                 float Time;
 
             public:
@@ -383,16 +383,26 @@ namespace app
                 virtual int Enter(EnemyStalBaby* obj, int a2) { return EnemyState::Enter(this, obj, a2); };
                 virtual int Leave(EnemyStalBaby* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyStalBaby* obj, float a2) { return EnemyState::Update(this, obj, a2); };
-                virtual bool ProcessMessage(EnemyStalBaby* obj, fnd::Message& message) { return 0; };
+                virtual bool ProcessMessage(EnemyStalBaby* obj, fnd::Message& message)
+                {
+                    /*if (message.Type == fnd::PROC_MSG_DLC_ZELDA_NOTICE_STOP_ENEMY)
+                        return ProcMsgDlcZeldaNoticeStopEnemy((xgame::MsgDlcZeldaNoticeStopEnemy&)message);
+                    else if (message.Type == fnd::PROC_MSG_DLC_ZELDA_NOTICE_ACTIVE_ENEMY)
+                        return ProcMsgDlcZeldaNoticeActiveEnemy((xgame::MsgDlcZeldaNoticeActiveEnemy&)message);
+                    else
+                        return false;*/
+                    return 0;
+                };
+
                 virtual int OnEnter(EnemyStalBaby* obj, int a2)
                 {
-                    /*csl::math::Vector3 targetPosition{};
+                    csl::math::Vector3 targetPosition{};
 
                     Time = 0;
                     MoveStop(obj);
 
                     int* gocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
-                    if (gocEnemyTarget)
+                    if (!gocEnemyTarget)
                         return 0;
 
                     if (!GOCEnemyTarget::IsFindTarget(gocEnemyTarget))
@@ -400,11 +410,106 @@ namespace app
 
                     GOCEnemyTarget::GetTargetCenterPosition(gocEnemyTarget, &targetPosition);
 
-                    */
-                    return 0;
+                    fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(obj, GOCTransformString);
+                    if (!gocTransform)
+                        return 0;
+
+                    csl::math::Matrix34 m{};
+                    m = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
+                    Eigen::MatrixXf transformMatrix(4, 4);
+                    for (size_t i = 0; i < 4; i++)
+                        for (size_t j = 0; j < 4; j++)
+                            transformMatrix(i, j) = m.data[i][j];
+
+                    csl::math::Vector3 position = Vector3(m.data[3][0], m.data[3][1], m.data[3][2]);
+                    math::Vector3Subtract(&targetPosition, &position, &position);
+                    if (!math::Vector3NormalizeIfNotZero(&position, &position))
+                        return 0;
+                    
+                    csl::math::Vector3 leftVector = Vector3(m.data[1][0], m.data[1][1], m.data[1][2]);
+                    
+                    if (fabs(math::Vector3DotProduct(&leftVector, &position) >= 0.99999899f))
+                        return 0;
+
+                    csl::math::Vector3 upVector{};
+                    csl::math::Vector3 forwardVector{};
+                    math::Vector3CrossProduct(&leftVector, &position, &upVector);
+                    math::Vector3CrossProduct(&upVector, &leftVector, &forwardVector);
+
+                    *(csl::math::Vector3*)&m.data[0] = upVector;
+                    *(csl::math::Vector3*)&m.data[1] = leftVector;
+                    *(csl::math::Vector3*)&m.data[2] = forwardVector;
+                    *(csl::math::Vector3*)&m.data[3] = Vector3(0, 0, 0);
+                    csl::math::Quaternion rotation = GetRotationFromMatrix(&m);
+                    csl::math::QuaternionNormalize(&rotation, &rotation);
+                    fnd::GOCTransform::SetLocalRotation((int*)gocTransform, &rotation);
+
+                    GOCAnimation = GameObject::GetGOC(obj, GOCAnimationString);
+                    if (!GOCAnimation)
+                        return 0;
+
+                    game::GOCAnimationScript::ChangeAnimation(GOCAnimation, "APPEAR");
+
+                    int deviceTag[3]{};
+                    int* gocSound = GameObject::GetGOC(obj, GOCSoundString);
+                    if (!gocSound)
+                        return 0;
+
+                    game::GOCSound::Play3D(gocSound, deviceTag, "enm_stullbaby_appear", 0);
+
+                    int* gocEffect = GameObject::GetGOC(obj, GOCEffectString);
+                    if (!gocEffect)
+                        return 0;
+
+                    game::GOCEffect::CreateEffectLoop(gocEffect, &EffectHandle, "ef_dl3_stalbaby_appear");
+
+                    return 1;
                 };
-                virtual int OnLeave(EnemyStalBaby* obj, int a2) { return 0; };
-                virtual int Step(EnemyStalBaby* obj, float deltaTime) { return 0; };
+
+                virtual int OnLeave(EnemyStalBaby* obj, int a2)
+                {
+                    obj->SetEnableCollision(1, 0);
+                    return 1;
+                };
+
+                virtual int Step(EnemyStalBaby* obj, float deltaTime)
+                {
+                    Time += deltaTime;
+                    float effectHeight = (Time * 30) - 15;
+                    effectHeight = csl::math::Min(effectHeight, 0);
+                    csl::math::Vector3 height { 0, effectHeight, 0 };
+
+                    int* gocShadow = GameObject::GetGOC(obj, GOCShadowString);
+                    if (!gocShadow)
+                        return 0;
+
+                    game::GOCShadowSimple::SetLocalOffsetPosition(gocShadow, &height);
+
+                    if (effectHeight < 0 || !game::GOCAnimationScript::IsFinished(GOCAnimation))
+                        return 0;
+
+                    EffectHandle.Stop(0);
+
+                    int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                    if (!gocEnemyHsm)
+                        return 0;
+
+                    GOCEnemyHsm::ChangeState(gocEnemyHsm, 2);
+                    return 1;
+                };
+
+            private:
+                bool ProcMsgDlcZeldaNoticeStopEnemy(xgame::MsgDlcZeldaNoticeStopEnemy& message)
+                {
+                    EffectHandle.SetVisible(false);
+                    return true;
+                }
+
+                bool ProcMsgDlcZeldaNoticeActiveEnemy(xgame::MsgDlcZeldaNoticeActiveEnemy& message)
+                {
+                    EffectHandle.SetVisible(true);
+                    return true;
+                }
             };
 
             class Chase
@@ -639,6 +744,21 @@ namespace app
 
         float GetMoveSpeed() { return Speed; }
 
+        void SetEnableCollision(bool a1, int a2)
+        {
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+            if (!gocCollider)
+                return;
+
+            ObjUtil::SetEnableColliShape(gocCollider, 0, a1);
+            ObjUtil::SetEnableColliShape(gocCollider, 1, a2);
+            ObjUtil::SetEnableColliShape(gocCollider, 2, a1);
+
+            if (a1)
+                Flags |= 4;
+            else
+                Flags &= ~4;
+        }
     };
 
     inline static EnemyStalBaby* create_EnemyStalBaby()
