@@ -597,7 +597,7 @@ namespace app
 
         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
         {
-            EnemyBase::SendTouchDamage(this, (xgame::MsgDamage&)message);
+            SendTouchDamage((xgame::MsgDamage&)message);
         }
 
         void NotifyMovementStopCallback()

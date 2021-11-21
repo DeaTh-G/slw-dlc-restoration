@@ -304,6 +304,9 @@ namespace app
 
             switch (message.Type)
             {
+            case fnd::PROC_MSG_HIT_EVENT_COLLISION:
+                ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
+                return true;
             case fnd::PROC_MSG_KILL:
                 ProcMsgKick((xgame::MsgKick&)message);
                 return true;
@@ -936,12 +939,30 @@ namespace app
             }
         }
 
-        void ProcMsgPLGetHomingTargetInfo(xgame::MsgPLGetHomingTargetInfo& message)
+        void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
         {
-            if (((Flags >> 2) & 1))
-                EnemyBase::ProcessMessage(message);
+            if (!((Flags >> 3) & 1))
+                return;
+         
+            csl::math::Vector3 vector{};
+
+            if (ObjUtil::CheckShapeUserID(message.field_18, 1))
+            {
+                xgame::MsgDamage msgDamage { 3, 8, 2, &message, &vector };
+                SendMessageImm(message.ActorID, &msgDamage);
+
+                int deviceTag[3]{};
+                int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+                if (!gocSound)
+                    return;
+
+                game::GOCSound::Play3D(gocSound, deviceTag, "enm_pawn_punch_hit", 0);
+            }
             else
-                message.field_18 |= 1;
+            {
+                if (!ObjUtil::CheckShapeUserID(message.field_18, 3))
+                    SendTouchDamage((xgame::MsgDamage&)message);
+            }
         }
 
         void ProcMsgKick(xgame::MsgKick& message)
@@ -962,6 +983,14 @@ namespace app
         {
             if (message.field_18 == 1)
                 Resume();
+        }
+
+        void ProcMsgPLGetHomingTargetInfo(xgame::MsgPLGetHomingTargetInfo& message)
+        {
+            if (((Flags >> 2) & 1))
+                EnemyBase::ProcessMessage(message);
+            else
+                message.field_18 |= 1;
         }
     };
 
