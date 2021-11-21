@@ -304,6 +304,9 @@ namespace app
 
             switch (message.Type)
             {
+            case fnd::PROC_MSG_DLC_ZELDA_NOTICE_STOP_ENEMY:
+                ProcMsgDlcZeldaNoticeStopEnemy((xgame::MsgDlcZeldaNoticeStopEnemy&)message);
+                return true;
             case fnd::PROC_MSG_HIT_EVENT_COLLISION:
                 ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
                 return true;
@@ -937,6 +940,48 @@ namespace app
                     math::Vector3Rotate(turnDirection, &rotation, &forwardVector);
                 }
             }
+        }
+
+        void ProcMsgDlcZeldaNoticeStopEnemy(xgame::MsgDlcZeldaNoticeStopEnemy& message)
+        {
+            int* gocEnemyHsm = GameObject::GetGOC(this, GOCEnemyHsmString);
+            if (!gocEnemyHsm)
+                return;
+
+            if (!GOCEnemyHsm::GetCurrentStateID(gocEnemyHsm))
+                return;
+
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+            if (!gocVisual)
+                return;
+
+            fnd::GOCVisual::SetVisible(gocVisual, false);
+
+            int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
+            if (!gocShadow)
+                return;
+
+            game::GOCShadow::SetVisible(gocShadow, false);
+
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
+            if (!gocAnimation)
+                return;
+
+            game::GOCAnimationScript::SetSpeed(gocAnimation, 0);
+
+            int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
+            if (!gocMovement)
+                return;
+
+            game::GOCMovement::DisableMovementFlag(gocMovement, false);
+
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+            if (!gocCollider)
+                return;
+
+            game::GOCCollider::SetEnable(gocCollider, 0);
+
+            GOCEnemyHsm::Dispatch(gocEnemyHsm, &message);
         }
 
         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
