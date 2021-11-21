@@ -65,10 +65,7 @@ namespace app
         int field_604{};
         int field_608{};
         int field_60C{};
-        int field_610{};
-        int field_614{};
-        int field_618{};
-        int field_61C{};
+        csl::math::Vector3 deathPosition{};
         float Speed{};
         float field_624 = 225;
         float field_628{};
@@ -309,6 +306,9 @@ namespace app
             {
             case fnd::PROC_MSG_PL_GET_HOMING_TARGET_INFO:
                 ProcMsgPLGetHomingTargetInfo((xgame::MsgPLGetHomingTargetInfo&)message);
+                return true;
+            case fnd::PROC_MSG_KILL:
+                ProcMsgKick((xgame::MsgKick&)message);
                 return true;
             default:
                 EnemyBase::ProcessMessage(message);
@@ -939,6 +939,20 @@ namespace app
                 EnemyBase::ProcessMessage(message);
             else
                 message.field_18 |= 1;
+        }
+
+        void ProcMsgKick(xgame::MsgKick& message)
+        {
+            xgame::MsgKick::SetReplyForSucceed(&message);
+            ObjUtil::AddScore(this, "STALBABY", &message);
+            Flags |= 2;
+            deathPosition = message.field_40;
+
+            int* gocEnemyHsm = GameObject::GetGOC(this, GOCEnemyHsmString);
+            if (!gocEnemyHsm)
+                return;
+
+            GOCEnemyHsm::ChangeState(gocEnemyHsm, 7);
         }
     };
 
