@@ -180,7 +180,7 @@ namespace app
                 (game::GOCAnimationSimple::IsFinished(gocAnimation)) != 0)
             {
                 game::GOCAnimationSimple::SetAnimation(gocAnimation, "Touch");
-                GameObject::Resume(this);
+                Resume();
             }
         }
 

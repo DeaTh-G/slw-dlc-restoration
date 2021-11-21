@@ -431,7 +431,7 @@ namespace app
 
             IsActive = 1;
 
-            GameObject::Resume(this);
+            Resume();
         }
 
         void ProcMsgDlcZeldaNoticeStopEnemy()
