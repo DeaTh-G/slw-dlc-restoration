@@ -157,7 +157,7 @@ namespace app
                     soundCallback->field_10 = reinterpret_cast<void*&>(soundFuncPtr);
                     soundCallback->field_14 = -1;
 
-                    game::GOCAnimationScript::RegisterCallback(gocAnimation, 1, attackCallback);
+                    game::GOCAnimationScript::RegisterCallback(gocAnimation, 1, soundCallback);
                 }
             }
 
@@ -760,6 +760,22 @@ namespace app
 
         void SoundCallback(int a1, int a2, int a3)
         {
+            int* gocSound = GameObject::GetGOC((GameObject*)((char*)this + 1), GOCSoundString);
+            int deviceTag[3]{};
+            if (!gocSound)
+                return;
+
+            if (!a2)
+            {
+                if (a3 == 1)
+                {
+                    game::GOCSound::Play3D(gocSound, deviceTag, "enm_stullbaby_punch", 0);
+                }
+                else
+                {
+                    game::GOCSound::Play3D(gocSound, deviceTag, "enm_stullbaby_walk", 0);
+                }
+            }
         }
 
         void NotifyMovementRangeOutCallback()
