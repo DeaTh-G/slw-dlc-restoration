@@ -26,5 +26,6 @@ namespace csl
         };
 
         inline static FUNCTION_PTR(float, __cdecl, Vector3Length, ASLR(0x00962510), Vector3* a1);
+        inline static FUNCTION_PTR(float, __cdecl, Vector3Normalize, ASLR(0x009626B0), Vector3* a1, Vector3* a2);
     }
 }

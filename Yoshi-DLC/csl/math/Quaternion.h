@@ -6,6 +6,9 @@ namespace csl
     {
         class alignas(16) Quaternion
         {
+        private:
+            inline static FUNCTION_PTR(Quaternion*, __thiscall, __ct, ASLR(0x00964060), Quaternion* result, Vector3* direction, float angle);
+
         public:
             float X;
             float Y;
@@ -28,6 +31,11 @@ namespace csl
                 Y = y;
                 Z = z;
                 W = w;
+            }
+
+            Quaternion(Quaternion* result, Vector3* direction, float angle)
+            {
+                __ct(result, direction, angle);
             }
         };
 

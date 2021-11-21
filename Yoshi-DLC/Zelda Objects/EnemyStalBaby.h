@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 namespace app
 {
@@ -385,12 +385,13 @@ namespace app
                 virtual int Update(EnemyStalBaby* obj, float a2) { return EnemyState::Update(this, obj, a2); };
                 virtual bool ProcessMessage(EnemyStalBaby* obj, fnd::Message& message)
                 {
-                    /*if (message.Type == fnd::PROC_MSG_DLC_ZELDA_NOTICE_STOP_ENEMY)
+                    // No message is arriving
+                    if (message.Type == fnd::PROC_MSG_DLC_ZELDA_NOTICE_STOP_ENEMY)
                         return ProcMsgDlcZeldaNoticeStopEnemy((xgame::MsgDlcZeldaNoticeStopEnemy&)message);
                     else if (message.Type == fnd::PROC_MSG_DLC_ZELDA_NOTICE_ACTIVE_ENEMY)
                         return ProcMsgDlcZeldaNoticeActiveEnemy((xgame::MsgDlcZeldaNoticeActiveEnemy&)message);
                     else
-                        return false;*/
+                        return false;
                     return 0;
                 };
 
@@ -514,6 +515,9 @@ namespace app
 
             class Chase
             {
+                char field_00[20];
+                int* GocEnemyTarget;
+
             public:
                 virtual ~Chase() {};
                 virtual int Trigger(EnemyStalBaby* obj, int a2, int* a3) { return ut::StateBase::Trigger(this, (int*)obj, a2, a3); };
@@ -522,9 +526,80 @@ namespace app
                 virtual int Leave(EnemyStalBaby* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyStalBaby* obj, float a2) { return EnemyState::Update(this, obj, a2); };
                 virtual bool ProcessMessage(EnemyStalBaby* obj, fnd::Message& message) { return 0; };
-                virtual int OnEnter(EnemyStalBaby* obj, int a2) { return 0; };
+                
+                virtual int OnEnter(EnemyStalBaby* obj, int a2)
+                {
+                    GocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
+
+                    int* gocAnimation = GameObject::GetGOC(obj, GOCAnimationString);
+                    if (!GOCAnimation)
+                        return 0;
+
+                    game::GOCAnimationScript::ChangeAnimation(gocAnimation, "WALK");
+                    return 1;
+                };
+
                 virtual int OnLeave(EnemyStalBaby* obj, int a2) { return 0; };
-                virtual int Step(EnemyStalBaby* obj, float deltaTime) { return 0; };
+
+                virtual int Step(EnemyStalBaby* obj, float deltaTime)
+                {
+                    csl::math::Vector3 targetPosition{};
+
+                    if (obj->Flags & 1)
+                    {
+                        obj->Flags &= ~1;
+                        int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                        if (!gocEnemyHsm)
+                            return 0;
+
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 6);
+                        return 0;
+                    }
+                    else if (GOCEnemyTarget::IsFindTarget(GocEnemyTarget) &&
+                        GOCEnemyTarget::GetTargetCenterPosition(GocEnemyTarget, &targetPosition) &&
+                        IsInRangeAttack(obj, targetPosition))
+                    {
+                        int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                        if (!gocEnemyHsm)
+                            return 0;
+
+                        GOCEnemyHsm::ChangeState(gocEnemyHsm, 3);
+                        return 0;
+                    }
+                    else
+                    {
+                        int* gocMovement = GameObject::GetGOC(obj, GOCMovementString);
+                        if (!gocMovement)
+                            return 0;
+
+                        if (GOCEnemyTarget::IsFindTarget(GocEnemyTarget) &&
+                            GOCEnemyTarget::GetTargetCenterPosition(GocEnemyTarget, &targetPosition))
+                        {
+                            csl::math::Vector3 turnDirection{};
+                            obj->GetTurnDirection(&turnDirection, targetPosition, deltaTime);
+                            float magnitude{};
+                            math::Vector3SquareMagnitude(&turnDirection, &magnitude);
+                            if (magnitude > 0.000001f)
+                            {
+                                csl::math::Vector3* moveVector = (csl::math::Vector3*)(game::GOCMovement::GetContextParam(gocMovement) + 8);
+                                float speed = obj->GetMoveSpeed();
+                                math::Vector3Scale(&turnDirection, speed, moveVector);
+                                return 0;
+                            }
+                            else
+                            {
+                                int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                                if (!gocEnemyHsm)
+                                    return 0;
+
+                                GOCEnemyHsm::ChangeState(gocEnemyHsm, 6);
+                                return 1;
+                            }
+                        }
+                    }
+                    
+                    return 0;
+                };
             };
 
             class Attack
@@ -601,6 +676,45 @@ namespace app
                 virtual int OnLeave(EnemyStalBaby* obj, int a2) { return 0; };
                 virtual int Step(EnemyStalBaby* obj, float deltaTime) { return 0; };
             };
+
+        private:
+            static bool IsInRangeAttack(EnemyStalBaby* obj, csl::math::Vector3& targetPosition)
+            {
+                csl::math::Vector3 position{};
+                csl::math::Vector3 upVector{};
+                csl::math::Vector3 forwardVector{};
+
+                fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(obj, GOCTransformString);
+                if (!gocTransform)
+                    return false;
+
+                csl::math::Matrix34 m{};
+                m = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
+                upVector = Vector3(m.data[0][0], m.data[0][1], m.data[0][2]);
+                forwardVector = Vector3(m.data[2][0], m.data[2][1], m.data[2][2]);
+                position = Vector3(m.data[3][0], m.data[3][1], m.data[3][2]);
+                math::Vector3Subtract(&targetPosition, &position, &position);
+
+                float magnitude{};
+                math::Vector3SquareMagnitude(&position, &magnitude);
+                if (magnitude >= obj->field_624)
+                    return false;
+
+                math::Vector3NormalizeIfNotZero(&position, &position);
+
+                if (math::Vector3DotProduct(&upVector, &position) <= 0)
+                {
+                    if (cosf(0.69813168f) > math::Vector3DotProduct(&forwardVector, &position))
+                        return false;
+                }
+                else
+                {
+                    if (cosf(0.08726646f) > math::Vector3DotProduct(&forwardVector, &position))
+                        return false;
+                }
+
+                return true;
+            }
 
             static void MoveStop(EnemyStalBaby* obj)
             {
@@ -758,6 +872,50 @@ namespace app
                 Flags |= 4;
             else
                 Flags &= ~4;
+        }
+
+        void GetTurnDirection(csl::math::Vector3* turnDirection, csl::math::Vector3& targetPosition, float deltaTime)
+        {
+            csl::math::Vector3 position{};
+            csl::math::Vector3 upVector{};
+            csl::math::Vector3 leftVector{};
+            csl::math::Vector3 forwardVector{};
+            csl::math::Vector3 turnDir{};
+
+            fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            csl::math::Matrix34 m{};
+            m = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
+            upVector = Vector3(m.data[0][0], m.data[0][1], m.data[0][2]);
+            leftVector = Vector3(m.data[1][0], m.data[1][1], m.data[1][2]);
+            forwardVector = Vector3(m.data[2][0], m.data[2][1], m.data[2][2]);
+            position = Vector3(m.data[3][0], m.data[3][1], m.data[3][2]);
+            math::Vector3Subtract(&targetPosition, &position, &position);
+            float leftDirection = math::Vector3DotProduct(&position, &leftVector);
+            math::Vector3Scale(&leftVector, leftDirection, &turnDir);
+            math::Vector3Subtract(&position, &turnDir, &turnDir);
+            float magnitude{};
+            math::Vector3SquareMagnitude(&turnDir, &magnitude);
+            if (magnitude <= 0.000001f)
+            {
+                turnDir = Vector3(0, 0, 0);
+            }
+            else
+            {
+                float horizontalDirection = math::Vector3DotProduct(&turnDir, &forwardVector);
+                csl::math::Vector3Normalize(&turnDir, turnDirection);
+                float time = 2.3561945f * deltaTime;
+                horizontalDirection = csl::math::Clamp(horizontalDirection, -1, 1);
+                if (time < acosf(horizontalDirection))
+                {
+                    float lookDirection = math::Vector3DotProduct(&upVector, &turnDir);
+                    float angle = csl::math::Select(lookDirection, fabs(time), -abs(time));
+                    csl::math::Quaternion rotation { &rotation, &leftVector, angle };
+                    math::Vector3Rotate(turnDirection, &rotation, &forwardVector);
+                }
+            }
         }
     };
 
