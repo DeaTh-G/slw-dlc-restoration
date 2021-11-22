@@ -53,13 +53,11 @@ namespace app
             int field_7C;
             RangeChecker field_80;
             BarrierChecker field_A0;
-            int field_E0;
-            int field_E4;
-            int field_E8;
-            int field_EC;
-            FunctionPair field_F0;
-            unkStruct field_F8;
-            int field_100;
+            FunctionPair field_E0;
+            unkStruct field_E8;
+            int field_F0;
+            FunctionPair field_F4;
+            unkStruct field_FC;
             int field_104;
             char field_108;
             char field_109;
@@ -115,9 +113,9 @@ namespace app
 
             void SetNotifyMoveRangeOutCallback(FunctionPair a2, unkStruct a3, int a4)
             {
-                field_F0 = a2;
-                field_F8 = a3;
-                field_100 = a4;
+                field_F4 = a2;
+                field_FC = a3;
+                field_104 = a4;
             }
         };
     }

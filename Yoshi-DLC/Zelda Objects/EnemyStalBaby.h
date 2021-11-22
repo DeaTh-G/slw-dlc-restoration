@@ -261,7 +261,7 @@ namespace app
 
                 auto funcPtr = &EnemyStalBaby::NotifyMovementRangeOutCallback;
                 game::MoveCharacterRigidBody::FunctionPair functions{ (void*)ASLR(0x0070F590), reinterpret_cast<void*&>(funcPtr) };
-                game::MoveCharacterRigidBody::unkStruct unknown{ 0, data->MoveRange };
+                game::MoveCharacterRigidBody::unkStruct unknown{ 0, 5 };
                 movement->SetNotifyMoveRangeOutCallback(functions, unknown, 0);
             }
 
@@ -701,7 +701,7 @@ namespace app
                     if (!gocAnimation)
                         return 0;
 
-                    game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK");
+                    game::GOCAnimationScript::ChangeAnimation(gocAnimation, "IDLE");
 
                     GocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
                     Countdown = 2;
@@ -968,6 +968,7 @@ namespace app
                         EnemyBlowOffObjectCInfo::__ct(&blowOffInfo);
                         blowOffInfo.Model = info->HeadModel;
                         blowOffInfo.field_10 = m;
+                        blowOffInfo.field_50.Y = 5;
                         blowOffInfo.field_60 = 4;
                         blowOffInfo.field_6C = 5;
                         blowOffInfo.field_70 = obj->deathPosition;
@@ -1076,6 +1077,7 @@ namespace app
 
         void NotifyMovementRangeOutCallback()
         {
+            Flags |= 1;
         }
 
         inline static void* AnimCallbackBridge_Initialize(csl::fnd::IAllocator* pAllocator)
@@ -1276,6 +1278,8 @@ namespace app
                 math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)((int*)gocTransform + 0x44), &position);
                 message.SetReply(&position, 1);
                 enemy::DeadEffectCInfo effectInfo{};
+                enemy::DeadEffectCInfo::__ct(&effectInfo);
+                GameObjectHandleBase::__ct(&effectInfo, this);
                 enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, &message);
                 enemy::DeadEffectCInfo::SetZeldaStalBaby(&effectInfo);
 
@@ -1294,6 +1298,8 @@ namespace app
                 message.SetReply(&position, 1);
                 ObjUtil::AddScore(this, "STALBABY", &message);
                 enemy::DeadEffectCInfo effectInfo{};
+                enemy::DeadEffectCInfo::__ct(&effectInfo);
+                GameObjectHandleBase::__ct(&effectInfo, this);
                 enemy::DeadEffectCInfo::SetMsgDamage(&effectInfo, &message);
                 enemy::DeadEffectCInfo::SetZeldaStalBaby(&effectInfo);
 

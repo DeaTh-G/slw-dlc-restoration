@@ -46,6 +46,15 @@ namespace app
                 return &This->field_61;
             }
 
+            static char* SetZeldaStalBabyHead(DeadEffectCInfo* This)
+            {
+                This->field_62 &= ~(1 << 1);
+                This->field_62 |= 1 << 7;
+                This->field_61 = 4;
+
+                return &This->field_61;
+            }
+
             static char* SetZeldaDekunuts(DeadEffectCInfo* This)
             {
                 This->field_62 &= ~(1 << 2);
