@@ -131,7 +131,7 @@ namespace app
                 visualDescriptor.Skeleton = info->Skeleton;
                 visualDescriptor.Animation |= 0x400000;
                 fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
-                //fnd::GOCVisual::SetVisible(gocVisual, 0);
+                fnd::GOCVisual::SetVisible(gocVisual, 0);
 
                 int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
                 if (gocAnimation)
@@ -269,14 +269,12 @@ namespace app
             if (gocEnemyTarget)
             {
                 int count = 0;
-                csl::math::Vector3 eyeOffset{ 0, 5, 0 };
                 fnd::HFrame centerFrame{};
 
                 GOCEnemyTarget::Setup(gocEnemyTarget, &count);
                 GOCEnemyTarget::SetColliderEyesight(gocEnemyTarget, 3);
-                GOCEnemyTarget::SetEyesightOffset(gocEnemyTarget, &eyeOffset);
-                centerFrame = *GetCenterPositionFrame();
-                GOCEnemyTarget::SetEyesightFrame(gocEnemyTarget, &centerFrame);
+                /*centerFrame = *GetCenterPositionFrame();
+                GOCEnemyTarget::SetEyesightFrame(gocEnemyTarget, &centerFrame);*/
             }
             
             SetRandomPosition();
