@@ -209,6 +209,7 @@ void Initialize()
 
     app::GameModeStageBattle::InitFirst();
     app::GameModeStageBattle::RegisterObjInfos();
+    app::GameModeStageBattle::StatePlay();
     if (IsVirtualLinkSonic)
     {
         app::Player::VirtualSonicInfo::Load();

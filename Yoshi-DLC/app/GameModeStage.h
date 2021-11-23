@@ -16,9 +16,9 @@ namespace app
         static void LoadLevel();
         static void ResetStage();
 
-        int StatePlayZeldaNotice(app::fnd::MessageType messageType)
+        int StatePlayZeldaNotice(fnd::MessageType messageType)
         {
-            if (messageType == app::fnd::MessageType::PROC_MSG_DLC_ZELDA_NOTICE_STOP_ENEMY)
+            if (messageType == fnd::MessageType::PROC_MSG_DLC_ZELDA_NOTICE_STOP_ENEMY)
             {
                 xgame::MsgDlcZeldaNoticeStopEnemy message{};
                 CLevelInfo* levelInfo = (CLevelInfo*)CLevelInfo::GetService((GameDocument*)(((int*)this)[6]));
@@ -26,10 +26,10 @@ namespace app
                 SendToGroup(6, message);
                 SendToGroup(7, message);
             }
-            else if (messageType == app::fnd::MessageType::PROC_MSG_DLC_ZELDA_NOTICE_ACTIVE_ENEMY)
+            else if (messageType == fnd::MessageType::PROC_MSG_DLC_ZELDA_NOTICE_ACTIVE_ENEMY)
             {
                 xgame::MsgDlcZeldaNoticeActiveEnemy message{};
-                app::CLevelInfo* levelInfo = (app::CLevelInfo*)app::CLevelInfo::GetService((GameDocument*)(((int*)this)[6]));
+                app::CLevelInfo* levelInfo = (CLevelInfo*)CLevelInfo::GetService((GameDocument*)(((int*)this)[6]));
                 levelInfo->SetPlayingZeldaEvent(0);
                 SendToGroup(6, message);
                 SendToGroup(7, message);

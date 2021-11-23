@@ -15,6 +15,7 @@ namespace app
         private:
             inline static FUNCTION_PTR(CActor*, __thiscall, __dt, ASLR(0x0049A520), CActor* This, size_t a2);
             inline static FUNCTION_PTR(char, __thiscall, f_SendMessageImm, ASLR(0x0049A470), CActor* This, int a2, fnd::Message* msg);
+            inline static FUNCTION_PTR(char, __thiscall, f_BroadcastMessageImm, ASLR(0x0049A380), CActor* This, unsigned int actorID, Message& msg);
 
         public:
             int field_04[6]{};
@@ -22,6 +23,7 @@ namespace app
             virtual ~CActor() { __dt(this, 0); }
 
             char SendMessageImm(int actorID, fnd::Message* msg) { return f_SendMessageImm(this, actorID, msg); }
+            char BroadcastMessageImm(unsigned int actorID, Message& msg) { return f_BroadcastMessageImm(this, actorID, msg); }
 
             virtual size_t ForEach(int& traverser) = 0;
         

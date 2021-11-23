@@ -4,6 +4,8 @@ static void* RegisterResourceInfosOffset = (void*)ASLR(0x008F73F0);
 static void* SetupGameStatusOffset = (void*)ASLR(0x00938520);
 static void* RegisterObjInfosReturnAddress = (void*)ASLR(0x009387E4);
 static void* InitFirstReturnAddress = (void*)ASLR(0x0093985C);
+static void* OA_STATEPLAY = (void*)ASLR(0x0093AEC3);
+static void* STATEPLAY_END = (void*)ASLR(0x0093AECB);
 
 HOOK(int, __fastcall, LoadLoadingScreenDataHook, ASLR(0x0093A6D0), int* This, void* edx, int a2)
 {
@@ -31,6 +33,29 @@ static bool IsZeldaBattleStage()
         return true;
 
     return false;
+}
+
+__declspec(naked) void GameModStageBattleStatePlayMidAsmHook()
+{
+    __asm
+    {
+        cmp eax, 611Eh
+        jnz activeEvent
+        push eax
+        call app::GameModeStageBattle::StatePlayZeldaNotice
+        jmp [STATEPLAY_END]
+
+        activeEvent:
+        cmp eax, 611Fh
+        jnz original
+        push eax
+        call app::GameModeStageBattle::StatePlayZeldaNotice
+        jmp [STATEPLAY_END]
+
+        original:
+        cmp eax, 5003h
+        jmp [OA_STATEPLAY]
+    }
 }
 
 __declspec(naked) void GameModeStageBattleRegisterObjInfosAsmHook()
@@ -71,6 +96,11 @@ __declspec(naked) void GameModeStageBattleInitFirstMidAsmHook()
 void app::GameModeStageBattle::LoadLoadingScreenData()
 {
     INSTALL_HOOK(LoadLoadingScreenDataHook);
+}
+
+void app::GameModeStageBattle::StatePlay()
+{
+    WRITE_JUMP(ASLR(0x0093AEBE), &GameModStageBattleStatePlayMidAsmHook);
 }
 
 void app::GameModeStageBattle::RegisterObjInfos()
