@@ -273,8 +273,6 @@ namespace app
 
                 GOCEnemyTarget::Setup(gocEnemyTarget, &count);
                 GOCEnemyTarget::SetColliderEyesight(gocEnemyTarget, 3);
-                /*centerFrame = *GetCenterPositionFrame();
-                GOCEnemyTarget::SetEyesightFrame(gocEnemyTarget, &centerFrame);*/
             }
             
             SetRandomPosition();

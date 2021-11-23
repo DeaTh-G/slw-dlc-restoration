@@ -103,6 +103,7 @@ void Initialize()
     auto create_ObjBreakFloor = &app::create_ObjBreakFloor;
     auto create_ObjBreakRoof = &app::create_ObjBreakRoof;
     auto create_ObjChangeTopViewCollision = &app::create_ObjChangeTopViewCollision;
+    auto create_ObjCocco = &app::create_ObjCocco;
     auto create_ObjGossipStone = &app::create_ObjGossipStone;
     auto create_ObjLoftBird = &app::create_ObjLoftBird;
     auto create_ObjLoftBirdCollision = &app::create_ObjLoftBirdCollision;
@@ -118,6 +119,7 @@ void Initialize()
     auto createObjInfo_EnemyStalBabyInfo = &app::createObjInfo_EnemyStalBabyInfo;
     auto createObjInfo_ObjBreakFloorInfo = &app::createObjInfo_ObjBreakFloorInfo;
     auto createObjInfo_ObjBreakRoofInfo = &app::createObjInfo_ObjBreakRoofInfo;
+    auto createObjInfo_ObjCoccoInfo = &app::createObjInfo_ObjCoccoInfo;
     auto createObjInfo_ObjGossipStoneInfo = &app::createObjInfo_ObjGossipStoneInfo;
     auto createObjInfo_ObjLoftBirdInfo = &app::createObjInfo_ObjLoftBirdInfo;
     auto createObjInfo_ObjOccludeStoneInfo = &app::createObjInfo_ObjOccludeStoneInfo;
@@ -132,6 +134,7 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2B9C4), *(void**)&create_ObjBreakFloor);
     WRITE_FUNCTION(ASLR(0x00D2BA14), *(void**)&create_ObjBreakRoof);
     WRITE_FUNCTION(ASLR(0x00D2BA61), *(void**)&create_ObjChangeTopViewCollision);
+    WRITE_FUNCTION(ASLR(0x00D2BAB4), *(void**)&create_ObjCocco);
     WRITE_FUNCTION(ASLR(0x00D2BD84), *(void**)&create_ObjGossipStone);
     WRITE_FUNCTION(ASLR(0x00D2BDD4), *(void**)&create_ObjLoftBird);
     WRITE_FUNCTION(ASLR(0x00D2BE21), *(void**)&create_ObjLoftBirdCollision);
@@ -147,7 +150,8 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2A69F), *(void**)&createObjInfo_EnemyStalBabyInfo);
     WRITE_FUNCTION(ASLR(0x00D2B9BF), *(void**)&createObjInfo_ObjBreakFloorInfo);
     WRITE_FUNCTION(ASLR(0x00D2BA0F), *(void**)&createObjInfo_ObjBreakRoofInfo);
-    WRITE_FUNCTION(ASLR(0x00D2BD7F), *(void**)&createObjInfo_ObjGossipStoneInfo);
+    WRITE_FUNCTION(ASLR(0x00D2BD7F), *(void**)&createObjInfo_ObjCoccoInfo);
+    WRITE_FUNCTION(ASLR(0x00D2BAAF), *(void**)&createObjInfo_ObjGossipStoneInfo);
     WRITE_FUNCTION(ASLR(0x00D2BDCF), *(void**)&createObjInfo_ObjLoftBirdInfo);
     WRITE_FUNCTION(ASLR(0x00D2C04F), *(void**)&createObjInfo_ObjOccludeStoneInfo);
     WRITE_FUNCTION(ASLR(0x00D2C13F), *(void**)&createObjInfo_ObjTreasureBoxInfo);
@@ -178,7 +182,7 @@ void Initialize()
     app::Player::CStateBase::ProcMsgPlayerReachGoal();
     app::Player::CVisualSonic::ActivateSub();
     app::Player::CSonic::AddCallback();
-    app::Player::CSonic::SendPlayerInfo();
+    app::Player::CSonic::SendPlayerInfo(); // Second Player gets stuck in 2P due to this
     app::Player::CVisualSonic::RegisterResource();
     app::Player::CVisualBase::IsLinkCostume();
     app::GameModeStage::StatePlay();

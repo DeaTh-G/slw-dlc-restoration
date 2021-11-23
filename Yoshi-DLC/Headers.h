@@ -251,3 +251,4 @@
 #include "Zelda Objects/ObjGossipStoneFairy.h"
 #include "Zelda Objects/ObjGossipStone.h"
 #include "Zelda Objects/EnemyStalBaby.h"
+#include "Zelda Objects/ObjCocco.h"

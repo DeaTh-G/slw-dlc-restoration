@@ -783,6 +783,9 @@
     <ClInclude Include="app\game\ColliShapeHavok.h">
       <Filter>Header Files\app\game</Filter>
     </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjCocco.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">

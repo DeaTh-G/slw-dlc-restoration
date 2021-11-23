@@ -385,6 +385,7 @@
     <ClInclude Include="Zelda Objects\ObjBreakFloor.h" />
     <ClInclude Include="Zelda Objects\ObjBreakRoof.h" />
     <ClInclude Include="Zelda Objects\ObjChangeTopViewCollision.h" />
+    <ClInclude Include="Zelda Objects\ObjCocco.h" />
     <ClInclude Include="Zelda Objects\ObjGossipStone.h" />
     <ClInclude Include="Zelda Objects\ObjGossipStoneFairy.h" />
     <ClInclude Include="Zelda Objects\ObjLoftBird.h" />
