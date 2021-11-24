@@ -47,9 +47,26 @@ __declspec(naked) void GameModStageBattleStatePlayMidAsmHook()
 
         activeEvent:
         cmp eax, 611Fh
-        jnz original
+        jnz bgmVolume
         push eax
         call app::GameModeStageBattle::StatePlayZeldaNotice
+        jmp [STATEPLAY_END]
+
+        bgmVolume:
+        cmp eax, 0xD007
+        jnz original
+        mov eax, [esi + 12Ch]
+        xor ecx, ecx
+        cmp eax, ecx
+        jz retToOG
+        mov eax, [eax + 0Ch]
+        push edi
+        push eax
+        mov ecx, esi
+        call app::GameMode::SendMessageImm
+        jmp [STATEPLAY_END]
+
+        retToOG:
         jmp [STATEPLAY_END]
 
         original:
