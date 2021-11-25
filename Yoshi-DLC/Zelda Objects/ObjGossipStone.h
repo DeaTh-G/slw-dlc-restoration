@@ -305,9 +305,6 @@ namespace app
                 DamageMessage->field_0C = 1;
             }
 
-            /*if (!game::GOCAnimationSimple::IsFinished(gocAnimation))
-                return;*/ 
-
             if (DamageMessage->field_54 == 3 && playerInfo && playerInfo[0x58] == 7)
             {
                 State = ObjGossipStoneState::STATE_COUNTDOWN;

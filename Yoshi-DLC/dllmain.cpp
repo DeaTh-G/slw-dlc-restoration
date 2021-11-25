@@ -182,7 +182,7 @@ void Initialize()
     app::Player::CStateBase::ProcMsgPlayerReachGoal();
     app::Player::CVisualSonic::ActivateSub();
     app::Player::CSonic::AddCallback();
-    //app::Player::CSonic::SendPlayerInfo(); // Second Player gets stuck in 2P due to this
+    app::Player::CSonic::SendPlayerInfo(); // Second Player gets stuck in 2P due to this
     app::Player::CVisualSonic::RegisterResource();
     app::Player::CVisualBase::IsLinkCostume();
     app::GameModeStage::StatePlay();

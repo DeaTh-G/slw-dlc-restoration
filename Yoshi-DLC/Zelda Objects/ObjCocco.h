@@ -2,6 +2,14 @@
 
 namespace app
 {
+    enum class ObjCoccoState : int
+    {
+        STATE_IDLE,
+        STATE_ATTACK_IN,
+        STATE_ATTACK_OUT,
+        STATE_END
+    };
+
     class ObjCoccoInfo : public CObjInfo
     {
     public:
@@ -55,29 +63,27 @@ namespace app
         };
 
     public:
-        INSERT_PADDING(20); // TinyFSM
+        ObjCoccoState State{};
+        INSERT_PADDING(16); // TinyFSM
         int field_3B4{};
         int field_3B8{};
         int field_3BC{};
-        csl::math::Vector3 field_3C0{};
-        int field_3D0{};
-        int field_3D4{};
-        int field_3D8{};
-        int field_3DC{};
+        csl::math::Vector3 Position{};
+        csl::math::Quaternion Rotation{};
         int field_3E0{};
         int field_3E4{};
         int field_3E8{};
         int field_3EC{};
-        char field_3F0{};
+        char ActionType{};
         char field_3F1{};
         char field_3F2{};
         char field_3F3{};
         int field_3F4{};
-        int field_3F8[4]{};
+        std::vector<ObjCocco*> SubCoccos{};
         float field_408{};
         float field_40C{};
         float field_410{};
-        float field_414{};
+        float Time{};
         float field_418{};
         int field_41C{};
         char Flags{};
@@ -88,7 +94,7 @@ namespace app
         int field_428{};
         int field_42C{};
 
-        ObjCocco() {};
+        ObjCocco() { ObjUtil::SetPropertyLockonTarget(this); }
         ObjCocco(const CInfo&) {};
 
         void AddCallback(GameDocument* gameDocument) override
@@ -176,9 +182,35 @@ namespace app
                 game::GOCShadowSimple::SetLocalOffsetPosition(gocShadow, &position);
             }
 
+            /*int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
+            if (gocMovement)
+            {
+                csl::math::Vector3 position{};
+
+                void* movementMem = ((app::fnd::ReferencedObject*)gocMovement)->pAllocator->Alloc
+                (sizeof(MoveObjCocco), 16);
+                MoveObjCocco* movement = new(movementMem) MoveObjCocco();
+                game::GOCMovement::SetupController(gocMovement, movement);
+            }*/
+
             game::GOCEffect::SimpleSetupEx(this, 1, 1);
             game::GOCSound::SimpleSetup(this, 0, 0);
 
+            if (GetExtUserData(0) == 1)
+            {
+                if (gocVisual)
+                    fnd::GOCVisual::SetVisible(gocVisual, 0);
+
+                if (gocShadow)
+                    game::GOCShadowSimple::SetVisible(gocShadow, 0);
+
+                if (gocCollider)
+                    game::GOCCollider::SetEnable(gocCollider, 0);
+
+                Sleep(this);
+            }
+
+            SetEnableAttack(true);
             fnd::GOComponent::EndSetup(this);
         }
 
@@ -188,6 +220,50 @@ namespace app
                 return true;
             
             return CSetObjectListener::ProcessMessage(message);
+        }
+
+        void Update(const fnd::SUpdateInfo& updateInfo) override
+        {
+            if (State == ObjCoccoState::STATE_IDLE)
+                StateIdle();
+
+            if (State == ObjCoccoState::STATE_ATTACK_IN)
+                StateAttackIn();
+
+            if (State == ObjCoccoState::STATE_ATTACK_OUT)
+                StateAttackOut();
+
+            if (State == ObjCoccoState::STATE_END)
+                StateEnd();
+
+            if ((Flags & 2) != 2)
+                return;
+
+            if (ActionType)
+                return;
+            
+            float oldTime;
+            Time += updateInfo.deltaTime;
+            if (Time > 7)
+            {
+                SetStatusRetire();
+                Kill();
+            }
+            
+            for (std::vector<ObjCocco*>::iterator it = SubCoccos.begin(); it != SubCoccos.end();)
+            {
+                while (*it)
+                {
+                    it++;
+                    if (it == SubCoccos.end())
+                        if (oldTime / 0.69999999f < Time / 0.69999999f)
+                            CreateAttackers();
+                }
+                SubCoccos.erase(it);
+            }
+
+            if (oldTime / 0.69999999f < Time / 0.69999999f)
+                CreateAttackers();
         }
 
     private:
@@ -203,10 +279,30 @@ namespace app
                     game::GOCSound::Play3D(gocSound, deviceTag, "obj_cock_flap", 0);
         }
 
+        void NotifyStopCallback()
+        {
+            Flags |= 1;
+        }
+
         inline static void* AnimCallbackBridge_Initialize(csl::fnd::IAllocator* pAllocator)
         {
             return new animation::AnimCallbackBridge<ObjCocco>();
         }
+
+        void SetEnableAttack(bool isEnable)
+        {
+            if (isEnable)
+                Flags |= 4;
+            else
+                Flags &= ~4;
+        }
+
+        CreateAttackers() {}
+
+        void StateIdle() {}
+        void StateAttackIn() {}
+        void StateAttackOut() {}
+        void StateEnd() {}
     };
 
     inline static ObjCocco* create_ObjCocco() { return new ObjCocco(); }
