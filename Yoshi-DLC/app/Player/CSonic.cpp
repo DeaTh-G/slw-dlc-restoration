@@ -5,26 +5,12 @@ int NUM_HEARTS{};
 int MAX_NUM_HEARTS{};
 int AFTER_DEATH_MAX_NUM_HEARTS{};
 
-void GetHeartData(int* This)
-{
-    int* playerGOC = app::CGOCCollectionImpl::GetGOC((void*)(This + 0xCB), CStateGOC);
-    if (!playerGOC)
-        return;
-
-    app::Player::PluginStateHeartLife* pluginState = (app::Player::PluginStateHeartLife*)app::Player::CStateGOC::GetStatePluginPtr(playerGOC, PluginStateHeartLifeString);
-    if (!pluginState)
-        return;
-
-    NUM_HEARTS = app::Player::PluginStateHeartLife::GetNumHearts(pluginState);
-    MAX_NUM_HEARTS = app::Player::PluginStateHeartLife::GetMaxNumHearts(pluginState);
-}
-
 __declspec(naked) void CSonicSendPlayerInfoMidAsmHook()
 {
     __asm
     {
-        push esi
-        call GetHeartData
+        mov ecx, esi
+        call app::Player::CSonic::GetHeartData
         push MAX_NUM_HEARTS
         push NUM_HEARTS
         push ebx
@@ -37,7 +23,10 @@ HOOK(void, __fastcall, CSonicAddCallbackHook, ASLR(0x00861B00), int* This, void*
 {
     const char* packFileName = app::ObjUtil::GetStagePackName(*app::Document);
     if (strncmp(packFileName, "zdlc03", 6) == 0 || IsAlwaysHeartLife)
+    {
         *(short*)(This[215] + 56) |= 0x1000;
+        *(short*)(This[215] + 56) &= ~0x10;
+    }
 
     originalCSonicAddCallbackHook(This, edx, a2);
 }

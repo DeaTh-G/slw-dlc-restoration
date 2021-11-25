@@ -129,8 +129,8 @@
 
 #include "app/Player/PluginStateHeartLife.h"
 #include "app/Player/CPhysics.h"
-#include "app/Player/CSonic.h"
 #include "app/Player/CStateGOC.h"
+#include "app/Player/CSonic.h"
 #include "app/Player/StateUtil.h"
 #include "app/Player/CPlayer.h"
 #include "app/Player/CStateBase.h"
@@ -251,4 +251,5 @@
 #include "Zelda Objects/ObjGossipStoneFairy.h"
 #include "Zelda Objects/ObjGossipStone.h"
 #include "Zelda Objects/EnemyStalBaby.h"
+#include "Zelda Objects/MoveObjCocco.h"
 #include "Zelda Objects/ObjCocco.h"

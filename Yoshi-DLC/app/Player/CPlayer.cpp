@@ -15,7 +15,7 @@ HOOK(int*, __fastcall, UpdatePlayerInformationHook, ASLR(0x00851F20), int* This)
 
         if (playerInfo)
         {
-            int* cStateGOC = app::CGOCCollectionImpl::GetGOC((void*)(This + 0xCB), CStateGOC);
+            int* cStateGOC = app::CGOCCollectionImpl::GetGOC((void*)(This + 0xCB), GOCCState);
             unsigned int isMovGround = app::Player::StateUtil::IsLandOnMovableGround(cStateGOC);
             *((char*)playerInfo + 0x145) = isMovGround;
 
@@ -41,20 +41,20 @@ HOOK(bool, __fastcall, CPlayerProcessMessageHook, ASLR(0x008514B0), int* This, v
 {
     if (message.Type == app::fnd::PROC_MSG_DLC_ZELDA_TAKE_HEART)
     {
-        app::Player::CStateGOC* cStateGOC = (app::Player::CStateGOC*)app::CGOCCollectionImpl::GetGOC((void*)(This + 0xC9), CStateGOC);
+        app::Player::CStateGOC* cStateGOC = (app::Player::CStateGOC*)app::CGOCCollectionImpl::GetGOC((void*)(This + 0xC9), GOCCState);
         app::Player::StateUtil::RecoveryHeartLife(cStateGOC);
         return 1;
     }
     else if (message.Type == app::fnd::PROC_MSG_DLC_ZELDA_TAKE_HEART_CONTAINER)
     {
-        app::Player::CStateGOC* cStateGOC = (app::Player::CStateGOC*)app::CGOCCollectionImpl::GetGOC((void*)(This + 0xC9), CStateGOC);
+        app::Player::CStateGOC* cStateGOC = (app::Player::CStateGOC*)app::CGOCCollectionImpl::GetGOC((void*)(This + 0xC9), GOCCState);
         app::Player::StateUtil::IncrementMaxHeartLife(cStateGOC);
         app::HUD::DO_RECOVER_LIFE = true;
         return 1;
     }
     else if (message.Type == app::fnd::PROC_MSG_DLC_ZELDA_HEART_ALL_RECOVERY)
     {
-        app::Player::CStateGOC* cStateGOC = (app::Player::CStateGOC*)app::CGOCCollectionImpl::GetGOC((void*)(This + 0xC9), CStateGOC);
+        app::Player::CStateGOC* cStateGOC = (app::Player::CStateGOC*)app::CGOCCollectionImpl::GetGOC((void*)(This + 0xC9), GOCCState);
         app::Player::StateUtil::AllRecoveryHeartLife(cStateGOC);
         app::HUD::DO_RECOVER_LIFE = true;
         return 1;

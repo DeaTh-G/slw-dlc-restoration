@@ -182,7 +182,7 @@ void Initialize()
     app::Player::CStateBase::ProcMsgPlayerReachGoal();
     app::Player::CVisualSonic::ActivateSub();
     app::Player::CSonic::AddCallback();
-    app::Player::CSonic::SendPlayerInfo(); // Second Player gets stuck in 2P due to this
+    app::Player::CSonic::SendPlayerInfo();
     app::Player::CVisualSonic::RegisterResource();
     app::Player::CVisualBase::IsLinkCostume();
     app::GameModeStage::StatePlay();
@@ -205,6 +205,7 @@ void Initialize()
         app::WorldAreaMapInfo::Initialize();
         app::MinigameCharacterInfo::Load();
         app::MinigameCharacterInfo::Initialize();
+        WRITE_MEMORY(ASLR(0x009115D6), 0x90, 0x90);
     }
 
     app::GameModeStageBattle::InitFirst();

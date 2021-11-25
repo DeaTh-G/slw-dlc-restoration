@@ -43,4 +43,4 @@ inline static int* GOCHud = (int*)ASLR(0x00FD7710);
 inline static int* GOCLauncher = (int*)ASLR(0x00FD7764);
 inline static int* GOCMovementComplex = (int*)ASLR(0x00FD7860);
 inline static int* GOCEnemyHSM = (int*)ASLR(0x00FE75B4);
-inline static char* CStateGOC = (char*)ASLR(0x00DF77D8);
+inline static char* GOCCState = (char*)ASLR(0x00DF77D8);
