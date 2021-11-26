@@ -921,6 +921,8 @@ namespace app
 
                 virtual int OnEnter(EnemyStalBaby* obj, int a2)
                 {
+                    const char* animationName = "DEAD";
+
                     GOCAnimation = GameObject::GetGOC(obj, GOCAnimationString);
                     if (!GOCAnimation)
                         return 0;
@@ -928,8 +930,9 @@ namespace app
                     Time = 0;
                     field_1C = (obj->Flags >> 1) & 1;
                     if (field_1C)
-                        game::GOCAnimationScript::ChangeAnimation(GOCAnimation, "DEAD_NO_HEAD");
+                        animationName = "DEAD_NO_HEAD";
 
+                    game::GOCAnimationScript::ChangeAnimation(GOCAnimation, animationName);
 
                     int* gocEffect = GameObject::GetGOC(obj, GOCEffectString);
                     if (!gocEffect)
@@ -977,6 +980,7 @@ namespace app
 
                     if (game::GOCAnimationScript::IsFinished(GOCAnimation))
                         obj->OnDead();
+
                     return 1;
                 };
             };
@@ -1313,7 +1317,7 @@ namespace app
             
                 int* colli1 = fnd::Handle::Get(&message.field_18);
                 int* colli2 = fnd::Handle::Get(&message.field_20);
-                float contactPoint[12]{};
+                float contactPoint[20]{};
                 if (colli1 && colli2 && game::ColliShapeHavok::GetClosestPoint(colli1, colli2, contactPoint))
                 {
                     if (AttackType::And(message.AttackType, 64))
