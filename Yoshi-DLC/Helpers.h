@@ -14,7 +14,6 @@ extern PlayType LinkSonicPlayType;
 extern bool IsLinkSonicFixed;
 extern bool IsVirtualLinkSonic;
 extern bool IsAlwaysHeartLife;
-extern bool DoesPointMarkerRestoreLife;
 extern bool DisableChestLetterboxing;
 extern bool IsRupeeCountInChestFixed;
 

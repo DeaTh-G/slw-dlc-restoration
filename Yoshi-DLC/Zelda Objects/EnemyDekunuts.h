@@ -571,7 +571,7 @@ namespace app
             if (Flags & 1)
                 return;
 
-            if (ObjUtil::CheckShapeUserID(*(int*)&message.field_18, 2))
+            if (!ObjUtil::CheckShapeUserIDFromHandle((uintptr_t)&message.field_18, 2))
                 return;
 
             if (!EnemyUtil::IsDamage(message.field_2C, 0, message.AttackType))

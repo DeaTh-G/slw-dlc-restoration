@@ -67,7 +67,7 @@ HOOK(int, __fastcall, ProcMsgTakeObjectHook, ASLR(0x008947B0), int* This, void* 
 
 HOOK(bool, __stdcall, CStateBaseProcessMessageHook, ASLR(0x008981A0), app::Player::CStateGOC* a1, app::fnd::Message& message)
 {
-    if (message.Type == app::fnd::PROC_MSG_PLAYER_PASS_POINT_MARKER && DoesPointMarkerRestoreLife)
+    if (message.Type == app::fnd::PROC_MSG_PLAYER_PASS_POINT_MARKER)
     {
         app::Player::StateUtil::AllRecoveryHeartLife(a1);
         app::HUD::DO_RECOVER_LIFE = true;

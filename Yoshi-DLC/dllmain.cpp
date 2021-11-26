@@ -11,7 +11,6 @@ PlayType LinkSonicPlayType = PlayType::DEFAULT;
 bool IsLinkSonicFixed = false;
 bool IsVirtualLinkSonic = false;
 bool IsAlwaysHeartLife = false;
-bool DoesPointMarkerRestoreLife = true;
 bool DisableChestLetterboxing = false;
 bool IsRupeeCountInChestFixed = false;
 
@@ -33,7 +32,7 @@ char IsZeldaStage()
 
 void Initialize()
 {
-    MessageBox(NULL, L"AAAAAAAAAA", NULL, MB_ICONERROR);
+    //MessageBox(NULL, L"AAAAAAAAAA", NULL, MB_ICONERROR);
 
     /* TODO: Please replace this with sane code. */
     WRITE_MEMORY(ASLR(0x00D41252),
@@ -160,8 +159,6 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2C40F), *(void**)&createObjInfo_ObjZeldaItemTreeInfo);
     WRITE_FUNCTION(ASLR(0x00D2C4AF), *(void**)&createObjInfo_ObjZeldaRupeeInfo);
 
-    //WRITE_FUNCTION(ASLR(0x00D280A4), *(void**)&create_ObjZeldaRupee);
-    //WRITE_FUNCTION(ASLR(0x00D2809F), *(void**)&createObjInfo_ObjZeldaRupeeInfo);
     // Install Yoshi Hooks
     app::xgame::IsDLCStagePurchase::Func();
     app::xgame::CStageSoundDirector::PlayResultBGM();
@@ -228,12 +225,12 @@ extern "C"
     {
         std::string dir = modInfo->CurrentMod->Path;
 
-        INIReader* reader = new INIReader("DLCRestoration.ini");
+        INIReader* reader = new INIReader("DLC-Restoration.ini");
         if (reader->ParseError() != 0)
-            delete reader, reader = new INIReader(dir + "DLCRestoration.ini");
+            delete reader, reader = new INIReader(dir + "DLC-Restoration.ini");
 
         if (reader->ParseError() != 0)
-            MessageBox(NULL, L"Failed to parse DLCRestoration.ini", NULL, MB_ICONERROR);
+            MessageBox(NULL, L"Failed to parse DLC-Restoration.ini", NULL, MB_ICONERROR);
 
         IsConsistentShadow = reader->GetBoolean("YoshiTweaks", "isConsistentShadows", false);
         DisablePipeTransition = reader->GetBoolean("YoshiTweaks", "disablePipeTransition", false);
@@ -242,7 +239,6 @@ extern "C"
         IsLinkSonicFixed = reader->GetBoolean("ZeldaTweaks", "isLinkSonicFixed", false);
         IsVirtualLinkSonic = reader->GetBoolean("ZeldaTweaks", "isVirtualLinkSonic", false);
         IsAlwaysHeartLife = reader->GetBoolean("ZeldaTweaks", "isAlwaysHeartLife", false);
-        DoesPointMarkerRestoreLife = reader->GetBoolean("ZeldaTweaks", "doesPointMarkerRestoreLife", true);
         DisableChestLetterboxing = reader->GetBoolean("ZeldaTweaks", "disableChestLetterboxing", false);
         IsRupeeCountInChestFixed = reader->GetBoolean("ZeldaTweaks", "isRupeeCountInChestFixed", false);
 

@@ -1313,7 +1313,7 @@ namespace app
             
                 int* colli1 = fnd::Handle::Get(&message.field_18);
                 int* colli2 = fnd::Handle::Get(&message.field_20);
-                float contactPoint[9]{};
+                float contactPoint[12]{};
                 if (colli1 && colli2 && game::ColliShapeHavok::GetClosestPoint(colli1, colli2, contactPoint))
                 {
                     if (AttackType::And(message.AttackType, 64))

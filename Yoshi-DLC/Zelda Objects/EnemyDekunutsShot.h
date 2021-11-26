@@ -227,10 +227,10 @@ namespace app
             if (!gocTransform)
                 return;
 
-            vector = *(csl::math::Vector3*)(gocTransform + 0x50);
+            math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &vector);
             message.SetReply(&vector, 1);
 
-            if (!ObjUtil::CheckShapeUserID(*(int*)&message.field_18, 0))
+            if (!ObjUtil::CheckShapeUserID(*(int*)(message.field_18.field_04 + 4), 0))
                 return;
 
             Damaged(message);
@@ -275,7 +275,7 @@ namespace app
 
         void ProcMsgKick(xgame::MsgKick& message)
         {
-            if (!ObjUtil::CheckShapeUserID(*(int*)&message.field_18, 0))
+            if (!ObjUtil::CheckShapeUserID(*(int*)(message.field_18.field_04 + 4), 0))
                 return;
             
             xgame::MsgKick::SetReplyForSucceed(&message);

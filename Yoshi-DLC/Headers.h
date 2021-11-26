@@ -16,6 +16,10 @@
 #include "csl/math/Matrix34.h"
 #include "csl/math/Quaternion.h"
 
+#include "app/math/math.h"
+#include "app/math/Transform.h"
+#include "app/math/CalculatedTransform.h"
+
 // hh
 #include "hh/base.h"
 #include "hh/mr/CVertexDeclarationPtr.h"
@@ -96,7 +100,6 @@
 #include "app/game/ShadowShape.h"
 #include "app/game/GOCSound.h"
 #include "app/game/GOCVisual.h"
-#include "app/math/Transform.h"
 #include "app/game/GOCVisualModel.h"
 #include "app/game/GOCMovement.h"
 #include "app/game/MoveStraight.h"
@@ -123,9 +126,6 @@
 #include "app/Gimmick/CRingManager.h"
 
 #include "app/HUD/SRUtility.h"
-
-#include "app/math/math.h"
-#include "app/math/CalculatedTransform.h"
 
 #include "app/Player/PluginStateHeartLife.h"
 #include "app/Player/CPhysics.h"

@@ -27,6 +27,7 @@ namespace app
         inline static FUNCTION_PTR(int, __cdecl, SetPropertyLockonTarget, ASLR(0x0073D280), GameObject* This);
         inline static FUNCTION_PTR(int, __cdecl, SetEnableColliShape, ASLR(0x0073D8D0), int* This, int colliNo, bool isEnable);
         inline static FUNCTION_PTR(bool, __cdecl, CheckShapeUserID, ASLR(0x0073D8B0), int a1, int a2);
+        inline static FUNCTION_PTR(bool, __cdecl, CheckShapeUserIDFromHandle, ASLR(0x0073D910), int a1, int a2);
         inline static FUNCTION_PTR(int*, __cdecl, GetSVPath, ASLR(0x0073E6C0), GameDocument* gameDocumnet, csl::math::Vector3* a1, csl::math::Vector3* a2);
         inline static FUNCTION_PTR(int*, __cdecl, RaycastHitCollision, ASLR(0x0073D980), GameDocument* gameDocumnent, csl::math::Vector3* a1, csl::math::Vector3* a2, int a3);
         inline static FUNCTION_PTR(int*, __cdecl, RaycastNearestCollision, ASLR(0x0073D940), csl::math::Matrix34* matrix, GameDocument* gameDocument, csl::math::Vector3* a1, csl::math::Vector3* a2, int a3);
