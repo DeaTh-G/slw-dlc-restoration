@@ -13,6 +13,17 @@ HOOK(char, __fastcall, EnemyBlowOffObjectOnDeadHook, ASLR(0x0072BA70), app::Game
         app::EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
         This->Kill();
     }
+    if (*((char*)This + 0x4A8) == 4 && !app::GameObject::IsKilled(This))
+    {
+        app::enemy::DeadEffectCInfo effectInfo;
+        app::enemy::DeadEffectCInfo::__ct(&effectInfo);
+        app::GameObjectHandleBase::__ct(&effectInfo, This);
+        effectInfo.SetZeldaKeese();
+
+        void* enemyManager = app::EnemyManager::GetService(*app::Document);
+        app::EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
+        This->Kill();
+    }
     if (*((char*)This + 0x4A8) == 5 && !app::GameObject::IsKilled(This))
     {
         app::enemy::DeadEffectCInfo effectInfo;
