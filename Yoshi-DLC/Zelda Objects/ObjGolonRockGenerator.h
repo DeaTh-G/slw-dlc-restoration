@@ -11,33 +11,6 @@ namespace app
         INSERT_PADDING(2);
     };
 
-    class ObjGolonRockGeneratorInfo : public CObjInfo
-    {
-    public:
-        int Models[2]{};
-        int Skeleton{};
-        int Animation{};
-
-        void Initialize(GameDocument& gameDocument) override
-        {
-            const char* modelNames[2] { "zdlc03_obj_goron", "zdlc03_obj_goronrock" };
-
-            int packFile = 0;
-            ObjUtil::GetPackFile(&packFile, ObjUtil::GetStagePackName(&gameDocument));
-
-            for (size_t i = 0; i < 2; i++)
-                ObjUtil::GetModelResource(&Models[i], modelNames[i], &packFile);
-
-            ObjUtil::GetSkeletonResource(&Skeleton, "zdlc03_obj_goron", packFile);
-            ObjUtil::GetAnimationResource(&Animation, "grn_appear", &packFile);
-        }
-
-        const char* GetInfoName() override
-        {
-            return "ObjGolonRockGeneratorInfo";
-        }
-    };
-
     class ObjGolonRockGenerator : public CSetObjectListener
     {
     private:
@@ -54,7 +27,6 @@ namespace app
             fnd::GOComponent::Create(this, GOCEffect);
             fnd::GOComponent::Create(this, GOCSound);
 
-            ObjGolonRockGeneratorInfo* info = (ObjGolonRockGeneratorInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjGolonRockGeneratorInfo");
             ObjGolonRockGeneratorData* data = (ObjGolonRockGeneratorData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
             if (data->IsCheckFall)
                 Flags |= 1;
