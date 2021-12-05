@@ -388,6 +388,7 @@
     <ClInclude Include="Zelda Objects\EnemyDekunutsShot.h" />
     <ClInclude Include="Zelda Objects\EnemyStalBaby.h" />
     <ClInclude Include="Zelda Objects\MoveObjCocco.h" />
+    <ClInclude Include="Zelda Objects\MoveObjGolonRock.h" />
     <ClInclude Include="Zelda Objects\ObjBreakFloor.h" />
     <ClInclude Include="Zelda Objects\ObjBreakRoof.h" />
     <ClInclude Include="Zelda Objects\ObjChangeTopViewCollision.h" />

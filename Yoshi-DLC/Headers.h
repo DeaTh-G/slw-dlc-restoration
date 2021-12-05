@@ -256,5 +256,6 @@
 #include "Zelda Objects/EnemyStalBaby.h"
 #include "Zelda Objects/MoveObjCocco.h"
 #include "Zelda Objects/ObjCocco.h"
+#include "Zelda Objects/MoveObjGolonRock.h"
 #include "Zelda Objects/ObjGolonRock.h"
 #include "Zelda Objects/ObjGolonRockGenerator.h"
