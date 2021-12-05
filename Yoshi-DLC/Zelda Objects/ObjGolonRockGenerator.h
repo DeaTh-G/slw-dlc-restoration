@@ -45,10 +45,9 @@ namespace app
         INSERT_PADDING(3);
         float Speed{};
         float CreateInterval{};
-        float CreateIntervalCp{};
+        float Time{};
 
     public:
-
         void AddCallback(GameDocument* gameDocument) override
         {
             fnd::GOComponent::Create(this, GOCCollider);
@@ -64,7 +63,7 @@ namespace app
 
             Speed = data->Speed * 10;
             CreateInterval = data->CreateInterval;
-            CreateIntervalCp = data->CreateInterval;
+            Time = data->CreateInterval;
 
             fnd::GOComponent::BeginSetup(this);
 
@@ -95,19 +94,95 @@ namespace app
 
         bool ProcessMessage(fnd::Message& message) override
         {
+            if (PreProcessMessage(message))
+                return true;
+
+            switch (message.Type)
+            {
+            case fnd::PROC_MSG_DLC_ZELDA_NOTICE_ACTIVE_ENEMY:
+                ProcMsgDlcZeldaNoticeActiveEnemy((xgame::MsgDlcZeldaNoticeActiveEnemy&)message);
+                return true;
+            case fnd::PROC_MSG_DLC_ZELDA_NOTICE_STOP_ENEMY:
+                ProcMsgDlcZeldaNoticeStopEnemy((xgame::MsgDlcZeldaNoticeStopEnemy&)message);
+                return true;
+            case fnd::PROC_MSG_HIT_EVENT_COLLISION:
+                ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
+                return true;
+            case fnd::PROC_MSG_LEAVE_EVENT_COLLISION:
+                ProcMsgLeaveEventCollision((xgame::MsgLeaveEventCollision&)message);
+                return true;
+            case fnd::PROC_MSG_NOTIFY_OBJECT_EVENT:
+                ProcMsgNotifyObjectEvent((xgame::MsgNotifyObjectEvent&)message);
+                return true;
+            default:
+                return CSetObjectListener::ProcessMessage(message);
+            }
         }
 
         void Update(const fnd::SUpdateInfo& updateInfo) override
         {
+            if (!(Flags & 2))
+                return;
+        
+            Time += updateInfo.deltaTime;
+            if (Flags & 4 || Time < CreateInterval)
+                return;
+        
+            fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            Time = 0;
+
+            golon_rock::GolonRockCreateInfo cInfo { *(csl::math::Matrix34*)((int*)gocTransform + 0x44), -Speed, (Flags & 1) == 1 };
+            golon_rock::CreateGolonRock((GameDocument&)field_24[1], cInfo);
+
+            int deviceTag[3]{};
+            int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+            if (!gocSound)
+                return;
+
+            game::GOCSound::Play3D(gocSound, deviceTag, "obj_goron_generate", 0);
+
+            int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
+            if (!gocEffect)
+                return;
+
+            game::GOCEffect::CreateEffect(gocEffect, "ef_dl3_goron_appear");
         }
 
     private:
+        void ProcMsgDlcZeldaNoticeActiveEnemy(xgame::MsgDlcZeldaNoticeActiveEnemy& message)
+        {
+            Flags &= ~4;
+        }
+
+        void ProcMsgDlcZeldaNoticeStopEnemy(xgame::MsgDlcZeldaNoticeStopEnemy& message)
+        {
+            Flags |= 4;
+        }
+
+        void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
+        {
+            Flags |= 4;
+        }
+
+        void ProcMsgLeaveEventCollision(xgame::MsgLeaveEventCollision& message)
+        {
+            Flags &= ~4;
+        }
+
+        void ProcMsgNotifyObjectEvent(xgame::MsgNotifyObjectEvent& message)
+        {
+            if (message.field_18 == 1)
+                Flags |= 2;
+        }
     };
 
-    inline static ObjCocco* create_ObjCocco() { return new ObjCocco(); }
+    inline static ObjGolonRockGenerator* create_ObjGolonRockGenerator() { return new ObjGolonRockGenerator(); }
 
-    inline static ObjCoccoInfo* createObjInfo_ObjCoccoInfo(csl::fnd::IAllocator* pAllocator)
+    inline static ObjGolonRockGeneratorInfo* createObjInfo_ObjGolonRockGeneratorInfo(csl::fnd::IAllocator* pAllocator)
     {
-        return new(pAllocator) ObjCoccoInfo();
+        return new(pAllocator) ObjGolonRockGeneratorInfo();
     }
 }

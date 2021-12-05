@@ -100,6 +100,9 @@
     <Filter Include="Header Files\app\Camera">
       <UniqueIdentifier>{ebda2c55-7fe0-4d1c-be40-0b9ee87105af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\app\Render">
+      <UniqueIdentifier>{00215609-1c4c-435a-abf0-af04c491b5a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -787,6 +790,18 @@
       <Filter>Header Files\Yoshi Objects</Filter>
     </ClInclude>
     <ClInclude Include="Zelda Objects\ObjOccludeStone.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\CWorld.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Render\CameraParam.h">
+      <Filter>Header Files\app\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjGolonRockGenerator.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjGolonRock.h">
       <Filter>Header Files\Zelda Objects</Filter>
     </ClInclude>
   </ItemGroup>
