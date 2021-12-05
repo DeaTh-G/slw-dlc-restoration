@@ -29,6 +29,8 @@
 #include "app/animation/AnimationResContainer.h"
 #include "app/animation/AnimCallbackBridge.h"
 
+#include "app/Render/CameraParam.h"
+
 #include "app/fnd/HFrame.h"
 #include "app/fnd/Handle.h"
 #include "csl/ut/NonCopyable.h"
@@ -45,6 +47,7 @@
 #include "app/GameObject.h"
 #include "app/GameObject3D.h"
 #include "app/CGOCCollectionImpl.h"
+#include "app/CWorld.h"
 #include "app/CLevelInfo.h"
 #include "app/fnd/BaseObject.h"
 #include "app/fnd/ReferencedObject.h"
@@ -253,3 +256,4 @@
 #include "Zelda Objects/EnemyStalBaby.h"
 #include "Zelda Objects/MoveObjCocco.h"
 #include "Zelda Objects/ObjCocco.h"
+#include "Zelda Objects/ObjGolonRockGenerator.h"

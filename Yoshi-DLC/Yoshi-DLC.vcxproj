@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <TargetName>Yoshi-DLC</TargetName>
+    <TargetName>DLC-Restoration</TargetName>
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\Debug</OutDir>
   </PropertyGroup>
@@ -80,7 +80,7 @@
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <TargetName>Yoshi-DLC</TargetName>
+    <TargetName>DLC-Restoration</TargetName>
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)</OutDir>
   </PropertyGroup>
@@ -107,7 +107,7 @@
       <AdditionalDependencies>lib/detours.lib;lib/syelog.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(OutDir)$(TargetName)$(TargetExt)" "F:\Mods\Sonic Lost World\DLC Restoration" /Y</Command>
+      <Command>xcopy "$(OutDir)$(TargetName)$(TargetExt)" "F:\Mods\Sonic Lost World\Wii U DLC Restoration" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -148,6 +148,9 @@
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>lib/detours.lib;lib/syelog.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(OutDir)$(TargetName)$(TargetExt)" "F:\Mods\Sonic Lost World\Wii U DLC Restoration" /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -382,6 +385,7 @@
     <ClInclude Include="Zelda Objects\EnemyDekunuts.h" />
     <ClInclude Include="Zelda Objects\EnemyDekunutsShot.h" />
     <ClInclude Include="Zelda Objects\EnemyStalBaby.h" />
+    <ClInclude Include="Zelda Objects\MoveObjCocco.h" />
     <ClInclude Include="Zelda Objects\ObjBreakFloor.h" />
     <ClInclude Include="Zelda Objects\ObjBreakRoof.h" />
     <ClInclude Include="Zelda Objects\ObjChangeTopViewCollision.h" />

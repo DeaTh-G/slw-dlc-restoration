@@ -300,9 +300,6 @@
     <ClInclude Include="Yoshi Objects\ObjYoshiCoin.h">
       <Filter>Header Files\Yoshi Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Yoshi Objects\ObjYoshiJumpBoard.h">
-      <Filter>Header Files\Yoshi Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Yoshi Objects\ObjYoshiSpecialFlower.h">
       <Filter>Header Files\Yoshi Objects</Filter>
     </ClInclude>
@@ -627,9 +624,6 @@
     <ClInclude Include="app\Player\PluginStateHeartLife.h">
       <Filter>Header Files\app\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Zelda Objects\ObjOccludeStone.h">
-      <Filter>Header Files\Zelda Objects</Filter>
-    </ClInclude>
     <ClInclude Include="app\debris\ResRandomSpaceDebris.h">
       <Filter>Header Files\app\debris</Filter>
     </ClInclude>
@@ -784,6 +778,15 @@
       <Filter>Header Files\app\game</Filter>
     </ClInclude>
     <ClInclude Include="Zelda Objects\ObjCocco.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\MoveObjCocco.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\ObjYoshiJumpBoard.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjOccludeStone.h">
       <Filter>Header Files\Zelda Objects</Filter>
     </ClInclude>
   </ItemGroup>
