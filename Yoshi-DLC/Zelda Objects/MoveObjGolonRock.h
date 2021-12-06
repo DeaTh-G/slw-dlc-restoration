@@ -2,8 +2,8 @@
 
 namespace app
 {
-	namespace game
-	{
+    namespace game
+    {
         class alignas(16) MoveObjGolonRock : public MoveController
         {
         public:
@@ -238,5 +238,5 @@ namespace app
                 return vector;
             }
         };
-	}
+    }
 }
