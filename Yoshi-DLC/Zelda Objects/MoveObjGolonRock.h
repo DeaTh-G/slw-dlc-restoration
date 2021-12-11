@@ -41,11 +41,192 @@ namespace app
             int field_84{};
             short field_88{};
             short field_8A{};
-            int field_8C{};
+            void* field_8C{};
             int field_90{};
             int field_94{};
             int field_98{};
             int field_9C{};
+
+        protected:
+            int Update(const fnd::SUpdateInfo& updateInfo) override 
+            {
+                GOCMovement* gocMovement = GetOwnerMovement();
+                int* contextParam = game::GOCMovement::GetContextParam((int*)gocMovement);
+                if (!(char)field_38)
+                {
+                    field_58 *= updateInfo.deltaTime;
+                    float someFloat = -((((field_4C + field_4C) / field_10) * field_58) - field_50);
+                    if (field_58 <= field_10)
+                    {
+                        csl::math::Matrix34 matrix{};
+                        csl::math::Vector3 splinePoint{};
+                        csl::math::Vector3 someVector{};
+                        csl::math::Vector3 someVector2{};
+                        game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
+
+                        Eigen::Vector3f v(someVector2.X, someVector2.Y, someVector2.Z);
+                        Eigen::Matrix3f m(Eigen::AngleAxisf(field_54, v));
+                        for (size_t i = 0; i < 3; i++)
+                            for (size_t j = 0; j < 3; j++)
+                                matrix.data[i][j] = m(i, j);
+
+                        someVector = MultiplyMatrixSRByVector(&m, &someVector);
+                        math::Vector3Scale(&someVector, field_50 - (field_4C + field_4C), &someVector);
+                        math::Vector3Add(&splinePoint, &someVector, &splinePoint);
+                        *(csl::math::Vector3*)contextParam = splinePoint;
+                        csl::Matrix34OrthonormalDirection(&matrix, &someVector2, &someVector);
+                        csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
+                        *((csl::math::Quaternion*)contextParam + 1) = rotation;
+                        
+                        return 0;
+                    }
+
+                    if (field_14 > 0)
+                    {
+                        field_14 -= updateInfo.deltaTime;
+                        return 0;
+                    }
+                    
+                    field_50 -= (field_4C + field_4C);
+                    if (!field_90 || field_82 == 0)
+                    {
+                        csl::math::Matrix34 matrix{};
+                        csl::math::Vector3 splinePoint{};
+                        csl::math::Vector3 someVector{};
+                        csl::math::Vector3 someVector2{};
+                        game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
+
+                        Eigen::Vector3f v(someVector2.X, someVector2.Y, someVector2.Z);
+                        Eigen::Matrix3f m(Eigen::AngleAxisf(field_54, v));
+                        for (size_t i = 0; i < 3; i++)
+                            for (size_t j = 0; j < 3; j++)
+                                matrix.data[i][j] = m(i, j);
+
+                        someVector = MultiplyMatrixSRByVector(&m, &someVector);
+                        math::Vector3Scale(&someVector, field_50, &someVector);
+                        math::Vector3Add(&splinePoint, &someVector, &splinePoint);
+                        *(csl::math::Vector3*)contextParam = splinePoint;
+                        csl::Matrix34OrthonormalDirection(&matrix, &someVector2, &someVector);
+                        csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
+                        *((csl::math::Quaternion*)contextParam + 1) = rotation;
+
+                        return 0;
+                    }
+
+                    if (field_82 >= 0)
+                    {
+                        // virtual call
+                        // (*(*(v25 + SLOWORD(a1->field_84)) + 8 * v24 + 4))();
+                        return 0;
+                    }
+
+                    // virtual call
+                    // (a1->field_84)(v25);
+                    return 0;
+                }
+
+                if ((char)field_38 == 1)
+                {
+                    if ((char)field_38 == 2)
+                        return 0;
+                
+                    csl::math::Vector3 gravityDir{};
+                    csl::math::Vector3 vector{};
+                    int* gocGravity = GameObject::GetGOC((GameObject*)((int*)gocMovement + 5), GOCGravityString);
+                    gravityDir = *GOCGravity::GetGravityDirection(gocGravity);
+                    math::Vector3Scale(&gravityDir, field_2C, &gravityDir);
+                    math::Vector3Scale(&gravityDir, updateInfo.deltaTime, &vector);
+                    *((csl::math::Vector3*)contextParam + 2) += vector;
+                    math::Vector3Scale(((csl::math::Vector3*)contextParam + 2), updateInfo.deltaTime, &vector);
+                    *(csl::math::Vector3*)contextParam += vector;
+                    UpdateLocalRotRad(updateInfo.deltaTime);
+                    field_58 *= updateInfo.deltaTime;
+                    if (field_58 <= field_30)
+                        return 0;
+
+                    if (!field_90)
+                        return 0;
+
+                    if (!field_82)
+                        return 0;
+
+                    if (field_82 < 0)
+                    {
+                        // virtual call
+                        // (a1->field_84)(v25);
+                        return 0;
+                    }
+
+                    // virtual call
+                    // v74 = a1->field_90;
+                    // v25 = v74 + a1->field_80;
+                    // (*(*(v25 + SLOWORD(a1->field_84)) + 8 * v24 + 4))();
+
+                    return 0;
+                }
+
+                csl::math::Vector3 movePos{};
+                csl::math::Vector3 rotDir{};
+                UpdateMovePathPos(&movePos, updateInfo.deltaTime);
+                UpdateRotDirPathToPos(&rotDir, updateInfo.deltaTime);
+
+                csl::math::Vector3 scaledRotDir{};
+                math::Vector3Scale(&rotDir, field_50, &scaledRotDir);
+                math::Vector3Add(&movePos, &scaledRotDir, &movePos);
+                *(csl::math::Vector3*)contextParam = movePos;
+                PathEvaluator.GetTangent(&scaledRotDir, PathEvaluator.field_08);
+                
+                csl::math::Matrix34 matrix{};
+                csl::Matrix34OrthonormalDirection(&matrix, &scaledRotDir, &movePos);
+                csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
+                *((csl::math::Quaternion*)contextParam + 1) = rotation;
+                field_60 = Vector3((field_50 + field_4C) * field_24, 0, field_18 * updateInfo.deltaTime);
+                UpdateLocalRotRad(updateInfo.deltaTime);
+                if (!field_34 || /*CheckFall(&rotDir, updateInfo.deltaTime)*/ )
+                {
+                    if (IsPassOverPlayer())
+                    {
+                        if (field_90)
+                        {
+                            if (field_8A)
+                            {
+                                // virtual call
+                                // v57 = a1->field_90;
+                                // v59 = v57 + a1->field_88;
+                                if (field_8A >= 0)
+                                {
+                                    // (*(*(v59 + SLOWORD(a1->field_8C)) + 8 * v58 + 4))();
+                                }
+                                else
+                                {
+                                    // (a1->field_8C)(v59);
+                                }
+                            }
+                        }
+                    }
+                    return 0;
+                }
+
+                if (field_90)
+                {
+                    if (field_82)
+                    {
+                        if (field_82 >= 0)
+                        {
+                            // virtual call
+                            // v56 = a1->field_90;
+                            // v25 = v56 + a1->field_80;
+                            // (*(*(v25 + SLOWORD(a1->field_84)) + 8 * v24 + 4))();
+                        }
+
+                        // virtual call
+                        // (a1->field_84)(v25);
+                        return 0;
+                    }
+                }
+
+                return 0;
+            };
 
         public:
             csl::math::Quaternion const GetLocalRotate(csl::math::Quaternion* rotation)
@@ -119,7 +300,7 @@ namespace app
                 return false;
             }
 
-            void const UpdateLocalRotRad(float a1)
+            void const UpdateLocalRotRad(float deltaTime)
             {
                 csl::math::Vector3 vector { field_60 };
                 float length = math::Vector3NormalizeWithLength(&vector, &vector);
@@ -134,9 +315,9 @@ namespace app
                 float dot = math::Vector3DotProduct(&someVector, &vector);
                 dot = csl::math::Clamp(dot, -1, 1);
                 dot = acosf(dot);
-                if (dot >= (0.52359879f * a1))
+                if (dot >= (0.52359879f * deltaTime))
                 {
-                    dot = csl::math::Min(dot, 1.0471976f * a1);
+                    dot = csl::math::Min(dot, 1.0471976f * deltaTime);
                     someVector = Vector3(0, 1, 0);
 
                     math::Vector3CrossProduct(&someVector, &someVector2, &someVector);
@@ -148,11 +329,11 @@ namespace app
                 field_7C = SonicUSA::System::RadianMaskS(field_7C + (length / field_4C));
             }
 
-            void const UpdateMovePathPos(csl::math::Vector3* out, float a2)
+            void const UpdateMovePathPos(csl::math::Vector3* out, float deltaTime)
             {
                 csl::math::Vector3 position{};
 
-                float distance = (field_18 * a2) + PathEvaluator.field_08;
+                float distance = (field_18 * deltaTime) + PathEvaluator.field_08;
                 if (distance > 0 || distance < game::PathEvaluator::GetLength(&PathEvaluator))
                     game::PathEvaluator::SetDistance(&PathEvaluator, distance);
 
@@ -160,7 +341,7 @@ namespace app
                 *out = position;
             }
 
-            csl::math::Vector3 const UpdateRotDirPathToPos(csl::math::Vector3* out, float a2)
+            csl::math::Vector3 const UpdateRotDirPathToPos(csl::math::Vector3* out, float deltaTime)
             {
                 csl::math::Quaternion rotation{};
                 csl::math::Vector3 vectorOffset{};
@@ -207,7 +388,7 @@ namespace app
                 dot = csl::math::Clamp(dot, -1, 1);
 
                 float csofDot = acosf(dot);
-                float mult = field_1C * a2;
+                float mult = field_1C * deltaTime;
 
                 math::Vector3CrossProduct(&vectorOffset, &vector, &vector);
                 if (math::Vector3DotProduct(&playerPosition, &vector) < 0)
@@ -216,14 +397,14 @@ namespace app
                     csofDot = -csofDot;
                 }
 
-                float MULT_field_20 = field_20 * a2;
+                float MULT_field_20 = field_20 * deltaTime;
                 field_24 += mult;
                 field_24 = csl::math::Clamp(field_24, -MULT_field_20, MULT_field_20);
                 if ((field_24 > 0 && mult < 0) || (field_24 < 0 && mult > 0))
                 {
                     if (fabs(field_24) > fabs(mult))
                     {
-                        float min = csl::math::Min(10 * a2, 1);
+                        float min = csl::math::Min(10 * deltaTime, 1);
                         field_24 = csl::math::Lerp(field_24, csofDot, min);
                     }
                 }

@@ -23,6 +23,13 @@ namespace csl
                 Y = y;
                 Z = z;
             }
+
+            csl::math::Vector3& operator+=(const csl::math::Vector3& other)
+            {
+                this->X = this->X + other.X;
+                this->Y = this->Y + other.Y;
+                this->Z = this->Z + other.Z;
+            }
         };
 
         inline static FUNCTION_PTR(float, __cdecl, Vector3Length, ASLR(0x00962510), Vector3* a1);
