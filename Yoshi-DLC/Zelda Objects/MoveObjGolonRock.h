@@ -33,10 +33,11 @@ namespace app
                 void* NotifyPassPlayerCallback{};
                 ObjGolonRock* Object{};
 
-                SetupParam(csl::math::Vector3 position, float a2, float a3, float speed, float a4, float a5, float a6, bool isCheckFall,
+            public:
+                SetupParam(csl::math::Vector3* position, float a2, float a3, float speed, float a4, float a5, float a6, bool isCheckFall,
                     short a8, void* func1, short a10, void* func2, ObjGolonRock* obj)
                 {
-                    Position = position;
+                    Position = *position;
                     field_10 = 20;
                     field_14 = a2;
                     field_18 = a3;
@@ -56,7 +57,18 @@ namespace app
 
             enum class Mode : char
             {
+                NONE = -1,
+                SHOOT,
+                MOVE,
+                FALL
             };
+
+        public:
+            MoveObjGolonRock()
+            {
+                SetFlag(115);
+                MovementMode = Mode::NONE;
+            }
 
         private:
             float field_10{};
@@ -71,7 +83,7 @@ namespace app
             float field_30{};
             bool IsCheckFall{};
             INSERT_PADDING(3);
-            Mode Mode{};
+            Mode MovementMode{};
             INSERT_PADDING(3);
             PathEvaluator PathEvaluator{};
             float field_4C{};
@@ -172,9 +184,9 @@ namespace app
                     return 0;
                 }
 
-                if ((char)Mode == 1)
+                if (MovementMode == Mode::MOVE)
                 {
-                    if ((char)Mode == 2)
+                    if (MovementMode == Mode::FALL)
                         return 0;
                 
                     csl::math::Vector3 gravityDir{};
@@ -499,9 +511,15 @@ namespace app
             }
 
         public:
+            void StartMode(Mode mode)
+            {
+                MovementMode = mode;
+                field_58 = 0;
+            }
+
             void Setup(SetupParam& param)
             {
-                GameDocument* document = (GameDocument*)(((int***)GetOwnerMovement())[5][9][1]);
+                GameDocument* document = (GameDocument*)(((GameObject*)(((int**)GetOwnerMovement())[5]))->field_24[1]);
 
                 int i = 5;
                 do
@@ -533,7 +551,7 @@ namespace app
                 float length = PathEvaluator::GetLength(&PathEvaluator);
 
                 csl::math::Vector3 position{};
-                game::PathEvaluator::GetClosestPositionAlongSpline(&PathEvaluator, &param.Position, &position, 0, &length);
+                game::PathEvaluator::GetClosestPositionAlongSpline(&PathEvaluator, &param.Position, 0, length, &length);
                 game::PathEvaluator::SetDistance(&PathEvaluator, position.X);
                 csl::math::Vector3 splinePoint{};
                 csl::math::Vector3 someVector{};
