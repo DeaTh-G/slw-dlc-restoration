@@ -29,6 +29,8 @@ namespace csl
                 this->X = this->X + other.X;
                 this->Y = this->Y + other.Y;
                 this->Z = this->Z + other.Z;
+
+                return *this;
             }
         };
 
