@@ -92,7 +92,7 @@ namespace app
             fnd::GOComponent::Create(this, GOCAnimationSimple);
             fnd::GOComponent::Create(this, GOCGravity);
             fnd::GOComponent::Create(this, GOCCollider);
-            //fnd::GOComponent::Create(this, GOCMovementComplex);
+            fnd::GOComponent::Create(this, GOCMovementComplex);
             fnd::GOComponent::Create(this, GOCSound);
             fnd::GOComponent::Create(this, GOCEffect);
             fnd::GOComponent::Create(this, GOCShadowSimple);
@@ -186,6 +186,35 @@ namespace app
             }
 
             game::GOCGravity::SimpleSetup(this, 1);
+
+            int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
+            if (gocMovement)
+            {
+                csl::math::Vector3 position{};
+
+                void* movementMem = ((app::fnd::ReferencedObject*)gocMovement)->pAllocator->Alloc
+                (sizeof(game::MoveObjGolonRock), 16);
+                game::MoveObjGolonRock* movement = new(movementMem) game::MoveObjGolonRock();
+                game::GOCMovement::SetupController(gocMovement, movement);
+
+                game::MoveObjGolonRock::SetupParam setupParam = game::MoveObjGolonRock::SetupParam(
+                    (csl::math::Vector3*)gocTransform + 6,
+                    0.3f,
+                    0.4f,
+                    CInfo->NegativeSpeed,
+                    0.034906585f,
+                    1.5707964f,
+                    1.0f,
+                    CInfo->IsCheckFall,
+                    (short)-1,
+                    (void*)NULL,
+                    (short)-1,
+                    (void*)NULL,
+                    this
+                );
+
+                movement->Setup(setupParam);
+            }
 
             int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
             if (gocShadow)
