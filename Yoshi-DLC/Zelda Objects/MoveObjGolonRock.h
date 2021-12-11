@@ -7,6 +7,31 @@ namespace app
         class alignas(16) MoveObjGolonRock : public MoveController
         {
         public:
+            struct SetupParam
+            {
+                csl::math::Vector3 Position{};
+                float field_10{};
+                float field_14{};
+                float field_18{};
+                float Speed{};
+                float field_20{};
+                float field_24{};
+                float field_28{};
+                bool field_2C{};
+                INSERT_PADDING(3);
+                float field_30{};
+                float field_34{};
+                bool IsCheckFall{};
+                INSERT_PADDING(3);
+                short field_3C{};
+                short field_3E{};
+                void* NotifyMoveEndCallback{};
+                short field_44{};
+                short field_46{};
+                void* NotifyPassPlayerCallback{};
+                int field_4C{};
+            };
+
             enum class Mode : char
             {
             };
@@ -22,9 +47,9 @@ namespace app
             INSERT_PADDING(3);
             float field_2C{};
             float field_30{};
-            bool field_34{};
+            bool IsCheckFall{};
             INSERT_PADDING(3);
-            Mode field_38{};
+            Mode Mode{};
             INSERT_PADDING(3);
             PathEvaluator PathEvaluator{};
             float field_4C{};
@@ -39,10 +64,10 @@ namespace app
             float field_7C{};
             short field_80{};
             short field_82{};
-            int field_84{};
+            void* NotifyMoveEndCallback{};
             short field_88{};
             short field_8A{};
-            void* field_8C{};
+            void* NotifyPassPlayerCallback{};
             int field_90{};
             int field_94{};
             int field_98{};
@@ -53,7 +78,7 @@ namespace app
             {
                 GOCMovement* gocMovement = GetOwnerMovement();
                 int* contextParam = game::GOCMovement::GetContextParam((int*)gocMovement);
-                if (!(char)field_38)
+                if (!IsCheckFall)
                 {
                     field_58 *= updateInfo.deltaTime;
                     float someFloat = -((((field_4C + field_4C) / field_10) * field_58) - field_50);
@@ -125,9 +150,9 @@ namespace app
                     return 0;
                 }
 
-                if ((char)field_38 == 1)
+                if ((char)Mode == 1)
                 {
-                    if ((char)field_38 == 2)
+                    if ((char)Mode == 2)
                         return 0;
                 
                     csl::math::Vector3 gravityDir{};
@@ -182,7 +207,7 @@ namespace app
                 *((csl::math::Quaternion*)contextParam + 1) = rotation;
                 field_60 = Vector3((field_50 + field_4C) * field_24, 0, field_18 * updateInfo.deltaTime);
                 UpdateLocalRotRad(updateInfo.deltaTime);
-                if (!field_34 || CheckFall(&rotDir, updateInfo.deltaTime) )
+                if (!IsCheckFall || CheckFall(&rotDir, updateInfo.deltaTime) )
                 {
                     if (IsPassOverPlayer())
                     {
@@ -452,6 +477,60 @@ namespace app
             }
 
         public:
+            void Setup(SetupParam& param)
+            {
+                GameDocument* document = (GameDocument*)(((int***)GetOwnerMovement())[5][9][1]);
+
+                int i = 5;
+                do
+                {
+                    ++field_14 = ++param.field_18;
+                    --i;
+                } while (i);
+
+                field_2C = param.field_30;
+                field_30 = param.field_34;
+                IsCheckFall = param.IsCheckFall;
+                PhysicsWorld = (CPhysicsWorld*)CPhysicsWorld::GetService(document);
+                RaycastJob = new game::PhysicsRaycastJob[1];
+                field_80 = param.field_3C;
+                NotifyMoveEndCallback = param.NotifyMoveEndCallback;
+                field_88 = param.field_44;
+                NotifyPassPlayerCallback = param.NotifyPassPlayerCallback;
+                field_90 = param.field_4C;
+
+                int* gravityField = ObjUtil::GetGravityField(document, &param.Position);
+                if (!gravityField)
+                    return;
+            
+                int* path = ObjUtil::GetGravityPathInsideCylinder(gravityField);
+                if (!path)
+                    return;
+
+                PathEvaluator::SetPathObject(&PathEvaluator, path);
+                float length = PathEvaluator::GetLength(&PathEvaluator);
+
+                csl::math::Vector3 position{};
+                game::PathEvaluator::GetClosestPositionAlongSpline(&PathEvaluator, &param.Position, &position, 0, &length);
+                game::PathEvaluator::SetDistance(&PathEvaluator, position.X);
+                csl::math::Vector3 splinePoint{};
+                csl::math::Vector3 someVector{};
+                csl::math::Vector3 someVector2{};
+                game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
+                math::Vector3Subtract(&param.Position, &splinePoint, &splinePoint);
+                field_50 = math::Vector3Magnitude(&splinePoint);
+                if (!math::Vector3NormalizeIfNotZero(&splinePoint, &splinePoint))
+                    return;
+            
+                float dot = math::Vector3DotProduct(&someVector, &splinePoint);
+                dot = acosf(csl::math::Clamp(dot, -1, 1));
+                math::Vector3CrossProduct(&someVector2, &someVector, &someVector);
+                if (math::Vector3DotProduct(&someVector, &splinePoint) < 0)
+                    dot = -dot;
+            
+                field_54 = dot;
+            }
+
             csl::math::Quaternion const GetLocalRotate(csl::math::Quaternion* rotation)
             {
                 csl::math::Vector3 upVector { 0, 1, 0 };

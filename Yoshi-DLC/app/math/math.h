@@ -56,6 +56,11 @@ namespace app
             a_bVec->Z = a->Z - b->Z;
         }
 
+        static float Vector3Magnitude(Vector3* vector)
+        {
+            return sqrt(pow(a->X, 2) + pow(a->Y, 2) + pow(a->Z, 2));
+        }
+
         static void Vector3SquareMagnitude(Vector3* a, float* length)
         {
             *length = pow(a->X, 2) + pow(a->Y, 2) + pow(a->Z, 2);
