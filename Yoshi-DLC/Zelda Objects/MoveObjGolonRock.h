@@ -2,6 +2,8 @@
 
 namespace app
 {
+    class ObjGolonRock;
+
     namespace game
     {
         class alignas(16) MoveObjGolonRock : public MoveController
@@ -29,7 +31,27 @@ namespace app
                 short field_44{};
                 short field_46{};
                 void* NotifyPassPlayerCallback{};
-                int field_4C{};
+                ObjGolonRock* Object{};
+
+                SetupParam(csl::math::Vector3 position, float a2, float a3, float speed, float a4, float a5, float a6, bool isCheckFall,
+                    short a8, void* func1, short a10, void* func2, ObjGolonRock* obj)
+                {
+                    Position = position;
+                    field_10 = 20;
+                    field_14 = a2;
+                    field_18 = a3;
+                    Speed = speed;
+                    field_20 = a4;
+                    field_24 = a5;
+                    field_30 = 300;
+                    field_34 = a6;
+                    IsCheckFall = isCheckFall;
+                    field_3E = a8;
+                    NotifyMoveEndCallback = func1;
+                    field_46 = a10;
+                    NotifyPassPlayerCallback = func2;
+                    Object = obj;
+                }
             };
 
             enum class Mode : char
@@ -68,7 +90,7 @@ namespace app
             short field_88{};
             short field_8A{};
             void* NotifyPassPlayerCallback{};
-            int field_90{};
+            ObjGolonRock* Object{};
             int field_94{};
             int field_98{};
             int field_9C{};
@@ -114,7 +136,7 @@ namespace app
                     }
                     
                     field_50 -= (field_4C + field_4C);
-                    if (!field_90 || field_82 == 0)
+                    if (!Object || field_82 == 0)
                     {
                         csl::math::Matrix34 matrix{};
                         csl::math::Vector3 splinePoint{};
@@ -169,7 +191,7 @@ namespace app
                     if (field_58 <= field_30)
                         return 0;
 
-                    if (!field_90)
+                    if (!Object)
                         return 0;
 
                     if (!field_82)
@@ -211,7 +233,7 @@ namespace app
                 {
                     if (IsPassOverPlayer())
                     {
-                        if (field_90)
+                        if (Object)
                         {
                             if (field_8A)
                             {
@@ -232,7 +254,7 @@ namespace app
                     return 0;
                 }
 
-                if (field_90)
+                if (Object)
                 {
                     if (field_82)
                     {
@@ -492,12 +514,12 @@ namespace app
                 field_30 = param.field_34;
                 IsCheckFall = param.IsCheckFall;
                 PhysicsWorld = (CPhysicsWorld*)CPhysicsWorld::GetService(document);
-                RaycastJob = new game::PhysicsRaycastJob[1];
+                RaycastJob = new(((app::fnd::ReferencedObject*)GetOwnerMovement())->pAllocator) game::PhysicsRaycastJob();
                 field_80 = param.field_3C;
                 NotifyMoveEndCallback = param.NotifyMoveEndCallback;
                 field_88 = param.field_44;
                 NotifyPassPlayerCallback = param.NotifyPassPlayerCallback;
-                field_90 = param.field_4C;
+                Object = param.Object;
 
                 int* gravityField = ObjUtil::GetGravityField(document, &param.Position);
                 if (!gravityField)
