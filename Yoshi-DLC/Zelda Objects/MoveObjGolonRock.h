@@ -33,7 +33,8 @@ namespace app
             float field_58{};
             int field_5C{};
             csl::math::Vector3 field_60{};
-            int* PhysicsRaycastJob{};
+            CPhysicsWorld* PhysicsWorld{};
+            PhysicsRaycastJob* RaycastJob{};
             float field_78{};
             float field_7C{};
             short field_80{};
@@ -120,8 +121,7 @@ namespace app
                         return 0;
                     }
 
-                    // virtual call
-                    // (a1->field_84)(v25);
+                    // ObjGolonRock::NotifyMoveEndCallback(v25);
                     return 0;
                 }
 
@@ -153,7 +153,7 @@ namespace app
                     if (field_82 < 0)
                     {
                         // virtual call
-                        // (a1->field_84)(v25);
+                        // ObjGolonRock::NotifyMoveEndCallback(v25);
                         return 0;
                     }
 
@@ -182,7 +182,7 @@ namespace app
                 *((csl::math::Quaternion*)contextParam + 1) = rotation;
                 field_60 = Vector3((field_50 + field_4C) * field_24, 0, field_18 * updateInfo.deltaTime);
                 UpdateLocalRotRad(updateInfo.deltaTime);
-                if (!field_34 || /*CheckFall(&rotDir, updateInfo.deltaTime)*/ )
+                if (!field_34 || CheckFall(&rotDir, updateInfo.deltaTime) )
                 {
                     if (IsPassOverPlayer())
                     {
@@ -190,16 +190,16 @@ namespace app
                         {
                             if (field_8A)
                             {
-                                // virtual call
                                 // v57 = a1->field_90;
                                 // v59 = v57 + a1->field_88;
                                 if (field_8A >= 0)
                                 {
+                                    // virtual call
                                     // (*(*(v59 + SLOWORD(a1->field_8C)) + 8 * v58 + 4))();
                                 }
                                 else
                                 {
-                                    // (a1->field_8C)(v59);
+                                    // ObjGolonRock::NotifyPassPlayerCallback(v59);
                                 }
                             }
                         }
@@ -219,8 +219,7 @@ namespace app
                             // (*(*(v25 + SLOWORD(a1->field_84)) + 8 * v24 + 4))();
                         }
 
-                        // virtual call
-                        // (a1->field_84)(v25);
+                        // ObjGolonRock::NotifyMoveEndCallback(v25);
                         return 0;
                     }
                 }
@@ -228,45 +227,78 @@ namespace app
                 return 0;
             };
 
-        public:
-            csl::math::Quaternion const GetLocalRotate(csl::math::Quaternion* rotation)
+            bool CheckFall(csl::math::Vector3* rotDir, float deltaTime)
             {
-                csl::math::Vector3 upVector { 0, 1, 0 };
-                csl::math::Vector3 backwardVector { -1, 0, 0 };
+                bool result{};
+                int isFalling[3] { -1, -1, -1 };
 
-                csl::math::Quaternion rotation1{};
-                csl::math::Quaternion rotation2{};
+                int item = ((int*)RaycastJob->Commands[0])[0];
+                for (size_t i = 0; item != ((int*)RaycastJob->Commands[0])[16 * RaycastJob->Commands[1]]; i++)
+                {
+                    isFalling[i] = 1;
+                    if ((int*)item + 12)
+                        isFalling[i] = 0;
+                    
+                    item += 40;
+                }
+                RaycastJob->Clear();
 
-                Eigen::Vector3f v(upVector.X, upVector.Y, upVector.Z);
-                Eigen::Quaternionf q(Eigen::AngleAxisf(field_78, v));
-                rotation1 = csl::math::Quaternion(q.y(), q.z(), q.w(), q.x());
-
-                Eigen::Vector3f v(backwardVector.X, backwardVector.Y, backwardVector.Z);
-                Eigen::Quaternionf q(Eigen::AngleAxisf(field_7C, v));
-                rotation2 = csl::math::Quaternion(q.y(), q.z(), q.w(), q.x());
-
-                rotation1 = csl::math::Quaternion(rotation1.X * rotation2.X, rotation1.Y * rotation2.Y,
-                    rotation1.Z * rotation2.Z, rotation1.Z * rotation2.Z);
-
-                csl::math::QuaternionNormalize(&rotation1, rotation);
-                return *rotation;
-            }
-
-            csl::math::Vector3 const GetWorldMoveDir()
-            {
-                csl::math::Vector3 worldDir{};
-
+                csl::math::Vector3 vector{};
                 GOCMovement* gocMovement = GetOwnerMovement();
                 int* contextParam = game::GOCMovement::GetContextParam((int*)gocMovement);
-                math::Vector3Rotate(&worldDir, (csl::math::Quaternion*)(contextParam + 4), &field_60);
-                if (math::Vector3NormalizeIfNotZero(&worldDir, &worldDir))
-                    return worldDir;
-                
-                PathEvaluator.GetTangent(&worldDir, PathEvaluator.field_08);
-                float scalar = csl::math::Select(((float*)gocMovement)[6], fabs(1), -abs(1));
-                math::Vector3Scale(&worldDir, scalar, &worldDir);
+                if (isFalling[0] == 1 && isFalling[2] != 1)
+                {
+                    float scalar = csl::math::Select(field_20 * deltaTime, fabs(field_20 * deltaTime), -fabs(field_20 * deltaTime));
+                    if (isFalling[1])
+                        vector = Vector3(field_50 * scalar, 0, field_18 * deltaTime);
+                    else
+                        vector = Vector3(field_50 * -scalar, 0, field_18 * deltaTime);
 
-                return worldDir;
+                    math::Vector3Rotate(&vector, (csl::math::Quaternion*)contextParam + 1, &vector);
+                    math::Vector3Scale(&vector, 1 / deltaTime, &vector);
+                    *((csl::math::Vector3*)contextParam + 2) = vector;
+                    result = true;
+                }
+
+                csl::math::Vector3 scaledRotDir{};
+                math::Vector3Scale(rotDir, field_4C + 2, &scaledRotDir);
+                math::Vector3Add((csl::math::Vector3*)contextParam, &scaledRotDir, &scaledRotDir);
+                RaycastJob->Add((csl::math::Vector3*)contextParam, &scaledRotDir, 51606, 0, 1);
+
+                if (isFalling[0] != 1)
+                {
+                    PhysicsWorld->AddRaycastJob(RaycastJob);
+                    return result;
+                }
+
+                csl::math::Vector3 splinePoint{};
+                csl::math::Vector3 someVector{};
+                csl::math::Vector3 someVector2{};
+                game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
+                float axis[2]{};
+                axis[0] = csl::math::Select((field_4C * 5) / (field_50 + field_4C), fabs((field_4C * 5) / (field_50 + field_4C)), -fabs((field_4C * 5) / (field_50 + field_4C)));
+                axis[1] = SonicUSA::System::RadianMaskS(field_54 - axis[0]);
+                axis[0] = SonicUSA::System::RadianMaskS(field_54 + axis[0]);
+
+                csl::math::Matrix34 matrix{};
+                for (size_t i = 0; i < 2; i++)
+                {
+                    Eigen::Vector3f v(someVector2.X, someVector2.Y, someVector2.Z);
+                    Eigen::Matrix3f m(Eigen::AngleAxisf(axis[i], v));
+                    for (size_t i = 0; i < 3; i++)
+                        for (size_t j = 0; j < 3; j++)
+                            matrix.data[i][j] = m(i, j);
+
+                    someVector = MultiplyMatrixSRByVector(&m, &someVector);
+                    math::Vector3Scale(&someVector, field_50, &someVector2);
+                    math::Vector3Add(&splinePoint, &someVector2, &splinePoint);
+                    math::Vector3Scale(&someVector, field_4C + 2, &someVector);
+                    math::Vector3Add(&splinePoint, &someVector, &someVector);
+                    RaycastJob->Add(&splinePoint, &someVector, 51606, 0, 1);
+                }
+
+                PhysicsWorld->AddRaycastJob(RaycastJob);
+                return result;
             }
 
             bool const IsPassOverPlayer()
@@ -277,7 +309,7 @@ namespace app
                 if (!playerInfo)
                     return false;
 
-                csl::math::Vector3 playerPosition { *(csl::math::Vector3*)(playerInfo + 4) };
+                csl::math::Vector3 playerPosition{ *(csl::math::Vector3*)(playerInfo + 4) };
 
                 csl::math::Vector3 splinePoint{};
                 csl::math::Vector3 someVector{};
@@ -291,7 +323,7 @@ namespace app
                 math::Vector3Subtract(&playerPosition, &someVector, &playerPosition);
                 if (math::Vector3DotProduct(&someVector2, &playerPosition) >= 0)
                     return false;
-                
+
                 float magnitude;
                 math::Vector3SquareMagnitude(&playerPosition, &magnitude);
                 if (magnitude > 90000)
@@ -302,14 +334,14 @@ namespace app
 
             void const UpdateLocalRotRad(float deltaTime)
             {
-                csl::math::Vector3 vector { field_60 };
+                csl::math::Vector3 vector{ field_60 };
                 float length = math::Vector3NormalizeWithLength(&vector, &vector);
                 if (length <= 0)
                     field_7C = SonicUSA::System::RadianMaskS(field_7C + (length / field_4C));
 
                 float someValue = 0;
-                csl::math::Vector3 someVector { 0, 0, 1 };
-                csl::math::Vector3 someVector2 { 0, 1, 0 };
+                csl::math::Vector3 someVector{ 0, 0, 1 };
+                csl::math::Vector3 someVector2{ 0, 1, 0 };
                 vector = field_60;
                 math::Vector3RotateY(&someVector, field_78, &someVector);
                 float dot = math::Vector3DotProduct(&someVector, &vector);
@@ -368,9 +400,9 @@ namespace app
                 if (!playerInfo)
                     return Vector3(0, 1, 0);
 
-                csl::math::Vector3 playerPosition { *(csl::math::Vector3*)(playerInfo + 4) };
+                csl::math::Vector3 playerPosition{ *(csl::math::Vector3*)(playerInfo + 4) };
                 math::Vector3Subtract(&playerPosition, &splinePoint, &playerPosition);
-                
+
                 float dot = math::Vector3DotProduct(&playerPosition, &someVector2);
                 math::Vector3Scale(&someVector2, dot, &splinePoint);
                 math::Vector3Subtract(&playerPosition, &splinePoint, &splinePoint);
@@ -411,12 +443,53 @@ namespace app
                 field_54 += field_24;
                 field_54 = SonicUSA::System::RadianMaskS(field_54);
 
-                Eigen::Vector3f v(vectorOffset.X, vectorOffset.Y, vectorOffset.Z);
-                Eigen::Quaternionf q(Eigen::AngleAxisf(field_54, v));
+                v = Eigen::Vector3f(vectorOffset.X, vectorOffset.Y, vectorOffset.Z);
+                q = Eigen::Quaternionf(Eigen::AngleAxisf(field_54, v));
                 rotation = csl::math::Quaternion(q.y(), q.z(), q.w(), q.x());
 
                 math::Vector3Rotate(&vector, &rotation, &someVector);
                 return vector;
+            }
+
+        public:
+            csl::math::Quaternion const GetLocalRotate(csl::math::Quaternion* rotation)
+            {
+                csl::math::Vector3 upVector { 0, 1, 0 };
+                csl::math::Vector3 backwardVector { -1, 0, 0 };
+
+                csl::math::Quaternion rotation1{};
+                csl::math::Quaternion rotation2{};
+
+                Eigen::Vector3f v(upVector.X, upVector.Y, upVector.Z);
+                Eigen::Quaternionf q(Eigen::AngleAxisf(field_78, v));
+                rotation1 = csl::math::Quaternion(q.y(), q.z(), q.w(), q.x());
+
+                v = Eigen::Vector3f(backwardVector.X, backwardVector.Y, backwardVector.Z);
+                q = Eigen::Quaternionf(Eigen::AngleAxisf(field_7C, v));
+                rotation2 = csl::math::Quaternion(q.y(), q.z(), q.w(), q.x());
+
+                rotation1 = csl::math::Quaternion(rotation1.X * rotation2.X, rotation1.Y * rotation2.Y,
+                    rotation1.Z * rotation2.Z, rotation1.Z * rotation2.Z);
+
+                csl::math::QuaternionNormalize(&rotation1, rotation);
+                return *rotation;
+            }
+
+            csl::math::Vector3 const GetWorldMoveDir()
+            {
+                csl::math::Vector3 worldDir{};
+
+                GOCMovement* gocMovement = GetOwnerMovement();
+                int* contextParam = game::GOCMovement::GetContextParam((int*)gocMovement);
+                math::Vector3Rotate(&worldDir, (csl::math::Quaternion*)(contextParam + 4), &field_60);
+                if (math::Vector3NormalizeIfNotZero(&worldDir, &worldDir))
+                    return worldDir;
+                
+                PathEvaluator.GetTangent(&worldDir, PathEvaluator.field_08);
+                float scalar = csl::math::Select(((float*)gocMovement)[6], fabs(1), -abs(1));
+                math::Vector3Scale(&worldDir, scalar, &worldDir);
+
+                return worldDir;
             }
         };
     }

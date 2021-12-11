@@ -126,6 +126,10 @@
 #include "app/ObjectPartPointLight.h"
 #include "app/EnemyUtil.h"
 
+#include "app/game/PhysicsQueryJob.h"
+#include "app/game/PhysicsRaycastJob.h"
+#include "app/CPhysicsWorld.h"
+
 #include "app/Gimmick/CRingManager.h"
 
 #include "app/HUD/SRUtility.h"

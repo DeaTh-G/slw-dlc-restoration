@@ -807,6 +807,15 @@
     <ClInclude Include="Zelda Objects\MoveObjGolonRock.h">
       <Filter>Header Files\Zelda Objects</Filter>
     </ClInclude>
+    <ClInclude Include="app\game\PhysicsQueryJob.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\PhysicsRaycastJob.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\CPhysicsWorld.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">

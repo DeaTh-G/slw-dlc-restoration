@@ -186,6 +186,7 @@
     <ClInclude Include="app\CObjInfo.h" />
     <ClInclude Include="app\CObjInfoContainer.h" />
     <ClInclude Include="app\CObjOneUp.h" />
+    <ClInclude Include="app\CPhysicsWorld.h" />
     <ClInclude Include="app\CSetAdapter.h" />
     <ClInclude Include="app\CSetObjClass.h" />
     <ClInclude Include="app\CSetObjectListener.h" />
@@ -258,6 +259,8 @@
     <ClInclude Include="app\game\MoveVelocityReference.h" />
     <ClInclude Include="app\game\PathEvaluator.h" />
     <ClInclude Include="app\game\PathManager.h" />
+    <ClInclude Include="app\game\PhysicsQueryJob.h" />
+    <ClInclude Include="app\game\PhysicsRaycastJob.h" />
     <ClInclude Include="app\game\ShadowShape.h" />
     <ClInclude Include="app\game\ShadowShapeCInfo.h" />
     <ClInclude Include="app\Gimmick\CRingManager.h" />
