@@ -201,17 +201,8 @@ namespace app
 
                 game::MoveObjGolonRock::SetupParam setupParam = game::MoveObjGolonRock::SetupParam(
                     (csl::math::Vector3*)gocTransform + 6,
-                    0.3f,
-                    0.4f,
                     CInfo->NegativeSpeed,
-                    0.034906585f,
-                    1.5707964f,
-                    1.0f,
                     CInfo->IsCheckFall,
-                    (short)-1,
-                    (void*)NULL,
-                    (short)-1,
-                    (void*)NULL,
                     this
                 );
 

@@ -14,7 +14,7 @@ namespace app
                 csl::math::Vector3 Position{};
                 float YOffset{};
                 float PopupTime{};
-                float field_18{};
+                float RollWaitTime{};
                 float Speed{};
                 float field_20{};
                 float field_24{};
@@ -34,23 +34,22 @@ namespace app
                 ObjGolonRock* Object{};
 
             public:
-                SetupParam(csl::math::Vector3* position, float popupTime, float a3, float speed, float a4, float a5, float a6, bool isCheckFall,
-                    short a8, void* func1, short a10, void* func2, ObjGolonRock* obj)
+                SetupParam(csl::math::Vector3* position, float speed, bool isCheckFall, ObjGolonRock* obj)
                 {
                     Position = *position;
                     YOffset = 20;
-                    PopupTime = popupTime;
-                    field_18 = a3;
+                    PopupTime = 0.3f;
+                    RollWaitTime = 0.4f;
                     Speed = speed;
-                    field_20 = a4;
-                    field_24 = a5;
+                    field_20 = 0.034906585f;
+                    field_24 = 1.5707964f;
                     field_30 = 300;
-                    field_34 = a6;
+                    field_34 = 1;
                     IsCheckFall = isCheckFall;
-                    field_3E = a8;
-                    NotifyMoveEndCallback = func1;
-                    field_46 = a10;
-                    NotifyPassPlayerCallback = func2;
+                    field_3E = -1;
+                    NotifyMoveEndCallback = NULL;
+                    field_46 = -1;
+                    NotifyPassPlayerCallback = NULL;
                     Object = obj;
                 }
             };
@@ -79,7 +78,7 @@ namespace app
 
         private:
             float PopupTime{};
-            float field_14{};
+            float RollWaitTime{};
             float field_18{};
             float field_1C{};
             float field_20{};
@@ -150,13 +149,13 @@ namespace app
                         return 0;
                     }
 
-                    /*if (field_14 > 0)
+                    if (RollWaitTime > 0)
                     {
-                        field_14 -= updateInfo.deltaTime;
+                        RollWaitTime -= updateInfo.deltaTime;
                         return 0;
                     }
                     
-                    field_50 -= (YOffset + YOffset);
+                    /*field_50 -= (YOffset + YOffset);
                     if (!Object || field_82 == 0)
                     {
                         csl::math::Matrix34 matrix{};
@@ -530,13 +529,14 @@ namespace app
             {
                 GameDocument* document = (GameDocument*)(((GameObject*)(((int**)GetOwnerMovement())[5]))->field_24[1]);
 
-                int i = 5;
+                /*int i = 5;
                 do
                 {
-                    ++field_14 = ++param.field_18;
+                    ++RollWaitTime = ++param.field_18;
                     --i;
-                } while (i);
+                } while (i);*/
 
+                RollWaitTime = param.RollWaitTime;
                 PopupTime = param.PopupTime;
                 field_2C = param.field_30;
                 field_30 = param.field_34;
