@@ -54,6 +54,7 @@ namespace app
 
     enum class ObjGolonRockState : int
     {
+        STATE_NONE = -1,
         STATE_SHOOT,
         STATE_FALL,
         STATE_APPEAR,
@@ -64,7 +65,8 @@ namespace app
     class ObjGolonRock : public GameObject3D
     {
     public:
-        INSERT_PADDING(20); // TinyFSM
+        ObjGolonRockState State;
+        INSERT_PADDING(16); // TinyFSM
         golon_rock::GolonRockCreateInfo* CInfo = new golon_rock::GolonRockCreateInfo();
         float Time{};
         float field_33C{};
@@ -263,10 +265,10 @@ namespace app
 
         void Update(const fnd::SUpdateInfo& updateInfo) override
         {
-            /*if (State == ObjGolonRockState::STATE_SHOOT)
+            if (State == ObjGolonRockState::STATE_SHOOT)
                 StateShoot();
 
-            if (State == ObjGolonRockState::STATE_FALL)
+            /*if (State == ObjGolonRockState::STATE_FALL)
                 StateFall();
 
             if (State == ObjGolonRockState::STATE_APPEAR)
@@ -280,6 +282,19 @@ namespace app
         }
 
     private:
+        void StateShoot()
+        {
+            MovementController->StartMode(0);
+
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimation);
+            if (!gocAnimation)
+                return;
+
+            game::GOCAnimationSimple::SetAnimation(gocAnimation, "APPEARE");
+
+            State = ObjGolonRockState::STATE_NONE;
+        }
+
         void CheckOnPhysics(const fnd::SUpdateInfo& updateInfo)
         {
             if (Time < 0)
