@@ -30,7 +30,7 @@ namespace app
             ObjGolonRockGeneratorData* data = (ObjGolonRockGeneratorData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
             if (data->IsCheckFall)
                 Flags |= 1;
-            if (data->IsEventOn)
+            if (!data->IsEventOn)
                 Flags |= 2;
 
             Speed = data->Speed * 10;
