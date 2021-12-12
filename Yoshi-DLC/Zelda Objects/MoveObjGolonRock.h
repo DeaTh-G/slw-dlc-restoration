@@ -12,7 +12,7 @@ namespace app
             struct SetupParam
             {
                 csl::math::Vector3 Position{};
-                float field_10{};
+                float YOffset{};
                 float field_14{};
                 float field_18{};
                 float Speed{};
@@ -38,7 +38,7 @@ namespace app
                     short a8, void* func1, short a10, void* func2, ObjGolonRock* obj)
                 {
                     Position = *position;
-                    field_10 = 20;
+                    YOffset = 20;
                     field_14 = a2;
                     field_18 = a3;
                     Speed = speed;
@@ -86,10 +86,10 @@ namespace app
             Mode MovementMode{};
             INSERT_PADDING(3);
             PathEvaluator PathEvaluator{};
-            float field_4C{};
+            float YOffset{};
             float field_50{};
             float field_54{};
-            float field_58{};
+            float Time{};
             int field_5C{};
             csl::math::Vector3 field_60{};
             CPhysicsWorld* PhysicsWorld{};
@@ -114,9 +114,9 @@ namespace app
                 int* contextParam = game::GOCMovement::GetContextParam((int*)gocMovement);
                 if (!IsCheckFall)
                 {
-                    field_58 *= updateInfo.deltaTime;
-                    float someFloat = -((((field_4C + field_4C) / field_10) * field_58) - field_50);
-                    if (field_58 <= field_10)
+                    Time += updateInfo.deltaTime;
+                    float scalar = -((((YOffset + YOffset) / field_10) * Time) - field_50);
+                    if (Time <= field_10)
                     {
                         csl::math::Matrix34 matrix{};
                         csl::math::Vector3 splinePoint{};
@@ -131,7 +131,7 @@ namespace app
                                 matrix.data[i][j] = m(i, j);
 
                         someVector = MultiplyMatrixSRByVector(&m, &someVector);
-                        math::Vector3Scale(&someVector, field_50 - (field_4C + field_4C), &someVector);
+                        math::Vector3Scale(&someVector, scalar, &someVector);
                         math::Vector3Add(&splinePoint, &someVector, &splinePoint);
                         *(csl::math::Vector3*)contextParam = splinePoint;
                         csl::Matrix34OrthonormalDirection(&matrix, &someVector2, &someVector);
@@ -141,13 +141,13 @@ namespace app
                         return 0;
                     }
 
-                    if (field_14 > 0)
+                    /*if (field_14 > 0)
                     {
                         field_14 -= updateInfo.deltaTime;
                         return 0;
                     }
                     
-                    field_50 -= (field_4C + field_4C);
+                    field_50 -= (YOffset + YOffset);
                     if (!Object || field_82 == 0)
                     {
                         csl::math::Matrix34 matrix{};
@@ -181,10 +181,10 @@ namespace app
                     }
 
                     // ObjGolonRock::NotifyMoveEndCallback(v25);
-                    return 0;
+                    return 0;*/
                 }
 
-                if (MovementMode == Mode::MOVE)
+                /*if (MovementMode == Mode::MOVE)
                 {
                     if (MovementMode == Mode::FALL)
                         return 0;
@@ -199,8 +199,8 @@ namespace app
                     math::Vector3Scale(((csl::math::Vector3*)contextParam + 2), updateInfo.deltaTime, &vector);
                     *(csl::math::Vector3*)contextParam += vector;
                     UpdateLocalRotRad(updateInfo.deltaTime);
-                    field_58 *= updateInfo.deltaTime;
-                    if (field_58 <= field_30)
+                    Time *= updateInfo.deltaTime;
+                    if (Time <= field_30)
                         return 0;
 
                     if (!Object)
@@ -239,7 +239,7 @@ namespace app
                 csl::Matrix34OrthonormalDirection(&matrix, &scaledRotDir, &movePos);
                 csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
                 *((csl::math::Quaternion*)contextParam + 1) = rotation;
-                field_60 = Vector3((field_50 + field_4C) * field_24, 0, field_18 * updateInfo.deltaTime);
+                field_60 = Vector3((field_50 + YOffset) * field_24, 0, field_18 * updateInfo.deltaTime);
                 UpdateLocalRotRad(updateInfo.deltaTime);
                 if (!IsCheckFall || CheckFall(&rotDir, updateInfo.deltaTime) )
                 {
@@ -283,7 +283,7 @@ namespace app
                     }
                 }
 
-                return 0;
+                return 0;*/
             };
 
             bool CheckFall(csl::math::Vector3* rotDir, float deltaTime)
@@ -320,7 +320,7 @@ namespace app
                 }
 
                 csl::math::Vector3 scaledRotDir{};
-                math::Vector3Scale(rotDir, field_4C + 2, &scaledRotDir);
+                math::Vector3Scale(rotDir, YOffset + 2, &scaledRotDir);
                 math::Vector3Add((csl::math::Vector3*)contextParam, &scaledRotDir, &scaledRotDir);
                 RaycastJob->Add((csl::math::Vector3*)contextParam, &scaledRotDir, 51606, 0, 1);
 
@@ -335,7 +335,7 @@ namespace app
                 csl::math::Vector3 someVector2{};
                 game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
                 float axis[2]{};
-                axis[0] = csl::math::Select((field_4C * 5) / (field_50 + field_4C), fabs((field_4C * 5) / (field_50 + field_4C)), -fabs((field_4C * 5) / (field_50 + field_4C)));
+                axis[0] = csl::math::Select((YOffset * 5) / (field_50 + YOffset), fabs((YOffset * 5) / (field_50 + YOffset)), -fabs((YOffset * 5) / (field_50 + YOffset)));
                 axis[1] = SonicUSA::System::RadianMaskS(field_54 - axis[0]);
                 axis[0] = SonicUSA::System::RadianMaskS(field_54 + axis[0]);
 
@@ -351,7 +351,7 @@ namespace app
                     someVector = MultiplyMatrixSRByVector(&m, &someVector);
                     math::Vector3Scale(&someVector, field_50, &someVector2);
                     math::Vector3Add(&splinePoint, &someVector2, &splinePoint);
-                    math::Vector3Scale(&someVector, field_4C + 2, &someVector);
+                    math::Vector3Scale(&someVector, YOffset + 2, &someVector);
                     math::Vector3Add(&splinePoint, &someVector, &someVector);
                     RaycastJob->Add(&splinePoint, &someVector, 51606, 0, 1);
                 }
@@ -396,7 +396,7 @@ namespace app
                 csl::math::Vector3 vector{ field_60 };
                 float length = math::Vector3NormalizeWithLength(&vector, &vector);
                 if (length <= 0)
-                    field_7C = SonicUSA::System::RadianMaskS(field_7C + (length / field_4C));
+                    field_7C = SonicUSA::System::RadianMaskS(field_7C + (length / YOffset));
 
                 float someValue = 0;
                 csl::math::Vector3 someVector{ 0, 0, 1 };
@@ -417,7 +417,7 @@ namespace app
                 }
                 field_78 += someValue;
                 field_78 = csl::math::Clamp(field_78, -1.0471976f, 1.0471976f);
-                field_7C = SonicUSA::System::RadianMaskS(field_7C + (length / field_4C));
+                field_7C = SonicUSA::System::RadianMaskS(field_7C + (length / YOffset));
             }
 
             void const UpdateMovePathPos(csl::math::Vector3* out, float deltaTime)
@@ -514,7 +514,7 @@ namespace app
             void StartMode(Mode mode)
             {
                 MovementMode = mode;
-                field_58 = 0;
+                Time = 0;
             }
 
             void Setup(SetupParam& param)
@@ -528,9 +528,11 @@ namespace app
                     --i;
                 } while (i);
 
+                field_10 = param.field_14;
                 field_2C = param.field_30;
                 field_30 = param.field_34;
                 IsCheckFall = param.IsCheckFall;
+                YOffset = param.YOffset;
                 PhysicsWorld = (CPhysicsWorld*)CPhysicsWorld::GetService(document);
                 RaycastJob = new(((app::fnd::ReferencedObject*)GetOwnerMovement())->pAllocator) game::PhysicsRaycastJob();
                 field_80 = param.field_3C;
@@ -550,9 +552,8 @@ namespace app
                 PathEvaluator::SetPathObject(&PathEvaluator, path);
                 float length = PathEvaluator::GetLength(&PathEvaluator);
 
-                csl::math::Vector3 position{};
                 game::PathEvaluator::GetClosestPositionAlongSpline(&PathEvaluator, &param.Position, 0, length, &length);
-                game::PathEvaluator::SetDistance(&PathEvaluator, position.X);
+                game::PathEvaluator::SetDistance(&PathEvaluator, length);
                 csl::math::Vector3 splinePoint{};
                 csl::math::Vector3 someVector{};
                 csl::math::Vector3 someVector2{};
@@ -564,8 +565,10 @@ namespace app
             
                 float dot = math::Vector3DotProduct(&someVector, &splinePoint);
                 dot = acosf(csl::math::Clamp(dot, -1, 1));
-                math::Vector3CrossProduct(&someVector2, &someVector, &someVector);
-                if (math::Vector3DotProduct(&someVector, &splinePoint) < 0)
+
+                csl::math::Vector3 cross{};
+                math::Vector3CrossProduct(&someVector2, &someVector, &cross);
+                if (math::Vector3DotProduct(&cross, &splinePoint) < 0)
                     dot = -dot;
             
                 field_54 = dot;

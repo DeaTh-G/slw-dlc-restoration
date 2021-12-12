@@ -72,7 +72,7 @@ namespace app
         int CEffectInstance[2]{};
         int field_354{};
         int* RockVisual{};
-        int MovementController{};
+        game::MoveObjGolonRock* MovementController{};
 
         ObjGolonRock(GameDocument& gameDocument, const golon_rock::GolonRockCreateInfo& cInfo)
         {
@@ -192,10 +192,10 @@ namespace app
             {
                 csl::math::Vector3 position{};
 
-                void* movementMem = ((app::fnd::ReferencedObject*)gocMovement)->pAllocator->Alloc
-                (sizeof(game::MoveObjGolonRock), 16);
-                game::MoveObjGolonRock* movement = new(movementMem) game::MoveObjGolonRock();
-                game::GOCMovement::SetupController(gocMovement, movement);
+                void* movementMem = ((app::fnd::ReferencedObject*)gocMovement)->pAllocator->
+                    Alloc(sizeof(game::MoveObjGolonRock), 16);
+                MovementController = new(movementMem) game::MoveObjGolonRock();
+                game::GOCMovement::SetupController(gocMovement, MovementController);
 
                 game::MoveObjGolonRock::SetupParam setupParam = game::MoveObjGolonRock::SetupParam(
                     (csl::math::Vector3*)gocTransform + 6,
@@ -213,7 +213,7 @@ namespace app
                     this
                 );
 
-                movement->Setup(setupParam);
+                MovementController->Setup(setupParam);
             }
 
             int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
