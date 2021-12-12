@@ -13,6 +13,7 @@ namespace app
         inline static FUNCTION_PTR(Vector3*, __cdecl, Vector3RotateX, ASLR(0x00532E50), Vector3* a1, float a2, Vector3* a3);
         inline static FUNCTION_PTR(Vector3*, __cdecl, Vector3RotateY, ASLR(0x00532EE0), Vector3* a1, float a2, Vector3* a3);
         inline static FUNCTION_PTR(Matrix34*, __cdecl, Matrix34AffineTransformation, ASLR(0x005325D0), Matrix34* a1, Vector3* a2, Quaternion* a3);
+        inline static FUNCTION_PTR(float, __cdecl, Matrix34OrthonormalDirection, ASLR(0x00532710), Matrix34* a1, Vector3* a2, Vector3* a3);
 
         static void Vector3Inverse(Vector3* a1)
         {

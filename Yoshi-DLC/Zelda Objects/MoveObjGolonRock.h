@@ -13,7 +13,7 @@ namespace app
             {
                 csl::math::Vector3 Position{};
                 float YOffset{};
-                float field_14{};
+                float PopupTime{};
                 float field_18{};
                 float Speed{};
                 float field_20{};
@@ -34,12 +34,12 @@ namespace app
                 ObjGolonRock* Object{};
 
             public:
-                SetupParam(csl::math::Vector3* position, float a2, float a3, float speed, float a4, float a5, float a6, bool isCheckFall,
+                SetupParam(csl::math::Vector3* position, float popupTime, float a3, float speed, float a4, float a5, float a6, bool isCheckFall,
                     short a8, void* func1, short a10, void* func2, ObjGolonRock* obj)
                 {
                     Position = *position;
                     YOffset = 20;
-                    field_14 = a2;
+                    PopupTime = popupTime;
                     field_18 = a3;
                     Speed = speed;
                     field_20 = a4;
@@ -57,21 +57,28 @@ namespace app
 
             enum class Mode : char
             {
-                NONE = -1,
-                SHOOT,
-                MOVE,
-                FALL
+                MODE_NONE = -1,
+                MODE_SHOOT,
+                MODE_MOVE,
+                MODE_FALL
             };
 
         public:
-            MoveObjGolonRock()
+            MoveObjGolonRock() : MoveController(115)
             {
-                SetFlag(115);
-                MovementMode = Mode::NONE;
+                MovementMode = Mode::MODE_NONE;
+                game::PathEvaluator::__ct(&PathEvaluator);
+            }
+
+            void Destructor(size_t deletingFlags) override
+            {
+                delete RaycastJob;
+
+                MoveController::Destructor(deletingFlags);
             }
 
         private:
-            float field_10{};
+            float PopupTime{};
             float field_14{};
             float field_18{};
             float field_1C{};
@@ -115,8 +122,8 @@ namespace app
                 if (!IsCheckFall)
                 {
                     Time += updateInfo.deltaTime;
-                    float scalar = -((((YOffset + YOffset) / field_10) * Time) - field_50);
-                    if (Time <= field_10)
+                    float scalar = -((((YOffset + YOffset) / PopupTime) * Time) - field_50);
+                    if (Time <= PopupTime)
                     {
                         csl::math::Matrix34 matrix{};
                         csl::math::Vector3 splinePoint{};
@@ -128,13 +135,15 @@ namespace app
                         Eigen::Matrix3f m(Eigen::AngleAxisf(field_54, v));
                         for (size_t i = 0; i < 3; i++)
                             for (size_t j = 0; j < 3; j++)
-                                matrix.data[i][j] = m(i, j);
+                                matrix.data[i][j] = m.transpose()(i, j);
+                        
+                        csl::math::Vector3 position{};
+                        someVector = MultiplyMatrixSRByVector(&matrix, &someVector);
+                        math::Vector3Scale(&someVector, scalar, &position);
+                        math::Vector3Add(&splinePoint, &position, &position);
+                        *(csl::math::Vector3*)contextParam = position;
 
-                        someVector = MultiplyMatrixSRByVector(&m, &someVector);
-                        math::Vector3Scale(&someVector, scalar, &someVector);
-                        math::Vector3Add(&splinePoint, &someVector, &splinePoint);
-                        *(csl::math::Vector3*)contextParam = splinePoint;
-                        csl::Matrix34OrthonormalDirection(&matrix, &someVector2, &someVector);
+                        math::Matrix34OrthonormalDirection(&matrix, &someVector2, &-someVector);
                         csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
                         *((csl::math::Quaternion*)contextParam + 1) = rotation;
                         
@@ -184,9 +193,9 @@ namespace app
                     return 0;*/
                 }
 
-                /*if (MovementMode == Mode::MOVE)
+                /*if (MovementMode == Mode::MODE_MOVE)
                 {
-                    if (MovementMode == Mode::FALL)
+                    if (MovementMode == Mode::MODE_FALL)
                         return 0;
                 
                     csl::math::Vector3 gravityDir{};
@@ -511,9 +520,9 @@ namespace app
             }
 
         public:
-            void StartMode(Mode mode)
+            void StartMode(char mode)
             {
-                MovementMode = mode;
+                MovementMode = (Mode)mode;
                 Time = 0;
             }
 
@@ -528,7 +537,7 @@ namespace app
                     --i;
                 } while (i);
 
-                field_10 = param.field_14;
+                PopupTime = param.PopupTime;
                 field_2C = param.field_30;
                 field_30 = param.field_34;
                 IsCheckFall = param.IsCheckFall;

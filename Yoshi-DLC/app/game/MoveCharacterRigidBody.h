@@ -89,9 +89,9 @@ namespace app
             
             int OnEnter() override { return f_OnEnter(this); }
             
-            ~MoveCharacterRigidBody() override
+            void Destructor(size_t deletingFlags) override
             {
-                __dt(this, 0);
+                __dt(this, deletingFlags);
             }
 
             void Setup(Description* a1)

@@ -32,6 +32,15 @@ namespace csl
 
                 return *this;
             }
+
+            csl::math::Vector3& operator-()
+            {
+                this->X = -this->X;
+                this->Y = -this->Y;
+                this->Z = -this->Z;
+
+                return *this;
+            }
         };
 
         inline static FUNCTION_PTR(float, __cdecl, Vector3Length, ASLR(0x00962510), Vector3* a1);

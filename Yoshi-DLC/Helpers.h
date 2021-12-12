@@ -59,6 +59,7 @@ static csl::math::Vector3 MultiplyMatrixSRByVector(csl::math::Matrix34* matrix, 
 
 static csl::math::Vector3 MultiplyMatrixSRByVector(Eigen::Matrix3f* matrix, csl::math::Vector3* vector)
 {
+    matrix->transpose();
     matrix->setIdentity();
     Eigen::Vector3f v;
 
