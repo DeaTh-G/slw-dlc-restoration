@@ -122,7 +122,10 @@ namespace app
                 {
                     Time += updateInfo.deltaTime;
                     float scalar = -((((YOffset + YOffset) / PopupTime) * Time) - field_50);
-                    if (Time <= PopupTime)
+                    if (!field_82)
+                        scalar = field_50 - (YOffset + YOffset);
+
+                    if (Time <= PopupTime || (!Object || !field_82))
                     {
                         csl::math::Matrix34 matrix{};
                         csl::math::Vector3 splinePoint{};
@@ -154,32 +157,6 @@ namespace app
                         RollWaitTime -= updateInfo.deltaTime;
                         return 0;
                     }
-                    
-                    /*field_50 -= (YOffset + YOffset);
-                    if (!Object || field_82 == 0)
-                    {
-                        csl::math::Matrix34 matrix{};
-                        csl::math::Vector3 splinePoint{};
-                        csl::math::Vector3 someVector{};
-                        csl::math::Vector3 someVector2{};
-                        game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
-
-                        Eigen::Vector3f v(someVector2.X, someVector2.Y, someVector2.Z);
-                        Eigen::Matrix3f m(Eigen::AngleAxisf(field_54, v));
-                        for (size_t i = 0; i < 3; i++)
-                            for (size_t j = 0; j < 3; j++)
-                                matrix.data[i][j] = m(i, j);
-
-                        someVector = MultiplyMatrixSRByVector(&m, &someVector);
-                        math::Vector3Scale(&someVector, field_50, &someVector);
-                        math::Vector3Add(&splinePoint, &someVector, &splinePoint);
-                        *(csl::math::Vector3*)contextParam = splinePoint;
-                        csl::Matrix34OrthonormalDirection(&matrix, &someVector2, &someVector);
-                        csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
-                        *((csl::math::Quaternion*)contextParam + 1) = rotation;
-
-                        return 0;
-                    }
 
                     if (field_82 >= 0)
                     {
@@ -189,7 +166,7 @@ namespace app
                     }
 
                     // ObjGolonRock::NotifyMoveEndCallback(v25);
-                    return 0;*/
+                    return 0;
                 }
 
                 /*if (MovementMode == Mode::MODE_MOVE)
