@@ -40,7 +40,7 @@ namespace app
                     YOffset = 20;
                     PopupTime = 0.3f;
                     RollWaitTime = 0.4f;
-                    Speed = speed;
+                    Speed = speed;  
                     field_20 = 0.034906585f;
                     field_24 = 1.5707964f;
                     field_30 = 300;
@@ -79,7 +79,7 @@ namespace app
         private:
             float PopupTime{};
             float RollWaitTime{};
-            float field_18{};
+            float Speed{};
             float field_1C{};
             float field_20{};
             float field_24{};
@@ -118,12 +118,105 @@ namespace app
             {
                 GOCMovement* gocMovement = GetOwnerMovement();
                 int* contextParam = game::GOCMovement::GetContextParam((int*)gocMovement);
-                if (!IsCheckFall)
+                
+                switch (MovementMode)
+                {
+                case app::game::MoveObjGolonRock::Mode::MODE_SHOOT:
+                {
+                    float doubleYOffset = YOffset + YOffset;
+                    Time += updateInfo.deltaTime;
+                    float scalar = -(doubleYOffset / PopupTime * Time - field_50);
+
+                    if (PopupTime < Time)
+                    {
+                        if (RollWaitTime > 0)
+                        {
+                            RollWaitTime -= updateInfo.deltaTime;
+                            break;
+                        }
+
+                        scalar = field_50 - doubleYOffset;
+                        field_50 = scalar;
+
+                        if (Object && field_82)
+                        {
+                            if (field_82 < 0)
+                            {
+                                // ObjGolonRock::NotifyMoveEndCallback(v25);
+                                break;
+                            }
+
+                            // virtual call
+                            // (*(*(v25 + SLOWORD(a1->field_84)) + 8 * v24 + 4))();
+                            break;
+                        }
+                    }
+
+                    csl::math::Matrix34 matrix{};
+                    csl::math::Vector3 splinePoint{};
+                    csl::math::Vector3 someVector{};
+                    csl::math::Vector3 someVector2{};
+                    game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
+
+                    Eigen::Vector3f v(someVector2.X, someVector2.Y, someVector2.Z);
+                    Eigen::Matrix3f m(Eigen::AngleAxisf(field_54, v));
+                    for (size_t i = 0; i < 3; i++)
+                        for (size_t j = 0; j < 3; j++)
+                            matrix.data[i][j] = m.transpose()(i, j);
+
+                    csl::math::Vector3 position{};
+                    someVector = MultiplyMatrixSRByVector(&matrix, &someVector);
+                    math::Vector3Scale(&someVector, scalar, &position);
+                    math::Vector3Add(&splinePoint, &position, &position);
+                    *(csl::math::Vector3*)contextParam = position;
+
+                    math::Matrix34OrthonormalDirection(&matrix, &someVector2, &-someVector);
+                    csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
+                    *((csl::math::Quaternion*)contextParam + 1) = rotation;
+
+                    break;
+                }
+                case app::game::MoveObjGolonRock::Mode::MODE_MOVE:
+                {
+                    csl::math::Matrix34 matrix{};
+                    csl::math::Vector3 movePos{};
+                    csl::math::Vector3 rotDir{};
+                    csl::math::Vector3 negRotDir{};
+                    csl::math::Vector3 scaledRotDir{};
+
+                    UpdateMovePathPos(&movePos, updateInfo.deltaTime);
+                    UpdateRotDirPathToPos(&rotDir, updateInfo.deltaTime);
+                    math::Vector3Scale(&rotDir, field_50, &scaledRotDir);
+                    math::Vector3Add(&movePos, &scaledRotDir, &movePos);
+                    *(csl::math::Vector3*)contextParam = movePos;
+
+                    PathEvaluator.GetTangent(&scaledRotDir, PathEvaluator.field_08);
+                    negRotDir = -rotDir;
+                    math::Matrix34OrthonormalDirection(&matrix, &scaledRotDir, &negRotDir);
+                    csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
+                    *((csl::math::Quaternion*)contextParam + 1) = rotation;
+                    field_60 = Vector3((field_50 + YOffset) * field_24, 0, Speed * updateInfo.deltaTime);
+                    //UpdateLocalRotRad(updateInfo.deltaTime);
+
+                    break;
+                }
+                case app::game::MoveObjGolonRock::Mode::MODE_FALL:
+                    break;
+                default:
+                    break;
+                }
+
+                return 0;
+                
+                /*if (MovementMode == Mode::MODE_SHOOT)
                 {
                     Time += updateInfo.deltaTime;
                     float scalar = -((((YOffset + YOffset) / PopupTime) * Time) - field_50);
                     if (!field_82)
-                        scalar = field_50 - (YOffset + YOffset);
+                    {
+                        field_50 -= (YOffset + YOffset);
+                        //scalar = field_50;
+                    }
 
                     if (Time <= PopupTime || (!Object || !field_82))
                     {
@@ -167,11 +260,11 @@ namespace app
 
                     // ObjGolonRock::NotifyMoveEndCallback(v25);
                     return 0;
-                }
+                }*/
 
-                /*if (MovementMode == Mode::MODE_MOVE)
+                /*if (MovementMode != Mode::MODE_MOVE)
                 {
-                    if (MovementMode == Mode::MODE_FALL)
+                    if (MovementMode != Mode::MODE_FALL)
                         return 0;
                 
                     csl::math::Vector3 gravityDir{};
@@ -207,9 +300,9 @@ namespace app
                     // (*(*(v25 + SLOWORD(a1->field_84)) + 8 * v24 + 4))();
 
                     return 0;
-                }
+                }*/
 
-                csl::math::Vector3 movePos{};
+                /*csl::math::Vector3 movePos{};
                 csl::math::Vector3 rotDir{};
                 UpdateMovePathPos(&movePos, updateInfo.deltaTime);
                 UpdateRotDirPathToPos(&rotDir, updateInfo.deltaTime);
@@ -221,12 +314,12 @@ namespace app
                 PathEvaluator.GetTangent(&scaledRotDir, PathEvaluator.field_08);
                 
                 csl::math::Matrix34 matrix{};
-                csl::Matrix34OrthonormalDirection(&matrix, &scaledRotDir, &movePos);
+                math::Matrix34OrthonormalDirection(&matrix, &scaledRotDir, &movePos);
                 csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
                 *((csl::math::Quaternion*)contextParam + 1) = rotation;
-                field_60 = Vector3((field_50 + YOffset) * field_24, 0, field_18 * updateInfo.deltaTime);
-                UpdateLocalRotRad(updateInfo.deltaTime);
-                if (!IsCheckFall || CheckFall(&rotDir, updateInfo.deltaTime) )
+                field_60 = Vector3((field_50 + YOffset) * field_24, 0, Speed * updateInfo.deltaTime);
+                UpdateLocalRotRad(updateInfo.deltaTime);*/
+                /*if (!IsCheckFall || CheckFall(&rotDir, updateInfo.deltaTime))
                 {
                     if (IsPassOverPlayer())
                     {
@@ -249,9 +342,9 @@ namespace app
                         }
                     }
                     return 0;
-                }
+                }*/
 
-                if (Object)
+                /*if (Object)
                 {
                     if (field_82)
                     {
@@ -266,9 +359,9 @@ namespace app
                         // ObjGolonRock::NotifyMoveEndCallback(v25);
                         return 0;
                     }
-                }
+                }*/
 
-                return 0;*/
+                return 0;
             };
 
             bool CheckFall(csl::math::Vector3* rotDir, float deltaTime)
@@ -294,9 +387,9 @@ namespace app
                 {
                     float scalar = csl::math::Select(field_20 * deltaTime, fabs(field_20 * deltaTime), -fabs(field_20 * deltaTime));
                     if (isFalling[1])
-                        vector = Vector3(field_50 * scalar, 0, field_18 * deltaTime);
+                        vector = Vector3(field_50 * scalar, 0, Speed * deltaTime);
                     else
-                        vector = Vector3(field_50 * -scalar, 0, field_18 * deltaTime);
+                        vector = Vector3(field_50 * -scalar, 0, Speed * deltaTime);
 
                     math::Vector3Rotate(&vector, (csl::math::Quaternion*)contextParam + 1, &vector);
                     math::Vector3Scale(&vector, 1 / deltaTime, &vector);
@@ -407,21 +500,18 @@ namespace app
 
             void const UpdateMovePathPos(csl::math::Vector3* out, float deltaTime)
             {
-                csl::math::Vector3 position{};
-
-                float distance = (field_18 * deltaTime) + PathEvaluator.field_08;
+                float distance = (Speed * deltaTime) + PathEvaluator.field_08;
                 if (distance > 0 || distance < game::PathEvaluator::GetLength(&PathEvaluator))
                     game::PathEvaluator::SetDistance(&PathEvaluator, distance);
 
-                PathEvaluator.GetWorldPosition(&position, PathEvaluator.field_08);
-                *out = position;
+                PathEvaluator.GetWorldPosition(out, PathEvaluator.field_08);
             }
 
-            csl::math::Vector3 const UpdateRotDirPathToPos(csl::math::Vector3* out, float deltaTime)
+            void const UpdateRotDirPathToPos(csl::math::Vector3* out, float deltaTime)
             {
                 csl::math::Quaternion rotation{};
-                csl::math::Vector3 vectorOffset{};
                 csl::math::Vector3 vector{};
+                csl::math::Vector3 vectorOffset{};
 
                 csl::math::Vector3 splinePoint{};
                 csl::math::Vector3 someVector{};
@@ -430,19 +520,22 @@ namespace app
 
                 if (!field_28)
                 {
-                    Eigen::Vector3f v(someVector.X, someVector.Y, someVector.Z);
+                    Eigen::Vector3f v(someVector2.X, someVector2.Y, someVector2.Z);
                     Eigen::Quaternionf q(Eigen::AngleAxisf(field_54, v));
-                    rotation = csl::math::Quaternion(q.y(), q.z(), q.w(), q.x());
+                    rotation = csl::math::Quaternion(q.x(), q.y(), q.z(), q.w());
 
-                    math::Vector3Rotate(&vector, &rotation, &someVector);
-                    return vector;
+                    math::Vector3Rotate(out, &rotation, &someVector);
+                    return;
                 }
 
                 // Fix this so it detects P2 as well
                 GOCMovement* gocMovement = GetOwnerMovement();
                 int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), 0);
                 if (!playerInfo)
-                    return Vector3(0, 1, 0);
+                {
+                    *out = Vector3(0, 1, 0);
+                    return;
+                }
 
                 csl::math::Vector3 playerPosition{ *(csl::math::Vector3*)(playerInfo + 4) };
                 math::Vector3Subtract(&playerPosition, &splinePoint, &playerPosition);
@@ -452,7 +545,10 @@ namespace app
                 math::Vector3Subtract(&playerPosition, &splinePoint, &splinePoint);
                 playerPosition = splinePoint;
                 if (!math::Vector3NormalizeIfNotZero(&splinePoint, &splinePoint))
-                    return Vector3(0, 1, 0);
+                {
+                    *out = Vector3(0, 1, 0);
+                    return;
+                }
 
                 Eigen::Vector3f v(someVector.X, someVector.Y, someVector.Z);
                 Eigen::Quaternionf q(Eigen::AngleAxisf(field_54, v));
@@ -491,8 +587,7 @@ namespace app
                 q = Eigen::Quaternionf(Eigen::AngleAxisf(field_54, v));
                 rotation = csl::math::Quaternion(q.y(), q.z(), q.w(), q.x());
 
-                math::Vector3Rotate(&vector, &rotation, &someVector);
-                return vector;
+                math::Vector3Rotate(out, &rotation, &someVector);
             }
 
         public:
@@ -506,15 +601,13 @@ namespace app
             {
                 GameDocument* document = (GameDocument*)(((GameObject*)(((int**)GetOwnerMovement())[5]))->field_24[1]);
 
-                /*int i = 5;
-                do
-                {
-                    ++RollWaitTime = ++param.field_18;
-                    --i;
-                } while (i);*/
-
                 RollWaitTime = param.RollWaitTime;
                 PopupTime = param.PopupTime;
+                Speed = param.Speed;
+                field_1C = param.field_20;
+                field_20 = param.field_24;
+                field_24 = param.field_28;
+                field_28 = param.field_2C;
                 field_2C = param.field_30;
                 field_30 = param.field_34;
                 IsCheckFall = param.IsCheckFall;
