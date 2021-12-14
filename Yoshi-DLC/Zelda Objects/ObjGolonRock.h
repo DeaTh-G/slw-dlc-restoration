@@ -69,10 +69,9 @@ namespace app
         INSERT_PADDING(16); // TinyFSM
         golon_rock::GolonRockCreateInfo* CInfo = new golon_rock::GolonRockCreateInfo();
         float Time{};
-        float field_33C{};
+        float AppearTime{};
         int SoundHandle[3]{};
-        int CEffectInstance[2]{};
-        int field_354{};
+        Effect::CEffectHandle EffectHandle{};
         int* RockVisual{};
         game::MoveObjGolonRock* MovementController{};
 
@@ -259,14 +258,14 @@ namespace app
             if (State == ObjGolonRockState::STATE_SHOOT)
                 StateShoot();
 
-            /*if (State == ObjGolonRockState::STATE_FALL)
-                StateFall();
-
             if (State == ObjGolonRockState::STATE_APPEAR)
-                StateAppear();
+                StateAppear(updateInfo);
 
             if (State == ObjGolonRockState::STATE_MOVE)
                 StateMove();
+
+            /*if (State == ObjGolonRockState::STATE_FALL)
+                StateFall();
 
             if (State == ObjGolonRockState::STATE_DISAPPEAR)
                 StateDisappear();*/
@@ -283,7 +282,55 @@ namespace app
 
             game::GOCAnimationSimple::SetAnimation(gocAnimation, "APPEARE");
 
-            State = ObjGolonRockState::STATE_NONE;
+            State = ObjGolonRockState::STATE_APPEAR;
+        }
+
+        void StateAppear(const fnd::SUpdateInfo& updateInfo)
+        {
+            AppearTime += updateInfo.deltaTime;
+            if (AppearTime <= 0.7f)
+                return;
+
+            int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
+            if (!gocContainer)
+                return;
+
+            int* goronModel = *(int**)(*gocContainer);
+            fnd::GOCVisual::SetVisible(goronModel, false);
+            fnd::GOCVisual::SetVisible(RockVisual, true);
+
+            int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
+            if (!gocShadow)
+                return;
+            
+            game::GOCShadowSimple::SetVisible(gocShadow, true);
+
+            State = ObjGolonRockState::STATE_MOVE;
+        }
+
+        void StateMove()
+        {
+            RotateStoneModel();
+
+            /*int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+            if (gocSound)
+                game::GOCSound::Play3D(gocSound, SoundHandle, "obj_goron_rolling", 0);
+        
+            int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
+            if (!gocEffect)
+                return;
+
+            game::EffectCreateInfo effectInfo;
+            game::EffectCreateInfo::__ct(&effectInfo);
+            effectInfo.Name = "ef_dl3_goron_roll";
+            effectInfo.field_04 = 1;
+            effectInfo.Position = Vector3(0, -22, 0);
+            effectInfo.field_30 = 1;
+            effectInfo.field_48 = -1;
+
+            game::GOCEffect::CreateEffectLoopEx(gocEffect, &EffectHandle, &effectInfo);*/
+            MovementController->SetFlag(1);
+            MovementController->StartMode(1);
         }
 
         void CheckOnPhysics(const fnd::SUpdateInfo& updateInfo)
@@ -306,7 +353,7 @@ namespace app
         {
             csl::math::Quaternion rotation{};
 
-            //game::MoveObjGolonRock::GetLocalRotate(MoveController, &rotation);
+            MovementController->GetLocalRotate(&rotation);
             fnd::GOCVisualTransformed::SetLocalRotation(RockVisual, &rotation);
         }
     };

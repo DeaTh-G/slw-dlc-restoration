@@ -196,7 +196,7 @@ namespace app
                     csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
                     *((csl::math::Quaternion*)contextParam + 1) = rotation;
                     field_60 = Vector3((field_50 + YOffset) * field_24, 0, Speed * updateInfo.deltaTime);
-                    //UpdateLocalRotRad(updateInfo.deltaTime);
+                    UpdateLocalRotRad(updateInfo.deltaTime);
 
                     break;
                 }
@@ -471,7 +471,30 @@ namespace app
 
             void const UpdateLocalRotRad(float deltaTime)
             {
-                csl::math::Vector3 vector{ field_60 };
+                csl::math::Vector3 vector { field_60 };
+                float length = math::Vector3NormalizeWithLength(&vector, &vector);
+                if (length <= 0)
+                    field_7C = SonicUSA::System::RadianMaskS(field_7C + length / YOffset);
+
+                float offset = 0;
+                csl::math::Vector3 upVector { 0, 1, 0 };
+                csl::math::Vector3 depthVector { 0, 0, 1 };
+                csl::math::Vector3 crossVector{};
+                math::Vector3RotateY(&depthVector, field_78, &depthVector);
+                float dot = math::Vector3DotProduct(&depthVector, &vector);
+                dot = csl::math::Clamp(dot, -1, 1);
+                if (acosf(dot) >= (0.52359879f * deltaTime))
+                {
+                    float min = csl::math::Min(acosf(dot), 1.0471976f * deltaTime);
+                    math::Vector3CrossProduct(&depthVector, &upVector, &crossVector);
+                    dot = math::Vector3DotProduct(&crossVector, &vector);
+                    offset = csl::math::Select(dot, abs(min), -abs(min));
+                }
+
+                field_78 = csl::math::Clamp(field_78 + offset, -1.0471976f, 1.0471976f);
+                field_7C = SonicUSA::System::RadianMaskS(field_7C + length / YOffset);
+
+                /*csl::math::Vector3 vector{field_60};
                 float length = math::Vector3NormalizeWithLength(&vector, &vector);
                 if (length <= 0)
                     field_7C = SonicUSA::System::RadianMaskS(field_7C + (length / YOffset));
@@ -495,7 +518,7 @@ namespace app
                 }
                 field_78 += someValue;
                 field_78 = csl::math::Clamp(field_78, -1.0471976f, 1.0471976f);
-                field_7C = SonicUSA::System::RadianMaskS(field_7C + (length / YOffset));
+                field_7C = SonicUSA::System::RadianMaskS(field_7C + (length / YOffset));*/
             }
 
             void const UpdateMovePathPos(csl::math::Vector3* out, float deltaTime)
@@ -656,23 +679,21 @@ namespace app
             csl::math::Quaternion const GetLocalRotate(csl::math::Quaternion* rotation)
             {
                 csl::math::Vector3 upVector { 0, 1, 0 };
-                csl::math::Vector3 backwardVector { -1, 0, 0 };
+                csl::math::Vector3 forwardVector { -1, 0, 0 };
 
-                csl::math::Quaternion rotation1{};
-                csl::math::Quaternion rotation2{};
+                csl::math::Quaternion r{};
 
                 Eigen::Vector3f v(upVector.X, upVector.Y, upVector.Z);
                 Eigen::Quaternionf q(Eigen::AngleAxisf(field_78, v));
-                rotation1 = csl::math::Quaternion(q.y(), q.z(), q.w(), q.x());
+                r = csl::math::Quaternion(q.x(), q.y(), q.z(), q.w());
 
-                v = Eigen::Vector3f(backwardVector.X, backwardVector.Y, backwardVector.Z);
-                q = Eigen::Quaternionf(Eigen::AngleAxisf(field_7C, v));
-                rotation2 = csl::math::Quaternion(q.y(), q.z(), q.w(), q.x());
+                v = Eigen::Vector3f(forwardVector.X, forwardVector.Y, forwardVector.Z);
+                Eigen::Quaternionf q2(Eigen::AngleAxisf(field_7C, v));
+                q *= q2;
 
-                rotation1 = csl::math::Quaternion(rotation1.X * rotation2.X, rotation1.Y * rotation2.Y,
-                    rotation1.Z * rotation2.Z, rotation1.Z * rotation2.Z);
+                *rotation = csl::math::Quaternion(q.x(), q.y(), q.z(), q.w());
 
-                csl::math::QuaternionNormalize(&rotation1, rotation);
+                csl::math::QuaternionNormalize(rotation, rotation);
                 return *rotation;
             }
 
