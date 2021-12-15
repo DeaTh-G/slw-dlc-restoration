@@ -198,8 +198,7 @@ namespace app
                     field_60 = Vector3((field_50 + YOffset) * field_24, 0, Speed * updateInfo.deltaTime);
                     UpdateLocalRotRad(updateInfo.deltaTime);
 
-                    csl::math::Vector3 fallPosition{};
-                    if (!IsCheckFall || !CheckFall(&fallPosition, updateInfo.deltaTime))
+                    if (!IsCheckFall || !CheckFall(&rotDir, updateInfo.deltaTime))
                     {
                         if (!IsPassOverPlayer() && !Object && !field_8A)
                         {
@@ -244,29 +243,33 @@ namespace app
             bool CheckFall(csl::math::Vector3* rotDir, float deltaTime)
             {
                 bool result{};
+                
                 int isFalling[3] { -1, -1, -1 };
-
-                int item = ((int*)RaycastJob->Commands[0])[0];
-                for (size_t i = 0; item != ((int*)RaycastJob->Commands[0])[16 * RaycastJob->Commands[1]]; i++)
+                if (RaycastJob->Commands[1])
                 {
-                    isFalling[i] = 1;
-                    if ((int*)item + 12)
-                        isFalling[i] = 0;
-                    
-                    item += 40;
-                }
-                RaycastJob->Clear();
+                    int* item = (int*)RaycastJob->Commands[0];
+                    for (size_t i = 0; item != (int*)RaycastJob->Commands[0] + RaycastJob->Commands[1] * 4; i++)
+                    {
+                        isFalling[i] = 1;
+                        if (RaycastJob->Commands[15])
+                            isFalling[i] = 0;
 
-                csl::math::Vector3 vector{};
+                        item += 4;
+                    }
+                    RaycastJob->Clear();
+                }
+
                 GOCMovement* gocMovement = GetOwnerMovement();
                 int* contextParam = game::GOCMovement::GetContextParam((int*)gocMovement);
-                if (isFalling[0] == 1 && isFalling[2] != 1)
+                if (isFalling[0] == 1)
                 {
-                    float scalar = csl::math::Select(field_20 * deltaTime, fabs(field_20 * deltaTime), -fabs(field_20 * deltaTime));
+                    csl::math::Vector3 vector{};
+                    float scalar = csl::math::Select(field_24, abs(field_20 * deltaTime), -abs(field_20 * deltaTime));
+
                     if (isFalling[1])
-                        vector = Vector3(field_50 * scalar, 0, Speed * deltaTime);
+                        vector = Vector3(field_50 * scalar * 1, 0, Speed * deltaTime);
                     else
-                        vector = Vector3(field_50 * -scalar, 0, Speed * deltaTime);
+                        vector = Vector3(field_50 * scalar * -1, 0, Speed * deltaTime);
 
                     math::Vector3Rotate(&vector, (csl::math::Quaternion*)contextParam + 1, &vector);
                     math::Vector3Scale(&vector, 1 / deltaTime, &vector);
@@ -279,7 +282,7 @@ namespace app
                 math::Vector3Add((csl::math::Vector3*)contextParam, &scaledRotDir, &scaledRotDir);
                 RaycastJob->Add((csl::math::Vector3*)contextParam, &scaledRotDir, 51606, 0, 1);
 
-                if (isFalling[0] != 1)
+                /*if (isFalling[0] != 1)
                 {
                     PhysicsWorld->AddRaycastJob(RaycastJob);
                     return result;
@@ -311,7 +314,7 @@ namespace app
                     RaycastJob->Add(&splinePoint, &someVector, 51606, 0, 1);
                 }
 
-                PhysicsWorld->AddRaycastJob(RaycastJob);
+                PhysicsWorld->AddRaycastJob(RaycastJob);*/
                 return result;
             }
 
