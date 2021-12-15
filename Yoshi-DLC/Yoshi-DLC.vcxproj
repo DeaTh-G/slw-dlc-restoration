@@ -294,6 +294,7 @@
     <ClInclude Include="app\Render\CameraParam.h" />
     <ClInclude Include="app\res\ResShadowModel.h" />
     <ClInclude Include="app\SetShotInfo.h" />
+    <ClInclude Include="app\StageDataInitializer.h" />
     <ClInclude Include="app\ut\internal\StateImpl.h" />
     <ClInclude Include="app\ut\StateBase.h" />
     <ClInclude Include="app\WorldAreaMap.h" />
@@ -348,6 +349,7 @@
     <ClInclude Include="app\xgame\MsgTakeObject.h" />
     <ClInclude Include="app\xgame\MsgWarpNewArea.h" />
     <ClInclude Include="app\xgame\MsgDlcZeldaHeartAllRecovery.h" />
+    <ClInclude Include="app\xgame\StagePathUtil.h" />
     <ClInclude Include="csl\fnd.h" />
     <ClInclude Include="csl\math\math.h" />
     <ClInclude Include="csl\math\Matrix34.h" />
@@ -430,6 +432,7 @@
     <ClCompile Include="app\Player\StateUtil.cpp" />
     <ClCompile Include="app\Player\VirtualSonic.cpp" />
     <ClCompile Include="app\Player\VisualVirtualSonic.cpp" />
+    <ClCompile Include="app\StageDataInitializer.cpp" />
     <ClCompile Include="app\WorldAreaMap.cpp" />
     <ClCompile Include="app\xgame.cpp" />
     <ClCompile Include="app\xgame\CStageSoundDirector.cpp" />

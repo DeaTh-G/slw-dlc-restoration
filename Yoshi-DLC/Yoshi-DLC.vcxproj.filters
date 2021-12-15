@@ -816,6 +816,12 @@
     <ClInclude Include="app\CPhysicsWorld.h">
       <Filter>Header Files\app</Filter>
     </ClInclude>
+    <ClInclude Include="app\xgame\StagePathUtil.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\StageDataInitializer.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">
@@ -885,6 +891,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="app\xgame\CStageSoundDirector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\StageDataInitializer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

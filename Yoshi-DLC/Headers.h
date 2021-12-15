@@ -118,6 +118,7 @@
 #include "app/game/BarrierChecker.h"
 #include "app/game/MovementUtility.h"
 #include "app/game/MoveCharacterRigidBody.h"
+#include "app/StageDataInitializer.h"
 #include "app/GameModeStage.h"
 #include "app/GameModeStageBattle.h"
 #include "app/GOCEnemyTarget.h"
@@ -189,6 +190,7 @@
 #include "app/xgame/MsgChangeBGMVolume.h"
 #include "app/xgame/MsgPushCameraController.h"
 #include "app/xgame/MsgPopCameraController.h"
+#include "app/xgame/StagePathUtil.h"
 
 #include "SonicUSA/System.h"
 #include "SonicUSA/System/Random.h"
