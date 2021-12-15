@@ -493,32 +493,6 @@ namespace app
 
                 field_78 = csl::math::Clamp(field_78 + offset, -1.0471976f, 1.0471976f);
                 field_7C = SonicUSA::System::RadianMaskS(field_7C + length / YOffset);
-
-                /*csl::math::Vector3 vector{field_60};
-                float length = math::Vector3NormalizeWithLength(&vector, &vector);
-                if (length <= 0)
-                    field_7C = SonicUSA::System::RadianMaskS(field_7C + (length / YOffset));
-
-                float someValue = 0;
-                csl::math::Vector3 someVector{ 0, 0, 1 };
-                csl::math::Vector3 someVector2{ 0, 1, 0 };
-                vector = field_60;
-                math::Vector3RotateY(&someVector, field_78, &someVector);
-                float dot = math::Vector3DotProduct(&someVector, &vector);
-                dot = csl::math::Clamp(dot, -1, 1);
-                dot = acosf(dot);
-                if (dot >= (0.52359879f * deltaTime))
-                {
-                    dot = csl::math::Min(dot, 1.0471976f * deltaTime);
-                    someVector = Vector3(0, 1, 0);
-
-                    math::Vector3CrossProduct(&someVector, &someVector2, &someVector);
-                    float dot2 = math::Vector3DotProduct(&someVector, &vector);
-                    someValue = csl::math::Select(dot2, fabs(dot), -fabs(dot));
-                }
-                field_78 += someValue;
-                field_78 = csl::math::Clamp(field_78, -1.0471976f, 1.0471976f);
-                field_7C = SonicUSA::System::RadianMaskS(field_7C + (length / YOffset));*/
             }
 
             void const UpdateMovePathPos(csl::math::Vector3* out, float deltaTime)
