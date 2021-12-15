@@ -198,6 +198,38 @@ namespace app
                     field_60 = Vector3((field_50 + YOffset) * field_24, 0, Speed * updateInfo.deltaTime);
                     UpdateLocalRotRad(updateInfo.deltaTime);
 
+                    csl::math::Vector3 fallPosition{};
+                    if (!IsCheckFall || !CheckFall(&fallPosition, updateInfo.deltaTime))
+                    {
+                        if (!IsPassOverPlayer() && !Object && !field_8A)
+                        {
+                            if (field_8A < 0)
+                            {
+                                // ObjGolonRock::NotifyPassPlayerCallback(v25);
+                                break;
+                            }
+
+                            // virtual call
+                            // (*(*(v59 + SLOWORD(a1->field_8C)) + 8 * v58 + 4))();
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (!Object && !field_82)
+                        {
+                            if (field_82 < 0)
+                            {
+                                // ObjGolonRock::NotifyMoveEndCallback(v25);
+                                break;
+                            }
+
+                            // virtual call
+                            // (*(*(v25 + SLOWORD(a1->field_84)) + 8 * v24 + 4))();
+                            break;
+                        }
+                    }
+
                     break;
                 }
                 case app::game::MoveObjGolonRock::Mode::MODE_FALL:
@@ -205,161 +237,6 @@ namespace app
                 default:
                     break;
                 }
-
-                return 0;
-                
-                /*if (MovementMode == Mode::MODE_SHOOT)
-                {
-                    Time += updateInfo.deltaTime;
-                    float scalar = -((((YOffset + YOffset) / PopupTime) * Time) - field_50);
-                    if (!field_82)
-                    {
-                        field_50 -= (YOffset + YOffset);
-                        //scalar = field_50;
-                    }
-
-                    if (Time <= PopupTime || (!Object || !field_82))
-                    {
-                        csl::math::Matrix34 matrix{};
-                        csl::math::Vector3 splinePoint{};
-                        csl::math::Vector3 someVector{};
-                        csl::math::Vector3 someVector2{};
-                        game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
-
-                        Eigen::Vector3f v(someVector2.X, someVector2.Y, someVector2.Z);
-                        Eigen::Matrix3f m(Eigen::AngleAxisf(field_54, v));
-                        for (size_t i = 0; i < 3; i++)
-                            for (size_t j = 0; j < 3; j++)
-                                matrix.data[i][j] = m.transpose()(i, j);
-                        
-                        csl::math::Vector3 position{};
-                        someVector = MultiplyMatrixSRByVector(&matrix, &someVector);
-                        math::Vector3Scale(&someVector, scalar, &position);
-                        math::Vector3Add(&splinePoint, &position, &position);
-                        *(csl::math::Vector3*)contextParam = position;
-
-                        math::Matrix34OrthonormalDirection(&matrix, &someVector2, &-someVector);
-                        csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
-                        *((csl::math::Quaternion*)contextParam + 1) = rotation;
-                        
-                        return 0;
-                    }
-
-                    if (RollWaitTime > 0)
-                    {
-                        RollWaitTime -= updateInfo.deltaTime;
-                        return 0;
-                    }
-
-                    if (field_82 >= 0)
-                    {
-                        // virtual call
-                        // (*(*(v25 + SLOWORD(a1->field_84)) + 8 * v24 + 4))();
-                        return 0;
-                    }
-
-                    // ObjGolonRock::NotifyMoveEndCallback(v25);
-                    return 0;
-                }*/
-
-                /*if (MovementMode != Mode::MODE_MOVE)
-                {
-                    if (MovementMode != Mode::MODE_FALL)
-                        return 0;
-                
-                    csl::math::Vector3 gravityDir{};
-                    csl::math::Vector3 vector{};
-                    int* gocGravity = GameObject::GetGOC((GameObject*)((int*)gocMovement + 5), GOCGravityString);
-                    gravityDir = *GOCGravity::GetGravityDirection(gocGravity);
-                    math::Vector3Scale(&gravityDir, field_2C, &gravityDir);
-                    math::Vector3Scale(&gravityDir, updateInfo.deltaTime, &vector);
-                    *((csl::math::Vector3*)contextParam + 2) += vector;
-                    math::Vector3Scale(((csl::math::Vector3*)contextParam + 2), updateInfo.deltaTime, &vector);
-                    *(csl::math::Vector3*)contextParam += vector;
-                    UpdateLocalRotRad(updateInfo.deltaTime);
-                    Time *= updateInfo.deltaTime;
-                    if (Time <= field_30)
-                        return 0;
-
-                    if (!Object)
-                        return 0;
-
-                    if (!field_82)
-                        return 0;
-
-                    if (field_82 < 0)
-                    {
-                        // virtual call
-                        // ObjGolonRock::NotifyMoveEndCallback(v25);
-                        return 0;
-                    }
-
-                    // virtual call
-                    // v74 = a1->field_90;
-                    // v25 = v74 + a1->field_80;
-                    // (*(*(v25 + SLOWORD(a1->field_84)) + 8 * v24 + 4))();
-
-                    return 0;
-                }*/
-
-                /*csl::math::Vector3 movePos{};
-                csl::math::Vector3 rotDir{};
-                UpdateMovePathPos(&movePos, updateInfo.deltaTime);
-                UpdateRotDirPathToPos(&rotDir, updateInfo.deltaTime);
-
-                csl::math::Vector3 scaledRotDir{};
-                math::Vector3Scale(&rotDir, field_50, &scaledRotDir);
-                math::Vector3Add(&movePos, &scaledRotDir, &movePos);
-                *(csl::math::Vector3*)contextParam = movePos;
-                PathEvaluator.GetTangent(&scaledRotDir, PathEvaluator.field_08);
-                
-                csl::math::Matrix34 matrix{};
-                math::Matrix34OrthonormalDirection(&matrix, &scaledRotDir, &movePos);
-                csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
-                *((csl::math::Quaternion*)contextParam + 1) = rotation;
-                field_60 = Vector3((field_50 + YOffset) * field_24, 0, Speed * updateInfo.deltaTime);
-                UpdateLocalRotRad(updateInfo.deltaTime);*/
-                /*if (!IsCheckFall || CheckFall(&rotDir, updateInfo.deltaTime))
-                {
-                    if (IsPassOverPlayer())
-                    {
-                        if (Object)
-                        {
-                            if (field_8A)
-                            {
-                                // v57 = a1->field_90;
-                                // v59 = v57 + a1->field_88;
-                                if (field_8A >= 0)
-                                {
-                                    // virtual call
-                                    // (*(*(v59 + SLOWORD(a1->field_8C)) + 8 * v58 + 4))();
-                                }
-                                else
-                                {
-                                    // ObjGolonRock::NotifyPassPlayerCallback(v59);
-                                }
-                            }
-                        }
-                    }
-                    return 0;
-                }*/
-
-                /*if (Object)
-                {
-                    if (field_82)
-                    {
-                        if (field_82 >= 0)
-                        {
-                            // virtual call
-                            // v56 = a1->field_90;
-                            // v25 = v56 + a1->field_80;
-                            // (*(*(v25 + SLOWORD(a1->field_84)) + 8 * v24 + 4))();
-                        }
-
-                        // ObjGolonRock::NotifyMoveEndCallback(v25);
-                        return 0;
-                    }
-                }*/
 
                 return 0;
             };
