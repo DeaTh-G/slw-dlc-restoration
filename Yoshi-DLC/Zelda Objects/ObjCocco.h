@@ -10,6 +10,12 @@ namespace app
         STATE_END
     };
 
+    struct ObjCoccoData
+    {
+        float MoveRange;
+        int* CoccoList;
+    };
+
     class ObjCoccoInfo : public CObjInfo
     {
     public:
@@ -59,14 +65,14 @@ namespace app
         public:
             csl::math::Vector3 Position{};
             csl::math::Quaternion Rotation{};
-            int field_20;
+            ObjCoccoData* field_20;
             int field_24;
         };
 
     public:
         enum class ActionType : char
         {
-
+            ACTIONTYPE_0
         };
 
         ObjCoccoState State{};
@@ -79,7 +85,7 @@ namespace app
         int field_3BC{};
         csl::math::Vector3 Position{};
         csl::math::Quaternion Rotation{};
-        int Spawner{};
+        ObjCoccoData* Spawner{};
         int field_3E4{};
         int field_3E8{};
         int field_3EC{};
@@ -88,7 +94,7 @@ namespace app
         MoveObjCocco* MovementController{};
         std::vector<ObjCocco*> SubCoccos{};
         float field_408{};
-        float field_40C{};
+        float MoveRange{};
         float field_410{};
         float Time{};
         float CryTime{};
@@ -136,6 +142,7 @@ namespace app
             fnd::GOComponent::Create(this, GOCShadowSimple);
             fnd::GOComponent::Create(this, GOCMovementComplex);
 
+            MoveRange = GetSpawner()->MoveRange;
             ObjCoccoInfo* info = (ObjCoccoInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjCoccoInfo");
 
             fnd::GOComponent::BeginSetup(this);
@@ -414,6 +421,14 @@ namespace app
                 Flags |= 4;
             else
                 Flags &= ~4;
+        }
+
+        ObjCoccoData* GetSpawner()
+        {
+            if (ActionType != ActionType::ACTIONTYPE_0)
+                return Spawner;
+        
+            return (ObjCoccoData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
         }
 
         bool IsInCamera()
