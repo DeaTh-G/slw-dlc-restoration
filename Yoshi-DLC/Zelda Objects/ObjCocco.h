@@ -416,6 +416,19 @@ namespace app
                 Flags &= ~4;
         }
 
+        bool IsInCamera()
+        {
+            Render::CameraParam* camera = CWorld::GetCamera(0);
+
+            fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            csl::math::Matrix34 matrix = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
+            csl::math::Vector3 vector{};
+            return camera->TransformNDC(&vector, &matrix) && abs(vector.X) < 1.1f && abs(vector.Y) < 1.1f;
+        }
+
         void NotifyStopCallback()
         {
             Flags |= 1;
