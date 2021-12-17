@@ -429,6 +429,11 @@ namespace app
                 fnd::GOCVisual::SetVisible(model, true);
             }
 
+            game::SoundFollowFrameInfo soundInfo{ "obj_loftbird_fly" };
+            int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+            if (gocSound)
+                game::GOCSound::Play3DFollow(gocSound, SoundHandle, &soundInfo);
+
             IsActive = 1;
 
             Resume();
