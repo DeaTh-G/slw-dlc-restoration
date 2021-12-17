@@ -393,10 +393,10 @@ namespace app
 
             State = ObjGolonRockState::STATE_MOVE;
 
-            // Sound Source isn't moving with object
+            game::SoundFollowFrameInfo soundInfo { "obj_goron_rolling" };
             int* gocSound = GameObject::GetGOC(this, GOCSoundString);
             if (gocSound)
-                game::GOCSound::Play3D(gocSound, SoundHandle, "obj_goron_rolling", 0);
+                game::GOCSound::Play3DFollow(gocSound, SoundHandle, &soundInfo);
 
             int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
             if (!gocEffect)
