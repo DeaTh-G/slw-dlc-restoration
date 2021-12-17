@@ -77,7 +77,7 @@ namespace app
                 MoveController::Destructor(deletingFlags);
             }
 
-        private:
+        private: 
             float PopupTime{};
             float RollWaitTime{};
             float Speed{};
@@ -212,8 +212,29 @@ namespace app
                     break;
                 }
                 case app::game::MoveObjGolonRock::Mode::MODE_FALL:
+                {
+                    GOCMovement* gocMovement = GetOwnerMovement();
+                    int* gocGravity = GameObject::GetGOC((GameObject*)(((int*)gocMovement)[5]), GOCGravityString);
+                    if (!gocGravity)
+                        break;
+
+                    csl::math::Vector3 gravityDir = *game::GOCGravity::GetGravityDirection(gocGravity);
+                    math::Vector3Scale(&gravityDir, field_2C, &gravityDir);
+                    math::Vector3Scale(&gravityDir, updateInfo.deltaTime, &gravityDir);
+                    math::Vector3Add((csl::math::Vector3*)contextParam + 2, &gravityDir, (csl::math::Vector3*)contextParam + 2);
+                    math::Vector3Scale((csl::math::Vector3*)contextParam + 2, updateInfo.deltaTime, &gravityDir);
+                    math::Vector3Add((csl::math::Vector3*)contextParam, &gravityDir, (csl::math::Vector3*)contextParam);
+                    UpdateLocalRotRad(updateInfo.deltaTime);
+
+                    Time += updateInfo.deltaTime;
+                    if (field_30 < Time && Object && field_82 < 0)
+                    {
+                        (Object->*NotifyMoveEndCallback)();
+                        break;
+                    }
 
                     break;
+                }
                 default:
                     break;
                 }
@@ -302,7 +323,7 @@ namespace app
             bool const IsPassOverPlayer()
             {
                 // Fix this so it detects P2 as well
-                /*GOCMovement* gocMovement = GetOwnerMovement();
+                GOCMovement* gocMovement = GetOwnerMovement();
                 int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), 0);
                 if (!playerInfo)
                     return false;
@@ -313,7 +334,7 @@ namespace app
                 csl::math::Vector3 someVector{};
                 csl::math::Vector3 someVector2{};
                 game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
-                float scalar = csl::math::Select(((float*)gocMovement)[6], fabs(1), -abs(1));
+                float scalar = csl::math::Select(Speed, abs(1), -abs(1));
                 math::Vector3Scale(&someVector2, scalar, &someVector2);
                 math::Vector3Subtract(&playerPosition, &splinePoint, &playerPosition);
                 float dot = math::Vector3DotProduct(&playerPosition, &someVector);
@@ -325,7 +346,7 @@ namespace app
                 float magnitude;
                 math::Vector3SquareMagnitude(&playerPosition, &magnitude);
                 if (magnitude > 90000)
-                    return true;*/
+                    return true;
 
                 return false;
             }
