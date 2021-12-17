@@ -415,12 +415,50 @@ namespace app
         void StateAttackOut() {}
         void StateEnd() {}
 
-        void SetEnableAttack(bool isEnable)
+        void DamageJump(csl::math::Vector3& vector)
         {
-            if (isEnable)
-                Flags |= 4;
-            else
-                Flags &= ~4;
+            fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            csl::math::Matrix34 m = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
+            csl::math::Vector3 leftVector = Vector3(m.data[1][0], m.data[1][1], m.data[1][2]);
+            csl::math::Vector3 forwardVector = Vector3(m.data[2][0], m.data[2][1], m.data[2][2]);
+
+            float dot = math::Vector3DotProduct(&vector, &leftVector);
+            math::Vector3Scale(&leftVector, dot, &leftVector);
+            math::Vector3Subtract(&vector, &leftVector, &leftVector);
+            if (!math::Vector3NormalizeIfNotZero(&leftVector, &leftVector))
+                leftVector = forwardVector;
+
+            MovementController->SetTargetDirectionJump(10, 30);
+
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
+            if (!gocAnimation)
+                return;
+
+            game::GOCAnimationScript::ChangeAnimation(gocAnimation, "DAMAGE");
+
+            int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
+            if (!gocEffect)
+                return;
+
+            game::EffectCreateInfo effectInfo{};
+            game::EffectCreateInfo::__ct(&effectInfo);
+            effectInfo.Name = "ef_dl3_cocco_dmg";
+            effectInfo.field_04 = 1;
+            effectInfo.field_08 = 1;
+            effectInfo.field_40 = GameObject::GetGOC(this, GOCVisual);
+            effectInfo.field_44 = "waist";
+            effectInfo.field_48 = -1;
+            game::GOCEffect::CreateEffectEx(gocEffect, &effectInfo);
+
+            int deviceTag[3]{};
+            int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+            if (!gocSound)
+                return;
+
+            game::GOCSound::Play3D(gocSound, deviceTag, "obj_cock_damage", 0);
         }
 
         ObjCoccoData* GetSpawner()
@@ -447,6 +485,14 @@ namespace app
         void NotifyStopCallback()
         {
             Flags |= 1;
+        }
+
+        void SetEnableAttack(bool isEnable)
+        {
+            if (isEnable)
+                Flags |= 4;
+            else
+                Flags &= ~4;
         }
     };
 
