@@ -212,6 +212,7 @@ namespace app
                     break;
                 }
                 case app::game::MoveObjGolonRock::Mode::MODE_FALL:
+
                     break;
                 default:
                     break;
@@ -232,7 +233,7 @@ namespace app
                     for (size_t i = 0; item != finalItem; i++)
                     {
                         isFalling[i] = 1;
-                        if (item->Data[11])
+                        if (item->field_30)
                             isFalling[i] = 0;
 
                         item += 1;
@@ -242,7 +243,7 @@ namespace app
 
                 GOCMovement* gocMovement = GetOwnerMovement();
                 int* contextParam = game::GOCMovement::GetContextParam((int*)gocMovement);
-                if (isFalling[0] == 1)
+                if ((isFalling[0] == 1 || isFalling[1]) && isFalling[2] == 1)
                 {
                     csl::math::Vector3 vector{};
                     float scalar = csl::math::Select(field_24, abs(field_20 * deltaTime), -abs(field_20 * deltaTime));
@@ -263,39 +264,38 @@ namespace app
                 math::Vector3Add((csl::math::Vector3*)contextParam, &scaledRotDir, &scaledRotDir);
                 RaycastJob->Add((csl::math::Vector3*)contextParam, &scaledRotDir, 51606, 0, 1);
 
-                /*if (isFalling[0] != 1)
+                if (isFalling[0] == 1)
                 {
-                    PhysicsWorld->AddRaycastJob(RaycastJob);
-                    return result;
-                }*/
+                    float axis[2]{};
 
-                /*csl::math::Vector3 splinePoint{};
-                csl::math::Vector3 someVector{};
-                csl::math::Vector3 someVector2{};
-                game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
-                float axis[2]{};
-                axis[0] = csl::math::Select((YOffset * 5) / (field_50 + YOffset), fabs((YOffset * 5) / (field_50 + YOffset)), -fabs((YOffset * 5) / (field_50 + YOffset)));
-                axis[1] = SonicUSA::System::RadianMaskS(field_54 - axis[0]);
-                axis[0] = SonicUSA::System::RadianMaskS(field_54 + axis[0]);
+                    csl::math::Vector3 splinePoint{};
+                    csl::math::Vector3 someVector{};
+                    csl::math::Vector3 someVector2{};
+                    game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
+                    axis[0] = csl::math::Select(field_24, abs(YOffset * 0.5f / (field_50 + YOffset)), -abs(YOffset * 0.5f / (field_50 + YOffset)));
+                    axis[1] = SonicUSA::System::RadianMaskS(field_54 - axis[0]);
+                    axis[0] = SonicUSA::System::RadianMaskS(field_54 + axis[0]);
 
-                csl::math::Matrix34 matrix{};
-                for (size_t i = 0; i < 2; i++)
-                {
-                    Eigen::Vector3f v(someVector2.X, someVector2.Y, someVector2.Z);
-                    Eigen::Matrix3f m(Eigen::AngleAxisf(axis[i], v));
-                    for (size_t i = 0; i < 3; i++)
-                        for (size_t j = 0; j < 3; j++)
-                            matrix.data[i][j] = m(i, j);
+                    csl::math::Matrix34 matrix{};
 
-                    someVector = MultiplyMatrixSRByVector(&m, &someVector);
-                    math::Vector3Scale(&someVector, field_50, &someVector2);
-                    math::Vector3Add(&splinePoint, &someVector2, &splinePoint);
-                    math::Vector3Scale(&someVector, YOffset + 2, &someVector);
-                    math::Vector3Add(&splinePoint, &someVector, &someVector);
-                    RaycastJob->Add(&splinePoint, &someVector, 51606, 0, 1);
+                    for (size_t i = 0; i < 2; i++)
+                    {
+                        Eigen::Vector3f v(someVector2.X, someVector2.Y, someVector2.Z);
+                        Eigen::Matrix3f m(Eigen::AngleAxisf(axis[i], v));
+                        for (size_t i = 0; i < 3; i++)
+                            for (size_t j = 0; j < 3; j++)
+                                matrix.data[i][j] = m.transpose()(i, j);
+
+                        someVector = MultiplyMatrixSRByVector(&matrix, &someVector);
+                        math::Vector3Scale(&someVector, field_50, &someVector2);
+                        math::Vector3Add(&splinePoint, &someVector2, &splinePoint);
+                        math::Vector3Scale(&someVector, YOffset + 2, &someVector);
+                        math::Vector3Add(&splinePoint, &someVector, &someVector);
+                        RaycastJob->Add(&splinePoint, &someVector, 51606, 0, 1);
+                    }
                 }
 
-                PhysicsWorld->AddRaycastJob(RaycastJob);*/
+                PhysicsWorld->AddRaycastJob(RaycastJob);
                 return result;
             }
 
