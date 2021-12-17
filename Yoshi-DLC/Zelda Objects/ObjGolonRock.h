@@ -54,7 +54,6 @@ namespace app
 
     enum class ObjGolonRockState : int
     {
-        STATE_NONE = -1,
         STATE_SHOOT,
         STATE_FALL,
         STATE_APPEAR,
@@ -65,7 +64,7 @@ namespace app
     class ObjGolonRock : public GameObject3D
     {
     public:
-        ObjGolonRockState State;
+        ObjGolonRockState State{};
         INSERT_PADDING(16); // TinyFSM
         golon_rock::GolonRockCreateInfo* CInfo = new golon_rock::GolonRockCreateInfo();
         float Time{};
@@ -198,10 +197,14 @@ namespace app
                 MovementController = new(movementMem) game::MoveObjGolonRock();
                 game::GOCMovement::SetupController(gocMovement, MovementController);
 
+                auto moveEndCallback = &ObjGolonRock::NotifyMoveEndCallback;
+                auto passPlayerCallback = &ObjGolonRock::NotifyPassPlayerCallback;
                 game::MoveObjGolonRock::SetupParam setupParam = game::MoveObjGolonRock::SetupParam(
                     (csl::math::Vector3*)gocTransform + 6,
                     CInfo->NegativeSpeed,
                     CInfo->IsCheckFall,
+                    moveEndCallback,
+                    passPlayerCallback,
                     this
                 );
 
@@ -230,6 +233,15 @@ namespace app
             fnd::GOComponent::EndSetup(this);
             
             CInfo = NULL;
+
+            State = ObjGolonRockState::STATE_SHOOT;
+            MovementController->StartMode(0);
+
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimation);
+            if (!gocAnimation)
+                return;
+
+            game::GOCAnimationSimple::SetAnimation(gocAnimation, "APPEARE");
         }
 
         bool ProcessMessage(fnd::Message& message) override
@@ -239,15 +251,15 @@ namespace app
 
             switch (message.Type)
             {
-            /*case fnd::PROC_MSG_DLC_ZELDA_NOTICE_ACTIVE_ENEMY:
-                ProcMsgDlcZeldaNoticeActiveEnemy((xgame::MsgDlcZeldaNoticeActiveEnemy&)message);
+            case fnd::PROC_MSG_DLC_ZELDA_NOTICE_STOP_ENEMY:
+                ProcMsgDlcZeldaNoticeStopEnemy((xgame::MsgDlcZeldaNoticeStopEnemy&)message);
                 return true;
             case fnd::PROC_MSG_HIT_EVENT_COLLISION:
                 ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
                 return true;
             case fnd::PROC_MSG_BREAK_ROLLING_STONE:
                 ProcBreakRollingStone((xgame::MsgBreakRollingStone&)message);
-                return true;*/
+                return true;
             default:
                 return GameObject::ProcessMessage(message);
             }
@@ -256,39 +268,113 @@ namespace app
         void Update(const fnd::SUpdateInfo& updateInfo) override
         {
             if (State == ObjGolonRockState::STATE_SHOOT)
-                StateShoot();
+                StateShoot(updateInfo);
 
             if (State == ObjGolonRockState::STATE_APPEAR)
                 StateAppear(updateInfo);
 
             if (State == ObjGolonRockState::STATE_MOVE)
-                StateMove();
+                StateMove(updateInfo);
 
-            /*if (State == ObjGolonRockState::STATE_FALL)
-                StateFall();
+            if (State == ObjGolonRockState::STATE_FALL)
+                StateFall(updateInfo);
 
             if (State == ObjGolonRockState::STATE_DISAPPEAR)
-                StateDisappear();*/
+                StateDisappear(updateInfo);
+        }
+
+        void NotifyMoveEndCallback()
+        {
+            switch (State)
+            {
+            case app::ObjGolonRockState::STATE_SHOOT:
+            {
+                AppearTime = 0;
+                game::MoveController::ResetFlag(MovementController, 1);
+
+                State = ObjGolonRockState::STATE_APPEAR;
+                break;
+            }
+            case app::ObjGolonRockState::STATE_FALL:
+                State = ObjGolonRockState::STATE_DISAPPEAR;
+
+                AppearTime = 0;
+                break;
+            case app::ObjGolonRockState::STATE_MOVE:
+            {
+                if (fnd::HandleBase::IsValid(SoundHandle))
+                    ((fnd::SoundHandle*)SoundHandle)->Stop(0);
+
+                if (EffectHandle.IsValid())
+                    EffectHandle.Stop(0);
+
+                State = ObjGolonRockState::STATE_FALL;
+                MovementController->StartMode(2);
+                break;
+            }
+            }
+        }
+
+        void NotifyPassPlayerCallback()
+        {
+            if (State != ObjGolonRockState::STATE_MOVE)
+                return;
+
+            if (fnd::HandleBase::IsValid(SoundHandle))
+                ((fnd::SoundHandle*)SoundHandle)->Stop(0);
+
+            if (EffectHandle.IsValid())
+                EffectHandle.Stop(0);
+
+            State = ObjGolonRockState::STATE_DISAPPEAR;
+            AppearTime = 0;
         }
 
     private:
-        void StateShoot()
+        void ProcBreakRollingStone(xgame::MsgBreakRollingStone& message)
         {
-            MovementController->StartMode(0);
-
-            int* gocAnimation = GameObject::GetGOC(this, GOCAnimation);
-            if (!gocAnimation)
+            if (State == ObjGolonRockState::STATE_DISAPPEAR)
                 return;
+         
+            State = ObjGolonRockState::STATE_DISAPPEAR;
+            AppearTime = 0;
+        }
 
-            game::GOCAnimationSimple::SetAnimation(gocAnimation, "APPEARE");
+        void ProcMsgDlcZeldaNoticeStopEnemy(xgame::MsgDlcZeldaNoticeStopEnemy& message)
+        {
+            Kill();
+        }
 
-            State = ObjGolonRockState::STATE_APPEAR;
+        void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
+        {
+            if (State == ObjGolonRockState::STATE_DISAPPEAR)
+                return;
+        
+            csl::math::Vector3 moveDir = MovementController->GetWorldMoveDir();
+            math::Vector3Scale(&moveDir, -1, &moveDir);
+            xgame::MsgDamage msg { 2, 8, 3, &message, &moveDir };
+            SendMessageImm(message.ActorID, &msg);
+            if (msg.IsComingReply())
+            {
+                Time = 0.8f;
+
+                int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+                if (!gocCollider)
+                    return;
+
+                ObjUtil::SetEnableColliShape(gocCollider, 1, 0);
+            }
+        }
+
+        void StateShoot(const fnd::SUpdateInfo& updateInfo)
+        {
+            CheckOnPhysics(updateInfo.deltaTime);
         }
 
         void StateAppear(const fnd::SUpdateInfo& updateInfo)
         {
             AppearTime += updateInfo.deltaTime;
-            if (AppearTime <= 0.7f)
+            if (AppearTime <= 0.6f)
                 return;
 
             int* gocContainer = GameObject::GetGOC(this, GOCVisual) + 0x10;
@@ -306,16 +392,12 @@ namespace app
             game::GOCShadowSimple::SetVisible(gocShadow, true);
 
             State = ObjGolonRockState::STATE_MOVE;
-        }
 
-        void StateMove()
-        {
-            RotateStoneModel();
-
-            /*int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+            // Sound Source isn't moving with object
+            int* gocSound = GameObject::GetGOC(this, GOCSoundString);
             if (gocSound)
                 game::GOCSound::Play3D(gocSound, SoundHandle, "obj_goron_rolling", 0);
-        
+
             int* gocEffect = GameObject::GetGOC(this, GOCEffectString);
             if (!gocEffect)
                 return;
@@ -328,17 +410,42 @@ namespace app
             effectInfo.field_30 = 1;
             effectInfo.field_48 = -1;
 
-            game::GOCEffect::CreateEffectLoopEx(gocEffect, &EffectHandle, &effectInfo);*/
+            game::GOCEffect::CreateEffectLoopEx(gocEffect, &EffectHandle, &effectInfo);
             MovementController->SetFlag(1);
             MovementController->StartMode(1);
         }
 
-        void CheckOnPhysics(const fnd::SUpdateInfo& updateInfo)
+        void StateMove(const fnd::SUpdateInfo& updateInfo)
+        {
+            CheckOnPhysics(updateInfo.deltaTime);
+            RotateStoneModel();
+        }
+
+        void StateFall(const fnd::SUpdateInfo& updateInfo)
+        {
+            CheckOnPhysics(updateInfo.deltaTime);
+            RotateStoneModel();
+        }
+
+        void StateDisappear(const fnd::SUpdateInfo& updateInfo)
+        {
+            if (RockVisual)
+            {
+                bool isVisible = fnd::GOCVisual::IsVisible(RockVisual);
+                fnd::GOCVisual::SetVisible(RockVisual, isVisible ^ 1);
+            }
+
+            AppearTime += updateInfo.deltaTime;
+            if (AppearTime > 0.5f)
+                Kill();
+        }
+
+        void CheckOnPhysics(float deltaTime)
         {
             if (Time < 0)
                 return;
 
-            Time -= updateInfo.deltaTime;
+            Time -= deltaTime;
             if (Time < 0)
             {
                 int* gocCollider = GameObject::GetGOC(this, GOCColliderString);

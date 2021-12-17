@@ -16,6 +16,7 @@ namespace app
             inline static FUNCTION_PTR(bool, __thiscall, __ct2, ASLR(0x004D8500), MsgDamage* This, int a1, int a2, int a3, csl::math::Vector3* a4, csl::math::Vector3* a5);
             inline static FUNCTION_PTR(bool, __thiscall, __ct, ASLR(0x004D8580), MsgDamage* This, int a1, int a2, int a3, xgame::MsgHitEventCollision* hitMessage, csl::math::Vector3* position);
             inline static FUNCTION_PTR(int, __thiscall, f_SetReply, ASLR(0x004D86C0), MsgDamage* message, csl::math::Vector3* translation, int a3);
+            inline static FUNCTION_PTR(bool, __thiscall, f_IsComingReply, ASLR(0x004D8750), MsgDamage* message);
 
         public:
             int AttackType{};
@@ -53,6 +54,11 @@ namespace app
             int SetReply(csl::math::Vector3* translation, int a2)
             {
                 return f_SetReply(this, translation, a2);
+            }
+
+            bool IsComingReply()
+            {
+                return f_IsComingReply(this);
             }
         };
     }

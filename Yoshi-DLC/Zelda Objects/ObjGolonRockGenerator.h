@@ -120,7 +120,7 @@ namespace app
             if (!gocEffect)
                 return;
 
-            game::GOCEffect::CreateEffect(gocEffect, "ef_dl3_goron_appear");
+            game::GOCEffect::CreateEffect(gocEffect, "ef_dl3_goron_roll");
         }
 
     private:

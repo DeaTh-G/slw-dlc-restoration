@@ -27,14 +27,15 @@ namespace app
                 INSERT_PADDING(3);
                 short field_3C{};
                 short field_3E{};
-                void* NotifyMoveEndCallback{};
+                void (ObjGolonRock::*NotifyMoveEndCallback)();
                 short field_44{};
                 short field_46{};
-                void* NotifyPassPlayerCallback{};
+                void (ObjGolonRock::*NotifyPassPlayerCallback)();
                 ObjGolonRock* Object{};
 
             public:
-                SetupParam(csl::math::Vector3* position, float speed, bool isCheckFall, ObjGolonRock* obj)
+                SetupParam(csl::math::Vector3* position, float speed, bool isCheckFall,
+                    void (ObjGolonRock::*moveEndCallback)(), void (ObjGolonRock::*passPlayerCallback)(), ObjGolonRock* obj)
                 {
                     Position = *position;
                     YOffset = 20;
@@ -47,9 +48,9 @@ namespace app
                     field_34 = 1;
                     IsCheckFall = isCheckFall;
                     field_3E = -1;
-                    NotifyMoveEndCallback = NULL;
+                    NotifyMoveEndCallback = moveEndCallback;
                     field_46 = -1;
-                    NotifyPassPlayerCallback = NULL;
+                    NotifyPassPlayerCallback = passPlayerCallback;
                     Object = obj;
                 }
             };
@@ -104,10 +105,10 @@ namespace app
             float field_7C{};
             short field_80{};
             short field_82{};
-            void* NotifyMoveEndCallback{};
+            void (ObjGolonRock::*NotifyMoveEndCallback)();
             short field_88{};
             short field_8A{};
-            void* NotifyPassPlayerCallback{};
+            void (ObjGolonRock::*NotifyPassPlayerCallback)();
             ObjGolonRock* Object{};
             int field_94{};
             int field_98{};
@@ -138,16 +139,9 @@ namespace app
                         scalar = field_50 - doubleYOffset;
                         field_50 = scalar;
 
-                        if (Object && field_82)
+                        if (Object && field_82 < 0)
                         {
-                            if (field_82 < 0)
-                            {
-                                // ObjGolonRock::NotifyMoveEndCallback(v25);
-                                break;
-                            }
-
-                            // virtual call
-                            // (*(*(v25 + SLOWORD(a1->field_84)) + 8 * v24 + 4))();
+                            (Object->*NotifyMoveEndCallback)();
                             break;
                         }
                     }
@@ -198,33 +192,19 @@ namespace app
                     field_60 = Vector3((field_50 + YOffset) * field_24, 0, Speed * updateInfo.deltaTime);
                     UpdateLocalRotRad(updateInfo.deltaTime);
 
-                    if (!IsCheckFall || !CheckFall(&rotDir, updateInfo.deltaTime))
+                    if (!IsCheckFall || !CheckFall(&-rotDir, updateInfo.deltaTime))
                     {
-                        if (!IsPassOverPlayer() && !Object && !field_8A)
+                        if (IsPassOverPlayer() && Object && field_8A < 0)
                         {
-                            if (field_8A < 0)
-                            {
-                                // ObjGolonRock::NotifyPassPlayerCallback(v25);
-                                break;
-                            }
-
-                            // virtual call
-                            // (*(*(v59 + SLOWORD(a1->field_8C)) + 8 * v58 + 4))();
+                            (Object->*NotifyPassPlayerCallback)();
                             break;
                         }
                     }
                     else
                     {
-                        if (!Object && !field_82)
+                        if (Object && field_82 < 0)
                         {
-                            if (field_82 < 0)
-                            {
-                                // ObjGolonRock::NotifyMoveEndCallback(v25);
-                                break;
-                            }
-
-                            // virtual call
-                            // (*(*(v25 + SLOWORD(a1->field_84)) + 8 * v24 + 4))();
+                            (Object->*NotifyMoveEndCallback)();
                             break;
                         }
                     }
@@ -245,16 +225,17 @@ namespace app
                 bool result{};
                 
                 int isFalling[3] { -1, -1, -1 };
-                if (RaycastJob->Commands[1])
+                if (RaycastJob->Commands.length)
                 {
-                    int* item = (int*)RaycastJob->Commands[0];
-                    for (size_t i = 0; item != (int*)RaycastJob->Commands[0] + RaycastJob->Commands[1] * 4; i++)
+                    PhysicsRaycastCommand* item = RaycastJob->Commands.pBuffer;
+                    PhysicsRaycastCommand* finalItem = item + RaycastJob->Commands.length;
+                    for (size_t i = 0; item != finalItem; i++)
                     {
                         isFalling[i] = 1;
-                        if (RaycastJob->Commands[15])
+                        if (item->Data[11])
                             isFalling[i] = 0;
 
-                        item += 4;
+                        item += 1;
                     }
                     RaycastJob->Clear();
                 }
@@ -286,9 +267,9 @@ namespace app
                 {
                     PhysicsWorld->AddRaycastJob(RaycastJob);
                     return result;
-                }
+                }*/
 
-                csl::math::Vector3 splinePoint{};
+                /*csl::math::Vector3 splinePoint{};
                 csl::math::Vector3 someVector{};
                 csl::math::Vector3 someVector2{};
                 game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
@@ -321,7 +302,7 @@ namespace app
             bool const IsPassOverPlayer()
             {
                 // Fix this so it detects P2 as well
-                GOCMovement* gocMovement = GetOwnerMovement();
+                /*GOCMovement* gocMovement = GetOwnerMovement();
                 int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), 0);
                 if (!playerInfo)
                     return false;
@@ -344,7 +325,7 @@ namespace app
                 float magnitude;
                 math::Vector3SquareMagnitude(&playerPosition, &magnitude);
                 if (magnitude > 90000)
-                    return true;
+                    return true;*/
 
                 return false;
             }
@@ -492,8 +473,10 @@ namespace app
                 PhysicsWorld = (CPhysicsWorld*)CPhysicsWorld::GetService(document);
                 RaycastJob = new(((app::fnd::ReferencedObject*)GetOwnerMovement())->pAllocator) game::PhysicsRaycastJob();
                 field_80 = param.field_3C;
+                field_82 = param.field_3E;
                 NotifyMoveEndCallback = param.NotifyMoveEndCallback;
                 field_88 = param.field_44;
+                field_8A = param.field_46;
                 NotifyPassPlayerCallback = param.NotifyPassPlayerCallback;
                 Object = param.Object;
 

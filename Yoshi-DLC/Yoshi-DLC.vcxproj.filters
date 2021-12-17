@@ -822,6 +822,15 @@
     <ClInclude Include="app\StageDataInitializer.h">
       <Filter>Header Files\app</Filter>
     </ClInclude>
+    <ClInclude Include="csl\ut\InplaceMoveArrayAligned.h">
+      <Filter>Header Files\csl\ut</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgBreakRollingStone.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\SoundHandle.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">

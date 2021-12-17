@@ -4,12 +4,17 @@ namespace app
 {
 	namespace game
 	{
+		struct PhysicsRaycastCommand
+		{
+			int Data[16]{};
+		};
+
 		struct PhysicsRaycastOutput
 		{
 			int Data[16]{};
 		};
 
-		class PhysicsRaycastJob : public PhysicsQueryJob
+		class alignas(16) PhysicsRaycastJob : public PhysicsQueryJob
 		{
 		private:
 			inline static FUNCTION_PTR(void, __thiscall, __ct, ASLR(0x004DB3D0), PhysicsRaycastJob* This);
@@ -18,7 +23,7 @@ namespace app
 
 		public:
 			Type Type{};
-			int Commands[20]{};
+			csl::ut::InplaceMoveArrayAligned16<PhysicsRaycastCommand, 1> Commands{};
 			int field_60{};
 			INSERT_PADDING(12);
 			PhysicsRaycastOutput Output[2]{};

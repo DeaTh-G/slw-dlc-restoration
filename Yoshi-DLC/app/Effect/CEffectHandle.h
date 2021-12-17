@@ -7,6 +7,7 @@ namespace app
         class CEffectHandle
         {
         private:
+            inline static FUNCTION_PTR(bool, __thiscall, f_IsValid, ASLR(0x0047EE50), CEffectHandle* This);
             inline static FUNCTION_PTR(void, __thiscall, f_Stop, ASLR(0x0047EEA0), CEffectHandle* This, int a2);
             inline static FUNCTION_PTR(void, __thiscall, f_SetVisible, ASLR(0x0047EF60), CEffectHandle* This, bool isVisible);
 
@@ -22,6 +23,7 @@ namespace app
                 field_08 = 0;
             }
 
+            bool IsValid() { return f_IsValid(this); }
             void Stop(int a1) { f_Stop(this, a1); }
             void SetVisible(bool isVisible) { f_SetVisible(this, isVisible); }
         };

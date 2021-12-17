@@ -217,6 +217,7 @@
     <ClInclude Include="app\fnd\Message.h" />
     <ClInclude Include="app\fnd\MessageManager.h" />
     <ClInclude Include="app\fnd\ReferencedObject.h" />
+    <ClInclude Include="app\fnd\SoundHandle.h" />
     <ClInclude Include="app\fnd\SoundPlayerCri.h" />
     <ClInclude Include="app\fnd\TexSrtControlHH.h" />
     <ClInclude Include="app\Game.h" />
@@ -302,6 +303,7 @@
     <ClInclude Include="app\xgame\Blackboard.h" />
     <ClInclude Include="app\xgame\CStageSoundDirector.h" />
     <ClInclude Include="app\xgame\MsgAppeareKnockback.h" />
+    <ClInclude Include="app\xgame\MsgBreakRollingStone.h" />
     <ClInclude Include="app\xgame\MsgCameraOff.h" />
     <ClInclude Include="app\xgame\MsgCameraOn.h" />
     <ClInclude Include="app\xgame\MsgCatchEndPlayer.h" />
@@ -356,6 +358,7 @@
     <ClInclude Include="csl\math\Plane.h" />
     <ClInclude Include="csl\math\Quaternion.h" />
     <ClInclude Include="csl\math\Vector3.h" />
+    <ClInclude Include="csl\ut\InplaceMoveArrayAligned.h" />
     <ClInclude Include="csl\ut\NonCopyable.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="hh\mr\CVertexDeclarationPtr.h" />
