@@ -327,6 +327,7 @@
     <ClInclude Include="app\xgame\MsgHitTriggerBase.h" />
     <ClInclude Include="app\xgame\MsgItemTreeWobblePoint.h" />
     <ClInclude Include="app\xgame\MsgKick.h" />
+    <ClInclude Include="app\xgame\MsgKill.h" />
     <ClInclude Include="app\xgame\MsgLeaveEventCollision.h" />
     <ClInclude Include="app\xgame\MsgLoftBirdCollision.h" />
     <ClInclude Include="app\xgame\MsgNotifyObjectEvent.h" />

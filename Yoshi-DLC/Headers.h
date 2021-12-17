@@ -69,6 +69,7 @@
 #include "app/xgame/MsgHitEventCollision.h"
 #include "app/xgame/MsgDamageBase.h"
 #include "app/xgame/MsgDamage.h"
+#include "app/xgame/MsgKill.h"
 #include "app/xgame/MsgPLHoldOn.h"
 #include "app/xgame/MsgGetAnimal.h"
 #include "app/EnemyBase.h"

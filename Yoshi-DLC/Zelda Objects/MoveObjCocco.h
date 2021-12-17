@@ -2,23 +2,26 @@
 
 namespace app
 {
+    class ObjCocco;
+
     class alignas(16) MoveObjCocco: public game::MoveController
     {
     public:
         class CallbackHandle
         {
-        private:
-            int field_00{};
+        public:
+            ObjCocco* Object{};
             short field_04{};
-            short field_06{};
-            int field_08{};
+            INSERT_PADDING(2);
+            void (ObjCocco::*NotifyStopCallback)();
         };
         
         enum class State : char {};
 
         enum class MoveType : char 
         {
-            MOVE_TARGET_POINT = 1,
+            MOVE_NONE,
+            MOVE_TARGET_POINT,
             MOVE_TARGET_RELATIVE_POINT,
             MOVE_TARGET,
             MOVE_TARGET_JUMP,
@@ -46,11 +49,6 @@ namespace app
         int field_6C;
 
     protected:
-        MoveObjCocco() : MoveController(114)
-        {
-            *(char*)&MoveType = 1;
-        }
-
         int OnEnter() override
         {
             csl::math::Vector3 upVector { 0, 0, 1 };
@@ -59,9 +57,20 @@ namespace app
             int* contextParam = game::GOCMovement::GetContextParam((int*)gocMovement);
 
             math::Vector3Rotate(&field_40, (csl::math::Quaternion*)contextParam + 1, &upVector);
+            return 1;
+        }
+
+        int Update(const fnd::SUpdateInfo& updateInfo) override
+        {
+            return 0;
         }
 
     public:
+        MoveObjCocco() : MoveController(114)
+        {
+            MoveType = MoveType::MOVE_TARGET_POINT;
+        }
+
         void SetRelativeTargetPoint(csl::math::Vector3* target, float a2)
         {
             MoveType = MoveType::MOVE_TARGET_RELATIVE_POINT;
@@ -131,6 +140,13 @@ namespace app
 
             game::GOCMovement* gocMovement = GetOwnerMovement();
             game::GOCMovement::EnableMovementFlag((int*)gocMovement, 0);
+        }
+
+        void SetNotifyStopCallback(short a1, void (ObjCocco::*notifyStopCallback)(), ObjCocco* obj)
+        {
+            CallbackHandle.Object = obj;
+            CallbackHandle.field_04 = a1;
+            CallbackHandle.NotifyStopCallback = notifyStopCallback;
         }
     };
 }
