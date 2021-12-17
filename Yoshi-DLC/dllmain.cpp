@@ -32,7 +32,7 @@ char IsZeldaStage()
 
 void Initialize()
 {
-    //MessageBox(NULL, L"AAAAAAAAAA", NULL, MB_ICONERROR);
+    MessageBox(NULL, L"AAAAAAAAAA", NULL, MB_ICONERROR);
 
     /* TODO: Please replace this with sane code. */
     WRITE_MEMORY(ASLR(0x00D41252),
@@ -103,6 +103,7 @@ void Initialize()
     auto create_ObjBreakRoof = &app::create_ObjBreakRoof;
     auto create_ObjChangeTopViewCollision = &app::create_ObjChangeTopViewCollision;
     auto create_ObjCocco = &app::create_ObjCocco;
+    auto create_ObjGolonRockGenerator = &app::create_ObjGolonRockGenerator;
     auto create_ObjGossipStone = &app::create_ObjGossipStone;
     auto create_ObjLoftBird = &app::create_ObjLoftBird;
     auto create_ObjLoftBirdCollision = &app::create_ObjLoftBirdCollision;
@@ -119,6 +120,7 @@ void Initialize()
     auto createObjInfo_ObjBreakFloorInfo = &app::createObjInfo_ObjBreakFloorInfo;
     auto createObjInfo_ObjBreakRoofInfo = &app::createObjInfo_ObjBreakRoofInfo;
     auto createObjInfo_ObjCoccoInfo = &app::createObjInfo_ObjCoccoInfo;
+    auto createObjInfo_ObjGolonRockGeneratorInfo = &app::createObjInfo_ObjGolonRockGeneratorInfo;
     auto createObjInfo_ObjGossipStoneInfo = &app::createObjInfo_ObjGossipStoneInfo;
     auto createObjInfo_ObjLoftBirdInfo = &app::createObjInfo_ObjLoftBirdInfo;
     auto createObjInfo_ObjOccludeStoneInfo = &app::createObjInfo_ObjOccludeStoneInfo;
@@ -134,6 +136,7 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2BA14), *(void**)&create_ObjBreakRoof);
     WRITE_FUNCTION(ASLR(0x00D2BA61), *(void**)&create_ObjChangeTopViewCollision);
     WRITE_FUNCTION(ASLR(0x00D2BAB4), *(void**)&create_ObjCocco);
+    WRITE_FUNCTION(ASLR(0x00D2BD34), *(void**)&create_ObjGolonRockGenerator);
     WRITE_FUNCTION(ASLR(0x00D2BD84), *(void**)&create_ObjGossipStone);
     WRITE_FUNCTION(ASLR(0x00D2BDD4), *(void**)&create_ObjLoftBird);
     WRITE_FUNCTION(ASLR(0x00D2BE21), *(void**)&create_ObjLoftBirdCollision);
@@ -150,6 +153,7 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2B9BF), *(void**)&createObjInfo_ObjBreakFloorInfo);
     WRITE_FUNCTION(ASLR(0x00D2BA0F), *(void**)&createObjInfo_ObjBreakRoofInfo);
     WRITE_FUNCTION(ASLR(0x00D2BD7F), *(void**)&createObjInfo_ObjCoccoInfo);
+    WRITE_FUNCTION(ASLR(0x00D2BD2F), *(void**)&createObjInfo_ObjGolonRockGeneratorInfo);
     WRITE_FUNCTION(ASLR(0x00D2BAAF), *(void**)&createObjInfo_ObjGossipStoneInfo);
     WRITE_FUNCTION(ASLR(0x00D2BDCF), *(void**)&createObjInfo_ObjLoftBirdInfo);
     WRITE_FUNCTION(ASLR(0x00D2C04F), *(void**)&createObjInfo_ObjOccludeStoneInfo);
@@ -175,6 +179,7 @@ void Initialize()
         app::GameModeStage::StateWarp();
 
     // Install Zelda Hooks
+    app::StageDataInitializer::EndLoadLevelData();
     app::Player::CPlayer::ProcessMessage();
     app::Player::CStateBase::ProcMsgPlayerReachGoal();
     app::Player::CVisualSonic::ActivateSub();

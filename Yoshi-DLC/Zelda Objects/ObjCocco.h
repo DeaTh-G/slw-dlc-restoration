@@ -56,6 +56,7 @@ namespace app
     private:
         class CInfo
         {
+        public:
             csl::math::Vector3 Position{};
             csl::math::Quaternion Rotation{};
             int field_20;
@@ -63,39 +64,67 @@ namespace app
         };
 
     public:
+        enum class ActionType : char
+        {
+
+        };
+
         ObjCoccoState State{};
-        INSERT_PADDING(16); // TinyFSM
+        xgame::MsgHitEventCollision* HitMessage = new xgame::MsgHitEventCollision();
+        xgame::MsgDamage* DamageMessage = new xgame::MsgDamage();
+        xgame::MsgKick* KickMessage = new xgame::MsgKick();
+        INSERT_PADDING(4); // TinyFSM
         int field_3B4{};
         int field_3B8{};
         int field_3BC{};
         csl::math::Vector3 Position{};
         csl::math::Quaternion Rotation{};
-        int field_3E0{};
+        int Spawner{};
         int field_3E4{};
         int field_3E8{};
         int field_3EC{};
-        char ActionType{};
-        char field_3F1{};
-        char field_3F2{};
-        char field_3F3{};
-        int field_3F4{};
+        ActionType ActionType{};
+        INSERT_PADDING(3);
+        MoveObjCocco* MovementController{};
         std::vector<ObjCocco*> SubCoccos{};
         float field_408{};
         float field_40C{};
         float field_410{};
         float Time{};
-        float field_418{};
+        float CryTime{};
         int field_41C{};
         char Flags{};
-        char field_421{};
-        char field_422{};
-        char field_423{};
+        INSERT_PADDING(3);
         int field_424{};
         int field_428{};
         int field_42C{};
 
-        ObjCocco() { ObjUtil::SetPropertyLockonTarget(this); }
-        ObjCocco(const CInfo&) {};
+        ObjCocco()
+        {
+            field_41C = 3;
+            ObjUtil::SetPropertyLockonTarget(this);
+        }
+
+        ObjCocco(const CInfo& createInfo)
+        {
+            State = ObjCoccoState::STATE_ATTACK_IN;
+
+            Position = createInfo.Position;
+            Rotation = createInfo.Rotation;
+            field_3E4 = createInfo.field_24;
+            Spawner = createInfo.field_20;
+
+            field_41C = 3;
+        };
+
+        void Destructor(size_t deletingFlags) override
+        {
+            delete HitMessage;
+            delete DamageMessage;
+            delete KickMessage;
+
+            CSetObjectListener::Destructor(deletingFlags);
+        }
 
         void AddCallback(GameDocument* gameDocument) override
         {
@@ -156,7 +185,7 @@ namespace app
                 collisionInfo.MotionType = 2;
                 collisionInfo.Radius = 2;
                 collisionInfo.field_04 = 1;
-                if (!field_3E0)
+                if (!Spawner)
                     collisionInfo.field_08 = 0x20000;
 
                 collisionInfo.field_44 = 0;
@@ -182,16 +211,19 @@ namespace app
                 game::GOCShadowSimple::SetLocalOffsetPosition(gocShadow, &position);
             }
 
-            /*int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
+            int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
             if (gocMovement)
             {
                 csl::math::Vector3 position{};
 
-                void* movementMem = ((app::fnd::ReferencedObject*)gocMovement)->pAllocator->Alloc
-                (sizeof(MoveObjCocco), 16);
-                MoveObjCocco* movement = new(movementMem) MoveObjCocco();
-                game::GOCMovement::SetupController(gocMovement, movement);
-            }*/
+                void* movementMem = ((app::fnd::ReferencedObject*)gocMovement)->pAllocator->
+                    Alloc(sizeof(MoveObjCocco), 16);
+                MovementController = new(movementMem) MoveObjCocco();
+                game::GOCMovement::SetupController(gocMovement, MovementController);
+
+                auto notifyStopCallback = &ObjCocco::NotifyStopCallback;
+                MovementController->SetNotifyStopCallback(-1, notifyStopCallback, this);
+            }
 
             game::GOCEffect::SimpleSetupEx(this, 1, 1);
             game::GOCSound::SimpleSetup(this, 0, 0);
@@ -216,10 +248,32 @@ namespace app
 
         bool ProcessMessage(fnd::Message& message) override
         {
-            if (PreProcessMessage(message))
+            switch (message.Type)
+            {
+            case fnd::PROC_MSG_DAMAGE:
+                ProcMsgDamage((xgame::MsgDamage&)message);
                 return true;
-            
-            return CSetObjectListener::ProcessMessage(message);
+            case fnd::PROC_MSG_DLC_ZELDA_NOTICE_ACTIVE_ENEMY:
+                ProcMsgDlcZeldaNoticeActiveEnemy((xgame::MsgDlcZeldaNoticeActiveEnemy&)message);
+                return true;
+            case fnd::PROC_MSG_DLC_ZELDA_NOTICE_STOP_ENEMY:
+                ProcMsgDlcZeldaNoticeStopEnemy((xgame::MsgDlcZeldaNoticeStopEnemy&)message);
+                return true;
+            case fnd::PROC_MSG_HIT_EVENT_COLLISION:
+                ProcMsgHitEventCollision((xgame::MsgHitEventCollision&)message);
+                return true;
+            case fnd::PROC_MSG_KICK:
+                ProcMsgKick((xgame::MsgKick&)message);
+                return true;
+            case fnd::PROC_MSG_PL_GET_HOMING_TARGET_INFO:
+                ProcMsgPLGetHomingTargetInfo((xgame::MsgPLGetHomingTargetInfo&)message);
+                return true;
+            case fnd::PROC_MSG_PL_KICK_TARGETTING:
+                ProcMsgPLKickTargetting((xgame::MsgPLKickTargetting&)message);
+                return true;
+            default:
+                return CSetObjectListener::PreProcessMessage(message);
+            }
         }
 
         void Update(const fnd::SUpdateInfo& updateInfo) override
@@ -235,38 +289,14 @@ namespace app
 
             if (State == ObjCoccoState::STATE_END)
                 StateEnd();
-
-            if ((Flags & 2) != 2)
-                return;
-
-            if (ActionType)
-                return;
-            
-            float oldTime;
-            Time += updateInfo.deltaTime;
-            if (Time > 7)
-            {
-                SetStatusRetire();
-                Kill();
-            }
-            
-            for (std::vector<ObjCocco*>::iterator it = SubCoccos.begin(); it != SubCoccos.end();)
-            {
-                while (*it)
-                {
-                    it++;
-                    if (it == SubCoccos.end())
-                        if (oldTime / 0.69999999f < Time / 0.69999999f)
-                            CreateAttackers();
-                }
-                SubCoccos.erase(it);
-            }
-
-            if (oldTime / 0.69999999f < Time / 0.69999999f)
-                CreateAttackers();
         }
 
     private:
+        inline static void* AnimCallbackBridge_Initialize(csl::fnd::IAllocator* pAllocator)
+        {
+            return new animation::AnimCallbackBridge<ObjCocco>();
+        }
+
         void SoundCallback(int a1, int a2, int a3)
         {
             int* gocSound = GameObject::GetGOC((GameObject*)((char*)this + 1), GOCSoundString);
@@ -279,15 +309,104 @@ namespace app
                     game::GOCSound::Play3D(gocSound, deviceTag, "obj_cock_flap", 0);
         }
 
-        void NotifyStopCallback()
+        void ProcMsgDamage(xgame::MsgDamage& message)
         {
-            Flags |= 1;
+            *DamageMessage = message;
+
+            message.SetReply(&message.field_30, (field_41C | field_41C - 1) >> 31);
+            message.field_90 |= 0x20;
         }
 
-        inline static void* AnimCallbackBridge_Initialize(csl::fnd::IAllocator* pAllocator)
+        void ProcMsgDlcZeldaNoticeActiveEnemy(xgame::MsgDlcZeldaNoticeActiveEnemy& message)
         {
-            return new animation::AnimCallbackBridge<ObjCocco>();
+            SetExtUserData(0, 0);
+
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+            if (gocVisual)
+                fnd::GOCVisual::SetVisible(gocVisual, 1);
+
+            int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
+            if (gocShadow)
+                game::GOCShadowSimple::SetVisible(gocShadow, 1);
+
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+            if (gocCollider)
+                game::GOCCollider::SetEnable(gocCollider, 1);
+
+            Resume();
         }
+
+        void ProcMsgDlcZeldaNoticeStopEnemy(xgame::MsgDlcZeldaNoticeStopEnemy& message)
+        {
+            SetExtUserData(0, 1);
+
+            if (State == ObjCoccoState::STATE_IDLE)
+            {
+
+                int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+                if (gocVisual)
+                    fnd::GOCVisual::SetVisible(gocVisual, 0);
+
+                int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
+                if (gocShadow)
+                    game::GOCShadowSimple::SetVisible(gocShadow, 0);
+
+                int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+                if (gocCollider)
+                    game::GOCCollider::SetEnable(gocCollider, 0);
+
+                Sleep(this);
+            }
+            else
+            {
+                xgame::MsgKill msg{};
+                for (ObjCocco* cocco : SubCoccos)
+                {
+                    cocco->SendMessageImm(*(int*)(field_24[1] + 0x10), &msg);
+                }
+
+                Kill();
+            }
+        }
+
+        void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
+        {
+            *HitMessage = message;
+        }
+
+        void ProcMsgKick(xgame::MsgKick& message)
+        {
+            *KickMessage = message;
+            xgame::MsgKick::SetReplyForSucceed(&message);
+        }
+
+        void ProcMsgPLGetHomingTargetInfo(xgame::MsgPLGetHomingTargetInfo& message)
+        {
+            if (field_41C <= 0)
+            {
+                message.field_18 |= 1;
+                return;
+            }
+
+            fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            csl::math::Vector3 vector { 0, 3, 0 };
+            csl::math::Matrix34 matrix = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
+            message.field_38 = field_41C;
+            message.field_20 = MultiplyMatrixByVector(&matrix, &vector);
+        }
+
+        void ProcMsgPLKickTargetting(xgame::MsgPLKickTargetting& message)
+        {
+            message.field_34 = 1;
+        }
+
+        void StateIdle() {}
+        void StateAttackIn() {}
+        void StateAttackOut() {}
+        void StateEnd() {}
 
         void SetEnableAttack(bool isEnable)
         {
@@ -297,12 +416,10 @@ namespace app
                 Flags &= ~4;
         }
 
-        CreateAttackers() {}
-
-        void StateIdle() {}
-        void StateAttackIn() {}
-        void StateAttackOut() {}
-        void StateEnd() {}
+        void NotifyStopCallback()
+        {
+            Flags |= 1;
+        }
     };
 
     inline static ObjCocco* create_ObjCocco() { return new ObjCocco(); }
