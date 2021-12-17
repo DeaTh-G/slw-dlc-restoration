@@ -87,7 +87,7 @@ namespace app
                 ProcMsgNotifyObjectEvent((xgame::MsgNotifyObjectEvent&)message);
                 return true;
             default:
-                return CSetObjectListener::ProcessMessage(message);
+                return GameObject::ProcessMessage(message);
             }
         }
 
