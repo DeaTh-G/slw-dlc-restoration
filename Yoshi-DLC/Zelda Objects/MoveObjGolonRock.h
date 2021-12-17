@@ -472,6 +472,7 @@ namespace app
                 YOffset = param.YOffset;
                 PhysicsWorld = (CPhysicsWorld*)CPhysicsWorld::GetService(document);
                 RaycastJob = new(((app::fnd::ReferencedObject*)GetOwnerMovement())->pAllocator) game::PhysicsRaycastJob();
+                RaycastJob->AddRef();
                 field_80 = param.field_3C;
                 field_82 = param.field_3E;
                 NotifyMoveEndCallback = param.NotifyMoveEndCallback;

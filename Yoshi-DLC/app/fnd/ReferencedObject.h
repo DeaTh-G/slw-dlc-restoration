@@ -25,6 +25,12 @@ namespace app
             {
                 f_delete(obj);
             }
+
+            void AddRef()
+            {
+                if (field_04)
+                    ++field_06;
+            }
         };
     }
 }
