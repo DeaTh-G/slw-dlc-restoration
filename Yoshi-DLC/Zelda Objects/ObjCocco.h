@@ -294,7 +294,7 @@ namespace app
         void Update(const fnd::SUpdateInfo& updateInfo) override
         {
             if (State == ObjCoccoState::STATE_IDLE)
-                StateIdle();
+                StateIdle(updateInfo);
 
             if (State == ObjCoccoState::STATE_ATTACK_IN)
                 StateAttackIn();
@@ -418,7 +418,48 @@ namespace app
             message.field_34 = 1;
         }
 
-        void StateIdle() {}
+        void StateIdle(const fnd::SUpdateInfo& updateInfo)
+        {
+            if (CryTime > 0)
+            {
+                CryTime -= updateInfo.deltaTime;
+                if (!(Flags & 1))
+                    return;
+            }
+            else
+            {
+                int deviceTag[3]{};
+                int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+                if (!gocSound)
+                    return;
+
+                game::GOCSound::Play3D(gocSound, deviceTag, "obj_cock_cry", 0);
+                CryTime += 2;
+            }
+
+            Flags &= ~1;
+
+            if (field_41C <= 0)
+            {
+                int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
+                if (!gocAnimation)
+                    return;
+
+                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK");
+
+                State = ObjCoccoState::STATE_ATTACK_OUT;
+                return;
+            }
+
+            SetTargetOnCircle();
+
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
+            if (!gocAnimation)
+                return;
+
+            game::GOCAnimationScript::ChangeAnimation(gocAnimation, "MOVE");
+        }
+
         void StateAttackIn() {}
         void StateAttackOut() {}
         void StateEnd() {}

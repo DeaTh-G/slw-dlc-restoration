@@ -94,10 +94,10 @@ namespace app
                     dot = math::Vector3DotProduct((csl::math::Vector3*)contextParam + 2, &scaledUpVector);
                     math::Vector3Scale(&scaledUpVector, dot, &moveOffset);
 
-                    if ((char)State == 1)
+                    if ((char)State != 1)
                     {
-                        math::Vector3Scale(&-movePosition, 100, &vector);
-                        -movePosition;
+                        math::Vector3Scale(&-upVector, 100, &vector);
+                        -upVector;
                     }
                 }
                 else
@@ -112,52 +112,52 @@ namespace app
 
                         csl::math::Quaternion rotation{};
 
-                        Eigen::Vector3f v(scaledUpVector.X, scaledUpVector.Y, scaledUpVector.Z);
+                        Eigen::Vector3f v(upVector.X, upVector.Y, upVector.Z);
                         Eigen::Quaternionf q(Eigen::AngleAxisf(dot, v));
                         rotation = csl::math::Quaternion(q.x(), q.y(), q.z(), q.w());
 
                         math::Vector3Rotate(&depthVector, &rotation, &depthVector);
 
-                        dot = math::Vector3DotProduct((csl::math::Vector3*)contextParam + 2, &scaledUpVector);
-                        math::Vector3Scale(&scaledUpVector, dot, &moveOffset);
+                        dot = math::Vector3DotProduct((csl::math::Vector3*)contextParam + 2, &upVector);
+                        math::Vector3Scale(&upVector, dot, &moveOffset);
                     }
 
-                    if ((char)State == 1)
+                    if ((char)State != 1)
                     {
-                        math::Vector3Scale(&-movePosition, 100, &vector);
-                        -movePosition;
+                        math::Vector3Scale(&-upVector, 100, &vector);
+                        -upVector;
                     }
                 }
 
-                field_40 = movePosition;
-
-                math::Vector3Scale(&movePosition, field_50, &movePosition);
-                math::Vector3Add(&movePosition, &moveOffset, &movePosition);
+                math::Vector3Scale(&depthVector, field_50, &depthVector);
+                math::Vector3Add(&depthVector, &moveOffset, &depthVector);
                 math::Vector3Scale(&vector, updateInfo.deltaTime, &vector);
-                math::Vector3Add(&movePosition, &vector, &movePosition);
-                math::Vector3Scale(&movePosition, updateInfo.deltaTime, &movePosition);
-                math::Vector3Add((csl::math::Vector3*)contextParam, &movePosition, (csl::math::Vector3*)contextParam);
+                math::Vector3Add(&vector, &depthVector, &vector);
+                math::Vector3Scale(&vector, updateInfo.deltaTime, &vector);
+                math::Vector3Add((csl::math::Vector3*)contextParam, &vector, (csl::math::Vector3*)contextParam);
 
-                /*csl::math::Vector3 doubleScaledUpVector{};
+                field_40 = Vector3(depthVector.X / 10, depthVector.Y / 10, depthVector.Z / 10);
+
+                csl::math::Vector3 doubleScaledUpVector{};
                 csl::math::Vector3 upCross{};
 
-                dot = math::Vector3DotProduct(&field_40, &scaledUpVector);
-                math::Vector3Scale(&scaledUpVector, dot, &doubleScaledUpVector);
-                math::Vector3Subtract(&field_40, &doubleScaledUpVector, &doubleScaledUpVector);
-                math::Vector3NormalizeZero(&doubleScaledUpVector, &doubleScaledUpVector);
-                math::Vector3CrossProduct(&scaledUpVector, &doubleScaledUpVector, &doubleScaledUpVector);
-                math::Vector3CrossProduct(&doubleScaledUpVector, &scaledUpVector, &upCross);
+                dot = math::Vector3DotProduct(&field_40, &upVector);
+                math::Vector3Scale(&upVector, dot, &scaledUpVector);
+                math::Vector3Subtract(&field_40, &scaledUpVector, &scaledUpVector);
+                math::Vector3NormalizeZero(&scaledUpVector, &scaledUpVector);
+                math::Vector3CrossProduct(&upVector, &scaledUpVector, &doubleScaledUpVector);
+                math::Vector3CrossProduct(&doubleScaledUpVector, &upVector, &upCross);
 
                 math::Vector3NormalizeZero(&doubleScaledUpVector, &doubleScaledUpVector);
                 csl::math::Matrix34 m{};
                 *(csl::math::Vector3*)(m.data[0]) = doubleScaledUpVector;
-                *(csl::math::Vector3*)(m.data[1]) = scaledUpVector;
+                *(csl::math::Vector3*)(m.data[1]) = upVector;
                 *(csl::math::Vector3*)(m.data[2]) = upCross;
 
                 csl::math::Quaternion rotation = GetRotationFromMatrix(&m);
                 *(((csl::math::Quaternion*)contextParam) + 1) = rotation;
 
-                if ((char)State)
+                /*if ((char)State)
                 {
                     if ((char)State != 1)
                     {
