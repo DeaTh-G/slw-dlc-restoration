@@ -92,9 +92,9 @@ namespace app
         ActionType ActionType{};
         INSERT_PADDING(3);
         MoveObjCocco* MovementController{};
-        std::vector<ObjCocco*> SubCoccos{};
         float field_408{};
         float MoveRange{};
+        std::vector<ObjCocco*> SubCoccos{};
         float field_410{};
         float Time{};
         float CryTime{};
@@ -251,6 +251,14 @@ namespace app
 
             SetEnableAttack(true);
             fnd::GOComponent::EndSetup(this);
+
+            // StateIdle Enter
+            SetTargetOnCircle();
+            int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
+            if (!gocAnimation)
+                return;
+
+            game::GOCAnimationScript::ChangeAnimation(gocAnimation, "MOVE");
         }
 
         bool ProcessMessage(fnd::Message& message) override
@@ -475,7 +483,7 @@ namespace app
 
             fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
             if (!gocTransform)
-                return;
+                return 0;
 
             csl::math::Matrix34 matrix = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
             csl::math::Vector3 vector{};
@@ -493,6 +501,33 @@ namespace app
                 Flags |= 4;
             else
                 Flags &= ~4;
+        }
+
+        void SetTargetOnCircle()
+        {
+            csl::math::Vector3 depthVector { 0, 0, 1 };
+            csl::math::Vector3 position{};
+            csl::math::Quaternion rotation{};
+
+            fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            csl::math::Matrix34 m = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
+            unsigned int random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
+            float distance = SonicUSA::System::RadianMaskS(random * 2.328306436538696e-10f * 3.1415927f + (field_408 + 1.5707964f));
+            
+            CSetAdapter::GetRotation(*(int**)((char*)this + 0x324), &rotation);
+            math::Vector3Rotate(&depthVector, &rotation, &depthVector);
+            Eigen::Vector3f v(m.data[1][0], m.data[1][1], m.data[1][2]); 
+            Eigen::Quaternionf q(Eigen::AngleAxisf(distance, v));
+            rotation = csl::math::Quaternion(q.x(), q.y(), q.z(), q.w());
+            math::Vector3Rotate(&depthVector, &rotation, &depthVector);
+            CSetAdapter::GetPosition(*(int**)((char*)this + 0x324), &position);
+            math::Vector3Scale(&depthVector, MoveRange, &depthVector);
+            math::Vector3Add(&position, &depthVector, &position);
+            MovementController->SetTargetPoint(&position, 10);
+            field_408 = distance;
         }
     };
 
