@@ -1184,9 +1184,10 @@ namespace app
             math::Vector3Scale(&leftVector, 50, &leftVector);
             math::Vector3Add(&rayBasePosition, &leftVector, &rayEndPosition);
             math::Vector3Subtract(&rayBasePosition, &leftVector, &rayStartPosition);
-            int* rayResult = ObjUtil::RaycastNearestCollision(&m, (GameDocument*)field_24[1], &rayEndPosition, &rayStartPosition, 0xC996);
-            offsetAppear = csl::math::Vector3(m.data[0][0], m.data[0][1], m.data[0][2]);
-            fnd::GOCTransform::SetLocalTranslation((int*)gocTransform, &offsetAppear);
+
+            game::PhysicsRaycastOutput output{};
+            int* rayResult = ObjUtil::RaycastNearestCollision(&output, (GameDocument*)field_24[1], &rayEndPosition, &rayStartPosition, 0xC996);
+            fnd::GOCTransform::SetLocalTranslation((int*)gocTransform, &output.field_00);
         }
 
         void OnDead()

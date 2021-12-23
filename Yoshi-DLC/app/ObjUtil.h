@@ -30,7 +30,7 @@ namespace app
         inline static FUNCTION_PTR(bool, __cdecl, CheckShapeUserIDFromHandle, ASLR(0x0073D910), int a1, int a2);
         inline static FUNCTION_PTR(int*, __cdecl, GetSVPath, ASLR(0x0073E6C0), GameDocument* gameDocumnet, csl::math::Vector3* a1, csl::math::Vector3* a2);
         inline static FUNCTION_PTR(int*, __cdecl, RaycastHitCollision, ASLR(0x0073D980), GameDocument* gameDocumnent, csl::math::Vector3* a1, csl::math::Vector3* a2, int a3);
-        inline static FUNCTION_PTR(int*, __cdecl, RaycastNearestCollision, ASLR(0x0073D940), csl::math::Matrix34* matrix, GameDocument* gameDocument, csl::math::Vector3* a1, csl::math::Vector3* a2, int a3);
+        inline static FUNCTION_PTR(int*, __cdecl, RaycastNearestCollision, ASLR(0x0073D940), game::PhysicsRaycastOutput* output, GameDocument* gameDocument, csl::math::Vector3* a1, csl::math::Vector3* a2, int a3);
         inline static FUNCTION_PTR(int, __cdecl, PlaySE2D, ASLR(0x0073EB70), int* a1, const char* cueName, int a3);
         inline static FUNCTION_PTR(int*, __cdecl, GetGravityField, ASLR(0x0073D9E0), GameDocument* a1, csl::math::Vector3* a2);
         inline static FUNCTION_PTR(int*, __cdecl, GetGravityPathInsideCylinder, ASLR(0x0073DAF0), int* gravityField);

@@ -20,7 +20,19 @@ namespace app
 
 		struct PhysicsRaycastOutput
 		{
-			int Data[16]{};
+			csl::math::Vector3 field_00{};
+			int field_10{};
+			int field_14{};
+			int field_18{};
+			int field_1C{};
+			int field_20{};
+			int field_24{};
+			int field_28{};
+			int field_2C{};
+			int field_30{};
+			int field_34{};
+			int field_38{};
+			int field_3C{};
 		};
 
 		class alignas(16) PhysicsRaycastJob : public PhysicsQueryJob
