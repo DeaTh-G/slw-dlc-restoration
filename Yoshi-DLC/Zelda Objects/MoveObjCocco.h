@@ -12,7 +12,7 @@ namespace app
         public:
             ObjCocco* Object{};
             short field_04{};
-            INSERT_PADDING(2);
+            short field_06{};
             void (ObjCocco::*NotifyStopCallback)();
         };
         
@@ -68,9 +68,11 @@ namespace app
             csl::math::Vector3 vector{};
             csl::math::Vector3 upVector { 0, 1, 0 };
             csl::math::Vector3 depthVector { 0, 0, 1 }; 
+            csl::math::Vector3 originalPosition{};
 
             game::GOCMovement* gocMovement = GetOwnerMovement();
             int* contextParam = game::GOCMovement::GetContextParam((int*)gocMovement);
+            originalPosition = *(csl::math::Vector3*)contextParam;
             math::Vector3Rotate(&upVector, (csl::math::Quaternion*)contextParam + 1, &upVector);
             math::Vector3Rotate(&depthVector, (csl::math::Quaternion*)contextParam + 1, &depthVector);
 
@@ -94,7 +96,7 @@ namespace app
                     dot = math::Vector3DotProduct((csl::math::Vector3*)contextParam + 2, &scaledUpVector);
                     math::Vector3Scale(&scaledUpVector, dot, &moveOffset);
 
-                    if ((char)State != 1)
+                    if ((char)State == 1)
                     {
                         math::Vector3Scale(&-upVector, 100, &vector);
                         -upVector;
@@ -103,7 +105,7 @@ namespace app
                 else
                 {
                     float someFloat = 12.56637f * updateInfo.deltaTime;
-                    if (someFloat < dot)
+                    if (someFloat < abs(acosf(dot)))
                     {
                         csl::math::Vector3 forwardVector { 1, 0, 0 };
                         math::Vector3Rotate(&forwardVector, (csl::math::Quaternion*)contextParam + 1, &forwardVector);
@@ -122,21 +124,23 @@ namespace app
                         math::Vector3Scale(&upVector, dot, &moveOffset);
                     }
 
-                    if ((char)State != 1)
+                    if ((char)State == 1)
                     {
                         math::Vector3Scale(&-upVector, 100, &vector);
                         -upVector;
                     }
                 }
 
+                csl::math::Vector3 scaledDepth{};
                 math::Vector3Scale(&depthVector, field_50, &depthVector);
                 math::Vector3Add(&depthVector, &moveOffset, &depthVector);
                 math::Vector3Scale(&vector, updateInfo.deltaTime, &vector);
-                math::Vector3Add(&vector, &depthVector, &vector);
-                math::Vector3Scale(&vector, updateInfo.deltaTime, &vector);
-                math::Vector3Add((csl::math::Vector3*)contextParam, &vector, (csl::math::Vector3*)contextParam);
+                math::Vector3Add(&depthVector, &vector, &depthVector);
+                math::Vector3Scale(&depthVector, updateInfo.deltaTime, &scaledDepth);
+                
+                math::Vector3Add((csl::math::Vector3*)contextParam, &scaledDepth, (csl::math::Vector3*)contextParam);
 
-                field_40 = Vector3(depthVector.X / 10, depthVector.Y / 10, depthVector.Z / 10);
+                field_40 = Vector3(scaledDepth.X / 10, scaledDepth.Y / 10, scaledDepth.Z / 10);
 
                 csl::math::Vector3 doubleScaledUpVector{};
                 csl::math::Vector3 upCross{};
@@ -157,21 +161,84 @@ namespace app
                 csl::math::Quaternion rotation = GetRotationFromMatrix(&m);
                 *(((csl::math::Quaternion*)contextParam) + 1) = rotation;
 
-                /*if ((char)State)
+                switch ((char)State)
                 {
-                    if ((char)State != 1)
+                case 0:
+                {
+                    csl::math::Vector3 rayStart{};
+                    csl::math::Vector3 rayEnd{};
+
+                    math::Vector3Scale(&upVector, 0.5f, &scaledUpVector);
+                    math::Vector3Scale(&scaledUpVector, 10, &scaledUpVector);
+                    math::Vector3Add((csl::math::Vector3*)contextParam, &scaledUpVector, &rayStart);
+                    math::Vector3Subtract((csl::math::Vector3*)contextParam, &scaledUpVector, &rayEnd);
+
+                    game::PhysicsRaycastOutput output{};
+                    if (ObjUtil::RaycastNearestCollision(&output, (GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), &rayStart, &rayEnd, 51606)
+                        && (output.field_24 & 0x10) == 0)
                     {
-                        if (MoveType == MoveType::MOVE_NONE)
-                            return 0;
+                        dot = math::Vector3DotProduct(&depthVector, &upVector);
+                        math::Vector3Scale(&upVector, dot, &upVector);
+                        math::Vector3Subtract(&depthVector, &upVector, &depthVector);
+                        *(csl::math::Vector3*)contextParam = depthVector;
 
-                        if ((char)MoveType <= 2)
+                        *(char*)&State = 0;
+                        *(csl::math::Vector3*)contextParam = output.field_00;
+                    }
+                    else
+                    {
+                        *(char*)&State = 1;
+                    }
+                    break;
+                }
+                case 1:
+                {
+                    csl::math::Vector3 rayStart{};
+                    csl::math::Vector3 rayEnd = *(csl::math::Vector3*)contextParam;
+                    csl::math::Vector3 positionDiff{};
+                    csl::math::Matrix34 m{};
+
+                    math::Vector3Subtract(&positionDiff, (csl::math::Vector3*)contextParam, &positionDiff);
+                    float length = math::Vector3NormalizeWithLength(&positionDiff, &positionDiff);
+                    math::Vector3Scale(&positionDiff, length + 0.09999999f, &positionDiff);
+                    math::Vector3Add((csl::math::Vector3*)contextParam, &positionDiff, &rayStart);
+
+                    game::PhysicsRaycastOutput output{};
+                    if (ObjUtil::RaycastNearestCollision(&output, (GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), &rayStart, &rayEnd, 51606)
+                        && (output.field_24 & 0x10) == 0)
+                    {
+                        *(char*)&State = 0;
+                        *(csl::math::Vector3*)contextParam = output.field_00;
+                    }
+                    break;
+                }
+                case 2:
+                {
+                    csl::math::Vector3 positionDiff{};
+                    csl::math::Vector3 currPositionDiff{};
+
+                    math::Vector3Subtract(&TargetPosition, &originalPosition, &positionDiff);
+                    dot = math::Vector3DotProduct(&positionDiff, &upVector);
+                    math::Vector3Scale(&upVector, dot, &scaledUpVector);
+                    math::Vector3Subtract(&positionDiff, &scaledUpVector, &positionDiff);
+                    math::Vector3Subtract(&TargetPosition, (csl::math::Vector3*)contextParam, &currPositionDiff);
+                    dot = math::Vector3DotProduct(&currPositionDiff, &upVector);
+                    math::Vector3Scale(&upVector, dot, &scaledUpVector);
+                    math::Vector3Subtract(&currPositionDiff, &scaledUpVector, &currPositionDiff);
+                    if (math::Vector3DotProduct(&positionDiff, &currPositionDiff) <= 0 || math::Vector3Magnitude(&currPositionDiff) <= 5)
+                    {
+                        if (CallbackHandle.Object && CallbackHandle.field_06 < 0)
                         {
-                            csl::math::Vector3 targetDistance{};
-
-                            math::Vector3Subtract(&TargetPosition, (csl::math::Vector3*)contextParam, &targetDistance);
+                            //(CallbackHandle.Object->*NotifyMoveEndCallback)();
+                            game::GOCMovement::DisableMovementFlag((int*)gocMovement, 0);
                         }
                     }
-                }*/
+
+                    break;
+                }
+                default:
+                    break;
+                }
 
                 break;
             }
