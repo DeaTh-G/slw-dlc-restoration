@@ -189,6 +189,27 @@ namespace app
                     {
                         *(char*)&State = 1;
                     }
+
+                    csl::math::Vector3 positionDiff{};
+                    csl::math::Vector3 currPositionDiff{};
+
+                    math::Vector3Subtract(&TargetPosition, &originalPosition, &positionDiff);
+                    dot = math::Vector3DotProduct(&positionDiff, &upVector);
+                    math::Vector3Scale(&upVector, dot, &scaledUpVector);
+                    math::Vector3Subtract(&positionDiff, &scaledUpVector, &positionDiff);
+                    math::Vector3Subtract(&TargetPosition, (csl::math::Vector3*)contextParam, &currPositionDiff);
+                    dot = math::Vector3DotProduct(&currPositionDiff, &upVector);
+                    math::Vector3Scale(&upVector, dot, &scaledUpVector);
+                    math::Vector3Subtract(&currPositionDiff, &scaledUpVector, &currPositionDiff);
+                    if (math::Vector3DotProduct(&positionDiff, &currPositionDiff) <= 0 || math::Vector3Magnitude(&currPositionDiff) <= 5)
+                    {
+                        if (CallbackHandle.Object && CallbackHandle.field_06 < 0)
+                        {
+                            (CallbackHandle.Object->*CallbackHandle.NotifyStopCallback)();
+                            game::GOCMovement::DisableMovementFlag((int*)gocMovement, 0);
+                        }
+                    }
+
                     break;
                 }
                 case 1:
@@ -212,32 +233,6 @@ namespace app
                     }
                     break;
                 }
-                case 2:
-                {
-                    csl::math::Vector3 positionDiff{};
-                    csl::math::Vector3 currPositionDiff{};
-
-                    math::Vector3Subtract(&TargetPosition, &originalPosition, &positionDiff);
-                    dot = math::Vector3DotProduct(&positionDiff, &upVector);
-                    math::Vector3Scale(&upVector, dot, &scaledUpVector);
-                    math::Vector3Subtract(&positionDiff, &scaledUpVector, &positionDiff);
-                    math::Vector3Subtract(&TargetPosition, (csl::math::Vector3*)contextParam, &currPositionDiff);
-                    dot = math::Vector3DotProduct(&currPositionDiff, &upVector);
-                    math::Vector3Scale(&upVector, dot, &scaledUpVector);
-                    math::Vector3Subtract(&currPositionDiff, &scaledUpVector, &currPositionDiff);
-                    if (math::Vector3DotProduct(&positionDiff, &currPositionDiff) <= 0 || math::Vector3Magnitude(&currPositionDiff) <= 5)
-                    {
-                        if (CallbackHandle.Object && CallbackHandle.field_06 < 0)
-                        {
-                            //(CallbackHandle.Object->*NotifyMoveEndCallback)();
-                            game::GOCMovement::DisableMovementFlag((int*)gocMovement, 0);
-                        }
-                    }
-
-                    break;
-                }
-                default:
-                    break;
                 }
 
                 break;
@@ -334,7 +329,7 @@ namespace app
         void SetNotifyStopCallback(short a1, void (ObjCocco::*notifyStopCallback)(), ObjCocco* obj)
         {
             CallbackHandle.Object = obj;
-            CallbackHandle.field_04 = a1;
+            CallbackHandle.field_06 = a1;
             CallbackHandle.NotifyStopCallback = notifyStopCallback;
         }
     };
