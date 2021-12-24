@@ -441,6 +441,8 @@ namespace app
 
                 game::GOCSound::Play3D(gocSound, deviceTag, "obj_cock_cry", 0);
                 CryTime += 2;
+                if (!(Flags & 1))
+                    return;
             }
 
             Flags &= ~1;
