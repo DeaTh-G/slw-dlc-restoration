@@ -76,10 +76,7 @@ namespace app
         };
 
         ObjCoccoState State{};
-        xgame::MsgHitEventCollision* HitMessage = new xgame::MsgHitEventCollision();
-        xgame::MsgDamage* DamageMessage = new xgame::MsgDamage();
-        xgame::MsgKick* KickMessage = new xgame::MsgKick();
-        INSERT_PADDING(4); // TinyFSM
+        INSERT_PADDING(16); // TinyFSM
         int field_3B4{};
         int field_3B8{};
         int field_3BC{};
@@ -122,15 +119,6 @@ namespace app
 
             field_41C = 3;
         };
-
-        void Destructor(size_t deletingFlags) override
-        {
-            delete HitMessage;
-            delete DamageMessage;
-            delete KickMessage;
-
-            CSetObjectListener::Destructor(deletingFlags);
-        }
 
         void AddCallback(GameDocument* gameDocument) override
         {
@@ -263,6 +251,9 @@ namespace app
 
         bool ProcessMessage(fnd::Message& message) override
         {
+            if (PreProcessMessage(message))
+                return true;
+
             switch (message.Type)
             {
             case fnd::PROC_MSG_DAMAGE:
@@ -332,7 +323,11 @@ namespace app
 
         void ProcMsgDamage(xgame::MsgDamage& message)
         {
-            *DamageMessage = message;
+            if (State == ObjCoccoState::STATE_IDLE)
+            {
+                DamageJump(message.field_40);
+                field_41C -= message.field_64;
+            }
 
             message.SetReply(&message.field_30, (field_41C | field_41C - 1) >> 31);
             message.field_90 |= 0x20;
@@ -392,12 +387,17 @@ namespace app
 
         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
         {
-            *HitMessage = message;
+            return;
         }
 
         void ProcMsgKick(xgame::MsgKick& message)
         {
-            *KickMessage = message;
+            if (State == ObjCoccoState::STATE_IDLE)
+            {
+                DamageJump(message.field_40);
+                message.field_0C = 1;
+                field_41C -= 1;
+            }
             xgame::MsgKick::SetReplyForSucceed(&message);
         }
 
