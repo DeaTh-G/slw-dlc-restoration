@@ -16,7 +16,11 @@ namespace app
             void (ObjCocco::*NotifyStopCallback)();
         };
         
-        enum class State : char {};
+        enum class State : char 
+        {
+            STATE_0,
+            STATE_1
+        };
 
         enum class MoveType : char 
         {
@@ -29,24 +33,30 @@ namespace app
         };
 
     private:
-        CallbackHandle CallbackHandle;
+        CallbackHandle CallbackHandle{};
         INSERT_PADDING(4);
-        MoveType MoveType;
+        MoveType MoveType{};
         INSERT_PADDING(3);
-        int field_24;
-        int field_28;
-        int field_2C;
-        csl::math::Vector3 TargetPosition;
-        csl::math::Vector3 field_40;
-        float field_50;
-        int field_54;
-        int field_58;
-        int field_5C;
-        State State;
+        int field_24{};
+        int field_28{};
+        int field_2C{};
+        csl::math::Vector3 TargetPosition{};
+        csl::math::Vector3 field_40{};
+        float field_50{};
+        int field_54{};
+        int field_58{};
+        int field_5C{};
+        State State{};
         INSERT_PADDING(3);
-        int field_64;
-        int field_68;
-        int field_6C;
+        int field_64{};
+        int field_68{};
+        int field_6C{};
+
+    public:
+        MoveObjCocco() : MoveController(114)
+        {
+            MoveType = MoveType::MOVE_TARGET_POINT;
+        }
 
     protected:
         int OnEnter() override
@@ -96,7 +106,7 @@ namespace app
                     dot = math::Vector3DotProduct((csl::math::Vector3*)contextParam + 2, &scaledUpVector);
                     math::Vector3Scale(&scaledUpVector, dot, &moveOffset);
 
-                    if ((char)State == 1)
+                    if (State == State::STATE_1)
                     {
                         math::Vector3Scale(&-upVector, 100, &vector);
                         -upVector;
@@ -124,7 +134,7 @@ namespace app
                         math::Vector3Scale(&upVector, dot, &moveOffset);
                     }
 
-                    if ((char)State == 1)
+                    if (State == State::STATE_1)
                     {
                         math::Vector3Scale(&-upVector, 100, &vector);
                         -upVector;
@@ -161,9 +171,9 @@ namespace app
                 csl::math::Quaternion rotation = GetRotationFromMatrix(&m);
                 *(((csl::math::Quaternion*)contextParam) + 1) = rotation;
 
-                switch ((char)State)
+                switch (State)
                 {
-                case 0:
+                case State::STATE_0:
                 {
                     csl::math::Vector3 rayStart{};
                     csl::math::Vector3 rayEnd{};
@@ -182,12 +192,12 @@ namespace app
                         math::Vector3Subtract(&depthVector, &upVector, &depthVector);
                         *(csl::math::Vector3*)contextParam = depthVector;
 
-                        *(char*)&State = 0;
+                        State = State::STATE_0;
                         *(csl::math::Vector3*)contextParam = output.field_00;
                     }
                     else
                     {
-                        *(char*)&State = 1;
+                        State = State::STATE_1;
                     }
 
                     csl::math::Vector3 positionDiff{};
@@ -212,7 +222,7 @@ namespace app
 
                     break;
                 }
-                case 1:
+                case State::STATE_1:
                 {
                     csl::math::Vector3 rayStart{};
                     csl::math::Vector3 rayEnd = *(csl::math::Vector3*)contextParam;
@@ -228,7 +238,7 @@ namespace app
                     if (ObjUtil::RaycastNearestCollision(&output, (GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), &rayStart, &rayEnd, 51606)
                         && (output.field_24 & 0x10) == 0)
                     {
-                        *(char*)&State = 0;
+                        State = State::STATE_0;
                         *(csl::math::Vector3*)contextParam = output.field_00;
                     }
                     break;
@@ -250,11 +260,6 @@ namespace app
         }
 
     public:
-        MoveObjCocco() : MoveController(114)
-        {
-            MoveType = MoveType::MOVE_TARGET_POINT;
-        }
-
         void SetRelativeTargetPoint(csl::math::Vector3* target, float a2)
         {
             MoveType = MoveType::MOVE_TARGET_RELATIVE_POINT;
@@ -270,7 +275,7 @@ namespace app
             MoveType = MoveType::MOVE_TARGET;
             TargetPosition = *target;
             field_50 = a2;
-            *(char*)&State = 1;
+            State = State::STATE_1;
 
             game::GOCMovement* gocMovement = GetOwnerMovement();
             game::GOCMovement::EnableMovementFlag((int*)gocMovement, 0);
@@ -310,7 +315,7 @@ namespace app
             MoveType = MoveType::MOVE_TARGET_PLAYER;
             TargetPosition = playerPosition;
             field_50 = a1;
-            *(char*)&State = 1;
+            State = State::STATE_1;
             *((csl::math::Vector3*)contextParam + 2) = Vector3(dot, 0, a2);
 
             game::GOCMovement::EnableMovementFlag((int*)gocMovement, 0);
