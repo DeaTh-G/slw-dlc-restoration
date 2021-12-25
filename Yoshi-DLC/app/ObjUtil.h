@@ -34,6 +34,7 @@ namespace app
         inline static FUNCTION_PTR(int, __cdecl, PlaySE2D, ASLR(0x0073EB70), int* a1, const char* cueName, int a3);
         inline static FUNCTION_PTR(int*, __cdecl, GetGravityField, ASLR(0x0073D9E0), GameDocument* a1, csl::math::Vector3* a2);
         inline static FUNCTION_PTR(int*, __cdecl, GetGravityPathInsideCylinder, ASLR(0x0073DAF0), int* gravityField);
+        inline static FUNCTION_PTR(void, __cdecl, GetGameObjectHandle, ASLR(0x0073DFA0), GameObjectHandleBase* handle, GameDocument* document, int* setObjectID);
 
         static int SendMessageImmToPlayer(GameObject* gameObject, int playerNo, fnd::Message* message)
         {

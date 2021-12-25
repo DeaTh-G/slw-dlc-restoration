@@ -20,7 +20,7 @@ namespace app
 
         public:
             int AttackType{};
-            int field_64{};
+            int HitCount{};
             int field_68{};
             int field_6C{};
             int field_70{};

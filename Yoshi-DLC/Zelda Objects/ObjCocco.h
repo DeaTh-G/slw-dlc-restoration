@@ -14,6 +14,7 @@ namespace app
     {
         float MoveRange;
         int* CoccoList;
+        int CoccoListSize;
     };
 
     class ObjCoccoInfo : public CObjInfo
@@ -67,12 +68,21 @@ namespace app
             csl::math::Quaternion Rotation{};
             ObjCoccoData* field_20;
             int field_24;
+
+            CInfo(csl::math::Vector3& position, csl::math::Quaternion& rotation, ObjCoccoData* data, int a4)
+            {
+                Position = position;
+                Rotation = rotation;
+                field_20 = data;
+                field_24 = a4;
+            }
         };
 
     public:
         enum class ActionType : char
         {
-            ACTIONTYPE_0
+            ACTIONTYPE_0,
+            ACTIONTYPE_1
         };
 
         ObjCoccoState State{};
@@ -92,10 +102,10 @@ namespace app
         float field_408{};
         float MoveRange{};
         std::vector<ObjCocco*> SubCoccos{};
-        float field_410{};
+        float RunAwayTime{};
         float Time{};
         float CryTime{};
-        int field_41C{};
+        int HealthPoint{};
         char Flags{};
         INSERT_PADDING(3);
         int field_424{};
@@ -104,7 +114,7 @@ namespace app
 
         ObjCocco()
         {
-            field_41C = 3;
+            HealthPoint = 3;
             ObjUtil::SetPropertyLockonTarget(this);
         }
 
@@ -112,12 +122,13 @@ namespace app
         {
             State = ObjCoccoState::STATE_ATTACK_IN;
 
+            ActionType = ActionType::ACTIONTYPE_1;
             Position = createInfo.Position;
             Rotation = createInfo.Rotation;
             field_3E4 = createInfo.field_24;
             Spawner = createInfo.field_20;
 
-            field_41C = 3;
+            HealthPoint = 3;
         };
 
         void AddCallback(GameDocument* gameDocument) override
@@ -240,13 +251,24 @@ namespace app
             SetEnableAttack(true);
             fnd::GOComponent::EndSetup(this);
 
-            // StateIdle Enter
-            SetTargetOnCircle();
-            int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
-            if (!gocAnimation)
-                return;
+            // StateIdle & StateAttackIn Enter
+            switch (State)
+            {
+            case app::ObjCoccoState::STATE_IDLE:
+            {
+                SetTargetOnCircle();
+                int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
+                if (!gocAnimation)
+                    return;
 
-            game::GOCAnimationScript::ChangeAnimation(gocAnimation, "MOVE");
+                game::GOCAnimationScript::ChangeAnimation(gocAnimation, "MOVE");
+                break;
+            }
+            case app::ObjCoccoState::STATE_ATTACK_IN:
+            {
+                break;
+            }
+            }
         }
 
         bool ProcessMessage(fnd::Message& message) override
@@ -278,7 +300,7 @@ namespace app
                 ProcMsgPLKickTargetting((xgame::MsgPLKickTargetting&)message);
                 return true;
             default:
-                return CSetObjectListener::PreProcessMessage(message);
+                return CSetObjectListener::ProcessMessage(message);
             }
         }
 
@@ -291,10 +313,28 @@ namespace app
                 StateAttackIn();
 
             if (State == ObjCoccoState::STATE_ATTACK_OUT)
-                StateAttackOut();
+                StateAttackOut(updateInfo);
 
-            if (State == ObjCoccoState::STATE_END)
-                StateEnd();
+            if (!(Flags & 2))
+                return;
+
+            if (ActionType != ActionType::ACTIONTYPE_0)
+                return;
+
+            float oldTime = Time;
+            Time += updateInfo.deltaTime;
+
+            if (Time > 7)
+            {
+                SetStatusRetire();
+                Kill();
+                return;
+            }
+
+            SubCoccos.clear();
+
+            /*if (oldTime / 0.7f < Time / 0.7f)
+                CreateAttackers();*/
         }
 
     public:
@@ -326,10 +366,10 @@ namespace app
             if (State == ObjCoccoState::STATE_IDLE)
             {
                 DamageJump(message.field_40);
-                field_41C -= message.field_64;
+                HealthPoint -= message.HitCount;
             }
 
-            message.SetReply(&message.field_30, (field_41C | field_41C - 1) >> 31);
+            message.SetReply(&message.field_30, (HealthPoint | HealthPoint - 1) >> 31);
             message.field_90 |= 0x20;
         }
 
@@ -387,7 +427,21 @@ namespace app
 
         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
         {
-            return;
+            switch (State)
+            {
+            case app::ObjCoccoState::STATE_ATTACK_IN:
+            case app::ObjCoccoState::STATE_ATTACK_OUT:
+            {
+                csl::math::Vector3 position{};
+                xgame::MsgDamage damageMsg { 3, 8, 3, &message, &position };
+
+                SendMessageImm(message.ActorID, &damageMsg);
+                message.field_0C = 1;
+                break;
+            }
+            default:
+                break;
+            }
         }
 
         void ProcMsgKick(xgame::MsgKick& message)
@@ -396,14 +450,14 @@ namespace app
             {
                 DamageJump(message.field_40);
                 message.field_0C = 1;
-                field_41C -= 1;
+                HealthPoint -= 1;
             }
             xgame::MsgKick::SetReplyForSucceed(&message);
         }
 
         void ProcMsgPLGetHomingTargetInfo(xgame::MsgPLGetHomingTargetInfo& message)
         {
-            if (field_41C <= 0)
+            if (HealthPoint <= 0)
             {
                 message.field_18 |= 1;
                 return;
@@ -415,7 +469,7 @@ namespace app
 
             csl::math::Vector3 vector { 0, 3, 0 };
             csl::math::Matrix34 matrix = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
-            message.field_38 = field_41C;
+            message.field_38 = HealthPoint;
             message.field_20 = MultiplyMatrixByVector(&matrix, &vector);
         }
 
@@ -447,7 +501,7 @@ namespace app
 
             Flags &= ~1;
 
-            if (field_41C <= 0)
+            if (HealthPoint <= 0)
             {
                 int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
                 if (!gocAnimation)
@@ -456,6 +510,36 @@ namespace app
                 game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK");
 
                 State = ObjCoccoState::STATE_ATTACK_OUT;
+
+                // StateAttackOut Enter
+                int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0);
+                if (playerInfo)
+                {
+                    float squareMagnitude{};
+                    math::Vector3SquareMagnitude((csl::math::Vector3*)playerInfo + 3, &squareMagnitude);
+                    if (22500 >= squareMagnitude)
+                        MovementController->SetTargetPlayer(70, 20);
+                    else
+                        MovementController->SetTargetPlayer(220, 20);
+                }
+
+                if (!(Flags & 4))
+                    return;
+
+                Flags |= 2;
+
+                if (ActionType != ActionType::ACTIONTYPE_0)
+                    return;
+                
+                ObjCoccoData* data = GetSpawner();
+                for (size_t i = 0; i < data->CoccoListSize; i++)
+                {
+                    GameObjectHandleBase handle{};
+                    ObjUtil::GetGameObjectHandle(&handle, (GameDocument*)field_24[1], data->CoccoList + i);
+                    if (handle.IsValid())
+                        ((ObjCocco*)handle.Get())->SetEnableAttack(0);
+                }
+
                 return;
             }
 
@@ -469,8 +553,142 @@ namespace app
         }
 
         void StateAttackIn() {}
-        void StateAttackOut() {}
-        void StateEnd() {}
+
+        void StateAttackOut(const fnd::SUpdateInfo& updateInfo)
+        {
+            /*if (CryTime > 0)
+            {
+                CryTime -= updateInfo.deltaTime;
+                RunAwayTime += updateInfo.deltaTime;
+            }
+            else
+            {
+                int deviceTag[3]{};
+                int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+                if (!gocSound)
+                    return;
+
+                game::GOCSound::Play3D(gocSound, deviceTag, "obj_cock_cry", 0);
+                CryTime += 2;
+            }
+
+            if (Flags & 1 || RunAwayTime > 0.5f && !IsInCamera())
+            {
+                Flags &= ~1;
+
+                if (ActionType == ActionType::ACTIONTYPE_0)
+                {
+                    State = ObjCoccoState::STATE_END;
+                    if (Flags & 2)
+                    {
+                        // StateAttackOut End
+                        ObjCoccoData* data = GetSpawner();
+                        for (size_t i = 0; i < data->CoccoListSize; i++)
+                        {
+                            GameObjectHandleBase handle{};
+                            ObjUtil::GetGameObjectHandle(&handle, (GameDocument*)field_24[1], *(data->CoccoList + i));
+                            ((ObjCocco*)handle.Get())->SetEnableAttack(1);
+                        }
+
+                        // StateEnd Enter
+                        int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+                        if (gocVisual)
+                            fnd::GOCVisual::SetVisible(gocVisual, 0);
+
+                        int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
+                        if (gocShadow)
+                            game::GOCShadowSimple::SetVisible(gocShadow, 0);
+
+                        int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
+                        if (gocMovement)
+                            game::GOCMovement::DisableMovementFlag(gocMovement, 0);
+                    }
+                    return;
+                }
+
+                Kill();
+                return;
+            }*/
+        }
+
+        ObjCocco* CreateAttacker(const CInfo& info)
+        {
+            return new ObjCocco(info);
+        }
+
+        void CreateAttackers()
+        {
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0);
+            if (!playerInfo)
+                return;
+
+            csl::math::Vector3 playerPosition { *((csl::math::Vector3*)playerInfo + 1) };
+            csl::math::Quaternion rotation{};
+
+            csl::math::Matrix34 cameraMatrix{};
+            Render::CameraParam* camera = CWorld::GetCamera(0);
+            camera->GetInvViewMatrix(&cameraMatrix);
+
+            csl::math::Vector3 cUpVector = cameraMatrix.GetColumn(0); -cUpVector;
+            csl::math::Vector3 cLeftVector = cameraMatrix.GetColumn(1); -cLeftVector;
+            csl::math::Vector3 cForwardVector = cameraMatrix.GetColumn(2);
+            csl::math::Vector3 cameraPosition = cameraMatrix.GetTransVector();
+            
+            csl::math::Vector3 position = Vector3(cameraPosition.X, playerPosition.Y, cameraPosition.Z);
+            math::Vector3Scale(&cForwardVector, 10, &cForwardVector);
+            math::Vector3Add(&position, &cForwardVector, &position);
+
+            csl::math::Vector3 positionDiff{};
+            csl::math::Vector3 upVector { 0, 1, 0 };
+            csl::math::Vector3 scaledUpVector{};
+            math::Vector3Subtract(&playerPosition, &cameraPosition, &positionDiff);
+            float dot = math::Vector3DotProduct(&positionDiff, &upVector);
+            math::Vector3Scale(&upVector, dot, &scaledUpVector);
+            math::Vector3Subtract(&positionDiff, &scaledUpVector, &positionDiff);
+            if (math::Vector3NormalizeIfNotZero(&positionDiff, &positionDiff))
+            {
+                math::Vector3CrossProduct(&upVector, &positionDiff, &scaledUpVector);
+                cameraMatrix.SetColumn(0, scaledUpVector);
+                cameraMatrix.SetColumn(1, upVector);
+                cameraMatrix.SetColumn(2, positionDiff);
+                *(csl::math::Vector3*)cameraMatrix.data[3] = Vector3(0, 0, 0);
+
+                rotation = GetRotationFromMatrix(&cameraMatrix);
+            }
+            else
+            {
+                rotation = csl::math::Quaternion(0, 0, 0, 1);
+            }
+
+            for (int i = 0; i < 2; i++)
+            {
+                unsigned int random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
+                float offset{};
+                if (i == 0)
+                    offset = (random * 2.328306436538696e-10f * 20 + 10) * ((i + 1) / 2);
+                else
+                    offset = (random * 2.328306436538696e-10f * 20 + 10) * ((i + 1) / -2);
+               
+                csl::math::Vector3 scaledLeft{};
+                math::Vector3Scale(&cUpVector, offset, &cUpVector);
+                math::Vector3Add(&position, &cUpVector, &cUpVector);
+                math::Vector3Scale(&cLeftVector, 20, &scaledLeft);
+                math::Vector3Subtract(&cUpVector, &scaledLeft, &scaledLeft);
+                math::Vector3Scale(&cLeftVector, 40, &cUpVector);
+                math::Vector3Add(&scaledLeft, &cUpVector, &cUpVector);
+
+                game::PhysicsRaycastOutput output{};
+                if (!ObjUtil::RaycastNearestCollision(&output, (GameDocument*)field_24[1], &scaledLeft, &cUpVector, 51606))
+                    continue;
+
+                math::Vector3Scale(&cLeftVector, 10, &scaledLeft);
+                math::Vector3Subtract(&output.field_00, &scaledLeft, &output.field_00);
+                CInfo createInfo { output.field_00, output.field_10, GetSpawner(), i };
+                ObjCocco* subCocco = CreateAttacker(createInfo);
+                GameDocument::AddGameObject((GameDocument*)field_24[1], subCocco);
+                SubCoccos.push_back(subCocco);
+            }
+        }
 
         void DamageJump(csl::math::Vector3& vector)
         {
@@ -488,7 +706,7 @@ namespace app
             if (!math::Vector3NormalizeIfNotZero(&leftVector, &leftVector))
                 leftVector = forwardVector;
 
-            MovementController->SetTargetDirectionJump(10, 30);
+            MovementController->SetTargetDirectionJump(&leftVector, 10, 30);
 
             int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
             if (!gocAnimation)
