@@ -556,7 +556,7 @@ namespace app
 
         void StateAttackOut(const fnd::SUpdateInfo& updateInfo)
         {
-            /*if (CryTime > 0)
+            if (CryTime > 0)
             {
                 CryTime -= updateInfo.deltaTime;
                 RunAwayTime += updateInfo.deltaTime;
@@ -586,8 +586,9 @@ namespace app
                         for (size_t i = 0; i < data->CoccoListSize; i++)
                         {
                             GameObjectHandleBase handle{};
-                            ObjUtil::GetGameObjectHandle(&handle, (GameDocument*)field_24[1], *(data->CoccoList + i));
-                            ((ObjCocco*)handle.Get())->SetEnableAttack(1);
+                            ObjUtil::GetGameObjectHandle(&handle, (GameDocument*)field_24[1], data->CoccoList + i);
+                            if (handle.IsValid())
+                                ((ObjCocco*)handle.Get())->SetEnableAttack(1);
                         }
 
                         // StateEnd Enter
@@ -608,7 +609,7 @@ namespace app
 
                 Kill();
                 return;
-            }*/
+            }
         }
 
         ObjCocco* CreateAttacker(const CInfo& info)
@@ -685,8 +686,11 @@ namespace app
                 math::Vector3Subtract(&output.field_00, &scaledLeft, &output.field_00);
                 CInfo createInfo { output.field_00, output.field_10, GetSpawner(), i };
                 ObjCocco* subCocco = CreateAttacker(createInfo);
-                GameDocument::AddGameObject((GameDocument*)field_24[1], subCocco);
-                SubCoccos.push_back(subCocco);
+                if (subCocco)
+                {
+                    GameDocument::AddGameObject((GameDocument*)field_24[1], subCocco);
+                    SubCoccos.push_back(subCocco);
+                }
             }
         }
 
