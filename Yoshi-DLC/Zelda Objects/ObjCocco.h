@@ -363,14 +363,14 @@ namespace app
 
         void ProcMsgDamage(xgame::MsgDamage& message)
         {
+            message.SetReply(&message.field_30, (HealthPoint | HealthPoint - 1) >> 31);
+            message.field_90 |= 0x20;
+
             if (State == ObjCoccoState::STATE_IDLE)
             {
                 DamageJump(message.field_40);
                 HealthPoint -= message.HitCount;
             }
-
-            message.SetReply(&message.field_30, (HealthPoint | HealthPoint - 1) >> 31);
-            message.field_90 |= 0x20;
         }
 
         void ProcMsgDlcZeldaNoticeActiveEnemy(xgame::MsgDlcZeldaNoticeActiveEnemy& message)
@@ -398,7 +398,6 @@ namespace app
 
             if (State == ObjCoccoState::STATE_IDLE)
             {
-
                 int* gocVisual = GameObject::GetGOC(this, GOCVisual);
                 if (gocVisual)
                     fnd::GOCVisual::SetVisible(gocVisual, 0);
@@ -446,13 +445,14 @@ namespace app
 
         void ProcMsgKick(xgame::MsgKick& message)
         {
+            xgame::MsgKick::SetReplyForSucceed(&message);
+
             if (State == ObjCoccoState::STATE_IDLE)
             {
                 DamageJump(message.field_40);
                 message.field_0C = 1;
                 HealthPoint -= 1;
             }
-            xgame::MsgKick::SetReplyForSucceed(&message);
         }
 
         void ProcMsgPLGetHomingTargetInfo(xgame::MsgPLGetHomingTargetInfo& message)
@@ -499,6 +499,10 @@ namespace app
                     return;
             }
 
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0);
+            if (!playerInfo || *((float*)playerInfo + 13) >= 0)
+                return;
+
             Flags &= ~1;
 
             if (HealthPoint <= 0)
@@ -509,11 +513,8 @@ namespace app
 
                 game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK");
 
-                State = ObjCoccoState::STATE_ATTACK_OUT;
-
                 // StateAttackOut Enter
-                int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0);
-                if (playerInfo)
+                if (playerInfo && *((float*)playerInfo + 13) < 0)
                 {
                     float squareMagnitude{};
                     math::Vector3SquareMagnitude((csl::math::Vector3*)playerInfo + 3, &squareMagnitude);
@@ -522,6 +523,8 @@ namespace app
                     else
                         MovementController->SetTargetPlayer(220, 20);
                 }
+
+                State = ObjCoccoState::STATE_ATTACK_OUT;
 
                 if (!(Flags & 4))
                     return;

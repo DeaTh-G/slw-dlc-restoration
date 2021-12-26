@@ -118,8 +118,7 @@ namespace app
                 else
                 {
                     math::Vector3NormalizeZero((csl::math::Vector3*)playerInfo + 3, &movePosition);
-                    math::Vector3Scale(&movePosition, 10, &movePosition);
-                    math::Vector3Scale(&movePosition, 10, &movePosition);
+                    math::Vector3Scale(&movePosition, 100, &movePosition);
                     math::Vector3Add((csl::math::Vector3*)playerInfo + 1, &movePosition, &movePosition);
                     math::Vector3Subtract(&movePosition, (csl::math::Vector3*)contextParam, &movePosition);
                 }
