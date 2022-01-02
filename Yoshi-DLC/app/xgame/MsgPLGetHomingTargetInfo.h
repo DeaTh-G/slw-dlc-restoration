@@ -12,7 +12,7 @@ namespace app
             csl::math::Vector3 field_20;
             int field_30;
             int field_34;
-            int field_38;
+            int HitCount;
             int field_3C;
             int field_40;
             int field_44;

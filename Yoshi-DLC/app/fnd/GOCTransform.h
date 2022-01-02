@@ -8,6 +8,7 @@ namespace app
         {
         private:
             inline static FUNCTION_PTR(void, __thiscall, __dt, ASLR(0x00494B90), GOCTransform* This, size_t deletingFlags);
+            inline static FUNCTION_PTR(void, __thiscall, f_SetLocalTranslationAndRotation, ASLR(0x004944A0), GOCTransform* This, csl::math::Vector3* position, csl::math::Quaternion* rotation);
 
         public:
             int Data[0x78]{};
@@ -18,6 +19,10 @@ namespace app
             inline static FUNCTION_PTR(char, __thiscall, SetInheriteFlags, ASLR(0x00494250), GOCTransform* This, char a2);
 
             ~GOCTransform() { __dt(this, 0); }
+            void SetLocalTranslationAndRotation(csl::math::Vector3* position, csl::math::Quaternion* rotation)
+            {
+                f_SetLocalTranslationAndRotation(this, position, rotation);
+            }
         };
     }
 }
