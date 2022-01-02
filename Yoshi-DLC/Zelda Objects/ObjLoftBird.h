@@ -196,6 +196,16 @@ namespace app
                         int* linkModel = *(int**)(*(gocVContainer + 0x10));
                         fnd::GOCVisualModel::AttachAnimation(linkModel, gocAnimation);
                         game::GOCAnimationScript::SetAnimation(gocAnimation, "IDLE_LOOP");
+
+                        csl::fnd::IAllocator* allocator{};
+                        auto funcPtr = &ObjLoftBird::AnimationChangeCallback;
+                        animation::AnimCallbackBridge<ObjLoftBird>* callback =
+                            (animation::AnimCallbackBridge<ObjLoftBird>*)AnimCallbackBridge_Initialize(allocator);
+                        callback->GameObject = this;
+                        callback->field_10 = reinterpret_cast<void*&>(funcPtr);
+                        callback->field_14 = -1;
+
+                        game::GOCAnimationScript::RegisterCallback(gocAnimation, -1, callback);
                     }
 
                     gocAnimation = fnd::GOComponent::CreateSingle(this, GOCAnimationScript);
@@ -446,6 +456,11 @@ namespace app
                 SetStatusRetire();
                 GameObject::Kill();
             }
+        }
+        
+        void AnimationChangeCallback(int* a1, int a2, int a3)
+        {
+            ((EnemyUvAnimLinkController*)((char*)&UvLinkController + 1))->ChangeCallback(a1, a2, a3);
         }
 
         void SoundCallback(int a1, int a2, int a3)
