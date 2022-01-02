@@ -274,6 +274,15 @@ namespace app
 	private:
 		void StateIdle(const fnd::SUpdateInfo& updateInfo)
 		{
+			int deviceTag[3]{};
+			int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+			if (!gocSound)
+				return;
+			
+			int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
+			if (!gocAnimation)
+				return;
+
 			if (CryTime > 0)
 			{
 				CryTime -= updateInfo.deltaTime;
@@ -282,11 +291,6 @@ namespace app
 			}
 			else
 			{
-				int deviceTag[3]{};
-				int* gocSound = GameObject::GetGOC(this, GOCSoundString);
-				if (!gocSound)
-					return;
-
 				game::GOCSound::Play3D(gocSound, deviceTag, "obj_cock_cry", 0);
 				CryTime += 2;
 				if (!(Flags & 1))
@@ -297,21 +301,26 @@ namespace app
 
 			if (HealthPoint <= 0)
 			{
-				int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
-				if (!gocAnimation)
-					return;
-				
 				game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK");
 
+				// StateAttackOut Enter
 				State = ObjCoccoState::STATE_ATTACK_OUT;
+				
+				int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0);
+				if (playerInfo)
+				{
+					float magnitude{};
+					math::Vector3SquareMagnitude((csl::math::Vector3*)playerInfo + 3, &magnitude);
+					if (22500 >= magnitude)
+						MovementController->SetTargetPlayer(70, 20);
+					else
+						MovementController->SetTargetPlayer(220, 20);
+				}
+				
 				return;
 			}
 
 			SetTargetOnCircle();
-			int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
-			if (!gocAnimation)
-				return;
-
 			game::GOCAnimationScript::ChangeAnimation(gocAnimation, "MOVE");
 		}
 
@@ -349,7 +358,7 @@ namespace app
 				return;
 			csl::math::Matrix34 matrix = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
 
-			message.HitCount = 1;
+			message.HitCount = HealthPoint;
 			message.field_20 = MultiplyMatrixByVector(&matrix, &positionOffset);
 		}
 		

@@ -84,6 +84,19 @@ namespace app
                 math::Vector3NormalizeZero(&movePosition, &movePosition);
                 break;
             }
+            case MoveType::MOVE_TARGET_DIRECTION:
+            {
+                csl::math::Vector3 scaledUpVector{};
+
+                targetPosition = contextParam->Position;
+                movePosition = TargetPosition;
+
+                float dot = math::Vector3DotProduct(&movePosition, &upVector);
+                math::Vector3Scale(&upVector, dot, &scaledUpVector);
+                math::Vector3Subtract(&movePosition, &scaledUpVector, &movePosition);
+                math::Vector3NormalizeZero(&movePosition, &movePosition);
+                break;
+            }
             case MoveType::MOVE_TARGET_DIRECTION_JUMP:
             {
                 csl::math::Vector3 scaledUpVector{};
@@ -95,6 +108,44 @@ namespace app
                 math::Vector3Scale(&upVector, dot, &scaledUpVector);
                 math::Vector3Subtract(&movePosition, &scaledUpVector, &movePosition);
                 math::Vector3NormalizeZero(&movePosition, &movePosition);
+                break;
+            }
+            case MoveType::MOVE_TARGET_PLAYER:
+            {
+                csl::math::Vector3 scaledUpVector{};
+
+                int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), 0);
+                targetPosition = contextParam->Position;
+                if (!playerInfo)
+                {
+                    movePosition = TargetPosition;
+                    break;
+                }
+
+                float magnitude;
+                math::Vector3SquareMagnitude((csl::math::Vector3*)playerInfo + 3, &magnitude);
+                if (magnitude <= 40000)
+                {
+                    math::Vector3Subtract((csl::math::Vector3*)playerInfo + 1, &contextParam->Position, &movePosition);
+
+                    float dot = math::Vector3DotProduct(&movePosition, &upVector);
+                    math::Vector3Scale(&upVector, dot, &scaledUpVector);
+                    math::Vector3Subtract(&movePosition, &scaledUpVector, &movePosition);
+                    math::Vector3NormalizeZero(&movePosition, &movePosition);
+                }
+                else
+                {
+                    math::Vector3NormalizeZero((csl::math::Vector3*)playerInfo + 3, &movePosition);
+                    math::Vector3Scale(&movePosition, 100, &movePosition);
+                    math::Vector3Add((csl::math::Vector3*)playerInfo + 1, &movePosition, &movePosition);
+                    math::Vector3Subtract(&movePosition, &contextParam->Position, &movePosition);
+
+                    float dot = math::Vector3DotProduct(&movePosition, &upVector);
+                    math::Vector3Scale(&upVector, dot, &scaledUpVector);
+                    math::Vector3Subtract(&movePosition, &scaledUpVector, &movePosition);
+                    math::Vector3NormalizeZero(&movePosition, &movePosition);
+                }
+
                 break;
             }
             default:
@@ -293,8 +344,40 @@ namespace app
             State = 1;
 
             game::GOCMovement* gocMovement = GetOwnerMovement();
-            int* contextParam = game::GOCMovement::GetContextParam((int*)gocMovement);
+            game::GOCMovement::ContextParam* contextParam = (game::GOCMovement::ContextParam*)game::GOCMovement::GetContextParam((int*)gocMovement);
+            contextParam->field_20 = Vector3(0, height, 0);
+        }
+
+        void SetTargetPlayer(const float speed, const float height)
+        {
+            game::GOCMovement* gocMovement = GetOwnerMovement();
+            game::GOCMovement::ContextParam* contextParam = (game::GOCMovement::ContextParam*)game::GOCMovement::GetContextParam((int*)gocMovement);
+
+            csl::math::Vector3 upVector = Vector3(0, 1, 0);
+            app::math::Vector3Rotate(&upVector, &contextParam->Rotation, &upVector);
+
+            // TODO: Fix this being only Player 1
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), 0);
+            if (!playerInfo)
+                return;
+
+            csl::math::Vector3 targetPosition{};
+            csl::math::Vector3 scaledUpVector{};
+
+            math::Vector3Subtract((csl::math::Vector3*)playerInfo + 1, &contextParam->Position, &targetPosition);
+            float dot = math::Vector3DotProduct(&targetPosition, &upVector);
+            math::Vector3Scale(&upVector, dot, &scaledUpVector);
+            math::Vector3Subtract(&targetPosition, &scaledUpVector, &targetPosition);
+            math::Vector3NormalizeZero(&targetPosition, &targetPosition);
+            
+            MovementType = MoveType::MOVE_TARGET_PLAYER;
+            TargetPosition = targetPosition;
+            Speed = speed;
+
+            State = 1;
+
             *((csl::math::Vector3*)contextParam + 2) = Vector3(0, height, 0);
+            game::GOCMovement::EnableMovementFlag((int*)gocMovement, 0);
         }
 	};
 }
