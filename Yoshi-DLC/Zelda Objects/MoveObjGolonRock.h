@@ -322,30 +322,52 @@ namespace app
 
             bool const IsPassOverPlayer()
             {
-                // Fix this so it detects P2 as well
                 GOCMovement* gocMovement = GetOwnerMovement();
-                int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), 0);
-                if (!playerInfo)
-                    return false;
-
-                csl::math::Vector3 playerPosition{ *(csl::math::Vector3*)(playerInfo + 4) };
 
                 csl::math::Vector3 splinePoint{};
                 csl::math::Vector3 someVector{};
                 csl::math::Vector3 someVector2{};
                 game::PathEvaluator::GetPNT(&PathEvaluator, PathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
-                float scalar = csl::math::Select(Speed, abs(1), -abs(1));
-                math::Vector3Scale(&someVector2, scalar, &someVector2);
-                math::Vector3Subtract(&playerPosition, &splinePoint, &playerPosition);
-                float dot = math::Vector3DotProduct(&playerPosition, &someVector);
-                math::Vector3Scale(&someVector, dot, &someVector);
-                math::Vector3Subtract(&playerPosition, &someVector, &playerPosition);
-                if (math::Vector3DotProduct(&someVector2, &playerPosition) >= 0)
-                    return false;
 
-                float magnitude;
-                math::Vector3SquareMagnitude(&playerPosition, &magnitude);
-                if (magnitude > 90000)
+                std::vector<float> magnitudes{};
+
+                int playerNo = 0;
+                int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), playerNo);
+                while (playerInfo)
+                {
+                    csl::math::Vector3 playerPosition{ *(csl::math::Vector3*)(playerInfo + 4) };
+
+                    csl::math::Vector3 scaledSomeVector2{};
+                    float scalar = csl::math::Select(Speed, abs(1), -abs(1));
+                    math::Vector3Scale(&someVector2, scalar, &scaledSomeVector2);
+                    math::Vector3Subtract(&playerPosition, &splinePoint, &playerPosition);
+                    float dot = math::Vector3DotProduct(&playerPosition, &someVector);
+
+                    csl::math::Vector3 scaledSomeVector{};
+                    math::Vector3Scale(&someVector, dot, &scaledSomeVector);
+                    math::Vector3Subtract(&playerPosition, &scaledSomeVector, &playerPosition);
+                    if (math::Vector3DotProduct(&scaledSomeVector2, &playerPosition) >= 0)
+                        return false;
+
+                    float magnitude;
+                    math::Vector3SquareMagnitude(&playerPosition, &magnitude);
+
+                    magnitudes.push_back(magnitude);
+
+                    playerNo++;
+                    playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), playerNo);
+                }
+
+                bool isAllMagnitudeCorrect{};
+                for (float magnitude : magnitudes)
+                {
+                    if (magnitude > 90000)
+                        isAllMagnitudeCorrect = true;
+                    else
+                        isAllMagnitudeCorrect = false;
+                }
+
+                if (isAllMagnitudeCorrect)
                     return true;
 
                 return false;
