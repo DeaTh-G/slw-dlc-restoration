@@ -429,7 +429,6 @@ namespace app
                     return;
                 }
 
-                // Fix this so it detects P2 as well
                 GOCMovement* gocMovement = GetOwnerMovement();
                 int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), 0);
                 if (!playerInfo)
