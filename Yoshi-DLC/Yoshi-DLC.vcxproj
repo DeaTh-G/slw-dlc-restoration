@@ -264,6 +264,7 @@
     <ClInclude Include="app\game\PhysicsRaycastJob.h" />
     <ClInclude Include="app\game\ShadowShape.h" />
     <ClInclude Include="app\game\ShadowShapeCInfo.h" />
+    <ClInclude Include="app\gfx\RenderManager.h" />
     <ClInclude Include="app\Gimmick\CRingManager.h" />
     <ClInclude Include="app\GOCEnemyHsm.h" />
     <ClInclude Include="app\GOCEnemyTarget.h" />
@@ -359,6 +360,7 @@
     <ClInclude Include="csl\math\Plane.h" />
     <ClInclude Include="csl\math\Quaternion.h" />
     <ClInclude Include="csl\math\Vector3.h" />
+    <ClInclude Include="csl\ut\ColorF.h" />
     <ClInclude Include="csl\ut\InplaceMoveArrayAligned.h" />
     <ClInclude Include="csl\ut\NonCopyable.h" />
     <ClInclude Include="framework.h" />

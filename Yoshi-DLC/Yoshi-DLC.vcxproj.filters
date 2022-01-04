@@ -103,6 +103,9 @@
     <Filter Include="Header Files\app\Render">
       <UniqueIdentifier>{00215609-1c4c-435a-abf0-af04c491b5a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\app\gfx">
+      <UniqueIdentifier>{47feaff0-eba3-40d1-9d43-5e79d506a98f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -833,6 +836,12 @@
     </ClInclude>
     <ClInclude Include="app\xgame\MsgKill.h">
       <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="csl\ut\ColorF.h">
+      <Filter>Header Files\csl\ut</Filter>
+    </ClInclude>
+    <ClInclude Include="app\gfx\RenderManager.h">
+      <Filter>Header Files\app\gfx</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 
 namespace app
 {
-    class ObjectPartPointLight
+    class ObjectPartPointLight : public GameObject3D
     {
     public:
         class CInfo
@@ -19,7 +19,8 @@ namespace app
             float field_20;
             float field_24;
             int* field_28;
-            int field_2C;
+            bool field_2C;
+            INSERT_PADDING(2);
 
             CInfo()
             {
@@ -41,5 +42,23 @@ namespace app
         };
 
         inline static FUNCTION_PTR(ObjectPartPointLight*, __cdecl, Create, ASLR(0x00740A10), GameDocument* document, CInfo* info);
+
+    protected:
+        CInfo* pInfo;
+        float field_324;
+        short field_328;
+        char field_32C;
+        INSERT_PADDING(5);
+
+    private:
+        inline static FUNCTION_PTR(void, __thiscall, f_ChangeColor, ASLR(0x00740A80), ObjectPartPointLight* This, csl::ut::ColorF color);
+
+    public:
+        void ChangeColor(csl::ut::ColorF color) { f_ChangeColor(this, color); }
+
+        void ChangeRadius(float radius)
+        {
+            ((gfx::RenderManager*)ASLR(0x00FD3CC4))->SetLocalLightRadius(this->field_328, 0, 0, 0, radius);
+        }
     };
 }

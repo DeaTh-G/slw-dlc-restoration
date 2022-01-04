@@ -33,6 +33,8 @@
 
 #include "app/fnd/HFrame.h"
 #include "app/fnd/Handle.h"
+#include "app/gfx/RenderManager.h"
+#include "csl/ut/ColorF.h"
 #include "csl/ut/NonCopyable.h"
 #include "csl/ut/InplaceMoveArrayAligned.h"
 #include "app/fnd/Message.h"

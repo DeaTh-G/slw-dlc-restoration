@@ -107,7 +107,7 @@ namespace app
         char field_40A{};
         char field_40B{};
         Listener AnimationListener{};
-        fnd::HandleBase PointLights[3]{};
+        ObjectPartPointLight* PointLights[3]{};
         int field_454{};
         int field_458{};
         int field_45C{};
@@ -281,6 +281,7 @@ namespace app
             }
 
             State = ObjZeldaGoalState::STATE_WAIT_END_EVENT;
+            Time = 0;
             DoCreateModel = true;
         }
 
@@ -306,14 +307,16 @@ namespace app
             if (!soundPlayer)
                 return;
 
-            if (!IsSoundPlaying)
+            if (Time <= 0.000001f)
             {
                 fnd::SoundParam soundParam{ 1, 0, 0, 0x80000000, 0, 0, 0 };
                 fnd::SoundPlayerCri::Play(soundPlayer, deviceTag, 0, "bgm_result_zdlc03", soundParam);
                 fnd::HandleBase::__as(SoundHandle, deviceTag);
                 SoundHandle[2] = deviceTag[2];
             }
-            IsSoundPlaying = true;
+            Time += updateInfo.deltaTime;
+            AdjustPointLight();
+            AnimationListener.field_2D = 1;
 
             int* gocAnimation = GameObject::GetGOC(this, GOCAnimation);
             if (!gocAnimation)
@@ -371,12 +374,45 @@ namespace app
                 int* gocVisual = GameObject::GetGOC(this, GOCVisual);
                 if (!gocVisual)
                     return;
+                
+                int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
+                if (!gocShadow)
+                    return;
 
                 xgame::MsgCameraOn cameraMessage{ 0, 3001, 1, PlayerNumber ^ 1, 0, 0 };
                 ObjUtil::SendMessageImmToSetObject(this, &CameraID, &cameraMessage, 0);
 
                 fnd::GOCVisual::SetVisible(gocVisual, false);
+                game::GOCShadowSimple::SetVisible(gocShadow, false);
+
                 State = ObjZeldaGoalState::STATE_IDLE;
+            }
+        }
+
+        void AdjustPointLight()
+        {
+            if (Time >= 0.85f && Time <= 2.65f)
+            {
+                csl::ut::ColorF color;
+
+                float base = csl::math::Clamp((Time - 0.85f) / 1.8f, 0, 1);
+                
+                float radius = csl::math::Lerp(base, 25, 40);
+
+                color.B = csl::math::Max(0, csl::math::Lerp(base, 0.4f, 0));
+                color.G = csl::math::Max(0, csl::math::Lerp(base, 0.6f, 0.4f));
+                color.R = csl::math::Max(0, csl::math::Lerp(base, 0.7f, 0.2f));
+                color.A = 0;
+
+                for (ObjectPartPointLight* pointLight : PointLights)
+                {
+                    if (!pointLight)
+                        continue;
+                    
+                    pointLight->ChangeRadius(radius);
+
+                    pointLight->ChangeColor(color);
+                }
             }
         }
 
@@ -408,8 +444,7 @@ namespace app
                     1
                 };
 
-                ObjectPartPointLight* lightObject = ObjectPartPointLight::Create((GameDocument*)field_24[1], &lightInfo);
-                fnd::HandleBase::__as(&PointLights[i], lightObject);
+                PointLights[i] = ObjectPartPointLight::Create((GameDocument*)field_24[1], &lightInfo);
             }
         }
 
