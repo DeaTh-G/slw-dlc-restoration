@@ -76,20 +76,25 @@ namespace app
         {
         public:
             ObjZeldaGoal* pZeldaGoal;
-            char field_2C;
-            char field_2D;
-            char field_2E;
-            INSERT_PADDING(1);
+            char DoCreateLight;
+            bool DoUpdateTransform;
+            INSERT_PADDING(2);
 
             void OnEvent(int notifyTiming) override
             {
                 if (!pZeldaGoal)
                     return;
             
-                if (field_2C)
+                if (DoCreateLight)
                 {
+                    DoCreateLight = false;
                     pZeldaGoal->CreatePointLights();
-                    field_2C = 0;
+                }
+
+                if (DoUpdateTransform)
+                {
+                    DoUpdateTransform = false;
+                    pZeldaGoal->UpdatePointTransform();
                 }
             }
         };
@@ -117,7 +122,7 @@ namespace app
         ObjZeldaGoal()
         {
             AnimationListener.field_20 = 2;
-            AnimationListener.field_2C = 0;
+            AnimationListener.DoCreateLight = 0;
         }
 
         void Destructor(size_t deletingFlags)
@@ -273,7 +278,7 @@ namespace app
                 return;
 
             game::GOCAnimationScript::SetAnimation(gocAnimation, "TRIFORCE");
-            AnimationListener.field_2C = 1;
+            AnimationListener.DoCreateLight = 1;
             for (size_t i = 0; i < 4; i++)
             {
                 xgame::MsgStopBgm stopBgmMessage{ ZELDA_GOAL_BGM_VALUES[0], ZELDA_GOAL_BGM_IDS[0] };
@@ -316,7 +321,7 @@ namespace app
             }
             Time += updateInfo.deltaTime;
             AdjustPointLight();
-            AnimationListener.field_2D = 1;
+            AnimationListener.DoUpdateTransform = 1;
 
             int* gocAnimation = GameObject::GetGOC(this, GOCAnimation);
             if (!gocAnimation)
@@ -397,12 +402,12 @@ namespace app
 
                 float base = csl::math::Clamp((Time - 0.85f) / 1.8f, 0, 1);
                 
-                float radius = csl::math::Lerp(base, 25, 40);
+                float radius = csl::math::Lerp(25, 40, base);
 
-                color.B = csl::math::Max(0, csl::math::Lerp(base, 0.4f, 0));
-                color.G = csl::math::Max(0, csl::math::Lerp(base, 0.6f, 0.4f));
-                color.R = csl::math::Max(0, csl::math::Lerp(base, 0.7f, 0.2f));
-                color.A = 0;
+                color.B = csl::math::Max(0, csl::math::Lerp(0.4f, 0, base));
+                color.G = csl::math::Max(0, csl::math::Lerp(0.6f, 0.1f, base));
+                color.R = csl::math::Max(0, csl::math::Lerp(0.7f, 0.2f, base));
+                color.A = 1;
 
                 for (ObjectPartPointLight* pointLight : PointLights)
                 {
@@ -445,6 +450,29 @@ namespace app
                 };
 
                 PointLights[i] = ObjectPartPointLight::Create((GameDocument*)field_24[1], &lightInfo);
+            }
+        }
+
+        void UpdatePointTransform()
+        {
+            int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
+            if (!gocTransform)
+                return;
+
+            int* gocVisual = GameObject::GetGOC(this, GOCVisual);
+            if (!gocVisual)
+                return;
+
+            for (size_t i = 0; i < 3; i++)
+            {
+                math::Transform transform{};
+                fnd::GOCVisualModel::GetNodeTransform(gocVisual, 1, ZELDA_GOAL_NODE_NAMES[i], &transform);
+
+                fnd::GOCTransform* lightTransform = (fnd::GOCTransform*)GameObject::GetGOC(PointLights[i], GOCTransformString);
+                if (!gocTransform)
+                    return;
+
+                lightTransform->SetLocalTransform(&transform);
             }
         }
 
