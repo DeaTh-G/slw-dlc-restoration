@@ -113,7 +113,7 @@ namespace app
         int field_3F0{};
         EnemyUvAnimLinkController UvLinkController{};
         int field_420{};
-        int field_424{};
+        ObjectPartPointLight* PointLights[2]{};
         int field_428{};
         int field_42C{};
         int field_430{};
@@ -150,10 +150,17 @@ namespace app
             ObjLoftBirdData* data = (ObjLoftBirdData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
             EndDistance = data->EndDist;
             MovementSpeed = data->MoveSpeed;
-            if (data->PointLight != ObjLoftBirdLightType::One)
-                field_420 = 1;
-            else
+            switch (data->PointLight)
+            {
+            case ObjLoftBirdLightType::Zero:
                 field_420 = 0;
+                break;
+            case ObjLoftBirdLightType::One:
+                field_420 = 1;
+                break;
+            default:
+                break;
+            }
 
             int* gocVContainer = GameObject::GetGOC(this, GOCVisual);
             if (gocVContainer)
@@ -306,9 +313,9 @@ namespace app
             csl::math::Quaternion rotation = GetRotationFromMatrix(&matrix);
             fnd::GOCTransform::SetLocalRotation(gocTransform, &rotation);
 
+            CreatePointLight();
             fnd::GOComponent::EndSetup(this);
             GameObject::Sleep(this);
-            CreatePointLight();
         }
 
         bool ProcessMessage(fnd::Message& message) override
@@ -494,6 +501,26 @@ namespace app
                 return;
 
             fnd::GOCVisualModel::SetNodeTransform(linkModel, 1, "Reference", &transform);
+
+            for (size_t i = 0; i < 2; i++)
+            {
+                if (!PointLights[i])
+                    continue;
+
+                int* lightTransform = GameObject::GetGOC(PointLights[i], GOCTransformString);
+                if (!lightTransform)
+                    return;
+
+                int lightCount = 2 * field_420 + i;
+
+                csl::math::Vector3 position{};
+                math::Vector3Rotate(&position, &transform.Rotation, &LOFTBIRD_LIGHT_SIZE[lightCount]);
+                math::Vector3Add(&transform.Position, &position, &position);
+                
+                fnd::GOCTransform::SetLocalTranslation(lightTransform, &position);
+
+                break;
+            }
         }
 
         void CreatePointLight()
@@ -521,9 +548,13 @@ namespace app
             {
                 int lightCount = 2 * field_420 + i;
 
+                csl::math::Vector3 position{};
+                math::Vector3Rotate(&position, &transform.Rotation, &LOFTBIRD_LIGHT_SIZE[lightCount]);
+                math::Vector3Add(&transform.Position, &position, &position);
+
                 ObjectPartPointLight::CInfo lightInfo
                 {
-                    LOFTBIRD_LIGHT_SIZE[lightCount],
+                    position,
                     LOFTBIRD_LIGHT_VALUE1[lightCount],
                     1,
                     LOFTBIRD_LIGHT_VALUE2[lightCount],
@@ -534,8 +565,7 @@ namespace app
                     1
                 };
 
-                ObjectPartPointLight::Create((GameDocument*)field_24[1], &lightInfo);
-                break;
+                PointLights[i] = ObjectPartPointLight::Create((GameDocument*)field_24[1], &lightInfo);
             }
         }
 
