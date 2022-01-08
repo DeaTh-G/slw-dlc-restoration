@@ -652,16 +652,16 @@ namespace app
         void ProcMsgLeaveEventCollision(xgame::MsgLeaveEventCollision& message)
         {
             // Clear ActorID for Multiplayer Support
-            if (ObjUtil::CheckShapeUserID(message.field_18, 0) && message.ActorID == ActorID)
+            if (ObjUtil::CheckShapeUserIDFromHandle((uintptr_t)&message.field_18, 0) && message.ActorID == ActorID)
                 ActorID = 0;
 
             if (Flags & 1)
                 return;
             
-            if (ObjUtil::CheckShapeUserID(message.field_18, 1))
+            if (ObjUtil::CheckShapeUserIDFromHandle((uintptr_t)&message.field_18, 1))
                 Flags |= 4;
 
-            if (!ObjUtil::CheckShapeUserID(message.field_18, 0))
+            if (!ObjUtil::CheckShapeUserIDFromHandle((uintptr_t)&message.field_18, 0))
                 return;
 
             Flags &= ~4;
