@@ -460,7 +460,7 @@ namespace app
 			math::Vector3Add(&position, &scaledLeftVector, &positionOffset);
 
 			csl::math::Vector3 scaledInverseLeftVector{};
-			math::Vector3Scale(&leftVector, 50, &scaledInverseLeftVector);
+			math::Vector3Scale(&inverseLeftVector, 50, &scaledInverseLeftVector);
 			math::Vector3Add(&positionOffset, &scaledInverseLeftVector, &scaledInverseLeftVector);
 
 			game::PhysicsRaycastOutput output{};
@@ -763,15 +763,16 @@ namespace app
 					offset = (random * 2.328306436538696e-10f * 20 + 10) * ((i + 1) / -2);
 
 				csl::math::Vector3 scaledLeft{};
-				math::Vector3Scale(&inverseForwardVector, offset, &inverseForwardVector);
-				math::Vector3Add(&cameraPositionOffset, &inverseForwardVector, &inverseForwardVector);
+				csl::math::Vector3 scaledForwardVector{};
+				math::Vector3Scale(&inverseForwardVector, offset, &scaledForwardVector);
+				math::Vector3Add(&cameraPositionOffset, &scaledForwardVector, &scaledForwardVector);
 				math::Vector3Scale(&inverseLeftVector, 20, &scaledLeft);
-				math::Vector3Subtract(&inverseForwardVector, &scaledLeft, &scaledLeft);
-				math::Vector3Scale(&inverseLeftVector, 40, &inverseForwardVector);
-				math::Vector3Add(&scaledLeft, &inverseForwardVector, &inverseForwardVector);
+				math::Vector3Subtract(&scaledForwardVector, &scaledLeft, &scaledLeft);
+				math::Vector3Scale(&inverseLeftVector, 40, &scaledForwardVector);
+				math::Vector3Add(&scaledLeft, &scaledForwardVector, &scaledForwardVector);
 
 				game::PhysicsRaycastOutput output{};
-				if (!ObjUtil::RaycastNearestCollision(&output, (GameDocument*)field_24[1], &scaledLeft, &inverseForwardVector, 51606))
+				if (!*ObjUtil::RaycastNearestCollision(&output, (GameDocument*)field_24[1], &scaledLeft, &scaledForwardVector, 51606))
 					continue;
 
 				math::Vector3Scale(&inverseLeftVector, 10, &scaledLeft);
