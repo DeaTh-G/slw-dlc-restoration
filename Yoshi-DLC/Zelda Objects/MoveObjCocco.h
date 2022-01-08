@@ -11,7 +11,7 @@ namespace app
         {
             MOVE_NONE,
             MOVE_TARGET_POINT,
-            MOVE_TARGET_RELATIVE_POINT,
+            MOVE_RELATIVE_TARGET_POINT,
             MOVE_TARGET_DIRECTION,
             MOVE_TARGET_DIRECTION_JUMP,
             MOVE_TARGET_PLAYER
@@ -76,6 +76,23 @@ namespace app
                 csl::math::Vector3 scaledUpVector{};
 
                 targetPosition = TargetPosition;
+                math::Vector3Subtract(&targetPosition, &contextParam->Position, &movePosition);
+
+                float dot = math::Vector3DotProduct(&movePosition, &upVector);
+                math::Vector3Scale(&upVector, dot, &scaledUpVector);
+                math::Vector3Subtract(&movePosition, &scaledUpVector, &movePosition);
+                math::Vector3NormalizeZero(&movePosition, &movePosition);
+                break;
+            }
+            case MoveType::MOVE_RELATIVE_TARGET_POINT:
+            {
+                int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), 0);
+                if (!playerInfo)
+                    return 0;
+
+                csl::math::Vector3 scaledUpVector{};
+
+                math::Vector3Add((csl::math::Vector3*)playerInfo + 1, &TargetPosition, &targetPosition);
                 math::Vector3Subtract(&targetPosition, &contextParam->Position, &movePosition);
 
                 float dot = math::Vector3DotProduct(&movePosition, &upVector);
@@ -187,7 +204,7 @@ namespace app
             {
                 inverseUpVector = Vector3(-upVector.X, -upVector.Y, -upVector.Z);
 
-                if (MovementType == MoveType::MOVE_TARGET_RELATIVE_POINT)
+                if (MovementType == MoveType::MOVE_RELATIVE_TARGET_POINT)
                     math::Vector3Scale(&inverseUpVector, 2, &inverseUpVector);
                 else
                     math::Vector3Scale(&inverseUpVector, 100, &inverseUpVector);
@@ -275,7 +292,7 @@ namespace app
             if (MovementType == MoveType::MOVE_NONE)
                 return 0;
 
-            if (MovementType <= MoveType::MOVE_TARGET_RELATIVE_POINT)
+            if (MovementType <= MoveType::MOVE_RELATIVE_TARGET_POINT)
             {
                 csl::math::Vector3 targetOffset{};
 
@@ -328,6 +345,16 @@ namespace app
         void SetTargetPoint(const csl::math::Vector3& targetPoint, const float speed)
         {
             MovementType = MoveType::MOVE_TARGET_POINT;
+            TargetPosition = targetPoint;
+            Speed = speed;
+
+            game::GOCMovement* gocMovement = GetOwnerMovement();
+            game::GOCMovement::EnableMovementFlag((int*)gocMovement, 0);
+        }
+
+        void SetRelativeTargetPoint(const csl::math::Vector3& targetPoint, const float speed)
+        {
+            MovementType = MoveType::MOVE_RELATIVE_TARGET_POINT;
             TargetPosition = targetPoint;
             Speed = speed;
 

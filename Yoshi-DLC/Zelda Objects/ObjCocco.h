@@ -263,6 +263,7 @@ namespace app
 			}
 			else if (State == ObjCoccoState::STATE_ATTACK_IN)
 			{
+				SetTargetPlayer();
 				int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
 				if (!gocAnimation)
 					return;
@@ -312,6 +313,7 @@ namespace app
 				StateIdle(updateInfo);
 				break;
 			case app::ObjCoccoState::STATE_ATTACK_IN:
+				StateAttackIn(updateInfo);
 				break;
 			case app::ObjCoccoState::STATE_ATTACK_OUT:
 				StateAttackOut(updateInfo);
@@ -847,6 +849,74 @@ namespace app
 
 			MovementController->SetTargetPoint(position, 10);
 			field_408 = distance;
+		}
+
+		void SetTargetPlayer()
+		{
+			fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
+			if (!gocTransform)
+				return;
+
+			csl::math::Matrix34 matrix = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
+
+			csl::math::Vector3 leftVector = Vector3(matrix.data[1][0], matrix.data[1][1], matrix.data[1][2]);
+			csl::math::Vector3 forwardVector = Vector3(matrix.data[2][0], matrix.data[2][1], matrix.data[2][2]);
+
+			unsigned int random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
+			float axis = random * 2.328306436538696e-10 * 0.69813168f + 0.52359879f;
+
+			int field3E4;
+			if (field_3E4 == 0)
+			{
+				random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
+				float someFloat = floorf((random * 2.328306436538696e-10) + (random * 2.328306436538696e-10));
+				if (someFloat < 2.14748365e9)
+					field3E4 = someFloat;
+			}
+			else
+			{
+				field3E4 = field_3E4 & 1;
+			}
+
+			csl::math::Vector3 scaledForwardVector{};
+			Eigen::Vector3f v(leftVector.X, leftVector.Y, leftVector.Z);
+			Eigen::Quaternionf q;
+			if (field3E4)
+				q = Eigen::AngleAxisf(axis, v);
+			else
+				q = Eigen::AngleAxisf(-axis, v);
+
+			csl::math::Quaternion rotation = csl::math::Quaternion(q.x(), q.y(), q.z(), q.w());
+
+			random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
+
+			math::Vector3Scale(&forwardVector, random * 2.328306436538696e-10 * 30 + 20, &scaledForwardVector);
+			math::Vector3Rotate(&scaledForwardVector, &rotation, &scaledForwardVector);
+
+			// TODO: Fix this being only Player 1
+			int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0);
+			if (!playerInfo)
+				return;
+
+			float magnitude{};
+			math::Vector3SquareMagnitude((csl::math::Vector3*)playerInfo + 3, &magnitude);
+			if (22500 >= magnitude)
+			{
+				random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
+				float speed = random * 2.328306436538696e-10;
+
+				if (2500 >= magnitude)
+					MovementController->SetRelativeTargetPoint(scaledForwardVector, speed * 10 + 50);
+				else
+					MovementController->SetRelativeTargetPoint(scaledForwardVector, speed * 10 + 175);
+			}
+			else
+			{
+				random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
+				float speed = random * 2.328306436538696e-10;
+
+				MovementController->SetRelativeTargetPoint(scaledForwardVector, speed * 10 + 295);
+			}
 		}
 
 		void DamageJump(csl::math::Vector3& vector)
