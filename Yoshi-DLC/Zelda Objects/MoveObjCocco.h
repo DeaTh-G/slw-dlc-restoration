@@ -335,6 +335,16 @@ namespace app
             game::GOCMovement::EnableMovementFlag((int*)gocMovement, 0);
         }
 
+        void SetTargetDirection(const csl::math::Vector3& targetPoint, const float speed)
+        {
+            MovementType = MoveType::MOVE_TARGET_DIRECTION;
+            TargetPosition = targetPoint;
+            Speed = speed;
+
+            game::GOCMovement* gocMovement = GetOwnerMovement();
+            game::GOCMovement::EnableMovementFlag((int*)gocMovement, 0);
+        }
+
         void SetTargetDirectionJump(const csl::math::Vector3& targetPoint, const float speed, const float height)
         {
             MovementType = MoveType::MOVE_TARGET_DIRECTION_JUMP;

@@ -62,6 +62,23 @@ namespace app
 	class ObjCocco : public CSetObjectListener
 	{
 	private:
+		class CInfo
+		{
+		public:
+			csl::math::Vector3 Position{};
+			csl::math::Quaternion Rotation{};
+			ObjCoccoData* field_20;
+			int field_24;
+
+			CInfo(csl::math::Vector3& position, csl::math::Quaternion& rotation, ObjCoccoData* data, int a4)
+			{
+				Position = position;
+				Rotation = rotation;
+				field_20 = data;
+				field_24 = a4;
+			}
+		};
+
 		ObjCoccoState State{};
 		float DeltaTime{};
 		INSERT_PADDING(16); // TinyFSM
@@ -97,6 +114,19 @@ namespace app
 			ObjUtil::SetPropertyLockonTarget(this);
 		}
 
+		ObjCocco(const CInfo& createInfo)
+		{
+			State = ObjCoccoState::STATE_ATTACK_IN;
+
+			ActionType = 1;
+			Position = createInfo.Position;
+			Rotation = createInfo.Rotation;
+			field_3E4 = createInfo.field_24;
+			Spawner = createInfo.field_20;
+
+			HealthPoint = 3;
+		};
+
 	protected:
 		void AddCallback(GameDocument* gameDocument) override
 		{
@@ -108,8 +138,8 @@ namespace app
 			fnd::GOComponent::Create(this, GOCShadowSimple);
 			fnd::GOComponent::Create(this, GOCMovementComplex);
 
-			ObjCoccoData* data = GetSpawner();
-			MoveRange = data->MoveRange;
+			Spawner = GetSpawner();
+			MoveRange = Spawner->MoveRange;
 
 			ObjCoccoInfo* info = (ObjCoccoInfo*)ObjUtil::GetObjectInfo(gameDocument, "ObjCoccoInfo");
 			GameObject* parentObject = CSetObjectListener::GetParentObject(this);
@@ -231,7 +261,14 @@ namespace app
 
 				game::GOCAnimationScript::ChangeAnimation(gocAnimation, "MOVE");
 			}
+			else if (State == ObjCoccoState::STATE_ATTACK_IN)
+			{
+				int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
+				if (!gocAnimation)
+					return;
 
+				game::GOCAnimationScript::ChangeAnimation(gocAnimation, "FLY");
+			}
 		}
 		
 		bool ProcessMessage(fnd::Message& message) override
@@ -279,11 +316,25 @@ namespace app
 			case app::ObjCoccoState::STATE_ATTACK_OUT:
 				StateAttackOut(updateInfo);
 				break;
-			case app::ObjCoccoState::STATE_END:
-				break;
-			default:
-				break;
 			}
+
+			if (!(Flags & 2))
+				return;
+		
+			if (ActionType)
+				return;
+		
+			float oldTime = Time;
+			Time += updateInfo.deltaTime;
+			if (Time > 7)
+			{
+				SetStatusRetire();
+				Kill();
+				return;
+			}
+
+			if ((int)(oldTime / 0.7f) < (int)(Time / 0.7f))
+				CreateAttackers();
 		}
 
 	private:
@@ -311,12 +362,6 @@ namespace app
 				if (!(Flags & 1))
 					return;
 			}
-
-			bool isInCamera = IsInCamera();
-			if (isInCamera)
-				printf("Cucco in camera.\n");
-			else
-				printf("Cucco not in camera.\n");
 
 			Flags &= ~1;
 
@@ -362,6 +407,107 @@ namespace app
 
 			SetTargetOnCircle();
 			game::GOCAnimationScript::ChangeAnimation(gocAnimation, "MOVE");
+		}
+
+		void StateAttackIn(const fnd::SUpdateInfo& updateInfo)
+		{
+			int deviceTag[3]{};
+			int* gocSound = GameObject::GetGOC(this, GOCSoundString);
+			if (!gocSound)
+				return;
+
+			fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
+			if (!gocTransform)
+				return;
+			csl::math::Matrix34 matrix = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
+			csl::math::Vector3 position = *(csl::math::Vector3*)&matrix.data[3];
+
+			if (CryTime > 0)
+			{
+				CryTime -= updateInfo.deltaTime;
+			}
+			else
+			{
+				game::GOCSound::Play3D(gocSound, deviceTag, "obj_cock_attack", 0);
+				CryTime += 2;
+			}
+
+			if (ActionType)
+			{			
+				// TODO: Fix this being only Player 1
+				int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0);
+				if (!playerInfo)
+					return;
+
+				if (fabs(position.Y - ((csl::math::Vector3*)playerInfo + 1)->Y) > 100)
+					Kill();
+			}
+
+			if (!(Flags & 1))
+				return;
+		
+			Flags &= ~1;
+
+			csl::math::Vector3 leftVector = Vector3(matrix.data[1][0], matrix.data[1][1], matrix.data[1][2]);
+			csl::math::Vector3 inverseLeftVector = Vector3(-matrix.data[1][0], -matrix.data[1][1], -matrix.data[1][2]);
+
+			csl::math::Vector3 scaledLeftVector{};
+			math::Vector3Scale(&leftVector, 5, &scaledLeftVector);
+
+			csl::math::Vector3 positionOffset{};
+			math::Vector3Add(&position, &scaledLeftVector, &positionOffset);
+
+			csl::math::Vector3 scaledInverseLeftVector{};
+			math::Vector3Scale(&leftVector, 50, &scaledInverseLeftVector);
+			math::Vector3Add(&positionOffset, &scaledInverseLeftVector, &scaledInverseLeftVector);
+
+			game::PhysicsRaycastOutput output{};
+			if (*ObjUtil::RaycastNearestCollision(&output, (GameDocument*)field_24[1], &positionOffset, &scaledInverseLeftVector, 0xC996))
+			{
+				int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
+				if (!gocAnimation)
+					return;
+
+				game::GOCAnimationScript::ChangeAnimation(gocAnimation, "ATTACK2");
+
+				// StateAttackOut Enter
+				State = ObjCoccoState::STATE_ATTACK_OUT;
+
+				// TODO: Fix this being only Player 1
+				int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0);
+				if (playerInfo)
+				{
+					float magnitude{};
+					math::Vector3SquareMagnitude((csl::math::Vector3*)playerInfo + 3, &magnitude);
+					if (22500 >= magnitude)
+						MovementController->SetTargetPlayer(70, 20);
+					else
+						MovementController->SetTargetPlayer(220, 20);
+				}
+
+				if (!(Flags & 4))
+					return;
+
+				Flags |= 2;
+
+				if (ActionType)
+					return;
+
+				ObjCoccoData* data = GetSpawner();
+
+				for (int i = 0; i < data->CoccoListSize; i++)
+				{
+					GameObjectHandleBase coccoHandle{};
+					ObjUtil::GetGameObjectHandle(&coccoHandle, (GameDocument*)field_24[1], data->CoccoList + i);
+					ObjCocco* cocco = (ObjCocco*)coccoHandle.Get();
+					if (cocco)
+						cocco->SetEnableAttack(false);
+				}
+
+				return;
+			}
+
+			MovementController->SetTargetDirection(*(csl::math::Vector3*)&matrix.data[2], 70);
 		}
 
 		void StateAttackOut(const fnd::SUpdateInfo& updateInfo)
@@ -551,6 +697,94 @@ namespace app
 			else
 				return (ObjCoccoData*)CSetAdapter::GetData(*(int**)((char*)this + 0x324));
 		}
+
+		void CreateAttackers()
+		{
+			// TODO: Fix this being only Player 1
+			int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0);
+			if (!playerInfo)
+				return;
+
+			csl::math::Vector3 playerPosition = *((csl::math::Vector3*)playerInfo + 1);
+			
+			csl::math::Matrix34 inverseCameraMatrix{};
+			Render::CameraParam* camera = CWorld::GetCamera(0);
+			camera->GetInvViewMatrix(&inverseCameraMatrix);
+			
+			csl::math::Vector3 inverseForwardVector = Vector3(-inverseCameraMatrix.data[0][0], -inverseCameraMatrix.data[0][1], -inverseCameraMatrix.data[0][2]);
+			csl::math::Vector3 forwardVector = Vector3(inverseCameraMatrix.data[0][0], inverseCameraMatrix.data[0][1], inverseCameraMatrix.data[0][2]);
+			csl::math::Vector3 inverseLeftVector = Vector3(-inverseCameraMatrix.data[1][0], -inverseCameraMatrix.data[1][1], -inverseCameraMatrix.data[1][2]);
+			csl::math::Vector3 leftVector = Vector3(inverseCameraMatrix.data[1][0], inverseCameraMatrix.data[1][1], inverseCameraMatrix.data[1][2]);
+			csl::math::Vector3 depthVector = Vector3(inverseCameraMatrix.data[2][0], inverseCameraMatrix.data[2][1], inverseCameraMatrix.data[2][2]);
+
+			csl::math::Vector3 cameraPositionOffset{};
+			csl::math::Vector3 playerPositionOffset{};
+			csl::math::Vector3 scaledDepthVector{};
+			math::Vector3Scale(&depthVector, 10, &scaledDepthVector);
+
+			csl::math::Vector3 position = csl::math::Vector3(inverseCameraMatrix.data[3][0], playerPosition.Y, inverseCameraMatrix.data[3][2]);
+			math::Vector3Add(&position, &scaledDepthVector, &cameraPositionOffset);
+			math::Vector3Subtract(&playerPosition, (csl::math::Vector3*)&inverseCameraMatrix.data[3], &playerPositionOffset);
+
+			csl::math::Vector3 upVector = Vector3(0, 1, 0);
+			csl::math::Vector3 scaledUpVector{};
+			float dot = math::Vector3DotProduct(&playerPositionOffset, &upVector);
+			math::Vector3Scale(&upVector, dot, &scaledUpVector);
+			math::Vector3Subtract(&playerPositionOffset, &scaledUpVector, &playerPositionOffset);
+
+			csl::math::Quaternion rotation{};
+			if (math::Vector3NormalizeIfNotZero(&playerPositionOffset, &playerPositionOffset))
+			{
+				csl::math::Vector3 crossResult{};
+				math::Vector3CrossProduct(&upVector, &playerPositionOffset, &crossResult);
+
+				csl::math::Matrix34 matrix{};
+				*(csl::math::Vector3*)(matrix.data[0]) = crossResult;
+				*(csl::math::Vector3*)(matrix.data[1]) = upVector;
+				*(csl::math::Vector3*)(matrix.data[2]) = playerPositionOffset;
+				
+				rotation = GetRotationFromMatrix(&matrix);
+			}
+			else
+			{
+				rotation = Quaternion(0, 0, 0, 1);
+			}
+
+
+			for (int i = 0; i < 2; i++)
+			{
+				unsigned int random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
+				float offset{};
+				if (i == 0)
+					offset = (random * 2.328306436538696e-10f * 20 + 10) * ((i + 1) / 2);
+				else
+					offset = (random * 2.328306436538696e-10f * 20 + 10) * ((i + 1) / -2);
+
+				csl::math::Vector3 scaledLeft{};
+				math::Vector3Scale(&inverseForwardVector, offset, &inverseForwardVector);
+				math::Vector3Add(&cameraPositionOffset, &inverseForwardVector, &inverseForwardVector);
+				math::Vector3Scale(&inverseLeftVector, 20, &scaledLeft);
+				math::Vector3Subtract(&inverseForwardVector, &scaledLeft, &scaledLeft);
+				math::Vector3Scale(&inverseLeftVector, 40, &inverseForwardVector);
+				math::Vector3Add(&scaledLeft, &inverseForwardVector, &inverseForwardVector);
+
+				game::PhysicsRaycastOutput output{};
+				if (!ObjUtil::RaycastNearestCollision(&output, (GameDocument*)field_24[1], &scaledLeft, &inverseForwardVector, 51606))
+					continue;
+
+				math::Vector3Scale(&inverseLeftVector, 10, &scaledLeft);
+				math::Vector3Subtract(&output.field_00, &scaledLeft, &output.field_00);
+				CInfo createInfo { output.field_00, output.field_10, GetSpawner(), i };
+				ObjCocco* subCocco = CreateAttacker(createInfo);
+				if (subCocco)
+				{
+					GameDocument::AddGameObject((GameDocument*)field_24[1], subCocco);
+					SubCoccos.push_back(subCocco);
+				}
+			}
+		}
+
+		ObjCocco* CreateAttacker(const CInfo& info) { return new ObjCocco(info); }
 
 		void SoundCallback(int a1, int a2, int a3)
 		{
