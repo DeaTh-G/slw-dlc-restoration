@@ -192,7 +192,7 @@ void Initialize()
     app::GameModeStage::LoadLevel();
     app::GameModeStage::ResetStage();
     app::HUD::CHudGameMainDisplay::InitLayer();
-    app::HUD::CHudGameMainDisplay::RingUpdate();
+    app::HUD::CHudGameMainDisplay::SetInfo();
     app::Player::CStateBase::CheckHitDamage();
     app::Player::CStateBase::ProcessMessage();
     app::Player::StateUtil::ScatterRingForDamage();

@@ -5,11 +5,11 @@ static void* ReturnAddressIsZeldaInitLayer = (void*)ASLR(0x00503993);
 static void* RingUpdateOffset = (void*)ASLR(0x005025D0);
 static void* SetAnimationOffset = (void*)ASLR(0x00525070);
 
-HOOK(void, __fastcall, RingUpdateHook, ASLR(0x005025D0), app::HUD::CHudGameMainDisplay* This, void* edx, int a2, float deltaTime, int a4)
+HOOK(void, __fastcall, SetInfoHook, ASLR(0x00505DF0), app::HUD::CHudGameMainDisplay* This, void* edx, int a2, float deltaTime)
 {
-    originalRingUpdateHook(This, edx, a2, deltaTime, a4);
+    originalSetInfoHook(This, edx, a2, deltaTime);
 
-    This->HeartLifeUpdate(a2, deltaTime, a4);
+    This->HeartLifeUpdate(a2, deltaTime, 0);
 }
 
 HOOK(int*, __fastcall, SpecialRingUpdateHook, ASLR(0x005027A0), int* This, void* edx, float a2, char a3)
@@ -97,21 +97,10 @@ HOOK(void, __fastcall, CHudGameMainDisplayInitLayerHook, ASLR(0x00503780), app::
 
     if ((This->Flags & 0x100))
     {
-        This->field_1A8 = 3;
         ++((int*)This->field_E0)[1];
         This->LayerController = This->GOCHud->CreateLayerController(This->field_E0, "info_ring_zdlc03", 0x12);
         This->LayerController->PlayAnimation("Intro_Anim", 0, 0);
         This->LayerController->SetVisible(true);
-
-        app::game::HudLayerController::PlayInfo volumeInfo{};
-        volumeInfo.AnimationName = "life_volume";
-        volumeInfo.field_0C = This->field_1A8 * 20;
-        This->LayerController->PlayAnimation(volumeInfo);
-
-        app::game::HudLayerController::PlayInfo playUsual{};
-        playUsual.AnimationName = "Usual_Anim";
-        playUsual.IsLooping = true;
-        This->LayerController->PlayAnimation(playUsual);
     }
 }
 
@@ -136,7 +125,7 @@ void app::HUD::CHudGameMainDisplay::InitLayer()
     INSTALL_HOOK(CHudGameMainDisplayInitLayerHook);
 }
 
-void app::HUD::CHudGameMainDisplay::RingUpdate()
+void app::HUD::CHudGameMainDisplay::SetInfo()
 {
-    INSTALL_HOOK(RingUpdateHook);
+    INSTALL_HOOK(SetInfoHook);
 }

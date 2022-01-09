@@ -191,7 +191,7 @@ namespace app
             static void SpecialRingUpdate();
             static void ProcessMessage();
             static void InitLayer();
-            static void RingUpdate();
+            static void SetInfo();
 
             void HeartLifeUpdate(int a2, float deltaTime, int a4)
             {
@@ -250,7 +250,7 @@ namespace app
 
                         if (field_1A8 != NUM_HEARTS)
                         {
-                            if (field_27C && !field_190 && field_1A8 < maxHeartNum && field_1A8 > 0)
+                            if (field_27C && !field_190 && field_1A8 < NUM_HEARTS && field_1A8 > 0)
                             {
                                 int soundStruct[6]{};
                                 ObjUtil::PlaySE2D(soundStruct, "obj_zeldaheart_get", 0x80000000);
