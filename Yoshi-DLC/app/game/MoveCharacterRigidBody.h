@@ -66,10 +66,10 @@ namespace app
             int field_10C;
 
         private:
-            inline static FUNCTION_PTR(MoveBound*, __thiscall, __ct, ASLR(0x004C6130), MoveCharacterRigidBody* This);
-            inline static FUNCTION_PTR(int, __thiscall, f_Update, ASLR(0x004C6BC0), MoveController* This, const fnd::SUpdateInfo& updateInfo);
-            inline static FUNCTION_PTR(int, __thiscall, f_OnEnter, ASLR(0x004C6B80), MoveController* This);
-            inline static FUNCTION_PTR(MoveBound*, __thiscall, __dt, ASLR(0x004C6090), MoveCharacterRigidBody* This, int a2);
+            inline static FUNCTION_PTR(MoveCharacterRigidBody*, __thiscall, __ct, ASLR(0x004C6130), MoveCharacterRigidBody* This);
+            inline static FUNCTION_PTR(int, __thiscall, f_Update, ASLR(0x004C6BC0), MoveCharacterRigidBody* This, const fnd::SUpdateInfo& updateInfo);
+            inline static FUNCTION_PTR(int, __thiscall, f_OnEnter, ASLR(0x004C6B80), MoveCharacterRigidBody* This);
+            inline static FUNCTION_PTR(MoveCharacterRigidBody*, __thiscall, __dt, ASLR(0x004C6090), MoveCharacterRigidBody* This, int a2);
 
             inline static FUNCTION_PTR(void, __thiscall, f_Setup, ASLR(0x004C61C0), MoveCharacterRigidBody* This, Description* a2);
 
@@ -102,7 +102,7 @@ namespace app
             void SetMoveRangeBasePosition(csl::math::Vector3& position)
             {
                 field_80.field_00 = position;
-                field_109 &= ~(1 << 3);
+                field_109 &= ~8;
             }
 
             void SetMoveRange(float range)
