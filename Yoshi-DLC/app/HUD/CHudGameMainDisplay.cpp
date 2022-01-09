@@ -97,10 +97,21 @@ HOOK(void, __fastcall, CHudGameMainDisplayInitLayerHook, ASLR(0x00503780), app::
 
     if ((This->Flags & 0x100))
     {
+        This->field_1A8 = 3;
         ++((int*)This->field_E0)[1];
         This->LayerController = This->GOCHud->CreateLayerController(This->field_E0, "info_ring_zdlc03", 0x12);
         This->LayerController->PlayAnimation("Intro_Anim", 0, 0);
         This->LayerController->SetVisible(true);
+
+        app::game::HudLayerController::PlayInfo volumeInfo{};
+        volumeInfo.AnimationName = "life_volume";
+        volumeInfo.field_0C = This->field_1A8 * 20;
+        This->LayerController->PlayAnimation(volumeInfo);
+
+        app::game::HudLayerController::PlayInfo playUsual{};
+        playUsual.AnimationName = "Usual_Anim";
+        playUsual.IsLooping = true;
+        This->LayerController->PlayAnimation(playUsual);
     }
 }
 
