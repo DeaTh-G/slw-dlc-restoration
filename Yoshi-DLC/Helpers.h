@@ -16,6 +16,7 @@ extern bool IsVirtualLinkSonic;
 extern bool IsAlwaysHeartLife;
 extern bool DisableChestLetterboxing;
 extern bool IsRupeeCountInChestFixed;
+extern bool IsStalbabyFixed;
 
 static csl::math::Quaternion GetRotationFromMatrix(csl::math::Matrix34* matrix)
 {
