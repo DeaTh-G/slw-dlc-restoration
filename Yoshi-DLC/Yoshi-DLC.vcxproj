@@ -190,6 +190,7 @@
     <ClInclude Include="app\CSetAdapter.h" />
     <ClInclude Include="app\CSetObjClass.h" />
     <ClInclude Include="app\CSetObjectListener.h" />
+    <ClInclude Include="app\CSetObjectManager.h" />
     <ClInclude Include="app\CWorld.h" />
     <ClInclude Include="app\debrisUtil.h" />
     <ClInclude Include="app\debris\ResRandomSpaceDebris.h" />
@@ -422,6 +423,7 @@
     <ClInclude Include="Zelda Objects\TreasureBoxCamera.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="app\CSetObjectManager.cpp" />
     <ClCompile Include="app\GameModeStage.cpp" />
     <ClCompile Include="app\GameModeStageBattle.cpp" />
     <ClCompile Include="app\HUD\CHudGameMainDisplay.cpp" />

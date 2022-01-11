@@ -180,6 +180,7 @@ void Initialize()
 
     // Install Zelda Hooks
     app::StageDataInitializer::EndLoadLevelData();
+    app::CSetObjectManager::LoadSetData();
     app::Player::CPlayer::ProcessMessage();
     app::Player::CStateBase::ProcMsgPlayerReachGoal();
     app::Player::CVisualSonic::ActivateSub();

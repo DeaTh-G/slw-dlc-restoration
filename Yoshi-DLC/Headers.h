@@ -91,6 +91,7 @@
 #include "app/game/PhysicsRaycastJob.h"
 #include "app/ObjUtil.h"
 #include "app/game/GOCLauncher.h"
+#include "app/CSetObjectManager.h"
 
 #include "app/game/CollisionShapeType.h"
 #include "app/game/GOCAnimationScript.h"

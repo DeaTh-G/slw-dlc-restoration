@@ -843,6 +843,9 @@
     <ClInclude Include="app\gfx\RenderManager.h">
       <Filter>Header Files\app\gfx</Filter>
     </ClInclude>
+    <ClInclude Include="app\CSetObjectManager.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">
@@ -915,6 +918,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="app\StageDataInitializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\CSetObjectManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
