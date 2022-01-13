@@ -4,6 +4,7 @@
 #include "LostCodeLoader.h"
 #include "Dependencies/INIReader.h"
 
+std::unordered_set<int*> EventDrivenStalbabies{};
 bool app::HUD::DO_RECOVER_LIFE = false;
 bool DisablePipeTransition = false;
 bool IsConsistentShadow = false;
@@ -31,8 +32,26 @@ char IsZeldaStage()
     return 0;
 }
 
+inline static FUNCTION_PTR(void, __thiscall, hkpCharacterRigidBodysetLinearVelocity, ASLR(0x00B88220), int* This, csl::math::Vector3* a2, float a3);
+
+void __fastcall HavokCharacterRbImplStepVelocity(int* This, void* edx, csl::math::Vector3* a2, float a3)
+{
+    csl::math::Vector3 scaledUp{};
+    csl::math::Vector3 m_up = *(csl::math::Vector3*)(This + 8);
+
+    if (EventDrivenStalbabies.find(This) == EventDrivenStalbabies.end())
+    {
+        app::math::Vector3Scale(&m_up, 0.061f, &scaledUp);
+        app::math::Vector3Add(a2, &scaledUp, a2);
+    }
+    
+    hkpCharacterRigidBodysetLinearVelocity(This, a2, a3);
+}
+
 void Initialize()
 {
+    WRITE_CALL(ASLR(0x004B974F), HavokCharacterRbImplStepVelocity);
+
     //MessageBox(NULL, L"AAAAAAAAAA", NULL, MB_ICONERROR);
 
     /* TODO: Please replace this with sane code. */

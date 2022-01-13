@@ -10,6 +10,7 @@ namespace app
         float SearchRange;
         float SearchHeight;
         bool isEventDriven;
+        INSERT_PADDING(3);
     };
 
     class EnemyStalBabyInfo : public EnemyInfo
@@ -22,7 +23,11 @@ namespace app
 
         EnemyStalBabyInfo()
         {   
-            PacfileName = "EnemyStalbaby.pac";
+            if (IsStalbabyFixed)
+                PacfileName = "EnemyStalbabyFix.pac";
+            else
+                PacfileName = "EnemyStalbaby.pac";
+
             animation::AnimationResContainer::__ct(&AnimationContainer, (csl::fnd::IAllocator*)pAllocator);
         }
 
@@ -44,8 +49,8 @@ namespace app
 
             EnemyInfo::GetEnemyPackfile(this, &packFile);
 
-            animationScript[1] = Skeleton;
             ObjUtil::GetAnimationScriptResource(animationScript, "stalbaby", packFile);
+            animationScript[1] = Skeleton;
             if (animationScript)
                 animation::AnimationResContainer::LoadFromBuffer(&AnimationContainer, animationScript, packFile);
             animationScript[0] = 0; animationScript[1] = 0; animationScript[2] = 0;
@@ -165,11 +170,11 @@ namespace app
             if (gocCollider)
             {
                 csl::math::Vector3 position{};
-                int shapeCount = 4;
+                int shapeCount = 3;
                 game::ColliCapsuleShapeCInfo collisionInfo{};
                 game::GOCCollider::Setup(gocCollider, &shapeCount);
 
-                // Lockon Collider
+                // Damage Collider
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_CAPSULE;
                 collisionInfo.MotionType = 2;
                 collisionInfo.Radius = 10;
@@ -182,6 +187,7 @@ namespace app
                 if (shape)
                     ObjUtil::SetEnableColliShape(gocCollider, 0, false);
 
+                // Hand Damage Collider
                 collisionInfo = game::ColliCapsuleShapeCInfo();
                 collisionInfo.ShapeType = game::CollisionShapeType::ShapeType::TYPE_CAPSULE;
                 collisionInfo.MotionType = 2;
@@ -252,7 +258,7 @@ namespace app
                 movement = new(movementMem) game::MoveCharacterRigidBody();
                 game::GOCMovement::SetupController(gocMovement, movement);
 
-                game::MoveCharacterRigidBody::Description description { 2, 1 };
+                game::MoveCharacterRigidBody::Description description{ 2, 1 };
                 movement->Setup(&description);
 
                 CSetAdapter::GetPosition(*(int**)((char*)this + 0x324), &position);
@@ -274,10 +280,17 @@ namespace app
                 GOCEnemyTarget::Setup(gocEnemyTarget, &count);
                 GOCEnemyTarget::SetColliderEyesight(gocEnemyTarget, 3);
             }
-            
+
             SetRandomPosition();
             if (data->isEventDriven)
             {
+                int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+                if (gocCollider)
+                {
+                    void* shape = game::GOCCollider::GetShapeById(gocCollider, 2);
+                    EventDrivenStalbabies.insert(*((int**)shape + 61));
+                }
+
                 Sleep(this);
                 fnd::GOComponent::EndSetup(this);
                 return;
@@ -290,7 +303,7 @@ namespace app
                 Sleep(this);
             }
 
-            fnd::GOComponent::EndSetup(this); 
+            fnd::GOComponent::EndSetup(this);
         }
 
         bool ProcessMessage(fnd::Message& message) override
@@ -364,7 +377,7 @@ namespace app
                     return 1;
                 };
 
-                virtual int OnLeave(EnemyStalBaby* obj, int a2) 
+                virtual int OnLeave(EnemyStalBaby* obj, int a2)
                 {
                     int* gocVisual = GameObject::GetGOC(obj, GOCVisual);
                     if (gocVisual)
@@ -376,9 +389,9 @@ namespace app
 
                     return 1;
                 };
-                
+
                 virtual int Step(EnemyStalBaby* obj, float deltaTime)
-                { 
+                {
                     if (GOCEnemyTarget::IsFindTarget(GocEnemyTarget))
                     {
                         GOCEnemyTarget::LockTarget(GocEnemyTarget);
@@ -412,7 +425,6 @@ namespace app
 
                 virtual bool ProcessMessage(EnemyStalBaby* obj, fnd::Message& message)
                 {
-                    // No message is arriving
                     if (message.Type == fnd::PROC_MSG_DLC_ZELDA_NOTICE_STOP_ENEMY)
                         return ProcMsgDlcZeldaNoticeStopEnemy((xgame::MsgDlcZeldaNoticeStopEnemy&)message);
                     else if (message.Type == fnd::PROC_MSG_DLC_ZELDA_NOTICE_ACTIVE_ENEMY)
@@ -449,9 +461,9 @@ namespace app
                     math::Vector3Subtract(&targetPosition, &position, &position);
                     if (!math::Vector3NormalizeIfNotZero(&position, &position))
                         return 0;
-                    
+
                     csl::math::Vector3 leftVector = Vector3(m.data[1][0], m.data[1][1], m.data[1][2]);
-                    
+
                     if (fabs(math::Vector3DotProduct(&leftVector, &position) >= 0.99999899f))
                         return 0;
 
@@ -501,7 +513,7 @@ namespace app
                     Time += deltaTime;
                     float effectHeight = (Time * 30) - 15;
                     effectHeight = csl::math::Min(effectHeight, 0);
-                    csl::math::Vector3 height { 0, effectHeight, 0 };
+                    csl::math::Vector3 height{ 0, effectHeight, 0 };
 
                     int* gocShadow = GameObject::GetGOC(obj, GOCShadowString);
                     if (!gocShadow)
@@ -549,7 +561,7 @@ namespace app
                 virtual int Leave(EnemyStalBaby* obj, int a2) { return EnemyState::Leave(this, obj, a2); };
                 virtual int Update(EnemyStalBaby* obj, float a2) { return EnemyState::Update(this, obj, a2); };
                 virtual bool ProcessMessage(EnemyStalBaby* obj, fnd::Message& message) { return 0; };
-                
+
                 virtual int OnEnter(EnemyStalBaby* obj, int a2)
                 {
                     GocEnemyTarget = GameObject::GetGOC(obj, GOCEnemyTargetString);
@@ -620,7 +632,7 @@ namespace app
                             }
                         }
                     }
-                    
+
                     return 0;
                 };
             };
@@ -865,7 +877,7 @@ namespace app
                 {
                     Time += deltaTime;
                     float heightOffset = -(Time * 30);
-                    csl::math::Vector3 height { 0, heightOffset, 0 };
+                    csl::math::Vector3 height{ 0, heightOffset, 0 };
 
                     int* gocVisual = GameObject::GetGOC(obj, GOCVisual);
                     if (!gocVisual)
@@ -1153,7 +1165,7 @@ namespace app
         {
             unsigned int random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
 
-            csl::math::Vector3 zUp { 0, 0, 1 };
+            csl::math::Vector3 zUp{ 0, 0, 1 };
             csl::math::Vector3 offsetDir{};
             csl::math::Vector3 offsetAppear{};
             csl::math::Vector3 rayStartPosition{};
@@ -1178,9 +1190,9 @@ namespace app
             math::Vector3Scale(&offsetDir, appearRange, &offsetAppear);
             auto rayBase = (transformMatrix.transpose() *
                 Eigen::Vector4f(offsetAppear.X, offsetAppear.Y, offsetAppear.Z, 1)).head<3>();
-            csl::math::Vector3 rayBasePosition { rayBase.x(), rayBase.y(), rayBase.z() };
+            csl::math::Vector3 rayBasePosition{ rayBase.x(), rayBase.y(), rayBase.z() };
 
-            csl::math::Vector3 leftVector = { -m.data[0][1], m.data[1][1], -m.data[2][1] };
+            csl::math::Vector3 leftVector = { m.data[1][0], m.data[1][1], m.data[1][2] };
             math::Vector3Scale(&leftVector, 50, &leftVector);
             math::Vector3Add(&rayBasePosition, &leftVector, &rayEndPosition);
             math::Vector3Subtract(&rayBasePosition, &leftVector, &rayStartPosition);
@@ -1253,7 +1265,7 @@ namespace app
                 {
                     float lookDirection = math::Vector3DotProduct(&upVector, &turnDir);
                     float angle = csl::math::Select(lookDirection, fabs(time), -abs(time));
-                    csl::math::Quaternion rotation { &rotation, &leftVector, angle };
+                    csl::math::Quaternion rotation{ &rotation, &leftVector, angle };
                     math::Vector3Rotate(turnDirection, &rotation, &forwardVector);
                 }
             }
@@ -1315,7 +1327,7 @@ namespace app
             {
                 if (GOCEnemyHsm::GetCurrentStateID(gocEnemyHsm) == 7)
                     return;
-            
+
                 int* colli1 = fnd::Handle::Get(&message.field_18);
                 int* colli2 = fnd::Handle::Get(&message.field_20);
                 float contactPoint[20]{};
@@ -1344,7 +1356,7 @@ namespace app
 
                 if (GOCEnemyTarget::IsFindTarget(gocEnemyTarget))
                     GOCEnemyTarget::LockTarget(gocEnemyTarget);
-            
+
                 int deviceTag[3]{};
                 int* gocSound = GameObject::GetGOC(this, GOCSoundString);
                 if (!gocSound)
@@ -1362,41 +1374,37 @@ namespace app
                 return;
 
             if (!GOCEnemyHsm::GetCurrentStateID(gocEnemyHsm))
+            {
+                Resume();
+                Flags &= ~8;
+
                 return;
+            }
 
             int* gocVisual = GameObject::GetGOC(this, GOCVisual);
-            if (!gocVisual)
-                return;
-
-            fnd::GOCVisual::SetVisible(gocVisual, true);
+            if (gocVisual)
+                fnd::GOCVisual::SetVisible(gocVisual, true);
 
             int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
-            if (!gocShadow)
-                return;
-
-            game::GOCShadow::SetVisible(gocShadow, true);
+            if (gocShadow)
+                game::GOCShadow::SetVisible(gocShadow, true);
 
             int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
-            if (!gocAnimation)
-                return;
-
-            game::GOCAnimationScript::SetSpeed(gocAnimation, 1);
+            if (gocAnimation)
+                game::GOCAnimationScript::SetSpeed(gocAnimation, 1);
 
             int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
-            if (!gocMovement)
-                return;
-
-            game::GOCMovement::EnableMovementFlag(gocMovement, false);
+            if (gocMovement)
+                game::GOCMovement::EnableMovementFlag(gocMovement, false);
 
             int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
-            if (!gocCollider)
-                return;
-
-            game::GOCCollider::SetEnable(gocCollider, 1);
+            if (gocCollider)
+                game::GOCCollider::SetEnable(gocCollider, 1);
 
             GOCEnemyHsm::Dispatch(gocEnemyHsm, &message);
 
             Resume();
+            Flags &= ~8;
         }
 
         void ProcMsgDlcZeldaNoticeStopEnemy(xgame::MsgDlcZeldaNoticeStopEnemy& message)
@@ -1406,53 +1414,49 @@ namespace app
                 return;
 
             if (!GOCEnemyHsm::GetCurrentStateID(gocEnemyHsm))
+            {
+                Sleep(this);
+                Flags |= 8;
+
                 return;
+            }
 
             int* gocVisual = GameObject::GetGOC(this, GOCVisual);
-            if (!gocVisual)
-                return;
-
-            fnd::GOCVisual::SetVisible(gocVisual, false);
+            if (gocVisual)
+                fnd::GOCVisual::SetVisible(gocVisual, false);
 
             int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
-            if (!gocShadow)
-                return;
-
-            game::GOCShadow::SetVisible(gocShadow, false);
+            if (gocShadow)
+                game::GOCShadow::SetVisible(gocShadow, false);
 
             int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
-            if (!gocAnimation)
-                return;
-
-            game::GOCAnimationScript::SetSpeed(gocAnimation, 0);
+            if (gocAnimation)
+                game::GOCAnimationScript::SetSpeed(gocAnimation, 0);
 
             int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
-            if (!gocMovement)
-                return;
-
-            game::GOCMovement::DisableMovementFlag(gocMovement, false);
+            if (gocMovement)
+                game::GOCMovement::DisableMovementFlag(gocMovement, false);
 
             int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
-            if (!gocCollider)
-                return;
-
-            game::GOCCollider::SetEnable(gocCollider, 0);
+            if (gocCollider)
+                game::GOCCollider::SetEnable(gocCollider, 0);
 
             GOCEnemyHsm::Dispatch(gocEnemyHsm, &message);
 
             Sleep(this);
+            Flags |= 8;
         }
 
         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
         {
-            if (((Flags >> 3) & 1))
+            if (Flags & 8)
                 return;
-         
+
             csl::math::Vector3 vector{};
 
             if (ObjUtil::CheckShapeUserID(message.field_18, 1))
             {
-                xgame::MsgDamage msgDamage { 3, 8, 2, &message, &vector };
+                xgame::MsgDamage msgDamage{ 3, 8, 2, &message, &vector };
                 SendMessageImm(message.ActorID, &msgDamage);
 
                 int deviceTag[3]{};
@@ -1486,12 +1490,21 @@ namespace app
         void ProcMsgNotifyObjectEvent(xgame::MsgNotifyObjectEvent& message)
         {
             if (message.field_18 == 1)
+            {
+                int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+                if (gocCollider)
+                {
+                    void* shape = game::GOCCollider::GetShapeById(gocCollider, 2);
+                    EventDrivenStalbabies.erase(*((int**)shape + 61));
+                }
+
                 Resume();
+            }
         }
 
         void ProcMsgPLGetHomingTargetInfo(xgame::MsgPLGetHomingTargetInfo& message)
         {
-            if (((Flags >> 2) & 1))
+            if (Flags & 4)
                 EnemyBase::ProcessMessage(message);
             else
                 message.field_18 |= 1;

@@ -69,6 +69,7 @@ namespace app
             inline static FUNCTION_PTR(MoveCharacterRigidBody*, __thiscall, __ct, ASLR(0x004C6130), MoveCharacterRigidBody* This);
             inline static FUNCTION_PTR(int, __thiscall, f_Update, ASLR(0x004C6BC0), MoveCharacterRigidBody* This, const fnd::SUpdateInfo& updateInfo);
             inline static FUNCTION_PTR(int, __thiscall, f_OnEnter, ASLR(0x004C6B80), MoveCharacterRigidBody* This);
+            inline static FUNCTION_PTR(int, __thiscall, f_OnLeave, ASLR(0x004C5FC0), MoveCharacterRigidBody* This);
             inline static FUNCTION_PTR(MoveCharacterRigidBody*, __thiscall, __dt, ASLR(0x004C6090), MoveCharacterRigidBody* This, int a2);
 
             inline static FUNCTION_PTR(void, __thiscall, f_Setup, ASLR(0x004C61C0), MoveCharacterRigidBody* This, Description* a2);
@@ -88,6 +89,8 @@ namespace app
             }
             
             int OnEnter() override { return f_OnEnter(this); }
+
+            int OnLeave() override { return f_OnLeave(this); }
             
             void Destructor(size_t deletingFlags) override
             {

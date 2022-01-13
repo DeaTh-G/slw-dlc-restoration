@@ -24,7 +24,8 @@ namespace app
         class CollisionObjCInfo
         {
         public:
-            short field_00;
+            char field_00;
+            char field_01;
             short field_02;
             int field_04;
             int field_08;
@@ -43,20 +44,20 @@ namespace app
 
         class CharacterRigidBodyCInfo : public CollisionObjCInfo
         {
+        private:
+            inline static FUNCTION_PTR(CharacterRigidBodyCInfo*, __thiscall, __ct, ASLR(0x004B8450), CharacterRigidBodyCInfo* This);
+
         public:
-            float field_40;
-            float field_44;
-            float field_48;
-            float field_4C;
-            float field_50;
+            float field_40{};
+            float field_44{};
+            float field_48{};
+            float field_4C{};
+            float field_50{};
             INSERT_PADDING(12);
 
             CharacterRigidBodyCInfo()
             {
                 __ct(this);
-                field_48 = 0.78539819;
-                field_4C = 1000;
-                field_50 = 1;
             }
         };
 
