@@ -39,7 +39,7 @@ void __fastcall HavokCharacterRbImplStepVelocity(int* This, void* edx, csl::math
     csl::math::Vector3 scaledUp{};
     csl::math::Vector3 m_up = *(csl::math::Vector3*)(This + 8);
 
-    if (EventDrivenStalbabies.find(This) == EventDrivenStalbabies.end())
+    if (EventDrivenStalbabies.find(This) != EventDrivenStalbabies.end())
     {
         app::math::Vector3Scale(&m_up, 0.061f, &scaledUp);
         app::math::Vector3Add(a2, &scaledUp, a2);

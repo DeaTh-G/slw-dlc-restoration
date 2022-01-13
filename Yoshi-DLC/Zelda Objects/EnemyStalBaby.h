@@ -83,6 +83,13 @@ namespace app
 
         void Destructor(size_t deletingFlags)
         {
+            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
+            if (gocCollider)
+            {
+                void* shape = game::GOCCollider::GetShapeById(gocCollider, 2);
+                EventDrivenStalbabies.erase(*((int**)shape + 61));
+            }
+
             fnd::HFrame::__dt(&Children, 0);
 
             EnemyBase::Destructor(deletingFlags);
@@ -211,7 +218,9 @@ namespace app
                 rigidBodyInfo.field_4C = 300;
                 position = Vector3(0, 8, 0);
                 game::CollisionObjCInfo::SetLocalPosition(&rigidBodyInfo, &position);
-                game::GOCCollider::CreateCharacterRigidBody(gocCollider, &rigidBodyInfo);
+                shape = game::GOCCollider::CreateCharacterRigidBody(gocCollider, &rigidBodyInfo);
+                if (!data->isEventDriven)
+                    EventDrivenStalbabies.insert(*((int**)shape + 61));
 
                 // Search Collider
                 collisionInfo = game::ColliCapsuleShapeCInfo();
@@ -284,13 +293,6 @@ namespace app
             SetRandomPosition();
             if (data->isEventDriven)
             {
-                int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
-                if (gocCollider)
-                {
-                    void* shape = game::GOCCollider::GetShapeById(gocCollider, 2);
-                    EventDrivenStalbabies.insert(*((int**)shape + 61));
-                }
-
                 Sleep(this);
                 fnd::GOComponent::EndSetup(this);
                 return;
@@ -1495,7 +1497,7 @@ namespace app
                 if (gocCollider)
                 {
                     void* shape = game::GOCCollider::GetShapeById(gocCollider, 2);
-                    EventDrivenStalbabies.erase(*((int**)shape + 61));
+                    EventDrivenStalbabies.insert(*((int**)shape + 61));
                 }
 
                 Resume();
