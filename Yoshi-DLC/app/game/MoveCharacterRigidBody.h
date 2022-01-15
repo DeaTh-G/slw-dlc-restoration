@@ -73,6 +73,7 @@ namespace app
             inline static FUNCTION_PTR(MoveCharacterRigidBody*, __thiscall, __dt, ASLR(0x004C6090), MoveCharacterRigidBody* This, int a2);
 
             inline static FUNCTION_PTR(void, __thiscall, f_Setup, ASLR(0x004C61C0), MoveCharacterRigidBody* This, Description* a2);
+            inline static FUNCTION_PTR(bool, __thiscall, f_IsOnGround, ASLR(0x004C6230), MoveCharacterRigidBody* This);
 
         protected:
             void* GetRuntimeTypeInfo() override { return (void*)ASLR(0x004C5ED0); }
@@ -101,6 +102,8 @@ namespace app
             {
                 f_Setup(this, a1);
             }
+
+            bool IsOnGround() { return f_IsOnGround(this); }
 
             void SetMoveRangeBasePosition(csl::math::Vector3& position)
             {

@@ -333,6 +333,33 @@ namespace app
             }
         }
 
+        void Update(const fnd::SUpdateInfo& updateInfo) override
+        {
+            if (!movement)
+                return;
+        
+            if (movement->IsOnGround())
+            {
+                field_628 = 0;
+            }
+            else
+            {
+                field_628 += updateInfo.deltaTime;
+                if (field_628 < 1)
+                    return;
+
+                enemy::DeadEffectCInfo effectInfo{};
+                enemy::DeadEffectCInfo::__ct(&effectInfo);
+                GameObjectHandleBase::__ct(&effectInfo, this);
+                effectInfo.field_60 = 0;
+                effectInfo.field_62 &= ~6;
+
+                void* enemyManager = app::EnemyManager::GetService(*app::Document);
+                app::EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
+                OnDead();
+            }
+        }
+
         class State
         {
         public:
