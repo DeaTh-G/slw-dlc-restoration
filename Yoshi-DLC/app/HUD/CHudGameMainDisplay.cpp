@@ -46,6 +46,9 @@ HOOK(int*, __fastcall, CHudGameMainDisplayHook, ASLR(0x00503290), int* This, int
     if (IsAlwaysHeartLife)
     {
         strcpy((char*)(This + 0x60), "zdlc03");
+        if (strncmp(packFileName, "zdlc01", 6) != 0)
+            *(This + 0x7A) |= 0x20;
+
         *(This + 0x7A) |= 0x80;
         *(This + 0x7A) |= 0x100;
     }
