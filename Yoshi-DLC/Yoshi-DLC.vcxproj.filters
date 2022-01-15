@@ -846,6 +846,9 @@
     <ClInclude Include="app\CSetObjectManager.h">
       <Filter>Header Files\app</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Yoshi-DLC.cpp">
@@ -926,5 +929,10 @@
     <ClCompile Include="app\EnemyManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Yoshi-DLC.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

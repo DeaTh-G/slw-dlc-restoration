@@ -467,7 +467,7 @@ namespace app
 			math::Vector3Add(&positionOffset, &scaledInverseLeftVector, &scaledInverseLeftVector);
 
 			game::PhysicsRaycastOutput output{};
-			if (*ObjUtil::RaycastNearestCollision(&output, (GameDocument*)field_24[1], &positionOffset, &scaledInverseLeftVector, 0xC996))
+			if ((char)ObjUtil::RaycastNearestCollision(&output, (GameDocument*)field_24[1], &positionOffset, &scaledInverseLeftVector, 0xC996))
 			{
 				int* gocAnimation = GameObject::GetGOC(this, GOCAnimationString);
 				if (!gocAnimation)
@@ -763,7 +763,6 @@ namespace app
 				rotation = Quaternion(0, 0, 0, 1);
 			}
 
-
 			for (int i = 0; i < 2; i++)
 			{
 				unsigned int random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
@@ -783,7 +782,7 @@ namespace app
 				math::Vector3Add(&scaledLeft, &scaledForwardVector, &scaledForwardVector);
 
 				game::PhysicsRaycastOutput output{};
-				if (!ObjUtil::RaycastNearestCollision(&output, (GameDocument*)field_24[1], &scaledLeft, &scaledForwardVector, 51606))
+				if (!(char)ObjUtil::RaycastNearestCollision(&output, (GameDocument*)field_24[1], &scaledLeft, &scaledForwardVector, 51606))
 					continue;
 
 				math::Vector3Scale(&inverseLeftVector, 10, &scaledLeft);

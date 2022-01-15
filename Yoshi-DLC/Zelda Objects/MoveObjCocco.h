@@ -253,7 +253,7 @@ namespace app
 
                 math::Vector3Scale(&upVector, 0.5f, &scaledUpVector);
                 math::Vector3Subtract(&contextParam->Position, &scaledUpVector, &rayStart);
-                if (*ObjUtil::RaycastNearestCollision(&output, (GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), &rayEnd, &rayStart, 0xC996))
+                if ((char)ObjUtil::RaycastNearestCollision(&output, (GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), &rayEnd, &rayStart, 0xC996))
                 {
                     if (!(output.field_24 & 0x10))
                     {
@@ -279,7 +279,7 @@ namespace app
                 math::Vector3Scale(&moveOffset, dot + 0.099999994, &rayEnd);
                 math::Vector3Add(&contextParam->Position, &rayEnd, &rayEnd);
 
-                if (*ObjUtil::RaycastNearestCollision(&output, (GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), &rayEnd, &rayStart, 0xC996)
+                if ((char)ObjUtil::RaycastNearestCollision(&output, (GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), &rayEnd, &rayStart, 0xC996)
                     && !(output.field_24 & 0x10))
                 {
                     State = 0;

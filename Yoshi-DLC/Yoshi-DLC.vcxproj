@@ -73,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>DLC-Restoration</TargetName>
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\Debug</OutDir>
+    <OutDir>$(SolutionDir)$(Configuration)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>Yoshi-DLC</TargetName>
@@ -81,7 +81,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>DLC-Restoration</TargetName>
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,6 +147,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalDependencies>lib/detours.lib;lib/syelog.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <Version>
+      </Version>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(OutDir)$(TargetName)$(TargetExt)" "F:\Mods\Sonic Lost World\Wii U DLC Restoration" /Y</Command>
@@ -372,6 +374,7 @@
     <ClInclude Include="hh\base.h" />
     <ClInclude Include="hh\ut\Packfile.h" />
     <ClInclude Include="InfoFileLoader.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SonicUSA\System.h" />
     <ClInclude Include="SonicUSA\System\Random.h" />
     <ClInclude Include="Yoshi Objects\EnemyPiranhaPlant.h" />
@@ -454,6 +457,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Yoshi-DLC.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
