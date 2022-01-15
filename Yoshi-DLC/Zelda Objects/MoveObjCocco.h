@@ -4,7 +4,7 @@ namespace app
 {
     class ObjCocco;
 
-	class MoveObjCocco : public game::MoveController
+	class alignas(16) MoveObjCocco : public game::MoveController
 	{
     protected:
         enum class MoveType : char
@@ -21,7 +21,7 @@ namespace app
         INSERT_PADDING(2);
         short field_06{};
         void (ObjCocco::* NotifyStopCallback)();
-        INSERT_PADDING(4);
+        int PlayerNo{};
         MoveType MovementType{};
         INSERT_PADDING(15);
         csl::math::Vector3 TargetPosition{};
@@ -86,7 +86,7 @@ namespace app
             }
             case MoveType::MOVE_RELATIVE_TARGET_POINT:
             {
-                int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), 0);
+                int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), PlayerNo);
                 if (!playerInfo)
                     return 0;
 
@@ -131,7 +131,7 @@ namespace app
             {
                 csl::math::Vector3 scaledUpVector{};
 
-                int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), 0);
+                int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), PlayerNo);
                 targetPosition = contextParam->Position;
                 if (!playerInfo)
                 {
@@ -352,8 +352,10 @@ namespace app
             game::GOCMovement::EnableMovementFlag((int*)gocMovement, 0);
         }
 
-        void SetRelativeTargetPoint(const csl::math::Vector3& targetPoint, const float speed)
+        void SetRelativeTargetPoint(const csl::math::Vector3& targetPoint, const float speed, int playerNo)
         {
+            PlayerNo = playerNo;
+
             MovementType = MoveType::MOVE_RELATIVE_TARGET_POINT;
             TargetPosition = targetPoint;
             Speed = speed;
@@ -385,16 +387,17 @@ namespace app
             contextParam->field_20 = Vector3(0, height, 0);
         }
 
-        void SetTargetPlayer(const float speed, const float height)
+        void SetTargetPlayer(const float speed, const float height, int playerNo)
         {
+            PlayerNo = playerNo;
+
             game::GOCMovement* gocMovement = GetOwnerMovement();
             game::GOCMovement::ContextParam* contextParam = (game::GOCMovement::ContextParam*)game::GOCMovement::GetContextParam((int*)gocMovement);
 
             csl::math::Vector3 upVector = Vector3(0, 1, 0);
             app::math::Vector3Rotate(&upVector, &contextParam->Rotation, &upVector);
 
-            // TODO: Fix this being only Player 1
-            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), 0);
+            int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)(((GameObject*)(((int*)gocMovement)[5]))->field_24[1]), PlayerNo);
             if (!playerInfo)
                 return;
 

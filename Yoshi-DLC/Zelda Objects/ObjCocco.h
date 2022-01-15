@@ -69,19 +69,22 @@ namespace app
 			csl::math::Quaternion Rotation{};
 			ObjCoccoData* field_20;
 			int field_24;
+			int PlayerNo;
 
-			CInfo(csl::math::Vector3& position, csl::math::Quaternion& rotation, ObjCoccoData* data, int a4)
+			CInfo(csl::math::Vector3& position, csl::math::Quaternion& rotation, ObjCoccoData* data, int a4, int playerNo)
 			{
 				Position = position;
 				Rotation = rotation;
 				field_20 = data;
 				field_24 = a4;
+				PlayerNo = playerNo;
 			}
 		};
 
 		ObjCoccoState State{};
+		int PlayerNo{};
+		INSERT_PADDING(12); // TinyFSM
 		float DeltaTime{};
-		INSERT_PADDING(16); // TinyFSM
 		int field_3B4{};
 		int field_3B8{};
 		int field_3BC{};
@@ -123,6 +126,7 @@ namespace app
 			Rotation = createInfo.Rotation;
 			field_3E4 = createInfo.field_24;
 			Spawner = createInfo.field_20;
+			PlayerNo = createInfo.PlayerNo;
 
 			HealthPoint = 3;
 		};
@@ -374,15 +378,15 @@ namespace app
 				// StateAttackOut Enter
 				State = ObjCoccoState::STATE_ATTACK_OUT;
 				
-				int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0);
+				int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], PlayerNo);
 				if (playerInfo)
 				{
 					float magnitude{};
 					math::Vector3SquareMagnitude((csl::math::Vector3*)playerInfo + 3, &magnitude);
 					if (22500 >= magnitude)
-						MovementController->SetTargetPlayer(70, 20);
+						MovementController->SetTargetPlayer(70, 20, PlayerNo);
 					else
-						MovementController->SetTargetPlayer(220, 20);
+						MovementController->SetTargetPlayer(220, 20, PlayerNo);
 				}
 
 				if (!(Flags & 4))
@@ -436,8 +440,7 @@ namespace app
 
 			if (ActionType)
 			{			
-				// TODO: Fix this being only Player 1
-				int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0);
+				int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], PlayerNo);
 				if (!playerInfo)
 					return;
 
@@ -475,16 +478,15 @@ namespace app
 				// StateAttackOut Enter
 				State = ObjCoccoState::STATE_ATTACK_OUT;
 
-				// TODO: Fix this being only Player 1
-				int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0);
+				int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], PlayerNo);
 				if (playerInfo)
 				{
 					float magnitude{};
 					math::Vector3SquareMagnitude((csl::math::Vector3*)playerInfo + 3, &magnitude);
 					if (22500 >= magnitude)
-						MovementController->SetTargetPlayer(70, 20);
+						MovementController->SetTargetPlayer(70, 20, PlayerNo);
 					else
-						MovementController->SetTargetPlayer(220, 20);
+						MovementController->SetTargetPlayer(220, 20, PlayerNo);
 				}
 
 				if (!(Flags & 4))
@@ -582,6 +584,9 @@ namespace app
 				message.field_0C = 1;
 
 				HealthPoint -= message.HitCount;
+
+				if (HealthPoint == 0)
+					PlayerNo = ObjUtil::GetPlayerNo(field_24[1], message.field_08);
 			}
 
 			message.SetReply(&message.field_30, (HealthPoint | HealthPoint - 1) >> 31);
@@ -659,6 +664,9 @@ namespace app
 				message.field_0C = 1;
 
 				HealthPoint -= 1;
+
+				if (HealthPoint == 0)
+					PlayerNo = ObjUtil::GetPlayerNo(field_24[1], message.field_08);
 			}
 
 			message.SetReplyForSucceed(&message);
@@ -702,8 +710,7 @@ namespace app
 
 		void CreateAttackers()
 		{
-			// TODO: Fix this being only Player 1
-			int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0);
+			int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], PlayerNo);
 			if (!playerInfo)
 				return;
 
@@ -711,6 +718,10 @@ namespace app
 			
 			csl::math::Matrix34 inverseCameraMatrix{};
 			Render::CameraParam* camera = CWorld::GetCamera(0);
+			if (!strncmp((const char*)*(*(((int***)*app::Document) + 3) + 5), "GameModeStageBattle", 17))
+				if (!PlayerNo)
+					camera = CWorld::GetCamera(1);
+
 			camera->GetInvViewMatrix(&inverseCameraMatrix);
 			
 			csl::math::Vector3 inverseForwardVector = Vector3(-inverseCameraMatrix.data[0][0], -inverseCameraMatrix.data[0][1], -inverseCameraMatrix.data[0][2]);
@@ -772,12 +783,12 @@ namespace app
 				math::Vector3Add(&scaledLeft, &scaledForwardVector, &scaledForwardVector);
 
 				game::PhysicsRaycastOutput output{};
-				if (!*ObjUtil::RaycastNearestCollision(&output, (GameDocument*)field_24[1], &scaledLeft, &scaledForwardVector, 51606))
+				if (!ObjUtil::RaycastNearestCollision(&output, (GameDocument*)field_24[1], &scaledLeft, &scaledForwardVector, 51606))
 					continue;
 
 				math::Vector3Scale(&inverseLeftVector, 10, &scaledLeft);
 				math::Vector3Subtract(&output.field_00, &scaledLeft, &output.field_00);
-				CInfo createInfo { output.field_00, output.field_10, GetSpawner(), i };
+				CInfo createInfo { output.field_00, output.field_10, GetSpawner(), i, PlayerNo };
 				ObjCocco* subCocco = CreateAttacker(createInfo);
 				if (subCocco)
 				{
@@ -812,6 +823,10 @@ namespace app
 		bool IsInCamera()
 		{
 			Render::CameraParam* camera = CWorld::GetCamera(0);
+
+			if (!strncmp((const char*)*(*(((int***)*app::Document) + 3) + 5), "GameModeStageBattle", 17))
+				if (!PlayerNo)
+					camera = CWorld::GetCamera(1);
 
 			csl::math::Vector3 translation{};
 			fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
@@ -894,8 +909,7 @@ namespace app
 			math::Vector3Scale(&forwardVector, random * 2.328306436538696e-10 * 30 + 20, &scaledForwardVector);
 			math::Vector3Rotate(&scaledForwardVector, &rotation, &scaledForwardVector);
 
-			// TODO: Fix this being only Player 1
-			int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], 0);
+			int* playerInfo = ObjUtil::GetPlayerInformation((GameDocument*)field_24[1], PlayerNo);
 			if (!playerInfo)
 				return;
 
@@ -907,16 +921,16 @@ namespace app
 				float speed = random * 2.328306436538696e-10;
 
 				if (2500 >= magnitude)
-					MovementController->SetRelativeTargetPoint(scaledForwardVector, speed * 10 + 50);
+					MovementController->SetRelativeTargetPoint(scaledForwardVector, speed * 10 + 50, PlayerNo);
 				else
-					MovementController->SetRelativeTargetPoint(scaledForwardVector, speed * 10 + 175);
+					MovementController->SetRelativeTargetPoint(scaledForwardVector, speed * 10 + 175, PlayerNo);
 			}
 			else
 			{
 				random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));
 				float speed = random * 2.328306436538696e-10;
 
-				MovementController->SetRelativeTargetPoint(scaledForwardVector, speed * 10 + 295);
+				MovementController->SetRelativeTargetPoint(scaledForwardVector, speed * 10 + 295, PlayerNo);
 			}
 		}
 
