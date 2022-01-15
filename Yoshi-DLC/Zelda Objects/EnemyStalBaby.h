@@ -1249,45 +1249,46 @@ namespace app
 
         void GetTurnDirection(csl::math::Vector3* turnDirection, csl::math::Vector3& targetPosition, float deltaTime)
         {
-            csl::math::Vector3 position{};
-            csl::math::Vector3 upVector{};
-            csl::math::Vector3 leftVector{};
-            csl::math::Vector3 forwardVector{};
-            csl::math::Vector3 turnDir{};
-
             fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
             if (!gocTransform)
                 return;
+            csl::math::Matrix34 m = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
 
-            csl::math::Matrix34 m{};
-            m = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
-            upVector = Vector3(m.data[0][0], m.data[0][1], m.data[0][2]);
-            leftVector = Vector3(m.data[1][0], m.data[1][1], m.data[1][2]);
-            forwardVector = Vector3(m.data[2][0], m.data[2][1], m.data[2][2]);
-            position = Vector3(m.data[3][0], m.data[3][1], m.data[3][2]);
-            math::Vector3Subtract(&targetPosition, &position, &position);
-            float leftDirection = math::Vector3DotProduct(&position, &leftVector);
-            math::Vector3Scale(&leftVector, leftDirection, &turnDir);
-            math::Vector3Subtract(&position, &turnDir, &turnDir);
+            csl::math::Vector3 upVector = Vector3(m.data[0][0], m.data[0][1], m.data[0][2]);
+            csl::math::Vector3 leftVector = Vector3(m.data[1][0], m.data[1][1], m.data[1][2]);
+            csl::math::Vector3 forwardVector = Vector3(m.data[2][0], m.data[2][1], m.data[2][2]);
+            csl::math::Vector3 position = Vector3(m.data[3][0], m.data[3][1], m.data[3][2]);
+
+            csl::math::Vector3 positionOffset{};
+            math::Vector3Subtract(&targetPosition, &position, &positionOffset);
+            float dot = math::Vector3DotProduct(&positionOffset, &leftVector);
+
+            csl::math::Vector3 scaledLeftVector{};
+            math::Vector3Scale(&leftVector, dot, &scaledLeftVector);
+            math::Vector3Subtract(&positionOffset, &scaledLeftVector, &positionOffset);
+
             float magnitude{};
-            math::Vector3SquareMagnitude(&turnDir, &magnitude);
+            math::Vector3SquareMagnitude(&positionOffset, &magnitude);
             if (magnitude <= 0.000001f)
             {
-                turnDir = Vector3(0, 0, 0);
+                *turnDirection = Vector3(0, 0, 0);
             }
             else
             {
-                float horizontalDirection = math::Vector3DotProduct(&turnDir, &forwardVector);
-                csl::math::Vector3Normalize(&turnDir, turnDirection);
-                float time = 2.3561945f * deltaTime;
-                horizontalDirection = csl::math::Clamp(horizontalDirection, -1, 1);
-                if (time < acosf(horizontalDirection))
+                csl::math::Vector3Normalize(&positionOffset, &positionOffset);
+                dot = math::Vector3DotProduct(&positionOffset, &forwardVector);
+                float direction = csl::math::Clamp(dot, -1, 1);
+                if (2.3561945f * deltaTime < acosf(direction))
                 {
-                    float lookDirection = math::Vector3DotProduct(&upVector, &turnDir);
-                    float angle = csl::math::Select(lookDirection, fabs(time), -abs(time));
-                    csl::math::Quaternion rotation{ &rotation, &leftVector, angle };
+                    dot = math::Vector3DotProduct(&upVector, &positionOffset);
+                    dot = csl::math::Select(dot, fabs(2.3561945f * deltaTime), -fabs(2.3561945f * deltaTime));
+                    
+                    csl::math::Quaternion rotation { &rotation, &leftVector, dot };
                     math::Vector3Rotate(turnDirection, &rotation, &forwardVector);
+                    return;
                 }
+
+                *turnDirection = positionOffset;
             }
         }
 
