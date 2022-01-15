@@ -8,7 +8,6 @@ enum class PlayType : int
     NEVER
 };
 
-extern std::unordered_set<int*> EventDrivenStalbabies;
 extern bool DisablePipeTransition;
 extern bool IsConsistentShadow;
 

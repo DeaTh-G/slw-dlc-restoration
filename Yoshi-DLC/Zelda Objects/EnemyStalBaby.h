@@ -83,13 +83,6 @@ namespace app
 
         void Destructor(size_t deletingFlags)
         {
-            int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
-            if (gocCollider)
-            {
-                void* shape = game::GOCCollider::GetShapeById(gocCollider, 2);
-                EventDrivenStalbabies.erase(*((int**)shape + 61));
-            }
-
             fnd::HFrame::__dt(&Children, 0);
 
             EnemyBase::Destructor(deletingFlags);
@@ -177,7 +170,7 @@ namespace app
             if (gocCollider)
             {
                 csl::math::Vector3 position{};
-                int shapeCount = 3;
+                int shapeCount = 4;
                 game::ColliCapsuleShapeCInfo collisionInfo{};
                 game::GOCCollider::Setup(gocCollider, &shapeCount);
 
@@ -219,8 +212,6 @@ namespace app
                 position = Vector3(0, 8, 0);
                 game::CollisionObjCInfo::SetLocalPosition(&rigidBodyInfo, &position);
                 shape = game::GOCCollider::CreateCharacterRigidBody(gocCollider, &rigidBodyInfo);
-                if (!data->isEventDriven)
-                    EventDrivenStalbabies.insert(*((int**)shape + 61));
 
                 // Search Collider
                 collisionInfo = game::ColliCapsuleShapeCInfo();
@@ -1492,16 +1483,7 @@ namespace app
         void ProcMsgNotifyObjectEvent(xgame::MsgNotifyObjectEvent& message)
         {
             if (message.field_18 == 1)
-            {
-                int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
-                if (gocCollider)
-                {
-                    void* shape = game::GOCCollider::GetShapeById(gocCollider, 2);
-                    EventDrivenStalbabies.insert(*((int**)shape + 61));
-                }
-
                 Resume();
-            }
         }
 
         void ProcMsgPLGetHomingTargetInfo(xgame::MsgPLGetHomingTargetInfo& message)

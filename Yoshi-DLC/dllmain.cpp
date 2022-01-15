@@ -4,7 +4,6 @@
 #include "LostCodeLoader.h"
 #include "Dependencies/INIReader.h"
 
-std::unordered_set<int*> EventDrivenStalbabies{};
 bool app::HUD::DO_RECOVER_LIFE = false;
 bool DisablePipeTransition = false;
 bool IsConsistentShadow = false;
@@ -36,15 +35,8 @@ inline static FUNCTION_PTR(void, __thiscall, hkpCharacterRigidBodysetLinearVeloc
 
 void __fastcall HavokCharacterRbImplStepVelocity(int* This, void* edx, csl::math::Vector3* a2, float a3)
 {
-    csl::math::Vector3 scaledUp{};
-    csl::math::Vector3 m_up = *(csl::math::Vector3*)(This + 8);
 
-    if (EventDrivenStalbabies.find(This) != EventDrivenStalbabies.end())
-    {
-        app::math::Vector3Scale(&m_up, 0.061f, &scaledUp);
-        app::math::Vector3Add(a2, &scaledUp, a2);
-    }
-    
+    printf("%p - Collision Filter Info: 0x%08x\n", This, *(*(int**)(*(int**)(This + 4) + 4) + 7));
     hkpCharacterRigidBodysetLinearVelocity(This, a2, a3);
 }
 
@@ -52,7 +44,7 @@ void Initialize()
 {
     WRITE_CALL(ASLR(0x004B974F), HavokCharacterRbImplStepVelocity);
 
-    //MessageBox(NULL, L"AAAAAAAAAA", NULL, MB_ICONERROR);
+    MessageBox(NULL, L"AAAAAAAAAA", NULL, MB_ICONERROR);
 
     /* TODO: Please replace this with sane code. */
     WRITE_MEMORY(ASLR(0x00D41252),
@@ -218,6 +210,7 @@ void Initialize()
     app::Player::CStateBase::ProcessMessage();
     app::Player::StateUtil::ScatterRingForDamage();
     app::xgame::CStageSoundDirector::LoadData();
+    app::EnemyManager::CreateDeadEffectHook();
 
     if (IsLinkSonicFixed)
         app::Player::SonicZeldaInfo::Initialize();

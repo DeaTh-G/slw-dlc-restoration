@@ -424,6 +424,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="app\CSetObjectManager.cpp" />
+    <ClCompile Include="app\EnemyManager.cpp" />
     <ClCompile Include="app\GameModeStage.cpp" />
     <ClCompile Include="app\GameModeStageBattle.cpp" />
     <ClCompile Include="app\HUD\CHudGameMainDisplay.cpp" />
