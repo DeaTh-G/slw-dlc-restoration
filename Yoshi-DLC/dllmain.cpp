@@ -42,9 +42,9 @@ void __fastcall HavokCharacterRbImplStepVelocity(int* This, void* edx, csl::math
 
 void Initialize()
 {
-    WRITE_CALL(ASLR(0x004B974F), HavokCharacterRbImplStepVelocity);
+    //WRITE_CALL(ASLR(0x004B974F), HavokCharacterRbImplStepVelocity);
 
-    MessageBox(NULL, L"AAAAAAAAAA", NULL, MB_ICONERROR);
+    //MessageBox(NULL, L"AAAAAAAAAA", NULL, MB_ICONERROR);
 
     /* TODO: Please replace this with sane code. */
     WRITE_MEMORY(ASLR(0x00D41252),

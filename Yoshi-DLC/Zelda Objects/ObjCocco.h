@@ -787,7 +787,7 @@ namespace app
 
 				math::Vector3Scale(&inverseLeftVector, 10, &scaledLeft);
 				math::Vector3Subtract(&output.field_00, &scaledLeft, &output.field_00);
-				CInfo createInfo { output.field_00, output.field_10, GetSpawner(), i, PlayerNo };
+				CInfo createInfo { output.field_00, rotation, GetSpawner(), i, PlayerNo };
 				ObjCocco* subCocco = CreateAttacker(createInfo);
 				if (subCocco)
 				{

@@ -73,7 +73,7 @@ BEGIN
             VALUE "InternalName", "DLC-Restoration.dll"
             VALUE "LegalCopyright", "Copyright (C) 2022"
             VALUE "OriginalFilename", "DLC-Restoration.dll"
-            VALUE "ProductName", "[BETA 3] Sonic Lost World - Wii U DLC Restoration"
+            VALUE "ProductName", "[BETA 4] Sonic Lost World - Wii U DLC Restoration"
             VALUE "ProductVersion", "2.0.0.0"
         END
     END
