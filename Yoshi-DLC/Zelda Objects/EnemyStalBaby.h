@@ -598,27 +598,25 @@ namespace app
 
                 virtual int Step(EnemyStalBaby* obj, float deltaTime)
                 {
+                    int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
+                    if (!gocEnemyHsm)
+                        return 0;
+
                     csl::math::Vector3 targetPosition{};
 
                     if ((obj->Flags & 1))
                     {
                         obj->Flags &= ~1;
-                        int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
-                        if (!gocEnemyHsm)
-                            return 0;
-
                         GOCEnemyHsm::ChangeState(gocEnemyHsm, 6);
+
                         return 0;
                     }
                     else if (GOCEnemyTarget::IsFindTarget(GocEnemyTarget) &&
                         GOCEnemyTarget::GetTargetCenterPosition(GocEnemyTarget, &targetPosition) &&
                         IsInRangeAttack(obj, targetPosition))
                     {
-                        int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
-                        if (!gocEnemyHsm)
-                            return 0;
-
                         GOCEnemyHsm::ChangeState(gocEnemyHsm, 3);
+
                         return 0;
                     }
                     else
@@ -636,18 +634,15 @@ namespace app
                             math::Vector3SquareMagnitude(&turnDirection, &magnitude);
                             if (magnitude > 0.000001f)
                             {
-                                csl::math::Vector3* moveVector = (csl::math::Vector3*)(game::GOCMovement::GetContextParam(gocMovement) + 8);
+                                game::GOCMovement::ContextParam* contextParam = (game::GOCMovement::ContextParam*)game::GOCMovement::GetContextParam(gocMovement);
                                 float speed = obj->GetMoveSpeed();
-                                math::Vector3Scale(&turnDirection, speed, moveVector);
+                                math::Vector3Scale(&turnDirection, speed, &contextParam->field_20);
                                 return 0;
                             }
                             else
                             {
-                                int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
-                                if (!gocEnemyHsm)
-                                    return 0;
-
                                 GOCEnemyHsm::ChangeState(gocEnemyHsm, 6);
+
                                 return 1;
                             }
                         }
@@ -1252,7 +1247,9 @@ namespace app
             fnd::GOCTransform* gocTransform = (fnd::GOCTransform*)GameObject::GetGOC(this, GOCTransformString);
             if (!gocTransform)
                 return;
-            csl::math::Matrix34 m = *(csl::math::Matrix34*)((int*)gocTransform + 0x44);
+            
+            csl::math::Matrix34 m{};
+            math::Transform::GetTransformMatrix((math::Transform*)((int*)gocTransform + 0x18), &m);
 
             csl::math::Vector3 upVector = Vector3(m.data[0][0], m.data[0][1], m.data[0][2]);
             csl::math::Vector3 leftVector = Vector3(m.data[1][0], m.data[1][1], m.data[1][2]);
