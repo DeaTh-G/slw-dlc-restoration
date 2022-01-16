@@ -31,19 +31,8 @@ char IsZeldaStage()
     return 0;
 }
 
-inline static FUNCTION_PTR(void, __thiscall, hkpCharacterRigidBodysetLinearVelocity, ASLR(0x00B88220), int* This, csl::math::Vector3* a2, float a3);
-
-void __fastcall HavokCharacterRbImplStepVelocity(int* This, void* edx, csl::math::Vector3* a2, float a3)
-{
-
-    printf("%p - Collision Filter Info: 0x%08x\n", This, *(*(int**)(*(int**)(This + 4) + 4) + 7));
-    hkpCharacterRigidBodysetLinearVelocity(This, a2, a3);
-}
-
 void Initialize()
 {
-    //WRITE_CALL(ASLR(0x004B974F), HavokCharacterRbImplStepVelocity);
-
     //MessageBox(NULL, L"AAAAAAAAAA", NULL, MB_ICONERROR);
 
     /* TODO: Please replace this with sane code. */
