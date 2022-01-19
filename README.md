@@ -6,7 +6,7 @@ The Legend of Zelda Zone is currently in development with a release window of Mi
 
 # Build instructions
 1. Download Source Code
-2. Open the .sln file [Visual Studio 2019](https://visualstudio.microsoft.com/vs/)
+2. Open the .sln file in [Visual Studio 2019](https://visualstudio.microsoft.com/vs/)
 3. Build for x86
 
 # Development History
