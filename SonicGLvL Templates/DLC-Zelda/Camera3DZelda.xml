@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<Template>
+  <RangeIn type="float" default="1000" description="Distance from object before it spawns" />
+  <RangeOut type="float" default="1200" description="Distance from object before it despawns" />
+  <Parent type="target" description="" />
+  <Unknown1 type="uint16" default="0" description="" />
+  <Unknown2 type="uint32" default="0" description="" />
+  <Unknown3 type="float" default="0" description="" />
+  <IsCameraView type="bool" default="0" description="Enable camera view." />
+  <IsCollision type="bool" default="0" description="Does the camera have a collision?" />
+  <EaseTimeEnter type="float" default="0" description="Transition time when entering (in seconds). Only used when triggered with events" />
+  <EaseTimeLeave type="float" default="0" description="Transition time when leaving (in seconds). Only used when triggered with events" />
+  <Fovy type="float" default="0" description="Field of View." />
+  <Distance type="float" default="0" description="Distance." />
+  <VerticalOffset type="float" default="0" description="Vertical Offset." />
+  <TargetPitch type="float" default="0" description="Target Pitch." />
+  <TargetYaw type="float" default="0" description="Target Yaw." />
+  <HomingSensitive type="float" default="0" description="Correction when homing attacking.(?)" />
+</Template>

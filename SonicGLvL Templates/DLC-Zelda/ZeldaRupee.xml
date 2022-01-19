@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<Template>
+  <RangeIn type="float" default="1000" description="Distance from object before it spawns" />
+  <RangeOut type="float" default="1200" description="Distance from object before it despawns" />
+  <Parent type="target" description="" />
+  <Unknown1 type="uint16" default="0" description="" />
+  <Unknown2 type="uint32" default="0" description="" />
+  <Unknown3 type="float" default="0" description="" />
+  <CreateItem type="uint8" default="0" description="Type of the rupee type that will be created." />
+  <IsEventOn type="bool" default="0" description="Are they controlled by an event?" />
+  <IsShadowOff type="bool" default="0" description="Is the shadow for the object turned off?" />
+  
+  <Extra type="model" name="zdlc03_obj_rupee_green.model" condition="CreateItem == 0"/>
+  <Extra type="model" name="zdlc03_obj_rupee_blue.model" condition="CreateItem == 1"/>
+  <Extra type="model" name="zdlc03_obj_rupee_red.model" condition="CreateItem == 2"/>
+  <Extra type="model" name="zdlc03_obj_rupee_purple.model" condition="CreateItem == 3"/>
+  <Extra type="model" name="zdlc03_obj_rupee_gold.model" condition="CreateItem == 4"/>
+  
+  <Extra type="offset_rotation_y_speed" name="120" />
+  <Extra type="offset_position_y" name="0.3" />
+</Template>
