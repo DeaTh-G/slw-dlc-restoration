@@ -16,4 +16,5 @@
   <Extra type="animation" name="grn_appear.anm.hkx"/>
   
   <Extra type="offset_position_y" name="2" />
+  <Extra type="offset_rotation_y" name="180" />
 </Template>
