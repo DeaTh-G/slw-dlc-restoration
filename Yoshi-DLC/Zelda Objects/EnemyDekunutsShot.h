@@ -27,11 +27,11 @@ namespace app
         INSERT_PADDING(4);
         dekunuts_shot::CreateInfo* CInfo;
         INSERT_PADDING(12);
-        csl::math::Vector3 field_330;
-        float MaxLifeTime;
-        float LifeTime;
-        float Rotation;
-        int Flags;
+        csl::math::Vector3 field_330{};
+        float MaxLifeTime{};
+        float LifeTime{};
+        float Rotation{};
+        int Flags{};
 
     public:
         EnemyDekunutsShot(dekunuts_shot::CreateInfo* info)

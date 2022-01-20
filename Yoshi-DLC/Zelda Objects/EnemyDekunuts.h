@@ -22,7 +22,7 @@ namespace app
         int Skeletons[2]{};
         animation::AnimationResContainer DekunutsAnimationContainer{};
         animation::AnimationResContainer BaseAnimationContainer{};
-        int BulletModel;
+        int BulletModel{};
 
         EnemyDekunutsInfo()
         {
@@ -114,7 +114,7 @@ namespace app
 
         void Destructor(size_t deletingFlags)
         {
-            fnd::HFrame::__dt(&Children, 0);
+            fnd::HFrame::__dt(&Children, 2);
             AnimationListener.Destructor(0);
 
             EnemyBase::Destructor(deletingFlags);
