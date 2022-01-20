@@ -66,24 +66,26 @@ namespace app
     {
     public:
         fnd::HFrame Children{};
-        game::MoveCharacterRigidBody* movement{};
+        game::MoveCharacterRigidBody* MovementController{};
         int field_604{};
         int field_608{};
         int field_60C{};
-        csl::math::Vector3 deathPosition{};
+        csl::math::Vector3 DeathPosition{};
         float Speed{};
-        float field_624 = 225;
+        float field_624{};
         float field_628{};
         int Flags{};
 
         EnemyStalBaby()
         {
+            field_624 = 225;
+
             fnd::HFrame::__ct(&Children);
         }
 
         void Destructor(size_t deletingFlags)
         {
-            fnd::HFrame::__dt(&Children, 0);
+            fnd::HFrame::__dt(&Children, 2);
 
             EnemyBase::Destructor(deletingFlags);
         }
@@ -255,20 +257,20 @@ namespace app
 
                 void* movementMem = ((app::fnd::ReferencedObject*)gocMovement)->pAllocator->Alloc
                 (sizeof(game::MoveCharacterRigidBody), 16);
-                movement = new(movementMem) game::MoveCharacterRigidBody();
-                game::GOCMovement::SetupController(gocMovement, movement);
+                MovementController = new(movementMem) game::MoveCharacterRigidBody();
+                game::GOCMovement::SetupController(gocMovement, MovementController);
 
                 game::MoveCharacterRigidBody::Description description{ 2, 1 };
-                movement->Setup(&description);
+                MovementController->Setup(&description);
 
                 CSetAdapter::GetPosition(*(int**)((char*)this + 0x324), &position);
-                movement->SetMoveRangeBasePosition(position);
-                movement->SetMoveRange(data->MoveRange);
+                MovementController->SetMoveRangeBasePosition(position);
+                MovementController->SetMoveRange(data->MoveRange);
 
                 auto funcPtr = &EnemyStalBaby::NotifyMovementRangeOutCallback;
                 game::MoveCharacterRigidBody::FunctionPair functions{ (void*)ASLR(0x0070F590), reinterpret_cast<void*&>(funcPtr) };
                 game::MoveCharacterRigidBody::unkStruct unknown{ 0, 5 };
-                movement->SetNotifyMoveRangeOutCallback(functions, unknown, 0);
+                MovementController->SetNotifyMoveRangeOutCallback(functions, unknown, 0);
             }
 
             int* gocEnemyTarget = GameObject::GetGOC(this, GOCEnemyTargetString);
@@ -335,10 +337,10 @@ namespace app
 
         void Update(const fnd::SUpdateInfo& updateInfo) override
         {
-            if (!movement)
+            if (!MovementController)
                 return;
         
-            if (movement->IsOnGround())
+            if (MovementController->IsOnGround())
             {
                 field_628 = 0;
             }
@@ -997,7 +999,7 @@ namespace app
                         blowOffInfo.field_50.Y = 5;
                         blowOffInfo.field_60 = 4;
                         blowOffInfo.field_6C = 5;
-                        blowOffInfo.field_70 = obj->deathPosition;
+                        blowOffInfo.field_70 = obj->DeathPosition;
                         blowOffInfo.field_80 = 0;
 
                         EnemyBase::CreateEnemyBlowOffObject(obj, &blowOffInfo);
@@ -1496,7 +1498,7 @@ namespace app
             xgame::MsgKick::SetReplyForSucceed(&message);
             ObjUtil::AddScore(this, "STALBABY", &message);
             Flags |= 2;
-            deathPosition = message.field_40;
+            DeathPosition = message.field_40;
 
             int* gocEnemyHsm = GameObject::GetGOC(this, GOCEnemyHsmString);
             if (!gocEnemyHsm)
