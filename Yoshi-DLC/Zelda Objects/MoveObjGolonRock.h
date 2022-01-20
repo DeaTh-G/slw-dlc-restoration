@@ -72,6 +72,7 @@ namespace app
 
             void Destructor(size_t deletingFlags) override
             {
+                delete PhysicsWorld;
                 delete RaycastJob;
 
                 MoveController::Destructor(deletingFlags);

@@ -81,9 +81,10 @@ namespace app
 
         void Destructor(size_t deletingFlags) override
         {
-            GameObject3D::Destructor(deletingFlags);
-
             delete CInfo;
+            delete RockVisual;
+
+            GameObject3D::Destructor(deletingFlags);
         }
 
         void AddCallback(GameDocument* gameDocument) override
