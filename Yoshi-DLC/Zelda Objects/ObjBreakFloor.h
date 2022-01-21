@@ -7,10 +7,10 @@ namespace app
     class ObjBreakFloorInfo : public CObjInfo
     {
     public:
-        int Model;
+        int Model{};
         int Skeleton{};
-        int Collision;
-        debris::ResRandomSpaceDebris Debris;
+        int Collision{};
+        debris::ResRandomSpaceDebris Debris{};
 
         void Initialize(GameDocument& gameDocument) override
         {
@@ -47,7 +47,7 @@ namespace app
         void Destructor(size_t deletingFlags)
         {
             for (fnd::HFrame& part : Parts)
-                fnd::HFrame::__dt(&part, 0);
+                fnd::HFrame::__dt(&part, 2);
 
             CSetObjectListener::Destructor(deletingFlags);
         }
