@@ -5,9 +5,9 @@ namespace app
     class ObjZeldaItemTreeInfo : public CObjInfo
     {
     public:
-        int Model;
-        int Skeleton;
-        int Animation;
+        int Model{};
+        int Skeleton{};
+        int Animation{};
 
         void Initialize(GameDocument& gameDocument) override
         {
