@@ -81,10 +81,9 @@ namespace app
 
         void Destructor(size_t deletingFlags) override
         {
-            delete CInfo;
-            delete RockVisual;
-
             GameObject3D::Destructor(deletingFlags);
+
+            delete CInfo;
         }
 
         void AddCallback(GameDocument* gameDocument) override
@@ -102,7 +101,7 @@ namespace app
             if (!gocTransform)
                 return;
 
-            csl::math::Vector3 downVector { 0, -1, 0 };
+            csl::math::Vector3 downVector{ 0, -1, 0 };
             csl::math::Quaternion rotation = GetRotationFromMatrix(&CInfo->TransformMatrix);
             csl::math::Vector3 position = *(csl::math::Vector3*)&CInfo->TransformMatrix.data[3];
             math::Vector3Rotate(&downVector, &rotation, &downVector);
@@ -121,7 +120,7 @@ namespace app
             {
                 int modelCount = 2;
                 fnd::GOCVisualContainer::Setup(gocVContainer, &modelCount);
-                
+
                 int* gocVisual = fnd::GOComponent::CreateSingle(this, GOCVisualModel);
                 if (gocVisual)
                 {
@@ -217,12 +216,12 @@ namespace app
             {
                 game::ShadowSphereShapeCInfo shadowInfo;
                 game::ShadowSphereShapeCInfo* ppShadowInfo = &shadowInfo;
-                
+
                 game::ShadowSphereShapeCInfo::__ct(&shadowInfo, 20);
                 shadowInfo.field_04 = 5;
 
                 game::GOCShadowSimple::Setup(gocShadow, (int**)&ppShadowInfo);
-                
+
                 math::Vector3Scale(&downVector, 20, &downVector);
                 game::GOCShadowSimple::SetLocalOffsetPosition(gocShadow, &downVector);
                 game::GOCShadowSimple::SetVisible(gocShadow, false);
@@ -232,7 +231,7 @@ namespace app
             game::GOCEffect::SimpleSetupEx(this, 1, 0);
 
             fnd::GOComponent::EndSetup(this);
-            
+
             CInfo = NULL;
 
             State = ObjGolonRockState::STATE_SHOOT;
@@ -336,7 +335,7 @@ namespace app
         {
             if (State == ObjGolonRockState::STATE_DISAPPEAR)
                 return;
-         
+
             State = ObjGolonRockState::STATE_DISAPPEAR;
             AppearTime = 0;
         }
@@ -350,10 +349,10 @@ namespace app
         {
             if (State == ObjGolonRockState::STATE_DISAPPEAR)
                 return;
-        
+
             csl::math::Vector3 moveDir = MovementController->GetWorldMoveDir();
             math::Vector3Scale(&moveDir, -1, &moveDir);
-            xgame::MsgDamage msg { 2, 8, 3, &message, &moveDir };
+            xgame::MsgDamage msg{ 2, 8, 3, &message, &moveDir };
             SendMessageImm(message.ActorID, &msg);
             if (msg.IsComingReply())
             {
@@ -389,12 +388,12 @@ namespace app
             int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
             if (!gocShadow)
                 return;
-            
+
             game::GOCShadowSimple::SetVisible(gocShadow, true);
 
             State = ObjGolonRockState::STATE_MOVE;
 
-            game::SoundFollowFrameInfo soundInfo { "obj_goron_rolling" };
+            game::SoundFollowFrameInfo soundInfo{ "obj_goron_rolling" };
             int* gocSound = GameObject::GetGOC(this, GOCSoundString);
             if (gocSound)
                 game::GOCSound::Play3DFollow(gocSound, SoundHandle, &soundInfo);
@@ -473,5 +472,5 @@ inline static app::ObjGolonRock* app::golon_rock::CreateGolonRock(GameDocument& 
     if (object)
         GameDocument::AddGameObject(*(GameDocument**)&gameDocument, object);
 
-    return object;
+        return object;
 }

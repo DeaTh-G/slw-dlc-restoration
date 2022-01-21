@@ -27,21 +27,21 @@ namespace app
                 INSERT_PADDING(3);
                 short field_3C{};
                 short field_3E{};
-                void (ObjGolonRock::*NotifyMoveEndCallback)();
+                void (ObjGolonRock::* NotifyMoveEndCallback)();
                 short field_44{};
                 short field_46{};
-                void (ObjGolonRock::*NotifyPassPlayerCallback)();
+                void (ObjGolonRock::* NotifyPassPlayerCallback)();
                 ObjGolonRock* Object{};
 
             public:
                 SetupParam(csl::math::Vector3* position, float speed, bool isCheckFall,
-                    void (ObjGolonRock::*moveEndCallback)(), void (ObjGolonRock::*passPlayerCallback)(), ObjGolonRock* obj)
+                    void (ObjGolonRock::* moveEndCallback)(), void (ObjGolonRock::* passPlayerCallback)(), ObjGolonRock* obj)
                 {
                     Position = *position;
                     YOffset = 20;
                     PopupTime = 0.3f;
                     RollWaitTime = 0.4f;
-                    Speed = speed;  
+                    Speed = speed;
                     field_20 = 0.034906585f;
                     field_24 = 1.5707964f;
                     field_30 = 300;
@@ -72,13 +72,12 @@ namespace app
 
             void Destructor(size_t deletingFlags) override
             {
-                delete PhysicsWorld;
                 delete RaycastJob;
 
                 MoveController::Destructor(deletingFlags);
             }
 
-        private: 
+        private:
             float PopupTime{};
             float RollWaitTime{};
             float Speed{};
@@ -106,21 +105,21 @@ namespace app
             float field_7C{};
             short field_80{};
             short field_82{};
-            void (ObjGolonRock::*NotifyMoveEndCallback)();
+            void (ObjGolonRock::* NotifyMoveEndCallback)();
             short field_88{};
             short field_8A{};
-            void (ObjGolonRock::*NotifyPassPlayerCallback)();
+            void (ObjGolonRock::* NotifyPassPlayerCallback)();
             ObjGolonRock* Object{};
             int field_94{};
             int field_98{};
             int field_9C{};
 
         protected:
-            int Update(const fnd::SUpdateInfo& updateInfo) override 
+            int Update(const fnd::SUpdateInfo& updateInfo) override
             {
                 GOCMovement* gocMovement = GetOwnerMovement();
                 int* contextParam = game::GOCMovement::GetContextParam((int*)gocMovement);
-                
+
                 switch (MovementMode)
                 {
                 case app::game::MoveObjGolonRock::Mode::MODE_SHOOT:
@@ -246,8 +245,8 @@ namespace app
             bool CheckFall(csl::math::Vector3* rotDir, float deltaTime)
             {
                 bool result{};
-                
-                int isFalling[3] { -1, -1, -1 };
+
+                int isFalling[3]{ -1, -1, -1 };
                 if (RaycastJob->Commands.length)
                 {
                     PhysicsRaycastCommand* item = RaycastJob->Commands.pBuffer;
@@ -376,14 +375,14 @@ namespace app
 
             void const UpdateLocalRotRad(float deltaTime)
             {
-                csl::math::Vector3 vector { field_60 };
+                csl::math::Vector3 vector{ field_60 };
                 float length = math::Vector3NormalizeWithLength(&vector, &vector);
                 if (length <= 0)
                     field_7C = SonicUSA::System::RadianMaskS(field_7C + length / YOffset);
 
                 float offset = 0;
-                csl::math::Vector3 upVector { 0, 1, 0 };
-                csl::math::Vector3 depthVector { 0, 0, 1 };
+                csl::math::Vector3 upVector{ 0, 1, 0 };
+                csl::math::Vector3 depthVector{ 0, 0, 1 };
                 csl::math::Vector3 crossVector{};
                 math::Vector3RotateY(&depthVector, field_78, &depthVector);
                 float dot = math::Vector3DotProduct(&depthVector, &vector);
@@ -527,7 +526,7 @@ namespace app
                 int* gravityField = ObjUtil::GetGravityField(document, &param.Position);
                 if (!gravityField)
                     return;
-            
+
                 int* path = ObjUtil::GetGravityPathInsideCylinder(gravityField);
                 if (!path)
                     return;
@@ -545,7 +544,7 @@ namespace app
                 field_50 = math::Vector3Magnitude(&splinePoint);
                 if (!math::Vector3NormalizeIfNotZero(&splinePoint, &splinePoint))
                     return;
-            
+
                 float dot = math::Vector3DotProduct(&someVector, &splinePoint);
                 dot = acosf(csl::math::Clamp(dot, -1, 1));
 
@@ -553,14 +552,14 @@ namespace app
                 math::Vector3CrossProduct(&someVector2, &someVector, &cross);
                 if (math::Vector3DotProduct(&cross, &splinePoint) < 0)
                     dot = -dot;
-            
+
                 field_54 = dot;
             }
 
             csl::math::Quaternion const GetLocalRotate(csl::math::Quaternion* rotation)
             {
-                csl::math::Vector3 upVector { 0, 1, 0 };
-                csl::math::Vector3 forwardVector { -1, 0, 0 };
+                csl::math::Vector3 upVector{ 0, 1, 0 };
+                csl::math::Vector3 forwardVector{ -1, 0, 0 };
 
                 csl::math::Quaternion r{};
 
@@ -587,7 +586,7 @@ namespace app
                 math::Vector3Rotate(&worldDir, (csl::math::Quaternion*)(contextParam + 4), &field_60);
                 if (math::Vector3NormalizeIfNotZero(&worldDir, &worldDir))
                     return worldDir;
-                
+
                 PathEvaluator.GetTangent(&worldDir, PathEvaluator.field_08);
                 float scalar = csl::math::Select(((float*)gocMovement)[6], fabs(1), -abs(1));
                 math::Vector3Scale(&worldDir, scalar, &worldDir);
