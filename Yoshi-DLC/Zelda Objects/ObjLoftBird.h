@@ -28,8 +28,8 @@ namespace app
     class ObjLoftBirdInfo : public CObjInfo
     {
     public:
-        int Models[2];
-        int Skeletons[2];
+        int Models[2]{};
+        int Skeletons[2]{};
         animation::AnimationResContainer LinkAnimationContainer{};
         animation::AnimationResContainer BirdAnimationContainer{};
         int TexSrtAnimContainer[4]{};
@@ -133,6 +133,11 @@ namespace app
         void Destructor(size_t deletingFlags)
         {
             AnimationListener.Destructor(0);
+            if (PointLights[0])
+                PointLights[0]->Kill();
+
+            if (PointLights[1])
+                PointLights[1]->Kill();
 
             CSetObjectListener::Destructor(deletingFlags);
         }
@@ -167,26 +172,25 @@ namespace app
             {
                 int modelCount = 2;
                 fnd::GOCVisualContainer::Setup(gocVContainer, &modelCount);
-
+                
+                csl::math::Vector3 scale{ 2, 2, 2 };
                 for (size_t i = 0; i < 2; i++)
                 {
                     int* gocVisual = fnd::GOComponent::CreateSingle(this, GOCVisualModel);
                     if (gocVisual)
                     {
-                        csl::math::Vector3 scale{ 2, 2, 2 };
-
                         fnd::GOCVisualModel::VisualDescription visualDescriptor{};
-                        fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
 
                         visualDescriptor.Model = info->Models[i];
                         visualDescriptor.Skeleton = info->Skeletons[i];
                         fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
-                        fnd::GOCVisualContainer::Add(gocVContainer, gocVisual);
                         fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
+
+                        fnd::GOCVisualContainer::Add(gocVContainer, gocVisual);
                         fnd::GOCVisual::SetVisible(gocVisual, false);
                     }
                 }
-
+            
                 int* gocAContainer = GameObject::GetGOC(this, GOCAnimation);
                 if (gocAContainer)
                 {
