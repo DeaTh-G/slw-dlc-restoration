@@ -62,10 +62,10 @@ namespace app
     class ObjZeldaPopupItemInfo : public CObjInfo
     {
     public:
-        int Models[6];
-        int Skeletons[2];
-        int Animations[2];
-        GameObjectHandleBase PopupHandle;
+        int Models[6]{};
+        int Skeletons[2]{};
+        int Animations[2]{};
+        GameObjectHandleBase PopupHandle{};
 
         void Initialize(GameDocument& gameDocument) override
         {
