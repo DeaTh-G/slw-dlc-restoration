@@ -5,10 +5,10 @@ namespace app
     class ObjBreakRoofInfo : public CObjInfo
     {
     public:
-        int Model;
-        int Skeleton;
-        int Collision;
-        debris::ResRandomSpaceDebris Debris;
+        int Model{};
+        int Skeleton{};
+        int Collision{};
+        debris::ResRandomSpaceDebris Debris{};
 
         void Initialize(GameDocument& gameDocument) override
         {
