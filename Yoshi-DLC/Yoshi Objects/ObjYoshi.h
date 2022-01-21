@@ -169,6 +169,13 @@ namespace app
             Index = info.Index;
         }
 
+        void Destructor(size_t deletingFlags) override
+        {
+            UvLinkController.~EnemyUvAnimLinkController();
+
+            GameObject3D::Destructor(deletingFlags);
+        }
+
         void AddCallback(GameDocument* gameDocument) override
         {
             fnd::GOComponent::Create(this, GOCGravity);

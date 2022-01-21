@@ -133,6 +133,7 @@ namespace app
         void Destructor(size_t deletingFlags)
         {
             AnimationListener.Destructor(0);
+            UvLinkController.~EnemyUvAnimLinkController();
             if (PointLights[0])
                 PointLights[0]->Kill();
 
