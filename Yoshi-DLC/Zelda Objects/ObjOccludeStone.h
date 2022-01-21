@@ -5,10 +5,10 @@ namespace app
     class ObjOccludeStoneInfo : public CObjInfo
     {
     public:
-        int Model;
-        int ShadowModel;
-        int Collision;
-        debris::ResRandomSpaceDebris Debris;
+        int Model{};
+        int ShadowModel{};
+        int Collision{};
+        debris::ResRandomSpaceDebris Debris{};
 
         ObjOccludeStoneInfo() {}
 
