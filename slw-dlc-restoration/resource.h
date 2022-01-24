@@ -1,6 +1,7 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by Yoshi-DLC.rc
+// Used by slw-dlc-restoration.rc
+//
 
 // Next default values for new objects
 // 

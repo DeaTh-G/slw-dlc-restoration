@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{947B9A91-A7C4-4819-AE68-2EB3A56E9B59}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Yoshi-DLC</RootNamespace>
+    <RootNamespace>slw-dlc-restoration</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -71,21 +71,21 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <TargetName>DLC-Restoration</TargetName>
+    <TargetName>slw-dlc-restoration</TargetName>
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>Yoshi-DLC</TargetName>
+    <TargetName>slw-dlc-restoration</TargetName>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <TargetName>DLC-Restoration</TargetName>
+    <TargetName>slw-dlc-restoration</TargetName>
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>Yoshi-DLC</TargetName>
+    <TargetName>slw-dlc-restoration</TargetName>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -375,6 +375,7 @@
     <ClInclude Include="hh\ut\Packfile.h" />
     <ClInclude Include="InfoFileLoader.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="slw-dlc-restoration.h" />
     <ClInclude Include="SonicUSA\System.h" />
     <ClInclude Include="SonicUSA\System\Random.h" />
     <ClInclude Include="Yoshi Objects\EnemyPiranhaPlant.h" />
@@ -386,7 +387,6 @@
     <ClInclude Include="Yoshi Objects\ObjYoshi.h" />
     <ClInclude Include="Yoshi Objects\ObjYoshiGoal.h" />
     <ClInclude Include="Yoshi Objects\ObjYoshiOneUp.h" />
-    <ClInclude Include="Yoshi-DLC.h" />
     <ClInclude Include="LWVariables.h" />
     <ClInclude Include="MemAccess.h" />
     <ClInclude Include="pch.h" />
@@ -449,8 +449,8 @@
     <ClCompile Include="app\xgame.cpp" />
     <ClCompile Include="app\xgame\CStageSoundDirector.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="slw-dlc-restoration.cpp" />
     <ClCompile Include="Yoshi Objects\EggManager.cpp" />
-    <ClCompile Include="Yoshi-DLC.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -459,7 +459,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Yoshi-DLC.rc" />
+    <ResourceCompile Include="slw-dlc-restoration.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

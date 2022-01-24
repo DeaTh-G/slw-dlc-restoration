@@ -235,12 +235,12 @@ extern "C"
     {
         std::string dir = modInfo->CurrentMod->Path;
 
-        INIReader* reader = new INIReader("DLC-Restoration.ini");
+        INIReader* reader = new INIReader("slw-dlc-restoration.ini");
         if (reader->ParseError() != 0)
-            delete reader, reader = new INIReader(dir + "DLC-Restoration.ini");
+            delete reader, reader = new INIReader(dir + "slw-dlc-restoration.ini");
 
         if (reader->ParseError() != 0)
-            MessageBox(NULL, L"Failed to parse DLC-Restoration.ini", NULL, MB_ICONERROR);
+            MessageBox(NULL, L"Failed to parse slw-dlc-restoration.ini", NULL, MB_ICONERROR);
 
         IsConsistentShadow = reader->GetBoolean("YoshiTweaks", "isConsistentShadows", false);
         DisablePipeTransition = reader->GetBoolean("YoshiTweaks", "disablePipeTransition", false);

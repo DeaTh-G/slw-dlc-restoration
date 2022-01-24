@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Yoshi-DLC", "Yoshi-DLC\Yoshi-DLC.vcxproj", "{947B9A91-A7C4-4819-AE68-2EB3A56E9B59}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "slw-dlc-restoration", "slw-dlc-restoration\slw-dlc-restoration.vcxproj", "{947B9A91-A7C4-4819-AE68-2EB3A56E9B59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
