@@ -175,7 +175,7 @@ namespace app
                         game::GOCEffect::CreateEffect(gocEffect, "ef_dl2_yossi_birth");
                         game::GOCSound::Play(gocSound, deviceTag, "obj_yossy_1up", 0);
                     }
-                    GameObject::Kill(this);
+                    Kill();
                 }
             }
         }
@@ -476,9 +476,9 @@ namespace app
 
                     csl::math::Vector3 objectPosition = *(csl::math::Vector3*)(gocTransform + 0x50);
                     float length = game::PathEvaluator::GetLength(&pathEvaluator);
-                    game::PathEvaluator::GetClosestPositionAlongSpline(&pathEvaluator, &objectPosition, &splinePoint, 0, &length);
-                    game::PathEvaluator::SetDistance(&pathEvaluator, splinePoint.X);
-                    game::PathEvaluator::GetPNT(&pathEvaluator, &pathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
+                    game::PathEvaluator::GetClosestPositionAlongSpline(&pathEvaluator, &objectPosition, 0, length, &length);
+                    game::PathEvaluator::SetDistance(&pathEvaluator, length);
+                    game::PathEvaluator::GetPNT(&pathEvaluator, pathEvaluator.field_08, &splinePoint, &someVector, &someVector2);
                     math::Vector3CrossProduct(&someVector, &someVector2, &objectPosition);
                     csl::math::Matrix34 pointMatrix{};
                     *(csl::math::Vector3*)&pointMatrix.data[0][0] = objectPosition;
@@ -585,7 +585,7 @@ namespace app
             int* gocGravity = GameObject::GetGOC(this, GOCGravityString);
             if (!gocTransform || !gocGravity)
             {
-                Kill(this);
+                Kill();
                 return;
             }
 
@@ -611,7 +611,7 @@ namespace app
             }
             Frame++;
             if (Frame > 300)
-                Kill(this);
+                Kill();
         }
 
         void StateMoveToExtrication(const fnd::SUpdateInfo& updateInfo)

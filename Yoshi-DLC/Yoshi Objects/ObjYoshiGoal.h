@@ -486,7 +486,7 @@ namespace app
                 if (gocSound)
                     game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggitem_break", 0);
 
-                GameObject::Kill(egg);
+                GameObject::Kill();
             }
 
             eggManager->EggsP1.clear();
@@ -502,7 +502,7 @@ namespace app
                 if (gocSound)
                     game::GOCSound::Play(gocSound, deviceTag, "obj_yossyeggitem_break", 0);
 
-                GameObject::Kill(egg);
+                GameObject::Kill();
             }
 
             eggManager->EggsP2.clear();

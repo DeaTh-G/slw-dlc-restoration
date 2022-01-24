@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<Template>
+  <RangeIn type="float" default="1000" description="Distance from object before it spawns" />
+  <RangeOut type="float" default="1200" description="Distance from object before it despawns" />
+  <Parent type="target" description="" />
+  <Unknown1 type="uint16" default="0" description="" />
+  <Unknown2 type="uint32" default="0" description="" />
+  <Unknown3 type="float" default="0" description="" />
+  <ItemType type="enum" default="0" description="Type of the item the chest will hold (0 = Heart Container | 1 = Purple Rupee | 2 = Gold Rupee | 3 = Green Rupee)." />
+  
+  <Extra type="model" name="zdlc03_obj_treasurebox.model" />
+</Template>

@@ -24,6 +24,7 @@ namespace app
 
         void Destructor(size_t deletingFlags) override
         {
+            EnemyPiranhaPlantInfo::~EnemyPiranhaPlantInfo();
             animation::AnimationResContainer::__dt(&AnimationContainer);
             EnemyInfo::Destructor(deletingFlags);
         }
@@ -32,8 +33,6 @@ namespace app
         {
             int packFile = 0;
             int animationScript[3]{};
-
-            sizeof(EnemyInfo);
 
             EnemyInfo::GetModelResource(this, &Model, "enm_packunflower");
             EnemyInfo::GetSkeletonResource(this, &Skeleton, "enm_packunflower");
@@ -124,7 +123,7 @@ namespace app
             }
 
             EnemyBase::CreateCenterPositionFrame(this, &centerFrame);
-            fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(this);
+            fnd::HFrame* centerPos = GetCenterPositionFrame();
             fnd::HFrame::AddChild(centerPos, &Parent);
 
             int* gocVisual = GameObject::GetGOC(this, GOCVisual);
@@ -135,7 +134,7 @@ namespace app
                 fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
                 visualDescriptor.Model = info->Model;
                 visualDescriptor.Skeleton = info->Skeleton;
-                visualDescriptor.Parent = EnemyBase::GetCenterPositionFrame(this);
+                visualDescriptor.Parent = GetCenterPositionFrame();
                 visualDescriptor.Animation |= 0x400000;
                 fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
 
@@ -213,7 +212,7 @@ namespace app
                 ObjUtil::SetupCollisionFilter(9, &collisionInfo);
                 collisionInfo.field_0C = 1;
                 collisionInfo.field_04 |= 1;
-                collisionInfo.Parent = EnemyBase::GetCenterPositionFrame(this);
+                collisionInfo.Parent = GetCenterPositionFrame();
                 game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
 
                 /* Unknown Collision */
@@ -349,9 +348,9 @@ namespace app
                     csl::math::Vector3 position{};
                     *obj->Message = message;
 
-                    fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
+                    fnd::HFrame* centerPos = obj->GetCenterPositionFrame();
                     math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
-                    xgame::MsgDamage::SetReply(&message, &position, 1);
+                    message.SetReply(&position, 1);
 
                     int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
                     if (!gocEnemyHsm)
@@ -418,9 +417,9 @@ namespace app
                     csl::math::Vector3 position{};
                     *obj->Message = message;
 
-                    fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
+                    fnd::HFrame* centerPos = obj->GetCenterPositionFrame();
                     math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
-                    xgame::MsgDamage::SetReply(&message, &position, 1);
+                    message.SetReply(&position, 1);
 
                     int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
                     if (!gocEnemyHsm)
@@ -498,7 +497,7 @@ namespace app
                     if (!gocTransform)
                         return 0;
 
-                    fnd::HFrame* center = EnemyBase::GetCenterPositionFrame(obj);
+                    fnd::HFrame* center = obj->GetCenterPositionFrame();
                     math::CalculatedTransform::GetTranslation(&center->Transform, &objectPos);
                     csl::math::Vector3 rotX = *(csl::math::Vector3*)&center->Transform.data[1][0];
                     csl::math::Vector3 rotY = *(csl::math::Vector3*)&center->Transform.data[2][0];
@@ -522,9 +521,9 @@ namespace app
                     csl::math::Vector3 position{};
                     *obj->Message = message;
 
-                    fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
+                    fnd::HFrame* centerPos = obj->GetCenterPositionFrame();
                     math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
-                    xgame::MsgDamage::SetReply(&message, &position, 1);
+                    message.SetReply(&position, 1);
 
                     int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
                     if (!gocEnemyHsm)
@@ -596,9 +595,9 @@ namespace app
                     csl::math::Vector3 position{};
                     *obj->Message = message;
 
-                    fnd::HFrame* centerPos = EnemyBase::GetCenterPositionFrame(obj);
+                    fnd::HFrame* centerPos = obj->GetCenterPositionFrame();
                     math::CalculatedTransform::GetTranslation(&centerPos->Transform, &position);
-                    xgame::MsgDamage::SetReply(&message, &position, 1);
+                    message.SetReply(&position, 1);
 
                     int* gocEnemyHsm = GameObject::GetGOC(obj, GOCEnemyHsmString);
                     if (!gocEnemyHsm)
@@ -698,7 +697,7 @@ namespace app
                         enemy::DeadEffectCInfo effectInfo{};
                         math::Transform transform{};
 
-                        fnd::HFrame* center = EnemyBase::GetCenterPositionFrame(obj);
+                        fnd::HFrame* center = obj->GetCenterPositionFrame();
                         csl::math::Vector3 position = *(csl::math::Vector3*)&center->Transform.data[3][0];
                         ObjUtil::AddScore(obj, "PIRANHAPLANT", obj->Message);
                         
@@ -723,8 +722,8 @@ namespace app
                         void* enemyManager = EnemyManager::GetService((GameDocument*)obj->field_24[1]);
                         EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
                         EnemyBase::ProcMission(obj, obj->Message);
-                        CSetObjectListener::SetStatusRetire(obj);
-                        GameObject::Kill(obj);
+                        obj->SetStatusRetire();
+                        obj->Kill();
                         
                         return 1;
                     }
@@ -762,7 +761,7 @@ namespace app
                     }
 
                     csl::math::Quaternion rotation { 0, 0, 0, 1 };
-                    fnd::HFrame* center = EnemyBase::GetCenterPositionFrame(obj);
+                    fnd::HFrame* center = obj->GetCenterPositionFrame();
                     fnd::HFrame::SetLocalRotation(center, &rotation);
                 }
                 else

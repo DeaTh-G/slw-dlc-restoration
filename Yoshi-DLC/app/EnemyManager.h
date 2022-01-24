@@ -8,6 +8,8 @@ namespace app
         inline static FUNCTION_PTR(void*, __cdecl, staticClass, ASLR(0x00728500));
         inline static FUNCTION_PTR(void, __thiscall, CreateDeadEffect, ASLR(0x00728630), void* enemyManager, enemy::DeadEffectCInfo* effectInfo);
 
+        static void CreateDeadEffectHook();
+
         static void* GetService(GameDocument* gameDocument)
         {
             void* managerClass = staticClass();

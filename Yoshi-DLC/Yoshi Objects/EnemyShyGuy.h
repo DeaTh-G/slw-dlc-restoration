@@ -156,7 +156,7 @@ namespace app
                 ObjUtil::SetupCollisionFilter(9, &collisionInfo);
                 collisionInfo.field_08 = 0x20000;
                 collisionInfo.field_04 |= 1;
-                collisionInfo.Parent = EnemyBase::GetCenterPositionFrame(this);
+                collisionInfo.Parent = GetCenterPositionFrame();
 
                 game::GOCCollider::CreateShape(gocCollider, &collisionInfo);
             }
@@ -533,7 +533,7 @@ namespace app
             enemy::DeadEffectCInfo effectInfo{};
 
             math::CalculatedTransform::GetTranslation((csl::math::Matrix34*)(gocTransform + 0x44), &translation);
-            xgame::MsgDamage::SetReply(&message, &translation, 1);
+            message.SetReply(&translation, 1);
             ObjUtil::AddScore(this, "SHYGUY", &message);
 
             enemy::DeadEffectCInfo::__ct(&effectInfo);
@@ -555,8 +555,8 @@ namespace app
             void* enemyManager = EnemyManager::GetService((GameDocument*)field_24[1]);
             EnemyManager::CreateDeadEffect(enemyManager, &effectInfo);
             EnemyBase::ProcMission(this, &message);
-            CSetObjectListener::SetStatusRetire(this);
-            GameObject::Kill(this);
+            SetStatusRetire();
+            Kill();
         }
 
         void ProcMsgKick(xgame::MsgKick& message)
@@ -581,8 +581,8 @@ namespace app
             EnemyBase::CreateEnemyBlowOffObject(this, &blowOffInfo);
             xgame::MsgKick::SetReplyForSucceed(&message);
             ObjUtil::AddScore(this, "SHYGUY", &message);
-            CSetObjectListener::SetStatusRetire(this);
-            GameObject::Kill(this);
+            SetStatusRetire();
+            Kill();
         }
 
         void ProcMsgNotifyObjectEvent(xgame::MsgNotifyObjectEvent& message)
@@ -597,7 +597,7 @@ namespace app
 
         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
         {
-            EnemyBase::SendTouchDamage(this, (xgame::MsgDamage&)message);
+            SendTouchDamage((xgame::MsgDamage&)message);
         }
 
         void NotifyMovementStopCallback()

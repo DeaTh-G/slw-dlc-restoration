@@ -126,7 +126,7 @@ void app::EggManager::DoCheckClearAllEggEndExtrication(int playerNo)
                 return;
 
         for (app::ObjEgg* egg : EggsP1)
-            GameObject::Kill(egg);
+            egg->Kill();
         
         EggsP1.clear();
         IsSpaceShrink &= ~2;
@@ -144,7 +144,7 @@ void app::EggManager::DoCheckClearAllEggEndExtrication(int playerNo)
                 return;
 
         for (app::ObjEgg* egg : EggsP2)
-            GameObject::Kill(egg);
+            egg->Kill();
 
         EggsP2.clear();
         IsSpaceShrink &= ~0x20;

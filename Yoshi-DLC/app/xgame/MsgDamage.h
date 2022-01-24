@@ -5,29 +5,22 @@ namespace app
     namespace AttackType
     {
         inline static FUNCTION_PTR(bool, __cdecl, IsDamaged, ASLR(0x00844C60), int AttackType, int a2);
+        inline static FUNCTION_PTR(bool, __cdecl, And, ASLR(0x00844C30), int AttackType, int a2);
     }
 
     namespace xgame
     {
-        class MsgDamage : public fnd::Message
+        class MsgDamage : public MsgDamageBase
         {
         private:
+            inline static FUNCTION_PTR(bool, __thiscall, __ct2, ASLR(0x004D8500), MsgDamage* This, int a1, int a2, int a3, csl::math::Vector3* a4, csl::math::Vector3* a5);
             inline static FUNCTION_PTR(bool, __thiscall, __ct, ASLR(0x004D8580), MsgDamage* This, int a1, int a2, int a3, xgame::MsgHitEventCollision* hitMessage, csl::math::Vector3* position);
+            inline static FUNCTION_PTR(int, __thiscall, f_SetReply, ASLR(0x004D86C0), MsgDamage* message, csl::math::Vector3* translation, int a3);
+            inline static FUNCTION_PTR(bool, __thiscall, f_IsComingReply, ASLR(0x004D8750), MsgDamage* message);
 
         public:
-            fnd::HandleBase field_18{};
-            int field_20{};
-            int field_24{};
-            int field_28{};
-            int field_2C{};
-            csl::math::Vector3 field_30{};
-            csl::math::Vector3 field_40{};
-            int field_50{};
-            int field_54{};
-            int field_58{};
-            int field_5C{};
             int AttackType{};
-            int field_64{};
+            int HitCount{};
             int field_68{};
             int field_6C{};
             int field_70{};
@@ -43,9 +36,14 @@ namespace app
             int field_98{};
             int field_9C{};
 
-            MsgDamage() : Message()
+            MsgDamage() : MsgDamageBase()
             {
                 Type = fnd::PROC_MSG_DAMAGE;
+            }
+
+            MsgDamage(int a1, int a2, int a3, csl::math::Vector3* a4, csl::math::Vector3* a5) : MsgDamage()
+            {
+                __ct2(this, a1, a2, a3, a4, a5);
             }
 
             MsgDamage(int a1, int a2, int a3, xgame::MsgHitEventCollision* hitMessage, csl::math::Vector3* position) : MsgDamage()
@@ -53,7 +51,15 @@ namespace app
                 __ct(this, a1, a2, a3, hitMessage, position);
             }
 
-            inline static FUNCTION_PTR(int, __thiscall, SetReply, ASLR(0x004D86C0), MsgDamage* message, csl::math::Vector3* translation, int a3);
+            int SetReply(csl::math::Vector3* translation, int a2)
+            {
+                return f_SetReply(this, translation, a2);
+            }
+
+            bool IsComingReply()
+            {
+                return f_IsComingReply(this);
+            }
         };
     }
 }

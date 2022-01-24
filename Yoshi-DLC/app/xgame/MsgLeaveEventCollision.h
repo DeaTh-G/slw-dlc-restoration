@@ -7,11 +7,14 @@ namespace app
         class MsgLeaveEventCollision : public fnd::Message
         {
         public:
-            int field_18;
-            int field_1C;
-            int ActorID;
-            int field_24;
-            int field_28;
+            fnd::HandleBase field_18{};
+            fnd::HandleBase field_20{};
+            int ActorID{};
+
+            MsgLeaveEventCollision() : Message()
+            {
+                Type = fnd::PROC_MSG_LEAVE_EVENT_COLLISION;
+            }
         };
     }
 }

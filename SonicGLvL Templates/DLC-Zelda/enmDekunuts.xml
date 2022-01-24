@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<Template>
+  <RangeIn type="float" default="1000" description="Distance from object before it spawns" />
+  <RangeOut type="float" default="1200" description="Distance from object before it despawns" />
+  <Parent type="target" description="" />
+  <Unknown1 type="uint16" default="0" description="" />
+  <Unknown2 type="uint32" default="0" description="" />
+  <Unknown3 type="float" default="0" description="" />
+  <MessageBoot type="bool" default="0" description="Start with a message?" />
+  <AppearRange type="float" default="0" description="Range of the area where they will appear." />
+  <SearchRange type="float" default="0" description="Range of the area where they will search for the player." />
+  <RangeAddX type="float" default="0" description="Additional range on the X axis." />
+  <RangeAddY type="float" default="0" description="Additional range on the Y axis." />
+  <RangeAddZ type="float" default="0" description="Additional range on the Z axis." />
+  
+  <Extra type="model" name="enm_dekunuts.model" />
+  <Extra type="skeleton" name="enm_dekunuts.skl.hkx" />
+  <Extra type="animation" name="dek_idle_loop.anm.hkx"/>
+</Template>

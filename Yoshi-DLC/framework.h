@@ -95,3 +95,9 @@ const HMODULE MODULE_HANDLE = GetModuleHandle(NULL);
         FUNCTION_PTR(returnType, __thiscall, Base##function, location, void* This, __VA_ARGS__);\
         return Base##function((void*)this, __VA_ARGS__);\
     }
+
+#define WRITE_CALL(location, function) \
+    { \
+        WRITE_MEMORY_WITH_TYPE(location, uint8_t, 0xE8); \
+        WRITE_MEMORY_WITH_TYPE(location + 1, uint32_t, (uint32_t)(function) - (size_t)(location) - 5); \
+    }

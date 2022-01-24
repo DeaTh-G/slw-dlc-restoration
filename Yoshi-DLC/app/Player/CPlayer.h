@@ -8,6 +8,7 @@ namespace app
         {
         public:
             static void UpdatePlayerInformation();
+            static void ProcessMessage();
         };
     }
 }

@@ -79,6 +79,33 @@
     <Filter Include="Header Files\SonicUSA\System">
       <UniqueIdentifier>{a98c8d9b-5a87-4d92-9999-1020bf371552}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Zelda Objects">
+      <UniqueIdentifier>{4e926ee3-ba6a-4953-8485-7f7ee9c29189}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\debris">
+      <UniqueIdentifier>{dfac294c-95bb-4f91-a544-b814a2f3f902}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\Effect">
+      <UniqueIdentifier>{f9e6acdf-fbb3-4161-9352-666234f60dd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\ObjUtil">
+      <UniqueIdentifier>{2f04cf22-6d67-4ed3-baaf-71477161913d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\res">
+      <UniqueIdentifier>{5a36eb5d-7911-475f-a5a0-a8d3d32d39b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\hh\mr">
+      <UniqueIdentifier>{a9a2f64f-a25d-4575-a3f6-7bfd8a0d23ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\Camera">
+      <UniqueIdentifier>{ebda2c55-7fe0-4d1c-be40-0b9ee87105af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\Render">
+      <UniqueIdentifier>{00215609-1c4c-435a-abf0-af04c491b5a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\gfx">
+      <UniqueIdentifier>{47feaff0-eba3-40d1-9d43-5e79d506a98f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -195,9 +222,6 @@
     <ClInclude Include="app\game\GOCSound.h">
       <Filter>Header Files\app\game</Filter>
     </ClInclude>
-    <ClInclude Include="app\game\GOCVisualModel.h">
-      <Filter>Header Files\app\game</Filter>
-    </ClInclude>
     <ClInclude Include="app\game\ShadowShapeCInfo.h">
       <Filter>Header Files\app\game</Filter>
     </ClInclude>
@@ -280,9 +304,6 @@
       <Filter>Header Files\Yoshi Objects</Filter>
     </ClInclude>
     <ClInclude Include="Yoshi Objects\ObjYoshiCoin.h">
-      <Filter>Header Files\Yoshi Objects</Filter>
-    </ClInclude>
-    <ClInclude Include="Yoshi Objects\ObjYoshiJumpBoard.h">
       <Filter>Header Files\Yoshi Objects</Filter>
     </ClInclude>
     <ClInclude Include="Yoshi Objects\ObjYoshiSpecialFlower.h">
@@ -549,8 +570,284 @@
     <ClInclude Include="HH_ALLOC.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="app\CGameSequence.h">
+    <ClInclude Include="Zelda Objects\ObjZeldaWarpCollision.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjZeldaItemTree.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgGetClimbObjectInfo.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgItemTreeWobblePoint.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgGetPosition.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Player\CVisualSonic.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjZeldaRupee.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjZeldaPopupItem.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgGetAnimal.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjChangeTopViewCollision.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgPLChangeAreaTopView.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjZeldaBush.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Player\CVisualBase.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="app\WorldAreaMap.h">
       <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Player\SonicZelda.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="app\MinigameCharacter.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Player\CSonic.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgPLSendGameInfo.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Game.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Player\PluginStateHeartLife.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="app\debris\ResRandomSpaceDebris.h">
+      <Filter>Header Files\app\debris</Filter>
+    </ClInclude>
+    <ClInclude Include="app\debrisUtil.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Effect\CEffectHandle.h">
+      <Filter>Header Files\app\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjBreakFloor.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\ObjCrystalFloorBaseUtil.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GravityManager.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\ObjUtil\LayoutCylinder.h">
+      <Filter>Header Files\app\ObjUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjBreakRoof.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCPhysics.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgShakeCamera.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjLoftBirdCollision.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgLoftBirdCollision.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjLoftBird.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCAnimationContainer.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\ObjectPartPointLight.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\EnemyDekunuts.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\EnemyDekunutsShot.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgDlcZeldaNoticeActiveEnemy.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgDlcZeldaNoticeStopEnemy.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\EnemyUtil.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Player\VirtualSonic.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Player\VisualVirtualSonic.h">
+      <Filter>Header Files\app\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgPLGetHomingTargetInfo.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgPLKickTargetting.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\MoveVelocityReference.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgDamageBase.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="SonicUSA\System.h">
+      <Filter>Header Files\SonicUSA\System</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\GOCVisualModel.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjZeldaGoal.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\res\ResShadowModel.h">
+      <Filter>Header Files\app\res</Filter>
+    </ClInclude>
+    <ClInclude Include="hh\mr\CVertexDeclarationPtr.h">
+      <Filter>Header Files\hh\mr</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\CStageSoundDirector.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgDlcZeldaTakeHeartContainer.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgDlcZeldaHeartAllRecovery.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgDlcZeldaTakeHeart.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjTreasureBox.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgChangeBgmVolume.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Camera\CCameraController.h">
+      <Filter>Header Files\app\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\TreasureBoxCamera.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgPushCameraController.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgPopCameraController.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjZeldaOneUp.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjGossipStone.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjGossipStoneFairy.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgHitTriggerBase.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgAppeareKnockback.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\EnemyStalBaby.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\MoveCharacterRigidBody.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\MovementUtility.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\BarrierChecker.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\ColliShapeHavok.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjCocco.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\MoveObjCocco.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Yoshi Objects\ObjYoshiJumpBoard.h">
+      <Filter>Header Files\Yoshi Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjOccludeStone.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\CWorld.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\Render\CameraParam.h">
+      <Filter>Header Files\app\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjGolonRockGenerator.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\ObjGolonRock.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Zelda Objects\MoveObjGolonRock.h">
+      <Filter>Header Files\Zelda Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\PhysicsQueryJob.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\game\PhysicsRaycastJob.h">
+      <Filter>Header Files\app\game</Filter>
+    </ClInclude>
+    <ClInclude Include="app\CPhysicsWorld.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\StagePathUtil.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\StageDataInitializer.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="csl\ut\InplaceMoveArrayAligned.h">
+      <Filter>Header Files\csl\ut</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgBreakRollingStone.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="app\fnd\SoundHandle.h">
+      <Filter>Header Files\app\fnd</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\MsgKill.h">
+      <Filter>Header Files\app\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="csl\ut\ColorF.h">
+      <Filter>Header Files\csl\ut</Filter>
+    </ClInclude>
+    <ClInclude Include="app\gfx\RenderManager.h">
+      <Filter>Header Files\app\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="app\CSetObjectManager.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -593,8 +890,49 @@
     <ClCompile Include="app\GameModeStageBattle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="app\CGameSequence.cpp">
+    <ClCompile Include="app\Player\CVisualSonic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="app\Player\CVisualBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\WorldAreaMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Player\SonicZelda.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\MinigameCharacter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Player\CSonic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Player\VirtualSonic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Player\VisualVirtualSonic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\Player\StateUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\xgame\CStageSoundDirector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\StageDataInitializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\CSetObjectManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\EnemyManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Yoshi-DLC.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

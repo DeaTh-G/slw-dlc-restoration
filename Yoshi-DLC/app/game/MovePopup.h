@@ -43,9 +43,9 @@ namespace app
                 return f_Update(this, updateInfo);
             }
             int OnEnter() override { return f_OnEnter(this); }
-            ~MovePopup() override
+            void Destructor(size_t deletingFlags) override
             {
-                __dt(this, 0);
+                __dt(this, deletingFlags);
             }
 
             MovePopup()

@@ -4,6 +4,13 @@ namespace app
 {
     namespace HUD 
     {
+        inline static const char* HeartMode[] =
+        {
+            "mode_heart4",
+            "mode_heart5",
+            "mode_heart6"
+        };
+
         inline static int* SetSpecialFlower(int* This)
         {
             char DstBuf[32]{};
@@ -77,11 +84,245 @@ namespace app
             }
         }
 
-        class CHudGameMainDisplay
+        extern bool DO_RECOVER_LIFE;
+        class CHudGameMainDisplay : public GameObject
         {
+        public:
+            game::GOCHud* GOCHud;
+            int field_D4;
+            game::HudLayerController* LayerController;
+            int field_DC;
+            int field_E0;
+            int field_E4;
+            int field_E8;
+            int field_EC;
+            int field_F0;
+            int field_F4;
+            int field_F8;
+            int field_FC;
+            int field_100;
+            int field_104;
+            int field_108;
+            int field_10C;
+            int field_110;
+            int field_114;
+            int field_118;
+            int field_11C;
+            int field_120;
+            int field_124;
+            int field_128;
+            int field_12C;
+            int field_130;
+            int field_134[17];
+            int field_178[2];
+            int field_180;
+            int field_184;
+            int field_188;
+            int field_18C;
+            int field_190;
+            int field_194;
+            int field_198;
+            int field_19C;
+            int field_1A0;
+            int field_1A4;
+            int field_1A8;
+            int field_1AC;
+            int field_1B0;
+            int field_1B4;
+            float Time;
+            float field_1BC;
+            float field_1C0;
+            int field_1C4;
+            int field_1C8;
+            int field_1CC;
+            int field_1D0;
+            int field_1D4;
+            int field_1D8;
+            int field_1DC;
+            int field_1E0;
+            int field_1E4;
+            int Flags;
+            int field_1EC;
+            int field_1F0;
+            int field_1F4;
+            int field_1F8;
+            int field_1FC;
+            int field_200;
+            int field_204;
+            int field_208;
+            int field_20C;
+            int field_210;
+            int field_214;
+            int field_218;
+            int field_21C;
+            int field_220;
+            int field_224;
+            float field_228;
+            int field_22C;
+            int field_230;
+            int field_234;
+            int field_238;
+            int field_23C;
+            int field_240;
+            int field_244;
+            int field_248;
+            int field_24C;
+            int field_250;
+            int field_254;
+            int field_258;
+            int field_25C;
+            int field_260;
+            int field_264;
+            float field_268;
+            int field_26C;
+            int field_270;
+            float field_274;
+            float field_278;
+            int field_27C;
+            int field_280;
+            int field_284;
+            int field_288;
+            int field_28C;
+            int field_290;
+            int field_294;
+
         public:
             static void __ct();
             static void SpecialRingUpdate();
+            static void ProcessMessage();
+            static void InitLayer();
+            static void SetInfo();
+
+            void HeartLifeUpdate(int a2, float deltaTime, int a4)
+            {
+                if (!strncmp((const char*)*(*(((int***)*app::Document) + 3) + 5), "GameModeStage", 13))
+                {
+                    *(*(((int**)*app::Document) + 3) + 0x8D) = NUM_HEARTS;
+                    *(*(((int**)*app::Document) + 3) + 0x8E) = MAX_NUM_HEARTS;
+                    AFTER_DEATH_MAX_NUM_HEARTS = *(*(((int**)*app::Document) + 3) + 0x8F);
+                }
+
+                int maxHeartNum = MAX_NUM_HEARTS;
+
+                if (DO_RECOVER_LIFE)
+                    field_27C = 1;
+
+                if (!(Flags & 0x100))
+                    return;
+
+                if (field_1EC & 1)
+                {
+                    Time -= deltaTime;
+                    if (Time <= 0 && !LayerController->IsCurrentAnimation("Hide_Anim"))
+                    {
+                        app::game::HudLayerController::PlayInfo hideInfo{};
+                        hideInfo.AnimationName = "Hide_Anim";
+                        LayerController->PlayAnimation(hideInfo);
+                    }
+                }
+
+                if (field_27C)
+                {
+                    field_278 += deltaTime;
+                    if (field_278 >= 0.3f)
+                    {
+                        field_278 -= 0.3f;
+                        if (maxHeartNum > field_1A8)
+                            maxHeartNum = field_1A8 + 1;
+                        else
+                        {
+                            field_278 = 0;
+                            field_27C = false;
+                            DO_RECOVER_LIFE = false;
+                        }
+
+                        if (field_1AC != MAX_NUM_HEARTS)
+                        {
+                            app::game::HudLayerController::PlayInfo modeInfo{};
+                            if (MAX_NUM_HEARTS >= 4 && MAX_NUM_HEARTS <= 6)
+                                modeInfo.AnimationName = HeartMode[MAX_NUM_HEARTS & 3];
+                            else
+                                modeInfo.AnimationName = "mode_heart0";
+                            LayerController->PlayAnimation(modeInfo);
+                            field_1AC = MAX_NUM_HEARTS;
+                            return;
+                        }
+
+                        if (field_1A8 != NUM_HEARTS)
+                        {
+                            if (field_27C && !field_190 && field_1A8 < NUM_HEARTS && field_1A8 > 0)
+                            {
+                                int soundStruct[6]{};
+                                ObjUtil::PlaySE2D(soundStruct, "obj_zeldaheart_get", 0x80000000);
+                            }
+
+                            field_1A8++;
+
+                            if (field_1A8 > NUM_HEARTS)
+                                field_1A8 = NUM_HEARTS;
+
+                            app::game::HudLayerController::PlayInfo volumeInfo{};
+                            volumeInfo.AnimationName = "life_volume";
+                            volumeInfo.field_0C = field_1A8 * 20;
+                            LayerController->PlayAnimation(volumeInfo);
+
+                            app::game::HudLayerController::PlayInfo playUsual{};
+                            playUsual.AnimationName = "Usual_Anim";
+                            playUsual.IsLooping = true;
+                            LayerController->PlayAnimation(playUsual);
+                        }
+
+                        LayerController->SetVisible(true);
+                        return;
+                    }
+
+                    maxHeartNum = field_1A8;
+                    return;
+                }
+
+                if (field_1AC != MAX_NUM_HEARTS)
+                {
+                    if (MAX_NUM_HEARTS >= 3)
+                    {
+                        app::game::HudLayerController::PlayInfo modeInfo{};
+                        if ((MAX_NUM_HEARTS & 3) == 3)
+                            modeInfo.AnimationName = "mode_heart0";
+                        else
+                            modeInfo.AnimationName = HeartMode[MAX_NUM_HEARTS & 3];
+                        LayerController->PlayAnimation(modeInfo);
+                        field_1AC = MAX_NUM_HEARTS;
+                    }
+                }
+
+                if (field_1A8 != NUM_HEARTS)
+                {
+                    field_1A8 = NUM_HEARTS;
+                    
+                    app::game::HudLayerController::PlayInfo volumeInfo{};
+                    volumeInfo.AnimationName = "life_volume";
+                    volumeInfo.field_0C = field_1A8 * 20;
+                    LayerController->PlayAnimation(volumeInfo);
+
+                    app::game::HudLayerController::PlayInfo playUsual{};
+                    playUsual.AnimationName = "Usual_Anim";
+                    playUsual.IsLooping = true;
+                    LayerController->PlayAnimation(playUsual);
+                }
+
+                LayerController->SetVisible(true);
+            }
+
+            void ProcMsgDlcZeldaHeartAllRecovery(xgame::MsgDlcZeldaHeartAllRecovery& message)
+            {
+                field_278 = 0;
+                field_27C = 1;
+            }
+
+            void ProcMsgDlcZeldaTakeHeartContainer(xgame::MsgDlcZeldaTakeHeartContainer& message)
+            {
+                field_278 = 0;
+                field_27C = 1;
+            }
         };
     }
 }

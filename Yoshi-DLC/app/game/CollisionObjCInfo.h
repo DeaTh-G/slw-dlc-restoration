@@ -24,7 +24,8 @@ namespace app
         class CollisionObjCInfo
         {
         public:
-            short field_00;
+            char field_00;
+            char field_01;
             short field_02;
             int field_04;
             int field_08;
@@ -38,6 +39,26 @@ namespace app
 
             inline static FUNCTION_PTR(int*, __thiscall, __ct, ASLR(0x004B6190), CollisionObjCInfo* This);
             inline static FUNCTION_PTR(void, __thiscall, SetLocalPosition, ASLR(0x004B61D0), CollisionObjCInfo* This, csl::math::Vector3* position);
+            inline static FUNCTION_PTR(void, __thiscall, SetLocalRotation, ASLR(0x004B61F0), CollisionObjCInfo* This, csl::math::Quaternion* rotation);
+        };
+
+        class CharacterRigidBodyCInfo : public CollisionObjCInfo
+        {
+        private:
+            inline static FUNCTION_PTR(CharacterRigidBodyCInfo*, __thiscall, __ct, ASLR(0x004B8450), CharacterRigidBodyCInfo* This);
+
+        public:
+            float field_40{};
+            float field_44{};
+            float field_48{};
+            float field_4C{};
+            float field_50{};
+            INSERT_PADDING(12);
+
+            CharacterRigidBodyCInfo()
+            {
+                __ct(this);
+            }
         };
 
         class ColliShapeCInfo : public CollisionObjCInfo
@@ -69,6 +90,19 @@ namespace app
         public:
             float Radius;
             float Height;
+        };
+
+        class ColliCylinderShapeCInfo : public ColliShapeCInfo
+        {
+        public:
+            float Radius;
+            float Height;
+        };
+
+        class ColliMeshShapeCInfo : public ColliShapeCInfo
+        {
+        public:
+            int* Mesh;
         };
     }
 }

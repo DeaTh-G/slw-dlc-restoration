@@ -34,13 +34,20 @@ namespace app
 
     private:
         inline static FUNCTION_PTR(EnemyUvAnimLinkController*, __thiscall, __ct, ASLR(0x0072D6C0), EnemyUvAnimLinkController* This);
+        inline static FUNCTION_PTR(EnemyUvAnimLinkController*, __thiscall, __dt, ASLR(0x0072D6F0), EnemyUvAnimLinkController* This);
         inline static FUNCTION_PTR(void*, __thiscall, f_Setup, ASLR(0x0072D780), EnemyUvAnimLinkController* This, int a2, int a3, int a4, int a5, int a6, char a7, csl::fnd::IAllocator* pAllocator);
         inline static FUNCTION_PTR(void*, __thiscall, f_Add, ASLR(0x0072D2A0), EnemyUvAnimLinkController* This, int* a2, const char* name, int a4);
+        inline static FUNCTION_PTR(void, __thiscall, f_ChangeCallback, ASLR(0x0072D4D0), EnemyUvAnimLinkController* This, int* a2, int a3, int a4);
 
     public:
         EnemyUvAnimLinkController()
         {
             __ct(this);
+        }
+
+        ~EnemyUvAnimLinkController()
+        {
+            __dt(this);
         }
 
         void* Setup(Description description, csl::fnd::IAllocator* pAllocator)
@@ -52,5 +59,7 @@ namespace app
         {
             return f_Add(this, a2, name, a4);
         }
+
+        void ChangeCallback(int* a1, int a2, int a3) { f_ChangeCallback(this, a1, a2, a3); }
     };
 }

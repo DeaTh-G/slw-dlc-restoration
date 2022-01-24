@@ -84,6 +84,7 @@ namespace app
                 csl::math::Vector3(0, 0, distanceFromOrigin),
                 csl::math::Vector3(0, 0, -distanceFromOrigin)
             };
+
             for (size_t i = 0; i < 4; i++)
             {
                 fnd::HFrame::SetLocalTranslation(&Children[i], &positionArray[i]);

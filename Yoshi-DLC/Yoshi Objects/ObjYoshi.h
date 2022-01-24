@@ -65,7 +65,7 @@ namespace app
                 "yos_result06_start_Eye_L",
                 "yos_result06_start_Eye_R",
                 "yos_result06_loop_Eye_L",
-                "yos_result06_loop_Eye_R",
+                "yos_result06_loop_Eye_R"
             };
 
             int packFile = 0;
@@ -169,6 +169,13 @@ namespace app
             Index = info.Index;
         }
 
+        void Destructor(size_t deletingFlags) override
+        {
+            UvLinkController.~EnemyUvAnimLinkController();
+
+            GameObject3D::Destructor(deletingFlags);
+        }
+
         void AddCallback(GameDocument* gameDocument) override
         {
             fnd::GOComponent::Create(this, GOCGravity);
@@ -234,7 +241,7 @@ namespace app
                 for (size_t j = 0; j < 2; j++)
                     UvLinkController.Add((int*)info->TexSrtAnimContainer[2 * i + j], Y_ANIM_NAME[i], 0);
 
-            int* gocMovement = GameObject::GetGOC (this, GOCMovementString);
+            int* gocMovement = GameObject::GetGOC(this, GOCMovementString);
             if (gocMovement)
             {
                 unsigned int random = SonicUSA::System::Random::genrand_int32((int*)ASLR(0x00FBC1C8));

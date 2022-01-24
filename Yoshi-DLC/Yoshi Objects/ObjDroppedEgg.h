@@ -43,7 +43,7 @@ namespace app
             cInfo.ModelType = ModelType;
             egg::CreateEgg(document, &cInfo);
 
-            return Kill(this);
+            return Kill();
         }
 
         void UpdateFollow()

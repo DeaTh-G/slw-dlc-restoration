@@ -32,7 +32,7 @@ HOOK(void, __fastcall, ProcMsgHitEventCollisionHook, ASLR(0x00662320), int* This
                     app::ObjUtil::AddScorePlayerAction((app::GameObject*)This, "GET_YOSHICOIN", playerNo);
 
                 This[0xD2] |= 0x40;
-                app::GameObject::Kill((app::GameObject*)This);
+                ((app::GameObject*)This)->Kill();
             }
         }
     }

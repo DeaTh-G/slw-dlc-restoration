@@ -268,6 +268,7 @@ namespace app
                 return;
 
             game::GOCCollider::SetEnable(gocCollider, false);
+            SetExtUserData(0, 0);
         }
 
         void PipeOutMotion(csl::math::Vector3 playerPos, const fnd::SUpdateInfo& updateInfo)
