@@ -13,11 +13,17 @@ The Yoshi's Island Zone DLC part of the mod was released on [GameBanana](https:/
 <a href="https://www.youtube.com/watch?v=S9FxpRoQ3Gk">Yoshi's Island Zone Restoration | Release Trailer</a>
 </div><br/>
 
-The Legend of Zelda Zone is currently in development with a release window of Mid-February 2022.<br/>
+The Legend of Zelda Zone is currently in development, currently set to release on the 12th of February 2022.<br/>
 <div align="center">
-	<a href="https://www.youtube.com/watch?v=gzpvNMKdbBo"><img src="./Assets/Zelda-Trailer.jpg" align="center" width=700/></a>
+	<a href="https://www.youtube.com/watch?v=gzpvNMKdbBo"><img src="./Assets/Zelda-Teaser.jpg" align="center" width=700/></a>
 	<br/>
 <a href="https://www.youtube.com/watch?v=gzpvNMKdbBo">The Legend of Zelda Zone Restoration | Teaser Trailer</a>
+</div>
+
+<div align="center">
+	<a href="https://www.youtube.com/watch?v=s-giYNQen64"><img src="./Assets/Zelda-Spotlight.png" align="center" width=700/></a>
+	<br/>
+<a href="https://www.youtube.com/watch?v=s-giYNQen64">The Legend of Zelda Zone Restoration | Features Spotlight</a>
 </div>
 
 
