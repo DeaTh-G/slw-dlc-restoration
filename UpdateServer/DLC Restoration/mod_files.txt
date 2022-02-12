@@ -62,6 +62,7 @@ add slw-dlc-restoration.dll
 add slw-dlc-restoration.hmm
 add slw-dlc-restoration.ini
 add slw-dlc-restoration.json
+add mod.ini
 
 delete DLCRestoration.ini
 delete DLCRestoration.json
