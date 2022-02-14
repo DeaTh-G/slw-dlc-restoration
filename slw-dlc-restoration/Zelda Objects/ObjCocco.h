@@ -598,15 +598,15 @@ namespace app
 			SetExtUserData(0, 0);
 
 			int* gocVisual = GameObject::GetGOC(this, GOCVisual);
-			if (!gocVisual)
+			if (gocVisual)
 				fnd::GOCVisual::SetVisible(gocVisual, true);
 
 			int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
-			if (!gocShadow)
+			if (gocShadow)
 				game::GOCShadow::SetVisible(gocShadow, true);
 
 			int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
-			if (!gocCollider)
+			if (gocCollider)
 				game::GOCCollider::SetEnable(gocCollider, true);
 
 			Resume();
@@ -619,15 +619,15 @@ namespace app
 			if (State == ObjCoccoState::STATE_IDLE)
 			{
 				int* gocVisual = GameObject::GetGOC(this, GOCVisual);
-				if (!gocVisual)
+				if (gocVisual)
 					fnd::GOCVisual::SetVisible(gocVisual, false);
 
 				int* gocShadow = GameObject::GetGOC(this, GOCShadowString);
-				if (!gocShadow)
+				if (gocShadow)
 					game::GOCShadow::SetVisible(gocShadow, false);
 
 				int* gocCollider = GameObject::GetGOC(this, GOCColliderString);
-				if (!gocCollider)
+				if (gocCollider)
 					game::GOCCollider::SetEnable(gocCollider, false);
 
 				Sleep(this);
