@@ -235,10 +235,10 @@ void Initialize()
 
 extern "C"
 {   
-    _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
-
     void _declspec(dllexport) __cdecl Init(ModInfo* modInfo)
     {
+        LoadLibraryA("nvapi.dll");
+
         std::string dir = modInfo->CurrentMod->Path;
 
         INIReader* reader = new INIReader("slw-dlc-restoration.ini");
