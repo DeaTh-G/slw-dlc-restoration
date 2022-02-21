@@ -110,6 +110,23 @@
           "DefaultValue": false
         }
       ]
+    },
+    {
+      "Name": "General",
+      "DisplayName": "General Fixes",
+      "Elements": [
+        {
+          "Name": "isIntelGPUFix",
+          "Description": [
+            "Fallback to the Pseudo DoF implemention on Intel GPUs.\nThis will turn off the DoF in Yoshi's Island Zone and The Legend of Zelda Zone.\n\nTo keep the DoF follow this guide: https://github.com/thesupersonic16/HedgeModManager/wiki/Loading-DirectX-Dlls\nand install DXVK (https://github.com/doitsujin/dxvk). Performance after installing DXVK may vary.\n\nTurn this option OFF if ran with DXVK."
+          ],
+          "DisplayName": "Fix DoF on Intel GPUs",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": 0
+        }
+      ]
     }
   ],
   "Enums":{
