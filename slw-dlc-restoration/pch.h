@@ -10,6 +10,7 @@
 // add headers that you want to pre-compile here
 #include <Dependencies/Eigen/Geometry>
 #include <Dependencies/boost/circular_buffer.hpp>
+#include <d3d9.h>
 #include "Headers.h"
 
 #endif //PCH_H

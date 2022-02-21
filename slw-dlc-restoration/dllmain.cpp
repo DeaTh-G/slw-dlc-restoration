@@ -15,6 +15,8 @@ bool DisableChestLetterboxing = false;
 bool IsRupeeCountInChestFixed = false;
 bool IsStalbabyFixed = false;
 
+bool IsIntelGPUFix = false;
+
 char IsYoshiIslandStage()
 {
     const char* packFileName = app::ObjUtil::GetStagePackName((app::GameDocument*)*app::Document);
@@ -164,6 +166,8 @@ void Initialize()
     WRITE_FUNCTION(ASLR(0x00D2C40F), *(void**)&createObjInfo_ObjZeldaItemTreeInfo);
     WRITE_FUNCTION(ASLR(0x00D2C4AF), *(void**)&createObjInfo_ObjZeldaRupeeInfo);
 
+    app::FxColManager::Update();
+
     // Install Yoshi Hooks
     app::xgame::IsDLCStagePurchase::Func();
     app::xgame::CStageSoundDirector::PlayResultBGM();
@@ -230,7 +234,9 @@ void Initialize()
 }
 
 extern "C"
-{
+{   
+    _declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+
     void _declspec(dllexport) __cdecl Init(ModInfo* modInfo)
     {
         std::string dir = modInfo->CurrentMod->Path;
@@ -252,6 +258,8 @@ extern "C"
         DisableChestLetterboxing = reader->GetBoolean("ZeldaTweaks", "disableChestLetterboxing", false);
         IsRupeeCountInChestFixed = reader->GetBoolean("ZeldaTweaks", "isRupeeCountInChestFixed", false);
         IsStalbabyFixed = reader->GetBoolean("ZeldaTweaks", "isStalbabyFixed", false);
+
+        IsIntelGPUFix = reader->GetBoolean("General", "isIntelGPUFix", false);
 
         Initialize();
     }

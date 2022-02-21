@@ -32,6 +32,7 @@
 #include "app/animation/AnimCallbackBridge.h"
 
 #include "app/Render/CameraParam.h"
+#include "app/FxColManager.h"
 
 #include "app/fnd/HFrame.h"
 #include "app/fnd/Handle.h"
