@@ -230,11 +230,7 @@ void Initialize()
 }
 
 extern "C"
-<<<<<<< HEAD
-{   
-=======
 {
->>>>>>> parent of 2241db1c (Fix DoF issue on Intel GPUs)
     void _declspec(dllexport) __cdecl Init(ModInfo* modInfo)
     {
         LoadLibraryA("nvapi.dll");
