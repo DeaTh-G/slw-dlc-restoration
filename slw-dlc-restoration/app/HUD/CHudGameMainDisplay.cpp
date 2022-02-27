@@ -31,7 +31,7 @@ HOOK(int*, __fastcall, CHudGameMainDisplayHook, ASLR(0x00503290), int* This, int
     if (strncmp(packFileName, "zdlc02", 6) == 0 || strncmp(packFileName, "zdlc03", 6) == 0)
     {
         if (strncmp(packFileName, "zdlc02", 6) == 0)
-        {       
+        {
             *(This + 0x7A) |= 0x40;
             *(This + 0x7A) |= 0x20;
         }
@@ -40,12 +40,6 @@ HOOK(int*, __fastcall, CHudGameMainDisplayHook, ASLR(0x00503290), int* This, int
             *(This + 0x7A) |= 0x80;
             *(This + 0x7A) |= 0x100;
             return This;
-        }
-        else
-        {
-            WRITE_MEMORY(ASLR(0x00FEFC7C), 1);
-            WRITE_MEMORY(ASLR(0x0040498C), 0x880D7CFCFE00);
-            WRITE_MEMORY(ASLR(0x00404C3E), 0x88157CFCFE00);
         }
     }
 

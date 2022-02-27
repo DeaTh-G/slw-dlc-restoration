@@ -74,8 +74,6 @@
     <TargetName>slw-dlc-restoration</TargetName>
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)</OutDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>slw-dlc-restoration</TargetName>
@@ -85,8 +83,6 @@
     <TargetName>slw-dlc-restoration</TargetName>
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)</OutDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>slw-dlc-restoration</TargetName>
@@ -108,7 +104,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>lib/detours.lib;lib/syelog.lib;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.19041.0\um\x86\d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lib/detours.lib;lib/syelog.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(OutDir)$(TargetName)$(TargetExt)" "F:\Mods\Sonic Lost World\Wii U DLC Restoration" /Y</Command>
@@ -150,7 +146,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>lib/detours.lib;lib/syelog.lib;C:\Program Files (x86)\Windows Kits\10\Lib\10.0.19041.0\um\x86\d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>lib/detours.lib;lib/syelog.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <Version>
       </Version>
     </Link>
@@ -227,7 +223,6 @@
     <ClInclude Include="app\fnd\SoundHandle.h" />
     <ClInclude Include="app\fnd\SoundPlayerCri.h" />
     <ClInclude Include="app\fnd\TexSrtControlHH.h" />
-    <ClInclude Include="app\FxColManager.h" />
     <ClInclude Include="app\Game.h" />
     <ClInclude Include="app\GameDocument.h" />
     <ClInclude Include="app\GameMode.h" />
@@ -433,7 +428,6 @@
   <ItemGroup>
     <ClCompile Include="app\CSetObjectManager.cpp" />
     <ClCompile Include="app\EnemyManager.cpp" />
-    <ClCompile Include="app\FxColManager.cpp" />
     <ClCompile Include="app\GameModeStage.cpp" />
     <ClCompile Include="app\GameModeStageBattle.cpp" />
     <ClCompile Include="app\HUD\CHudGameMainDisplay.cpp" />

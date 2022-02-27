@@ -19,8 +19,6 @@ extern bool DisableChestLetterboxing;
 extern bool IsRupeeCountInChestFixed;
 extern bool IsStalbabyFixed;
 
-extern bool IsIntelGPUFix;
-
 static csl::math::Quaternion GetRotationFromMatrix(csl::math::Matrix34* matrix)
 {
     Eigen::Matrix3f m;

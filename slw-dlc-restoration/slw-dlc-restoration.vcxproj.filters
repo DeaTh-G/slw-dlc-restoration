@@ -849,9 +849,6 @@
     <ClInclude Include="slw-dlc-restoration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="app\FxColManager.h">
-      <Filter>Header Files\app</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -930,9 +927,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="slw-dlc-restoration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="app\FxColManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
