@@ -3,8 +3,3 @@ add slw-dlc-restoration.hmm
 add slw-dlc-restoration.ini
 add slw-dlc-restoration.json
 add mod.ini
-
-delete DLCRestoration.ini
-delete DLCRestoration.json
-delete Yoshi-DLC.dll
-delete Yoshi-DLC.hmm
