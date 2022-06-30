@@ -1,5 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
+#pragma code_page(65001)
+
 #include "resource.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -17,7 +19,6 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
-#pragma code_page(1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -51,8 +52,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,0,0,0
- PRODUCTVERSION 2,0,0,0
+ FILEVERSION 2,1,0,0
+ PRODUCTVERSION 2,1,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -67,14 +68,14 @@ BEGIN
     BEGIN
         BLOCK "080904b0"
         BEGIN
-            VALUE "CompanyName", "–e‰Th"
+            VALUE "CompanyName", "√êe√§Th"
             VALUE "FileDescription", "A full restoration of the two exclusive DLCs released for Sonic Lost World (Wii U) for the PC release of the game. "
-            VALUE "FileVersion", "2.0.0.0"
+            VALUE "FileVersion", "2.1.0"
             VALUE "InternalName", "slw-dlc-restoration.dll"
             VALUE "LegalCopyright", "Copyright (C) 2022"
             VALUE "OriginalFilename", "\r\nslw-dlc-restoration.dll"
             VALUE "ProductName", "Sonic Lost World - Wii U DLC Restoration"
-            VALUE "ProductVersion", "2.0.0.0"
+            VALUE "ProductVersion", "2.1.0"
         END
     END
     BLOCK "VarFileInfo"

@@ -28,6 +28,7 @@ HOOK(int*, __fastcall, CHudGameMainDisplayHook, ASLR(0x00503290), int* This, int
     originalCHudGameMainDisplayHook(This, edx, a2, a3, a4, a5, a6, a7);
 
     const char* packFileName = app::ObjUtil::GetStagePackName((app::GameDocument*) * app::Document);
+
     if (strncmp(packFileName, "zdlc02", 6) == 0 || strncmp(packFileName, "zdlc03", 6) == 0)
     {
         if (strncmp(packFileName, "zdlc02", 6) == 0)
@@ -45,7 +46,6 @@ HOOK(int*, __fastcall, CHudGameMainDisplayHook, ASLR(0x00503290), int* This, int
 
     if (IsAlwaysHeartLife)
     {
-        strcpy((char*)(This + 0x60), "zdlc03");
         if (strncmp(packFileName, "zdlc01", 6) != 0)
             *(This + 0x7A) |= 0x20;
 
@@ -59,7 +59,7 @@ HOOK(int*, __fastcall, CHudGameMainDisplayHook, ASLR(0x00503290), int* This, int
 char IsZeldaHud()
 {
     const char* packFileName = app::ObjUtil::GetStagePackName((app::GameDocument*) * app::Document);
-    if (strncmp(packFileName, "zdlc03", 6) == 0 || IsAlwaysHeartLife)
+    if (strncmp(packFileName, "zdlc03", 6) == 0)
         return 1;
     return 0;
 }
@@ -98,7 +98,7 @@ HOOK(void, __fastcall, CHudGameMainDisplayInitLayerHook, ASLR(0x00503780), app::
 {
     originalCHudGameMainDisplayInitLayerHook(This, edx);
 
-    if ((This->Flags & 0x100))
+    if ((This->Flags & 0x100) || IsAlwaysHeartLife)
     {
         This->field_1A8 = 3;
         ++((int*)This->field_E0)[1];

@@ -66,14 +66,28 @@ __declspec(naked) void GameModeStageRegisterObjInfosAsmHook()
 
 HOOK(int, __fastcall, GameModeStageLoadLevelHook, ASLR(0x00917730), int* This, void* edx)
 {
-    int result = originalGameModeStageLoadLevelHook(This, edx);
+    const char* packFileName = app::ObjUtil::GetStagePackName((app::GameDocument*)*app::Document);
     if (!IsAlwaysHeartLife)
-        return result;
+        return originalGameModeStageLoadLevelHook(This, edx);
 
-    app::fnd::FileLoaderParam loader{};
-    loader.SetMultiLanguageAttr(true, 0);
-    app::GameMode::LoadFile("ui/ui_zdlc03_gamemodestage.pac", &loader);
-    return result;
+    if (strncmp(packFileName, "zdlc03", 6) == 0)
+    {
+        // Change ui_gamemodezelda.pac to ui_gamemodestage.pac
+        WRITE_MEMORY(ASLR(0x00D6E6D7), 0x73, 0x74, 0x61, 0x67, 0x65);
+
+        // Change ui/ui_gamemodezelda.pac to ui/ui_gamemodestage.pac
+        WRITE_MEMORY(ASLR(0x00E05C96), 0x73, 0x74, 0x61, 0x67, 0x65);
+    }
+    else
+    {
+        // Change ui_gamemodestage.pac to ui_gamemodezelda.pac
+        WRITE_MEMORY(ASLR(0xD6E6D7), 0x7A, 0x65, 0x6C, 0x64, 0x61);
+
+        // Change ui/ui_gamemodestage.pac to ui/ui_gamemodezelda.pac
+        WRITE_MEMORY(ASLR(0xE05C96), 0x7A, 0x65, 0x6C, 0x64, 0x61);
+    }
+
+    return originalGameModeStageLoadLevelHook(This, edx);
 }
 
 HOOK(void, __fastcall, GameModeStageResetStageHook, ASLR(0x00916BC0), int* This, void* edx)
