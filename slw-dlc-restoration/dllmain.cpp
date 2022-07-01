@@ -228,6 +228,7 @@ void Initialize()
     if (IsAlwaysHeartLife)
     {
         WRITE_MEMORY(ASLR(0x008946A0), 0x90, 0x90, 0x90, 0x90, 0x90);
+        WRITE_MEMORY(ASLR(0x00502709), 0x85);
     }
 }
 
