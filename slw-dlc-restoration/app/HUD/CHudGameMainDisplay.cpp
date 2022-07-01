@@ -49,7 +49,6 @@ HOOK(int*, __fastcall, CHudGameMainDisplayHook, ASLR(0x00503290), int* This, int
         if (strncmp(packFileName, "zdlc01", 6) != 0)
             *(This + 0x7A) |= 0x20;
 
-        *(This + 0x7A) |= 0x80;
         *(This + 0x7A) |= 0x100;
     }
 
