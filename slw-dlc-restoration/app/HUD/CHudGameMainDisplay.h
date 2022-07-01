@@ -157,7 +157,10 @@ namespace app
             int field_21C;
             int field_220;
             int field_224;
-            float field_228;
+            char field_228;
+            char field_229;
+            char field_22A;
+            char field_22B;
             int field_22C;
             int field_230;
             int field_234;

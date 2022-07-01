@@ -102,6 +102,10 @@ HOOK(void, __fastcall, CHudGameMainDisplayInitLayerHook, ASLR(0x00503780), app::
         This->field_1A8 = 3;
         ++((int*)This->field_E0)[1];
         This->LayerController = This->GOCHud->CreateLayerController(This->field_E0, "info_ring_zdlc03", 0x12);
+        This->LayerController->PlayAnimation("mode_0_Param", 0, 0);
+        if (This->field_22A)
+            This->LayerController->PlayAnimation("mode_1_Param", 0, 0);
+
         This->LayerController->PlayAnimation("Intro_Anim", 0, 0);
         This->LayerController->SetVisible(true);
 
