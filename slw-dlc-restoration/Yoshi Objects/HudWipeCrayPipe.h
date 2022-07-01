@@ -32,7 +32,10 @@ namespace app
                 hudDescription.field_14 = 2048;
                 gocHud->Setup(&hudDescription);
                 
-                ObjUtil::GetPackFile(&packFile, "ui_zdlc02_gamemodestage.pac");
+                if (IsAlwaysHeartLife)
+                    ObjUtil::GetPackFile(&packFile, "ui_zdlc02_gamemodezelda.pac");
+                else
+                    ObjUtil::GetPackFile(&packFile, "ui_zdlc02_gamemodestage.pac");
                 gocHud->SetupProject(&refCount, "ui_wipe_zdlc02", packFile);
                 if (refCount)
                 {
