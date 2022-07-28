@@ -152,21 +152,22 @@ namespace app
 
         void ProcMsgHitEventCollision(xgame::MsgHitEventCollision& message)
         {
-            int someType = ((int*)message.field_18)[0x2F];
+            int colliID = ((int*)message.field_18)[0x2F];
 
-            if (someType == 1)
+            if (colliID == 1)
             {
                 int* gocTransform = GameObject::GetGOC(this, GOCTransformString);
                 if (!gocTransform)
                     return;
 
+                csl::math::Matrix34 transformMtx = *(csl::math::Matrix34*)(gocTransform + 0x44);
                 csl::math::Vector3 someVector { 0, 96.5f, 0 };
-                math::Vector3Multiply((csl::math::Vector3*)(gocTransform + 0x50), &someVector, &someVector);
+                csl::math::Vector3 wobblePos = MultiplyMatrixByVector(&transformMtx, &someVector);
 
-                xgame::MsgItemTreeWobblePoint wobbleMessage { &someVector };
+                xgame::MsgItemTreeWobblePoint wobbleMessage { &wobblePos };
                 SendMessageImm(message.ActorID, &wobbleMessage);
             }
-            else if (someType == 2)
+            else if (colliID == 2)
             {
                 int* gocAnimation = GameObject::GetGOC(this, GOCAnimation);
                 if (!gocAnimation)
