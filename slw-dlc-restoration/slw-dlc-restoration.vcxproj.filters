@@ -106,6 +106,12 @@
     <Filter Include="Header Files\app\gfx">
       <UniqueIdentifier>{47feaff0-eba3-40d1-9d43-5e79d506a98f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\app\xgame\gamemode">
+      <UniqueIdentifier>{5b74fcca-b950-4382-a314-620855aa2ca0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\app\xgame\gamemode\WorldAreaMap">
+      <UniqueIdentifier>{7289359c-047f-4b63-bd9c-5a640d3536d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -849,6 +855,15 @@
     <ClInclude Include="slw-dlc-restoration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="app\GameModeWorldAreaMap.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\SaveData.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\xgame\gamemode\WorldAreaMap\WorldAreaMapDioramaInfo.h">
+      <Filter>Header Files\app\xgame\gamemode\WorldAreaMap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -927,6 +942,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="slw-dlc-restoration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\GameModeWorldAreaMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

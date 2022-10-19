@@ -95,6 +95,7 @@
 #include "app/game/GOCLauncher.h"
 #include "app/CSetObjectManager.h"
 
+#include "app/SaveData.h"
 #include "app/game/CollisionShapeType.h"
 #include "app/game/GOCAnimationScript.h"
 #include "app/game/GOCAnimationSimple.h"
@@ -130,6 +131,8 @@
 #include "app/game/MovementUtility.h"
 #include "app/game/MoveCharacterRigidBody.h"
 #include "app/StageDataInitializer.h"
+#include "app/xgame/gamemode/WorldAreaMap/WorldAreaMapDioramaInfo.h"
+#include "app/GameModeWorldAreaMap.h"
 #include "app/GameModeStage.h"
 #include "app/GameModeStageBattle.h"
 #include "app/GOCEnemyTarget.h"

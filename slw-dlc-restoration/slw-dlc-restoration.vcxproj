@@ -228,6 +228,7 @@
     <ClInclude Include="app\GameMode.h" />
     <ClInclude Include="app\GameModeStage.h" />
     <ClInclude Include="app\GameModeStageBattle.h" />
+    <ClInclude Include="app\GameModeWorldAreaMap.h" />
     <ClInclude Include="app\GameObject.h" />
     <ClInclude Include="app\GameObject3D.h" />
     <ClInclude Include="app\game\BarrierChecker.h" />
@@ -298,6 +299,7 @@
     <ClInclude Include="app\Player\VisualVirtualSonic.h" />
     <ClInclude Include="app\Render\CameraParam.h" />
     <ClInclude Include="app\res\ResShadowModel.h" />
+    <ClInclude Include="app\SaveData.h" />
     <ClInclude Include="app\SetShotInfo.h" />
     <ClInclude Include="app\StageDataInitializer.h" />
     <ClInclude Include="app\ut\internal\StateImpl.h" />
@@ -306,6 +308,7 @@
     <ClInclude Include="app\xgame.h" />
     <ClInclude Include="app\xgame\Blackboard.h" />
     <ClInclude Include="app\xgame\CStageSoundDirector.h" />
+    <ClInclude Include="app\xgame\gamemode\WorldAreaMap\WorldAreaMapDioramaInfo.h" />
     <ClInclude Include="app\xgame\MsgAppeareKnockback.h" />
     <ClInclude Include="app\xgame\MsgBreakRollingStone.h" />
     <ClInclude Include="app\xgame\MsgCameraOff.h" />
@@ -430,6 +433,7 @@
     <ClCompile Include="app\EnemyManager.cpp" />
     <ClCompile Include="app\GameModeStage.cpp" />
     <ClCompile Include="app\GameModeStageBattle.cpp" />
+    <ClCompile Include="app\GameModeWorldAreaMap.cpp" />
     <ClCompile Include="app\HUD\CHudGameMainDisplay.cpp" />
     <ClCompile Include="app\MinigameCharacter.cpp" />
     <ClCompile Include="app\Objects\CObjDroppedRing.cpp" />
