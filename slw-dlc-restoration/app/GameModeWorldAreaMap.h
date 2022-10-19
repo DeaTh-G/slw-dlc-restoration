@@ -21,23 +21,23 @@ namespace app
                     if (flagSet->GetMiniGameOpened(i, j))
                     {
                         *((int*)this + 0x520 + minigameNo) = 0;
-                        (*(app::WorldAreaMapDioramaInfo*)((int*)this + 0x118 + minigameNo)).m_IsActUnlocked = 1;
+                        (*((app::WorldAreaMapDioramaInfo*)((int*)this + 0x118) + minigameNo)).m_IsActUnlocked = 1;
                     }
                 }
             }
 
             for (size_t i = 0; i < 7; i++)
             {
-                int redRingCount;
-                int redRingCount2;
+                int unlockedMiniGameCount = 0;
+                int nextUnlockRequirement = 0;
 
-                bool isValidNext = app::IsExistNextOpenCircusStage(i, &redRingCount, &redRingCount2, out);
+                bool isValidNext = app::IsExistNextOpenCircusStage(i, &unlockedMiniGameCount, &nextUnlockRequirement, out);
                 if (isValidNext)
                 {
-                    size_t minigameNo = i * 4 + redRingCount + 34;
-                    *((int*)this + 0x5A1 + i) = redRingCount;
+                    size_t minigameNo = i * 4 + unlockedMiniGameCount + 34;
+                    *((int*)this + 0x5A1 + i) = unlockedMiniGameCount;
                     *((int*)this + 0x520 + minigameNo) = 4;
-                    (*(app::WorldAreaMapDioramaInfo*)((int*)this + 0x118 + minigameNo)).m_RedRing = (char)redRingCount2;
+                    (*((app::WorldAreaMapDioramaInfo*)((int*)this + 0x118) + minigameNo)).m_RedRing = (uint8_t)nextUnlockRequirement;
                 }
                 else
                 {

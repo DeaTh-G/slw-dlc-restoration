@@ -75,7 +75,7 @@ namespace app
 		};
 	}
 
-	static bool IsExistNextOpenCircusStage(int zoneNo, int* outCount, int* outCount2, void* out)
+	static bool IsExistNextOpenCircusStage(int zoneNo, int* out_unlockedMiniGameCount, int* out_nextUnlockRequirement, void* out)
 	{
 		app::SaveData::CSaveData* saveData = app::SaveData::CSaveManager::GetSaveData(out);
 		app::SaveData::CGameData* gameData = saveData->GetCurrentGameData(out);
@@ -88,8 +88,8 @@ namespace app
 		if (redRingCount >= 20)
 			return false;
 	
-		*outCount = redRingCount / 5;
-		*outCount2 = 5 * (redRingCount / 5) + 5 - redRingCount;
+		*out_unlockedMiniGameCount = redRingCount / 5;
+		*out_nextUnlockRequirement = 5 * (redRingCount / 5) + 5 - redRingCount;
 		
 		return true;
 	}
