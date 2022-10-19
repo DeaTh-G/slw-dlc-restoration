@@ -864,6 +864,12 @@
     <ClInclude Include="app\xgame\gamemode\WorldAreaMap\WorldAreaMapDioramaInfo.h">
       <Filter>Header Files\app\xgame\gamemode\WorldAreaMap</Filter>
     </ClInclude>
+    <ClInclude Include="app\CGameSequence.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\WorldAreaMapCInfo.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -945,6 +951,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="app\GameModeWorldAreaMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\CGameSequence.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

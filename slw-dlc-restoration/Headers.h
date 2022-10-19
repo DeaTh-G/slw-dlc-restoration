@@ -25,6 +25,8 @@
 #include "hh/mr/CVertexDeclarationPtr.h"
 
 // app
+#include "app/WorldAreaMapCInfo.h"
+#include "app/SaveData.h"
 #include "app/CGameSequence.h"
 
 #include "app/ut/internal/StateImpl.h"
@@ -95,7 +97,6 @@
 #include "app/game/GOCLauncher.h"
 #include "app/CSetObjectManager.h"
 
-#include "app/SaveData.h"
 #include "app/game/CollisionShapeType.h"
 #include "app/game/GOCAnimationScript.h"
 #include "app/game/GOCAnimationSimple.h"

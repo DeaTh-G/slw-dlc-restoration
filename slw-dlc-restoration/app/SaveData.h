@@ -14,6 +14,7 @@ namespace app
 		private:
 			inline static FUNCTION_PTR(bool, __thiscall, f_GetFlagZoneUnlocked, ASLR(0x008FFDC0), CFlagSet*, int);
 			inline static FUNCTION_PTR(int, __thiscall, f_CountRedRingZone, ASLR(0x00900080), CFlagSet*, int, int);
+			inline static FUNCTION_PTR(int, __thiscall, ms_fpSetMiniGameOpened, ASLR(0x00900140), CFlagSet*, int, int, bool);
 
 		public:
 			bool GetFlagZoneUnlocked(int zoneNo)
@@ -35,6 +36,11 @@ namespace app
 			{
 				int flagIndex = CalcIndexFlagMinigameUnlocked(row, col);
 				return GetBitFlag(flagIndex);
+			}
+
+			void SetMiniGameOpened(int row, int col, bool value)
+			{
+				ms_fpSetMiniGameOpened(this, row, col, value);
 			}
 		};
 

@@ -183,6 +183,7 @@
     <ClInclude Include="app\animation\AnimationResContainer.h" />
     <ClInclude Include="app\animation\AnimCallbackBridge.h" />
     <ClInclude Include="app\Camera\CCameraController.h" />
+    <ClInclude Include="app\CGameSequence.h" />
     <ClInclude Include="app\CGOCCollectionImpl.h" />
     <ClInclude Include="app\CLevelInfo.h" />
     <ClInclude Include="app\CObjInfo.h" />
@@ -305,6 +306,7 @@
     <ClInclude Include="app\ut\internal\StateImpl.h" />
     <ClInclude Include="app\ut\StateBase.h" />
     <ClInclude Include="app\WorldAreaMap.h" />
+    <ClInclude Include="app\WorldAreaMapCInfo.h" />
     <ClInclude Include="app\xgame.h" />
     <ClInclude Include="app\xgame\Blackboard.h" />
     <ClInclude Include="app\xgame\CStageSoundDirector.h" />
@@ -429,6 +431,7 @@
     <ClInclude Include="Zelda Objects\TreasureBoxCamera.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="app\CGameSequence.cpp" />
     <ClCompile Include="app\CSetObjectManager.cpp" />
     <ClCompile Include="app\EnemyManager.cpp" />
     <ClCompile Include="app\GameModeStage.cpp" />

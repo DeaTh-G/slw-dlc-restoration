@@ -36,6 +36,7 @@ void Initialize()
     //MessageBox(NULL, L"AAAAAAAAAA", NULL, MB_ICONERROR);
 
     app::GameModeWorldAreaMap::Constructor();
+    app::CGameSequence::UnlockStageOnCompleteStage();
 
     /* TODO: Please replace this with sane code. */
     WRITE_MEMORY(ASLR(0x00D41252),
