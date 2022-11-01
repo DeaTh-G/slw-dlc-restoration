@@ -49,6 +49,10 @@ void Initialize()
     //MessageBox(NULL, L"AAAAAAAAAA", NULL, MB_ICONERROR);
 
     app::GameModeWorldAreaMap::Constructor();
+    app::GameModeWorldAreaMap::StateModeSelect();
+    app::worldmap::CWorldMapStateModeSelect::Constructor();
+    app::worldmap::CWorldMapStateModeSelect::AddCallback();
+    app::worldmap::CWorldMapStateModeSelect::ProcMsgHudKeyUpdate();
     app::CGameSequence::UnlockStageOnCompleteStage();
     app::StageInfo::CStageInfo::ReadMission_Mission();
 

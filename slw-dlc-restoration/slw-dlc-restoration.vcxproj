@@ -229,6 +229,7 @@
     <ClInclude Include="app\GameMode.h" />
     <ClInclude Include="app\GameModeStage.h" />
     <ClInclude Include="app\GameModeStageBattle.h" />
+    <ClInclude Include="app\GameModeUtil.h" />
     <ClInclude Include="app\GameModeWorldAreaMap.h" />
     <ClInclude Include="app\GameObject.h" />
     <ClInclude Include="app\GameObject3D.h" />
@@ -304,10 +305,12 @@
     <ClInclude Include="app\SetShotInfo.h" />
     <ClInclude Include="app\StageDataInitializer.h" />
     <ClInclude Include="app\StageInfo\CStageInfo.h" />
+    <ClInclude Include="app\TinyFsm.h" />
     <ClInclude Include="app\ut\internal\StateImpl.h" />
     <ClInclude Include="app\ut\StateBase.h" />
     <ClInclude Include="app\WorldAreaMap.h" />
     <ClInclude Include="app\WorldAreaMapCInfo.h" />
+    <ClInclude Include="app\worldmap\CWorldMapStateModeSelect.h" />
     <ClInclude Include="app\xgame.h" />
     <ClInclude Include="app\xgame\Blackboard.h" />
     <ClInclude Include="app\xgame\CStageSoundDirector.h" />
@@ -455,6 +458,7 @@
     <ClCompile Include="app\StageDataInitializer.cpp" />
     <ClCompile Include="app\StageInfo\CStageInfo.cpp" />
     <ClCompile Include="app\WorldAreaMap.cpp" />
+    <ClCompile Include="app\worldmap\CWorldMapStateModeSelect.cpp" />
     <ClCompile Include="app\xgame.cpp" />
     <ClCompile Include="app\xgame\CStageSoundDirector.cpp" />
     <ClCompile Include="dllmain.cpp" />

@@ -401,7 +401,7 @@ namespace app
             PROC_MSG_HUD_TIME_ATTACK_CLEAR						= 0xC01D,
             PROC_MSG_HUD_BUTTON_GUIDE_SKIP_ON_DISP				= 0xC01E,
             PROC_MSG_HUD_BUTTON_GUIDE_SKIP_PUSH					= 0xC01F,
-            PROC_MSG_HUD_CMN_BUTTON_DISPALY						= 0xC021,
+            PROC_MSG_HUD_CMN_BUTTON_DISPLAY						= 0xC021,
             PROC_MSG_HUD_COMMON_ACTION							= 0xC022,
             PROC_MSG_END_SIGN									= 0xC025,
             PROC_MSG_START_PHANTOM_SIGN							= 0xC026,

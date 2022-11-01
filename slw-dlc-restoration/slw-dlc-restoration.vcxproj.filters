@@ -115,6 +115,9 @@
     <Filter Include="Header Files\app\StageInfo">
       <UniqueIdentifier>{525bc069-204a-4688-b992-a7d64afb306c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\app\worldmap">
+      <UniqueIdentifier>{c82f4c4b-d688-4818-a726-751f4807b735}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -876,6 +879,15 @@
     <ClInclude Include="app\StageInfo\CStageInfo.h">
       <Filter>Header Files\app\StageInfo</Filter>
     </ClInclude>
+    <ClInclude Include="app\TinyFsm.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\GameModeUtil.h">
+      <Filter>Header Files\app</Filter>
+    </ClInclude>
+    <ClInclude Include="app\worldmap\CWorldMapStateModeSelect.h">
+      <Filter>Header Files\app\worldmap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -963,6 +975,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="app\StageInfo\CStageInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\worldmap\CWorldMapStateModeSelect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

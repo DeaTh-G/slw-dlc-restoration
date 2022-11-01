@@ -2,10 +2,20 @@
 
 namespace app
 {
-    class GameMode
+    class GameMode : public fnd::ReferencedObject
     {
+    protected:
+        void* m_pGame{};
+        void* m_Unk1{};
+        const char* m_pName{};
+        GameDocument* m_pDocument{};
+        void* m_Unk2{};
+
     private:
         inline static FUNCTION_PTR(int, __thiscall, f_SendMessageImm, ASLR(0x004AC510), GameMode* This, int a2, fnd::Message* msg);
+		inline static FUNCTION_PTR(void, __thiscall, ms_fpOnEnter, ASLR(0x004AC800), GameMode*, void*);
+		inline static FUNCTION_PTR(void, __thiscall, ms_fpOnLeave, ASLR(0x004AC820), GameMode*, void*);
+		inline static FUNCTION_PTR(void, __thiscall, ms_fpDefaultGameLoop, ASLR(0x004AC9B0), GameMode*, const fnd::SUpdateInfo&);
 
     public:
         inline static FUNCTION_PTR(int, __stdcall, FadeIn, ASLR(0x004AC5C0), float a1, int a2);

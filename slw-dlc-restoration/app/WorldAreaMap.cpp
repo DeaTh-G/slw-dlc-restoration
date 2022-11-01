@@ -24,5 +24,8 @@ void app::WorldAreaMapInfo::Load()
 
 void app::WorldAreaMapInfo::Initialize()
 {
+    WRITE_MEMORY_WITH_TYPE(ASLR(0x009494F7), uint32_t, (uint32_t)&m_IconNames[0]);
+    WRITE_MEMORY_WITH_TYPE(ASLR(0x00949546), uint32_t, (uint32_t)&m_IconNames[sizeof(m_IconNames) / sizeof(m_IconNames[0])]);
+
     INSTALL_HOOK(WorldAreaMapInfoInitializeHook);
 }

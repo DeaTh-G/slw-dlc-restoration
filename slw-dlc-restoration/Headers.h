@@ -8,6 +8,10 @@
 
 #include "app/res/ResShadowModel.h"
 
+#include "app/TinyFsm.h"
+#include "app/GameModeUtil.h"
+#include "app/worldmap/CWorldMapStateModeSelect.h"
+
 // csl
 #include "csl/fnd.h"
 #include "csl/math/math.h"
@@ -168,6 +172,7 @@
 #include "app/xgame.h"
 #include "app/xgame/Blackboard.h"
 #include "app/xgame/CStageSoundDirector.h"
+#include "app/xgame/MsgHudCmnButtonDisplay.h"
 #include "app/xgame/MsgCatchEndPlayer.h"
 #include "app/xgame/MsgCatchPlayer.h"
 #include "app/xgame/MsgExtendPlayer.h"
