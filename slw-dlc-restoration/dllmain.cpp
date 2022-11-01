@@ -15,6 +15,19 @@ bool DisableChestLetterboxing = false;
 bool IsRupeeCountInChestFixed = false;
 bool IsStalbabyFixed = false;
 
+bool IsWiiURequirement = false;
+bool IsCustomRequirement = false;
+int WindyHillZone4 = 100;
+int DesertRuins4 = 300;
+int TropicalCoast4 = 800;
+int FrozenFactory4 = 1100;
+int SilentForest4 = 1400;
+int SkyRoad4 = 1700;
+int LavaMountain4 = 1900;
+int HiddenWorld4 = 2300;
+int TropicalCoastSecret = 1250;
+int SkyRoadSecret = 1800;
+
 char IsYoshiIslandStage()
 {
     const char* packFileName = app::ObjUtil::GetStagePackName((app::GameDocument*)*app::Document);
@@ -37,6 +50,7 @@ void Initialize()
 
     app::GameModeWorldAreaMap::Constructor();
     app::CGameSequence::UnlockStageOnCompleteStage();
+    app::StageInfo::CStageInfo::ReadMission_Mission();
 
     /* TODO: Please replace this with sane code. */
     WRITE_MEMORY(ASLR(0x00D41252),
@@ -260,6 +274,19 @@ extern "C"
         DisableChestLetterboxing = reader->GetBoolean("ZeldaTweaks", "disableChestLetterboxing", false);
         IsRupeeCountInChestFixed = reader->GetBoolean("ZeldaTweaks", "isRupeeCountInChestFixed", false);
         IsStalbabyFixed = reader->GetBoolean("ZeldaTweaks", "isStalbabyFixed", false);
+
+        IsWiiURequirement = reader->GetBoolean("AnimalTweaks", "isWiiURequirement", false);
+        IsCustomRequirement = reader->GetBoolean("AnimalTweaks", "isCustomRequirement", false);
+        WindyHillZone4 = reader->GetInteger("AnimalTweaks", "windyHill4", 100);
+        DesertRuins4 = reader->GetInteger("AnimalTweaks", "desertRuins4", 300);
+        TropicalCoast4 = reader->GetInteger("AnimalTweaks", "tropicalCoast4", 800);
+        FrozenFactory4 = reader->GetInteger("AnimalTweaks", "frozenFactory4", 1100);
+        SilentForest4 = reader->GetInteger("AnimalTweaks", "silentForest4", 1400);
+        SkyRoad4 = reader->GetInteger("AnimalTweaks", "skyRoad4", 1700);
+        LavaMountain4 = reader->GetInteger("AnimalTweaks", "lavaMountain4", 1900);
+        HiddenWorld4 = reader->GetInteger("AnimalTweaks", "hiddenWorld4", 2300);
+        TropicalCoastSecret = reader->GetInteger("AnimalTweaks", "tropicalCoastSecret", 1250);
+        SkyRoadSecret = reader->GetInteger("AnimalTweaks", "skyRoadSecret", 1800);
 
         Initialize();
     }

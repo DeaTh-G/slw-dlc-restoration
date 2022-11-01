@@ -303,6 +303,7 @@
     <ClInclude Include="app\SaveData.h" />
     <ClInclude Include="app\SetShotInfo.h" />
     <ClInclude Include="app\StageDataInitializer.h" />
+    <ClInclude Include="app\StageInfo\CStageInfo.h" />
     <ClInclude Include="app\ut\internal\StateImpl.h" />
     <ClInclude Include="app\ut\StateBase.h" />
     <ClInclude Include="app\WorldAreaMap.h" />
@@ -452,6 +453,7 @@
     <ClCompile Include="app\Player\VirtualSonic.cpp" />
     <ClCompile Include="app\Player\VisualVirtualSonic.cpp" />
     <ClCompile Include="app\StageDataInitializer.cpp" />
+    <ClCompile Include="app\StageInfo\CStageInfo.cpp" />
     <ClCompile Include="app\WorldAreaMap.cpp" />
     <ClCompile Include="app\xgame.cpp" />
     <ClCompile Include="app\xgame\CStageSoundDirector.cpp" />

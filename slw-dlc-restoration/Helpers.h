@@ -19,6 +19,20 @@ extern bool DisableChestLetterboxing;
 extern bool IsRupeeCountInChestFixed;
 extern bool IsStalbabyFixed;
 
+extern bool IsWiiURequirement;
+extern bool IsCustomRequirement;
+extern int WindyHillZone4;
+extern int DesertRuins4;
+extern int TropicalCoast4;
+extern int FrozenFactory4;
+extern int SilentForest4;
+extern int SkyRoad4;
+extern int LavaMountain4;
+extern int HiddenWorld4;
+extern int TropicalCoastSecret;
+extern int SkyRoadSecret;
+
+
 static csl::math::Quaternion GetRotationFromMatrix(csl::math::Matrix34* matrix)
 {
     Eigen::Matrix3f m;

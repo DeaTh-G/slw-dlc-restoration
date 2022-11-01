@@ -204,6 +204,7 @@
 #include "app/xgame/MsgPushCameraController.h"
 #include "app/xgame/MsgPopCameraController.h"
 #include "app/xgame/StagePathUtil.h"
+#include "app/StageInfo/CStageInfo.h"
 
 #include "SonicUSA/System.h"
 #include "SonicUSA/System/Random.h"

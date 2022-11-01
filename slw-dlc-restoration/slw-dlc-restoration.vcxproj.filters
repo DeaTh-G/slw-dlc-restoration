@@ -112,6 +112,9 @@
     <Filter Include="Header Files\app\xgame\gamemode\WorldAreaMap">
       <UniqueIdentifier>{7289359c-047f-4b63-bd9c-5a640d3536d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\app\StageInfo">
+      <UniqueIdentifier>{525bc069-204a-4688-b992-a7d64afb306c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
@@ -870,6 +873,9 @@
     <ClInclude Include="app\WorldAreaMapCInfo.h">
       <Filter>Header Files\app</Filter>
     </ClInclude>
+    <ClInclude Include="app\StageInfo\CStageInfo.h">
+      <Filter>Header Files\app\StageInfo</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -954,6 +960,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="app\CGameSequence.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="app\StageInfo\CStageInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
