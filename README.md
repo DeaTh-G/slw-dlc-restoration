@@ -6,14 +6,14 @@ A full restoration of the two exclusive DLCs released for Sonic Lost World (Wii 
 </div>
 
 # Releases
-The Yoshi's Island Zone DLC part of the mod was released on [GameBanana](https://gamebanana.com/maps/216170) on the 22nd of April 2021.<br/>
+The Yoshi's Island Zone DLC part of the mod was released on [GameBanana](https://gamebanana.com/maps/351033) on the 22nd of April 2021.<br/>
 <div align="center">
 	<a href="https://www.youtube.com/watch?v=S9FxpRoQ3Gk"><img src="./Assets/Yoshi-Trailer.jpg" align="center" width=700/></a>
 	<br/>
 <a href="https://www.youtube.com/watch?v=S9FxpRoQ3Gk">Yoshi's Island Zone Restoration | Release Trailer</a>
 </div><br/>
 
-The Legend of Zelda Zone is currently in development, currently set to release on the 12th of February 2022.<br/>
+The Legend of Zelda Zone DLC part of the mod was released on [GameBanana](https://gamebanana.com/mods/351033), on the 12th of February 2022.<br/>
 <div align="center">
 	<a href="https://www.youtube.com/watch?v=gzpvNMKdbBo"><img src="./Assets/Zelda-Teaser.jpg" align="center" width=700/></a>
 	<br/>
