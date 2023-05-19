@@ -133,11 +133,14 @@ namespace app
                 int modelCount = 2;
                 fnd::GOCVisualContainer::Setup(gocVContainer, &modelCount);
 
+                int playerActorId = ObjUtil::GetPlayerActorID(field_24[1], 0);
+
+                auto* pPlayer = static_cast<GameObject*>(f_GetActor((void*)(field_04[1]), playerActorId));
+                csl::math::Vector3 playerScale = *(csl::math::Vector3*)(*(int**)(**(int***)(*(int**)(*(*(int***)((int*)pPlayer + 203) + 3) + 15) + 11) + 1) + 36);
+
                 int* chestModel = fnd::GOComponent::CreateSingle(this, GOCVisualModel);
                 if (chestModel)
                 {
-                    csl::math::Vector3 scale { 0.9f, 0.9f, 0.9f };
-
                     fnd::GOCVisualModel::VisualDescription visualDescriptor{};
                     fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
 
@@ -145,7 +148,7 @@ namespace app
                     visualDescriptor.Skeleton = treasureInfo->Skeleton;
                     fnd::GOCVisualModel::Setup(chestModel, &visualDescriptor);
                     fnd::GOCVisualContainer::Add(gocVContainer, chestModel);
-                    fnd::GOCVisualTransformed::SetLocalScale(chestModel, &scale);
+                    fnd::GOCVisualTransformed::SetLocalScale(chestModel, &playerScale);
                 }
 
                 int* treasureModel = fnd::GOComponent::CreateSingle(this, GOCVisualModel);
@@ -153,6 +156,7 @@ namespace app
                 {
                     csl::math::Vector3 scale { 0.7f, 0.7f, 0.7f };
                     csl::math::Vector3 offset { 0, 11.2f, 13 };
+                    offset.Y = offset.Y / 0.9f * playerScale.Y;
 
                     fnd::GOCVisualModel::VisualDescription visualDescriptor{};
                     fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);

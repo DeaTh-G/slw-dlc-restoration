@@ -20,6 +20,10 @@ namespace app
             inline static FUNCTION_PTR(char, __thiscall, f_BroadcastMessageImm, ASLR(0x0049A380), CActor* This, unsigned int actorID, Message& msg);
 
         public:
+            // MessageManager func
+            inline static FUNCTION_PTR(CActor*, __thiscall, f_GetActor, ASLR(0x0049A950), void* This, unsigned int actorID);
+
+        public:
             int field_04[6]{};
 
             virtual ~CActor() { __dt(this, 0); }

@@ -151,7 +151,11 @@ namespace app
             int* gocVisual = GameObject::GetGOC(this, GOCVisual);
             if (gocVisual)
             {
-                csl::math::Vector3 scale { 0.9f, 0.9f, 0.9f };
+                int playerActorId = ObjUtil::GetPlayerActorID(field_24[1], 0);
+
+                auto* pPlayer = static_cast<GameObject*>(f_GetActor((void*)(field_04[1]), playerActorId));
+                csl::math::Vector3 playerScale = *(csl::math::Vector3*)(*(int**)(**(int***)(*(int**)(*(*(int***)((int*)pPlayer + 203) + 3) + 15) + 11) + 1) + 36);
+
                 fnd::GOCVisualModel::VisualDescription visualDescriptor;
                 fnd::GOCVisualModel::VisualDescription::__ct(&visualDescriptor);
 
@@ -159,7 +163,7 @@ namespace app
                 visualDescriptor.Skeleton = info->Skeleton;
                 visualDescriptor.Animation |= 0x400000;
                 fnd::GOCVisualModel::Setup(gocVisual, &visualDescriptor);
-                fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &scale);
+                fnd::GOCVisualTransformed::SetLocalScale(gocVisual, &playerScale);
                 
                 fnd::GOCVisual::SetVisible(gocVisual, false);
 
