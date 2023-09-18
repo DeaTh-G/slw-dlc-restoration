@@ -8,7 +8,9 @@
 #define PCH_H
 
 // add headers that you want to pre-compile here
-#include "..\..\..\Depends\LWAPI\Sonic2013\Sonic2013.h"
+#include "framework.h"
+#include "../../../Depends/LWAPI/Sonic2013/Sonic2013.h"
+#include "../../../Depends/INIReader/INIReader.h"
 #include "slw-dlc-restoration.h"
 
 #endif //PCH_H
