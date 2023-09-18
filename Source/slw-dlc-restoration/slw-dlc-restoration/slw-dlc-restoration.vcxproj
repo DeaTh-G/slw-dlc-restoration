@@ -9,14 +9,6 @@
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|x64">
-      <Configuration>Release</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -39,19 +31,6 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
@@ -63,42 +42,29 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <TargetName>slw-dlc-restoration</TargetName>
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Configuration)</OutDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>slw-dlc-restoration</TargetName>
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>slw-dlc-restoration</TargetName>
-    <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Configuration)</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>slw-dlc-restoration</TargetName>
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;YOSHIDLC_EXPORTS;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>false</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\;$(ProjectDir);include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\..\..\Depends\LWAPI\Sonic2013;include;$(ProjectDir)..\..\..\Depends\INIReader</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -107,38 +73,23 @@
       <AdditionalDependencies>lib/detours.lib;lib/syelog.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(OutDir)$(TargetName)$(TargetExt)" "F:\Mods\Sonic Lost World\Wii U DLC Restoration" /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableUAC>false</EnableUAC>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;YOSHIDLC_EXPORTS;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)Dependencies\;$(ProjectDir);include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)..\..\..\Depends\LWAPI\Sonic2013;include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -151,41 +102,122 @@
       </Version>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(OutDir)$(TargetName)$(TargetExt)" "F:\Mods\Sonic Lost World\Wii U DLC Restoration" /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableUAC>false</EnableUAC>
-    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
-    <ClInclude Include="Headers.h" />
-    <ClInclude Include="resource.h" />
+    <ClInclude Include="Mod.h" />
+    <ClInclude Include="Patches\Hedgehog\Movement\MoveObjCocco.h" />
+    <ClInclude Include="Patches\Hedgehog\Movement\MoveObjGolonRock.h" />
+    <ClInclude Include="Patches\HUD\HudGameMainDisplay.h" />
+    <ClInclude Include="Patches\Object\Camera\ObjCamera.h" />
+    <ClInclude Include="Patches\Object\enemy\dekunuts\EnemyDekunuts.h" />
+    <ClInclude Include="Patches\Object\enemy\piranhaplant\EnemyPiranhaPlant.h" />
+    <ClInclude Include="Patches\Object\enemy\stalbaby\EnemyStalBaby.h" />
+    <ClInclude Include="Patches\Object\enemy\stalbaby\EnemyStalBabyInfo.h" />
+    <ClInclude Include="Patches\Object\objectObjectReflections.h" />
+    <ClInclude Include="Patches\Object\Stage\Common\Ring\ObjDroppedRingCreate.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\ChangeTopViewCollision\ObjChangeTopViewCollision.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\Cocco\ObjCocco.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\CrayPipe\ObjCrayPipe.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\EggBlock\ObjEggBlock.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\Egg\ObjDroppedEgg.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\Egg\ObjDroppedEggCreate.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\Egg\ObjEgg.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\Egg\misc\EggManager.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\EventDrowning\ObjEventDrowning.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\GolonRockGenerator\ObjGolonRock.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\GolonRockGenerator\ObjGolonRockGenerator.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\GossipStone\ObjGossipStone.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\LoftBird\ObjLoftBird.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\OccludeStone\ObjOccludeStone.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\TreasureBox\ObjTreasureBox.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\YoshiCoin\ObjYoshiCoin.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\YoshiGoal\ObjYoshiGoal.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\YoshiJumpBoard\ObjYoshiJumpBoard.h" />
+    <ClInclude Include="Patches\Object\Stage\dlc\ZeldaGoal\ObjZeldaGoal.h" />
+    <ClInclude Include="Patches\Stage\StageInfo.h" />
+    <ClInclude Include="Patches\System\AocManager.h" />
+    <ClInclude Include="Patches\System\GameSequence.h" />
+    <ClInclude Include="Patches\System\Player\Info\PlayerVisualSonicZeldaInfo.h" />
+    <ClInclude Include="Patches\System\Player\Info\PlayerVisualVirtualSonicInfo.h" />
+    <ClInclude Include="Patches\System\Player\Player.h" />
+    <ClInclude Include="Patches\System\Player\PlayerResourceInfoRegister.h" />
+    <ClInclude Include="Patches\System\Player\PlayerStateBase.h" />
+    <ClInclude Include="Patches\System\Player\PlayerVisualHuman.h" />
+    <ClInclude Include="Patches\System\Player\Sonic.h" />
+    <ClInclude Include="Patches\System\Player\StateUtil.h" />
+    <ClInclude Include="Patches\System\PrizeData.h" />
+    <ClInclude Include="Patches\xgame\DlcManager.h" />
+    <ClInclude Include="Patches\xgame\gamemode\gameover\GameOverInfo.h" />
+    <ClInclude Include="Patches\xgame\gamemode\minigame\MinigameCharacterInfo.h" />
+    <ClInclude Include="Patches\xgame\gamemode\Stage\GameModeStage.h" />
+    <ClInclude Include="Patches\xgame\gamemode\Stage\GameModeStageBattle.h" />
+    <ClInclude Include="Patches\xgame\gamemode\Stage\StageSoundDirector.h" />
+    <ClInclude Include="Patches\xgame\gamemode\WorldAreaMap\WorldAreaMapInfo.h" />
+    <ClInclude Include="slw-dlc-restoration.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Mod.cpp" />
+    <ClCompile Include="Patches\Hedgehog\Movement\MoveObjCocco.cpp" />
+    <ClCompile Include="Patches\Hedgehog\Movement\MoveObjGolonRock.cpp" />
+    <ClCompile Include="Patches\HUD\HudGameMainDisplay.cpp" />
+    <ClCompile Include="Patches\Object\Camera\ObjCamera.cpp" />
+    <ClCompile Include="Patches\Object\enemy\dekunuts\EnemyDekunuts.cpp" />
+    <ClCompile Include="Patches\Object\enemy\piranhaplant\EnemyPiranhaPlant.cpp" />
+    <ClCompile Include="Patches\Object\enemy\stalbaby\EnemyStalBaby.cpp" />
+    <ClCompile Include="Patches\Object\enemy\stalbaby\EnemyStalBabyInfo.cpp" />
+    <ClCompile Include="Patches\Object\objectObjectReflections.cpp" />
+    <ClCompile Include="Patches\Object\Stage\Common\Ring\ObjDroppedRingCreate.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\ChangeTopViewCollision\ObjChangeTopViewCollision.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\Cocco\ObjCocco.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\CrayPipe\ObjCrayPipe.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\EggBlock\ObjEggBlock.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\Egg\misc\EggManager.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\Egg\ObjDroppedEgg.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\Egg\ObjDroppedEggCreate.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\Egg\ObjEgg.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\EventDrowning\ObjEventDrowning.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\GolonRockGenerator\ObjGolonRock.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\GolonRockGenerator\ObjGolonRockGenerator.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\GossipStone\ObjGossipStone.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\LoftBird\ObjLoftBird.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\OccludeStone\ObjOccludeStone.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\TreasureBox\ObjTreasureBox.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\YoshiCoin\ObjYoshiCoin.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\YoshiGoal\ObjYoshiGoal.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\YoshiJumpBoard\ObjYoshiJumpBoard.cpp" />
+    <ClCompile Include="Patches\Object\Stage\dlc\ZeldaGoal\ObjZeldaGoal.cpp" />
+    <ClCompile Include="Patches\Stage\StageInfo.cpp" />
+    <ClCompile Include="Patches\System\AocManager.cpp" />
+    <ClCompile Include="Patches\System\GameSequence.cpp" />
+    <ClCompile Include="Patches\System\Player\Info\PlayerVisualSonicZeldaInfo.cpp" />
+    <ClCompile Include="Patches\System\Player\Info\PlayerVisualVirtualSonicInfo.cpp" />
+    <ClCompile Include="Patches\System\Player\Player.cpp" />
+    <ClCompile Include="Patches\System\Player\PlayerResourceInfoRegister.cpp" />
+    <ClCompile Include="Patches\System\Player\PlayerStateBase.cpp" />
+    <ClCompile Include="Patches\System\Player\PlayerVisualHuman.cpp" />
+    <ClCompile Include="Patches\System\Player\Sonic.cpp" />
+    <ClCompile Include="Patches\System\Player\StateUtil.cpp" />
+    <ClCompile Include="Patches\System\PrizeData.cpp" />
+    <ClCompile Include="Patches\xgame\DlcManager.cpp" />
+    <ClCompile Include="Patches\xgame\gamemode\gameover\GameOverInfo.cpp" />
+    <ClCompile Include="Patches\xgame\gamemode\minigame\MinigameCharacterInfo.cpp" />
+    <ClCompile Include="Patches\xgame\gamemode\Stage\GameModeStage.cpp" />
+    <ClCompile Include="Patches\xgame\gamemode\Stage\GameModeStageBattle.cpp" />
+    <ClCompile Include="Patches\xgame\gamemode\Stage\StageSoundDirector.cpp" />
+    <ClCompile Include="Patches\xgame\gamemode\WorldAreaMap\WorldAreaMapInfo.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="slw-dlc-restoration.rc" />

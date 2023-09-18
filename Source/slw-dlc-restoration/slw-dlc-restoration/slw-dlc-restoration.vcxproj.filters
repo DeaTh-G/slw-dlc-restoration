@@ -9,13 +9,133 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
+    <Filter Include="Source Files\Patches">
+      <UniqueIdentifier>{f37d83c0-fd43-4345-ba14-488490d35fba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="cpp.hint" />
+    <Filter Include="Source Files\Patches\System">
+      <UniqueIdentifier>{4e256c3d-2849-4475-ad43-ee479e7debdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object">
+      <UniqueIdentifier>{44c9d423-7580-472a-92c3-9015d7e9516c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage">
+      <UniqueIdentifier>{57aa8453-ea75-4995-8ba7-da26fdf4a6f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc">
+      <UniqueIdentifier>{2399db5c-30df-4dc1-91d3-b68b7a89aab5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\Common">
+      <UniqueIdentifier>{c5866c56-b649-4c09-bcfd-e773fb1782b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\Common\Ring">
+      <UniqueIdentifier>{adc78cf8-eb6c-4087-8cd1-e5091608d7d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\YoshiCoin">
+      <UniqueIdentifier>{145976b5-0e82-4682-84ca-d47afdf7194c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\HUD">
+      <UniqueIdentifier>{73565167-fb97-462e-a4d5-862e470f93c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\CrayPipe">
+      <UniqueIdentifier>{716883a3-c661-4c6b-a461-ad8feedd97f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\EggBlock">
+      <UniqueIdentifier>{3700cd0c-dcb4-419d-8f8c-a092d403a22b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\YoshiGoal">
+      <UniqueIdentifier>{c89fb29c-436b-4b01-a5e0-02c858cbdaad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\Egg">
+      <UniqueIdentifier>{75e7a400-163b-4b0c-802f-e63212aac60a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\Egg\misc">
+      <UniqueIdentifier>{9b5a3071-fd8a-453a-905d-f1d6e5f85c08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\ChangeTopViewCollision">
+      <UniqueIdentifier>{14d4b6bd-8916-467b-b612-0c5ddb0dab92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\EventDrowning">
+      <UniqueIdentifier>{af0b2258-9603-45c1-acf9-00ea9334ef53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\LoftBird">
+      <UniqueIdentifier>{83c56f02-13b8-48fd-be2a-96b70ce8834d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\YoshiJumpBoard">
+      <UniqueIdentifier>{79264d2a-7359-4730-a1b4-79b6d06856f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\GossipStone">
+      <UniqueIdentifier>{441d6e07-a09c-47f5-a5d6-a15fc601ef48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\OccludeStone">
+      <UniqueIdentifier>{6ad10f02-0b85-47e1-9021-163199d499be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\enemy">
+      <UniqueIdentifier>{58d33bfd-da0d-4476-acb7-25cf3b95246b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\enemy\dekunuts">
+      <UniqueIdentifier>{8d5707da-c52a-4533-94b6-83047e3fdb25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\enemy\piranhaplant">
+      <UniqueIdentifier>{8da0b30e-68c4-4cd7-8347-0cdfde18cf4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\TreasureBox">
+      <UniqueIdentifier>{285ce923-6da1-42ff-b137-2114ced37765}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\enemy\stalbaby">
+      <UniqueIdentifier>{c1fba5ef-bf8a-4609-a1b0-3b6684af3b7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Stage">
+      <UniqueIdentifier>{5b27fa0f-dabc-47c7-9c50-abf58943ecb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\System\Player">
+      <UniqueIdentifier>{894c1c3c-174c-4bbd-8ee9-8474ff35f7e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\System\Player\Info">
+      <UniqueIdentifier>{896284f1-6686-4cbd-a7d0-740fee530d9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\ZeldaGoal">
+      <UniqueIdentifier>{5be628af-c541-45a7-ac41-51b5dcd9716e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Hedgehog">
+      <UniqueIdentifier>{f5e4ccf8-2195-49d9-8f3d-83ef1a97ec13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Hedgehog\Movement">
+      <UniqueIdentifier>{0ad9ce83-ec28-43c9-9b4d-c3a0547655bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\GolonRockGenerator">
+      <UniqueIdentifier>{456dd59b-2d8a-4c43-b399-990982429f73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\System\xgame">
+      <UniqueIdentifier>{7eaa69bf-3e02-426f-a2b8-bf66f3109528}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\System\xgame\gamemode">
+      <UniqueIdentifier>{7ba95598-46de-47cf-8b03-6eb8f46a798f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\System\xgame\gamemode\Stage">
+      <UniqueIdentifier>{16e924d5-10ac-426f-8635-0011b4d33ed5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\System\xgame\gamemode\WorldAreaMap">
+      <UniqueIdentifier>{e34903f3-43f9-4717-8af7-d75023868966}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\System\xgame\gamemode\minigame">
+      <UniqueIdentifier>{76f109b6-cd3b-4f13-b9dc-4c5e7649dd2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\System\xgame\gamemode\gameover">
+      <UniqueIdentifier>{5d3099ac-1b11-481e-bdd4-81dc4bb3a51e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\System\xgame\gamemode\StageBattle">
+      <UniqueIdentifier>{6696dcf5-b940-4d40-9849-818d9ba10a5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Stage\dlc\Cocco">
+      <UniqueIdentifier>{805c0b04-1ea6-4c99-b0bd-368cb7dfb4e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\Object\Camera">
+      <UniqueIdentifier>{8a1584ac-d617-4420-bf89-25ffc769b661}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -24,24 +144,318 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Headers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="slw-dlc-restoration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\Common\Ring\ObjDroppedRingCreate.h">
+      <Filter>Source Files\Patches\Object\Stage\Common\Ring</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\YoshiCoin\ObjYoshiCoin.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\YoshiCoin</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\System\Player\Player.h">
+      <Filter>Source Files\Patches\System\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\System\Player\PlayerStateBase.h">
+      <Filter>Source Files\Patches\System\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\HUD\HudGameMainDisplay.h">
+      <Filter>Source Files\Patches\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\CrayPipe\ObjCrayPipe.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\CrayPipe</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\EggBlock\ObjEggBlock.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\EggBlock</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\YoshiGoal\ObjYoshiGoal.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\YoshiGoal</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\Egg\misc\EggManager.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\Egg\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\Egg\ObjEgg.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\Egg</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\Egg\ObjDroppedEgg.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\Egg</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\Egg\ObjDroppedEggCreate.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\Egg</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\ChangeTopViewCollision\ObjChangeTopViewCollision.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\ChangeTopViewCollision</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\xgame\gamemode\Stage\GameModeStage.h">
+      <Filter>Source Files\Patches\System\xgame\gamemode\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Stage\StageInfo.h">
+      <Filter>Source Files\Patches\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\EventDrowning\ObjEventDrowning.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\EventDrowning</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\LoftBird\ObjLoftBird.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\LoftBird</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\System\Player\PlayerResourceInfoRegister.h">
+      <Filter>Source Files\Patches\System\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Mod.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\System\Player\StateUtil.h">
+      <Filter>Source Files\Patches\System\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\objectObjectReflections.h">
+      <Filter>Source Files\Patches\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\System\Player\Sonic.h">
+      <Filter>Source Files\Patches\System\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\YoshiJumpBoard\ObjYoshiJumpBoard.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\YoshiJumpBoard</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\xgame\gamemode\Stage\StageSoundDirector.h">
+      <Filter>Source Files\Patches\System\xgame\gamemode\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\xgame\gamemode\WorldAreaMap\WorldAreaMapInfo.h">
+      <Filter>Source Files\Patches\System\xgame\gamemode\WorldAreaMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\xgame\gamemode\minigame\MinigameCharacterInfo.h">
+      <Filter>Source Files\Patches\System\xgame\gamemode\minigame</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\xgame\gamemode\gameover\GameOverInfo.h">
+      <Filter>Source Files\Patches\System\xgame\gamemode\gameover</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\System\Player\Info\PlayerVisualSonicZeldaInfo.h">
+      <Filter>Source Files\Patches\System\Player\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\System\Player\Info\PlayerVisualVirtualSonicInfo.h">
+      <Filter>Source Files\Patches\System\Player\Info</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\System\Player\PlayerVisualHuman.h">
+      <Filter>Source Files\Patches\System\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\xgame\gamemode\Stage\GameModeStageBattle.h">
+      <Filter>Source Files\Patches\System\xgame\gamemode\StageBattle</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\GossipStone\ObjGossipStone.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\GossipStone</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\OccludeStone\ObjOccludeStone.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\OccludeStone</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\enemy\dekunuts\EnemyDekunuts.h">
+      <Filter>Source Files\Patches\Object\enemy\dekunuts</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\enemy\piranhaplant\EnemyPiranhaPlant.h">
+      <Filter>Source Files\Patches\Object\enemy\piranhaplant</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\TreasureBox\ObjTreasureBox.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\TreasureBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\enemy\stalbaby\EnemyStalBabyInfo.h">
+      <Filter>Source Files\Patches\Object\enemy\stalbaby</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\enemy\stalbaby\EnemyStalBaby.h">
+      <Filter>Source Files\Patches\Object\enemy\stalbaby</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\xgame\DlcManager.h">
+      <Filter>Source Files\Patches\System\xgame</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\System\AocManager.h">
+      <Filter>Source Files\Patches\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\System\GameSequence.h">
+      <Filter>Source Files\Patches\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\System\PrizeData.h">
+      <Filter>Source Files\Patches\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\ZeldaGoal\ObjZeldaGoal.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\ZeldaGoal</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Hedgehog\Movement\MoveObjGolonRock.h">
+      <Filter>Source Files\Patches\Hedgehog\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\GolonRockGenerator\ObjGolonRock.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\GolonRockGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\GolonRockGenerator\ObjGolonRockGenerator.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\GolonRockGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Stage\dlc\Cocco\ObjCocco.h">
+      <Filter>Source Files\Patches\Object\Stage\dlc\Cocco</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Hedgehog\Movement\MoveObjCocco.h">
+      <Filter>Source Files\Patches\Hedgehog\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="Patches\Object\Camera\ObjCamera.h">
+      <Filter>Source Files\Patches\Object\Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Mod.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\Common\Ring\ObjDroppedRingCreate.cpp">
+      <Filter>Source Files\Patches\Object\Stage\Common\Ring</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\YoshiCoin\ObjYoshiCoin.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\YoshiCoin</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\System\Player\PlayerStateBase.cpp">
+      <Filter>Source Files\Patches\System\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\HUD\HudGameMainDisplay.cpp">
+      <Filter>Source Files\Patches\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\CrayPipe\ObjCrayPipe.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\CrayPipe</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\EggBlock\ObjEggBlock.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\EggBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\YoshiGoal\ObjYoshiGoal.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\YoshiGoal</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\Egg\misc\EggManager.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\Egg\misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\Egg\ObjDroppedEgg.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\Egg</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\Egg\ObjEgg.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\Egg</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\Egg\ObjDroppedEggCreate.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\Egg</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\ChangeTopViewCollision\ObjChangeTopViewCollision.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\ChangeTopViewCollision</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\xgame\gamemode\Stage\GameModeStage.cpp">
+      <Filter>Source Files\Patches\System\xgame\gamemode\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Stage\StageInfo.cpp">
+      <Filter>Source Files\Patches\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\EventDrowning\ObjEventDrowning.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\EventDrowning</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\LoftBird\ObjLoftBird.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\LoftBird</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\System\Player\PlayerResourceInfoRegister.cpp">
+      <Filter>Source Files\Patches\System\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\System\Player\StateUtil.cpp">
+      <Filter>Source Files\Patches\System\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\System\Player\Sonic.cpp">
+      <Filter>Source Files\Patches\System\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\objectObjectReflections.cpp">
+      <Filter>Source Files\Patches\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\YoshiJumpBoard\ObjYoshiJumpBoard.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\YoshiJumpBoard</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\xgame\gamemode\Stage\StageSoundDirector.cpp">
+      <Filter>Source Files\Patches\System\xgame\gamemode\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\xgame\gamemode\WorldAreaMap\WorldAreaMapInfo.cpp">
+      <Filter>Source Files\Patches\System\xgame\gamemode\WorldAreaMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\xgame\gamemode\minigame\MinigameCharacterInfo.cpp">
+      <Filter>Source Files\Patches\System\xgame\gamemode\minigame</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\xgame\gamemode\gameover\GameOverInfo.cpp">
+      <Filter>Source Files\Patches\System\xgame\gamemode\gameover</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\System\Player\Player.cpp">
+      <Filter>Source Files\Patches\System\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\System\Player\Info\PlayerVisualVirtualSonicInfo.cpp">
+      <Filter>Source Files\Patches\System\Player\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\System\Player\Info\PlayerVisualSonicZeldaInfo.cpp">
+      <Filter>Source Files\Patches\System\Player\Info</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\xgame\gamemode\Stage\GameModeStageBattle.cpp">
+      <Filter>Source Files\Patches\System\xgame\gamemode\StageBattle</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\System\Player\PlayerVisualHuman.cpp">
+      <Filter>Source Files\Patches\System\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\GossipStone\ObjGossipStone.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\GossipStone</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\OccludeStone\ObjOccludeStone.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\OccludeStone</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\enemy\dekunuts\EnemyDekunuts.cpp">
+      <Filter>Source Files\Patches\Object\enemy\dekunuts</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\enemy\piranhaplant\EnemyPiranhaPlant.cpp">
+      <Filter>Source Files\Patches\Object\enemy\piranhaplant</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\TreasureBox\ObjTreasureBox.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\TreasureBox</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\enemy\stalbaby\EnemyStalBabyInfo.cpp">
+      <Filter>Source Files\Patches\Object\enemy\stalbaby</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\enemy\stalbaby\EnemyStalBaby.cpp">
+      <Filter>Source Files\Patches\Object\enemy\stalbaby</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\xgame\DlcManager.cpp">
+      <Filter>Source Files\Patches\System\xgame</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\System\AocManager.cpp">
+      <Filter>Source Files\Patches\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\System\GameSequence.cpp">
+      <Filter>Source Files\Patches\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\System\PrizeData.cpp">
+      <Filter>Source Files\Patches\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\ZeldaGoal\ObjZeldaGoal.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\ZeldaGoal</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Hedgehog\Movement\MoveObjGolonRock.cpp">
+      <Filter>Source Files\Patches\Hedgehog\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\GolonRockGenerator\ObjGolonRock.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\GolonRockGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\GolonRockGenerator\ObjGolonRockGenerator.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\GolonRockGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Stage\dlc\Cocco\ObjCocco.cpp">
+      <Filter>Source Files\Patches\Object\Stage\dlc\Cocco</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Hedgehog\Movement\MoveObjCocco.cpp">
+      <Filter>Source Files\Patches\Hedgehog\Movement</Filter>
+    </ClCompile>
+    <ClCompile Include="Patches\Object\Camera\ObjCamera.cpp">
+      <Filter>Source Files\Patches\Object\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="slw-dlc-restoration.rc">
-      <Filter>Resource Files</Filter>
+      <Filter>Header Files\Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>
