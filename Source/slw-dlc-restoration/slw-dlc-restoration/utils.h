@@ -22,3 +22,46 @@
         memcpy((void*)(location), data, sizeof(data)); \
         VirtualProtect((void*)(location), sizeof(data), oldProtect, NULL); \
     }
+
+#define WRITE_NOP(location, count) \
+    { \
+        DWORD oldProtect; \
+        VirtualProtect((void*)(location), (size_t)(count), PAGE_EXECUTE_READWRITE, &oldProtect); \
+        for (size_t i = 0; i < (size_t)(count); i++) \
+            *((uint8_t*)(location) + i) = 0x90; \
+        VirtualProtect((void*)(location), (size_t)(count), oldProtect, &oldProtect); \
+    }
+
+#define WRITE_FUNCTION(location, func)\
+    { \
+        DWORD oldProtect; \
+        void* address = reinterpret_cast<void*>(func); \
+        VirtualProtect(reinterpret_cast<void*>(location), sizeof(void*), PAGE_EXECUTE_READWRITE, &oldProtect); \
+        memcpy(reinterpret_cast<void*>(location), &address, sizeof(void*)); \
+        VirtualProtect(reinterpret_cast<void*>(location), sizeof(void*), oldProtect, NULL); \
+    }
+
+#define WRITE_CALL(location, function) \
+    { \
+        WRITE_MEMORY(location, uint8_t, 0xE8); \
+        WRITE_MEMORY(location + 1, uint32_t, (uint32_t)(function) - (size_t)(location) - 5); \
+    }
+
+#define WRITE_OBJECT_CLASS_CREATE(location, objectCls)\
+    { \
+        if (objectCls.m_fpCreateInfo) \
+        { \
+            WRITE_FUNCTION(location + 47, *(void**)&objectCls.m_fpCreateInfo); \
+            if (objectCls.m_fpCreateObject) \
+            { \
+                WRITE_FUNCTION(location + 52, *(void**)&objectCls.m_fpCreateObject); \
+            } \
+        } \
+        else \
+        { \
+            if (objectCls.m_fpCreateObject) \
+            { \
+                WRITE_FUNCTION(location + 49, *(void**)&objectCls.m_fpCreateObject); \
+            } \
+        } \
+    }
