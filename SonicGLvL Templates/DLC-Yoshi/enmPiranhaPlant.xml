@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<Template>
+  <RangeIn type="float" default="1000" description="Distance from object before it spawns" />
+  <RangeOut type="float" default="1200" description="Distance from object before it despawns" />
+  <Parent type="target" description="" />
+  <Unknown1 type="uint16" default="0" description="" />
+  <Unknown2 type="uint32" default="0" description="" />
+  <Unknown3 type="float" default="0" description="" />
+  <SearchRadius type="float" default="0" description="Radius in which the Piranha Plant searches for a player." />
+  <Direction type="enum" default="0" description="Direction the Piranha Plant is facing (0 = Right | 1 = Left)." />
+  <Extra type="model" name="enm_packunflower.model" />
+  <Extra type="skeleton" name="enm_packunflower.skl.hkx" />
+  <Extra type="animation" name="pac_idle_loop.anm.hkx" />
+</Template>

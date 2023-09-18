@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<Template>
+  <RangeIn type="float" default="1000" description="Distance from object before it spawns" />
+  <RangeOut type="float" default="1200" description="Distance from object before it despawns" />
+  <Parent type="target" description="" />
+  <Unknown1 type="uint16" default="0" description="" />
+  <Unknown2 type="uint32" default="0" description="" />
+  <Unknown3 type="float" default="0" description="" />
+  <CreateType type="enum" default="0" description="Type of the bush type that will be created." />
+  
+  <!-- Crashes GLVL luuuuuuuuuuul -->
+  <!--<Extra type="model" name="zdlc03_obj_bushA.model" condition="CreateType == 0"/>
+  <Extra type="skeleton" name="zdlc03_obj_bushA.skl.hkx" condition="CreateType == 0"/>
+  <Extra type="animation" name="zdlc03_obj_bushA.anm.hkx" condition="CreateType == 0"/>
+  <Extra type="model" name="zdlc03_obj_bushB.model" condition="CreateType == 1"/>
+  <Extra type="skeleton" name="zdlc03_obj_bushB.skl.hkx" condition="CreateType == 1"/>
+  <Extra type="animation" name="zdlc03_obj_bushB.anm.hkx" condition="CreateType == 1"/>-->
+</Template>

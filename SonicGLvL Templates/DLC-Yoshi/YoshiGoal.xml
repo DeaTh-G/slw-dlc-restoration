@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<Template>
+  <RangeIn type="float" default="1000" description="Distance from object before it spawns" />
+  <RangeOut type="float" default="1200" description="Distance from object before it despawns" />
+  <Parent type="target" description="" />
+  <Unknown1 type="uint16" default="0" description="" />
+  <Unknown2 type="uint32" default="0" description="" />
+  <Unknown3 type="float" default="0" description="" />
+  <Locator type="target" description="Sonic's target position after touching the goal." />
+  <FixCamera type="target" description="Camera the game will focus on after touching the goal." />
+  
+  <Extra type="preview_box_x" name="20.0" />
+  <Extra type="preview_box_y" name="20.0" />
+  <Extra type="preview_box_z" name="1.0" />
+  <Extra type="preview_box_x_scale" name="2.0"/>
+  <Extra type="preview_box_y_scale" name="2.0"/>
+  <Extra type="preview_box_z_scale" name="2.0"/>
+</Template>

@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<Template>
+  <RangeIn type="float" default="1000" description="Distance from object before it spawns" />
+  <RangeOut type="float" default="1200" description="Distance from object before it despawns" />
+  <Parent type="target" description="" />
+  <Unknown1 type="uint16" default="0" description="" />
+  <Unknown2 type="uint32" default="0" description="" />
+  <Unknown3 type="float" default="0" description="" />
+  <Speed type="float" default="0" description="Movement speed of the Shy Guy." />
+  <MaxMoveDistance type="float" default="0" description="Maximum movement distance of the Shy Guy (Infinite if -1)." />
+  <IsEventDriven type="bool" default="false" description="Is movement turned on by event." />
+  <Direction type="enum" default="0" description="Direction of the Shy Guy. (0 = Left | 1 = Right)." />
+  <DepthOffset type="float" default="0" description="Depth offset of the Shy Guy." />
+  <Extra type="model" name="enm_heyho.model" />
+  <Extra type="skeleton" name="enm_heyho.skl.hkx" />
+  <Extra type="animation" name="hey_idle_left_loop.anm.hkx" condition="Direction == 0"/>
+  <Extra type="animation" name="hey_idle_right_loop.anm.hkx" condition="Direction == 1"/>
+</Template>
