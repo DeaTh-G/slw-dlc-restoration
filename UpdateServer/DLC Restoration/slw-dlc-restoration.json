@@ -1,0 +1,141 @@
+{
+  "Groups": [
+    {
+      "Name": "YoshiTweaks",
+      "DisplayName": "Yoshi's Island Zone Tweaks",
+      "Elements": [
+        {
+          "Name": "isConsistentShadows",
+		  "Description": [
+			"Fixes the shadow consistency issues found in the original version of the 'Yoshi's Island Zone' DLC.\n\nYoshis are exempt from this change."
+		  ],
+          "DisplayName": "Consistent Shadows",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        },
+		{
+          "Name": "disablePipeTransition",
+		  "Description": [
+			"Changes the pipe transition from the DLC animation to a fade out.\n\nRecommended for playing in aspect ratios other than 16:9."
+		  ],
+          "DisplayName": "Disable Pipe Transition",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        }
+      ]
+    },
+    {
+      "Name": "ZeldaTweaks",
+      "DisplayName": "The Legend of Zelda Zone Tweaks",
+      "Elements": [
+        {
+          "Name": "linkSonicPlayType",
+          "Description": [
+            "Change where Link Sonic appears in the game."
+          ],
+          "DisplayName": "Play as Link Sonic",
+          "Type": "PlayType",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": 0
+        },
+        {
+          "Name": "isLinkSonicFixed",
+          "Description": [
+            "Fixes the materials inside Link Sonic's mouth.\n\n(thanks to M&M: https://twitter.com/ActualMandM)."
+          ],
+          "DisplayName": "Fixed Link Sonic Materials",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        },
+        {
+          "Name": "isVirtualLinkSonic",
+          "Description": [
+            "Changes the Virtual Sonics in multiplayer mode to Link Sonic with different costumes.\n\n(thanks to GPF: https://twitter.com/GPF_SCT)."
+          ],
+          "DisplayName": "Play as Link Sonic in Multiplayer",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        },
+        {
+          "Name": "isAlwaysHeartLife",
+          "Description": [
+            "Makes the game always use the heart system from 'The Legend of Zelda Zone' DLC.\n\nThis will make rings not scatter on damage as well, so they are just a collectable in this gamemode."
+          ],
+          "DisplayName": "Always Play with Heart System",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        },
+        {
+          "Name": "isStalbabyFixed",
+          "Description": [
+            "Fix's the eye texture of the Stalbaby so there's no border around it."
+          ],
+          "DisplayName": "Fix Stalbaby Eye Texture",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        },
+        {
+          "Name": "disableChestLetterboxing",
+          "Description": [
+            "Disables the letterboxing when opening a chest in 'The Legend of Zelda Zone' DLC.\n\nRecommended for playing in aspect ratios other than 16:9."
+          ],
+          "DisplayName": "Disable Chest Letterboxing",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        },
+        {
+          "Name": "isRupeeCountInChestFixed",
+          "Description": [
+            "Makes the game give the player the correct amount of rupees upon opening chests containing rupees in 'The Legend of Zelda Zone' DLC.\n\n(By default there are no chests containing rupees in the DLC.)"
+          ],
+          "DisplayName": "Fix Rupee Count from Chests",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        }
+      ]
+    }
+  ],
+  "Enums":{
+      "PlayType":[
+         {
+            "DisplayName":"Default",
+            "Description":[
+               "Only enables Link Sonic in The Legend of Zelda DLC."
+            ],
+            "Value":"0"
+         },
+         {
+            "DisplayName":"Always",
+            "Description":[
+               "Enables Link Sonic everywhere, including the world map and circus minigames."
+            ],
+            "Value":"1"
+         },
+         {
+            "DisplayName":"Never",
+            "Description":[
+               "Disables Link Sonic in The Legend of Zelda DLC."
+            ],
+            "Value":"2"
+         }
+      ]
+   },
+  "IniFile": "slw-dlc-restoration.ini"
+}
