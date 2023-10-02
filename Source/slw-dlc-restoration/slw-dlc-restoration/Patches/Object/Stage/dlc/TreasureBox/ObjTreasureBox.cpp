@@ -54,16 +54,16 @@ void slw_dlc_restoration::ObjTreasureBox::PushCamera()
 		return;
 	}
 
-	if (pCamera)
+	if (rpCamera)
 		return;
 
-	if (pCamera = new app::Camera::TreasureBoxCamera())
+	if (rpCamera = new app::Camera::TreasureBoxCamera())
 	{
-		pCamera->SetCameraParameter(CameraPosition, GetComponent<app::fnd::GOCTransform>()->m_Frame.m_Unk3.m_Mtx.GetColumn(1), CameraLookAt);
-		pCamera->SetFovy(35.0f);
+		rpCamera->SetCameraParameter(CameraPosition, GetComponent<app::fnd::GOCTransform>()->m_Frame.m_Unk3.m_Mtx.GetColumn(1), CameraLookAt);
+		rpCamera->SetFovy(35.0f);
 	}
 
-	app::xgame::MsgPushCameraController msg{ pCamera, 0.0f, false, 4000, 1, true };
+	app::xgame::MsgPushCameraController msg{ rpCamera, 0.0f, false, 4000, 1, true };
 	app::ObjUtil::SendMessageImmToCamera(*this, PlayerNo, msg);
 }
 
@@ -75,10 +75,10 @@ void slw_dlc_restoration::ObjTreasureBox::PopCamera()
 		return;
 	}
 
-	if (!pCamera)
+	if (!rpCamera)
 		return;
 
-	app::xgame::MsgPopCameraController msg{ pCamera, 0.0f, false, 1, true };
+	app::xgame::MsgPopCameraController msg{ rpCamera, 0.0f, false, 1, true };
 	app::ObjUtil::SendMessageImmToCamera(*this, PlayerNo, msg);
 }
 
