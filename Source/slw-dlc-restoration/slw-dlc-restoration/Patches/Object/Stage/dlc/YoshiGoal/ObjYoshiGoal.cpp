@@ -11,8 +11,7 @@ void slw_dlc_restoration::ObjYoshiGoal::Update(const app::fnd::SUpdateInfo& in_r
 	if (FSM_STATE() == &app::ObjYoshiGoal::StateWaitYoshiExtrication)
 		ChangeState(static_cast<BaseState>(&ObjYoshiGoal::StateWaitYoshiExtrication));
 
-	DebugDrawFlowerPos();
-	DispatchFSM(app::TiFsmBasicEvent<app::ObjYoshiGoal>::CreateUpdate(in_rUpdateInfo.deltaTime));
+	app::ObjYoshiGoal::Update(in_rUpdateInfo);
 }
 
 app::TTinyFsm<app::ObjYoshiGoal>::TiFsmState_t slw_dlc_restoration::ObjYoshiGoal::StateWait(const TiFsmEvent_t& in_rEvent)
@@ -103,10 +102,10 @@ app::TTinyFsm<app::ObjYoshiGoal>::TiFsmState_t slw_dlc_restoration::ObjYoshiGoal
 	{
 		auto* pEggManager = GetDocument()->GetService<slw_dlc_restoration::EggManager>();
 		if (!pEggManager)
-			return FSM_TOP();
+			break;
 
 		if (!pEggManager->IsEndExtrication(app::ObjUtil::GetPlayerNo(*GetDocument(), PlayerActorID)))
-			return FSM_TOP();
+			break;
 
 		if (strcmp(GetDocument()->m_pGameMode->GetName(), "GameModeStageBattle") == 0)
 		{
@@ -151,9 +150,11 @@ app::TTinyFsm<app::ObjYoshiGoal>::TiFsmState_t slw_dlc_restoration::ObjYoshiGoal
 
 		ChangeState(&ObjYoshiGoal::StateResult);
 
-		return FSM_TOP();
+		break;
 	}
 	default:
-		return FSM_TOP();
+		break;
 	}
+
+	return FSM_TOP();
 }
