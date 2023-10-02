@@ -72,7 +72,7 @@ HOOK(TiFsmState_t&, __fastcall, StatePlayHook, ASLR(0x0091A680), app::GameModeSt
         {
             auto& message = static_cast<app::xgame::MsgDlcZeldaNoticeActiveEnemy&>(in_rEvent.getMessage());
 
-            in_pThis->m_pDocument->GetService<app::CLevelInfo>()->SetPlayingZeldaEvent(true);
+            in_pThis->m_pDocument->GetService<app::CLevelInfo>()->SetPlayingZeldaEvent(false);
             in_pThis->SendToGroup(6, message);
             in_pThis->SendToGroup(7, message);
 
