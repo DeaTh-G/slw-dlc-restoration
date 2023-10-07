@@ -187,7 +187,7 @@ void slw_dlc_restoration::ObjEggBlock::DoCheckPopEgg()
 			SetExtUserData(eExtUserDataType_High, PopEggNum);
 
 			if (auto* pSound = GetComponent<app::game::GOCSound>())
-				pSound->Play(ms_pHitSoundName, 0.0f);
+				pSound->Play3D(ms_pHitSoundName, 0.0f);
 
 			return;
 		}
