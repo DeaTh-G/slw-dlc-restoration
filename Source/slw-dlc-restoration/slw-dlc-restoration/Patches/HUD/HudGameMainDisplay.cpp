@@ -111,7 +111,7 @@ HOOK(void, __fastcall, InitLayerHook, ASLR(0x00503780), app::HUD::CHudGameMainDi
 		{
 			hh::ut::PackFile packFile{ rawData->GetAddress() };
 
-			size_t zeldaHudIndex{};
+			size_t zeldaHudIndex{ static_cast<size_t>(-1) };
 			for (size_t i = 0; i < in_pThis->pHudGoc->rcProjects.size(); i++)
 			{
 				if (!strcmp(in_pThis->pHudGoc->rcProjects[i]->GetName(), "ui_gameplay_zdlc03"))
@@ -122,7 +122,7 @@ HOOK(void, __fastcall, InitLayerHook, ASLR(0x00503780), app::HUD::CHudGameMainDi
 			}
 
 			SurfRide::ReferenceCount<SurfRide::Project> rcProject{};
-			if (zeldaHudIndex)
+			if (zeldaHudIndex != static_cast<size_t>(-1))
 				rcProject = in_pThis->pHudGoc->rcProjects[zeldaHudIndex];
 			else
 				in_pThis->pHudGoc->SetupProject(&rcProject, "ui_gameplay_zdlc03", packFile);
@@ -134,50 +134,53 @@ HOOK(void, __fastcall, InitLayerHook, ASLR(0x00503780), app::HUD::CHudGameMainDi
 			}
 		}
 
-		if (in_pThis->rcLayers[1])
+		if (in_pThis->pHudGoc->rcProjects.size() > 1)
 		{
-			// Offset the animation found inside the info_ring layer to move it down by a slot on the HUD.
+			if (in_pThis->rcLayers[1])
+			{
+				// Offset the animation found inside the info_ring layer to move it down by a slot on the HUD.
+				if (in_pThis->IsTimeTrial && !in_pThis->pLayerController)
+					in_pThis->rcLayers[1]->pBinaryLayer->pAnimations[1].pLinks[0].pTracks[0].pKeyFrame->Value.Float -= 52.0f;
+
+				// Invoke the secondary position animation for the info_ring to move it down by a slot on the HUD.
+				app::HUD::SRUtility::SetAnimation(in_pThis->rcLayers[1], "mode_1_Param", false, -1.0f, false, false);
+			}
+
+			if (in_pThis->ScreenType == 1 && !in_pThis->pLayerController)
+			{
+				// Offset the cast found inside the info_challenge layer to move it down by a slot on the HUD.
+				if (in_pThis->rcLayers[0])
+				{
+					auto* pTransform = static_cast<SurfRide::SRS_TRS3D*>(in_pThis->rcLayers[0]->prcCasts[1]->pBinaryTransform);
+					pTransform->Translation.SetY(pTransform->Translation.GetY() - 52.0f);
+				}
+
+				// Offset the cast found inside the info_s_ring layer to move it down by a slot on the HUD.
+				if (in_pThis->rcLayers[5])
+				{
+					auto* pTransform = static_cast<SurfRide::SRS_TRS3D*>(in_pThis->rcLayers[5]->prcCasts[1]->pBinaryTransform);
+					pTransform->Translation.SetY(pTransform->Translation.GetY() - 52.0f);
+				}
+
+				// Offset the cast found inside the info_g_ring layer to move it down by a slot on the HUD.
+				if (in_pThis->rcLayers[6])
+				{
+					auto* pTransform = static_cast<SurfRide::SRS_TRS3D*>(in_pThis->rcLayers[6]->prcCasts[1]->pBinaryTransform);
+					pTransform->Translation.SetY(pTransform->Translation.GetY() - 52.0f);
+				}
+			}
+
+			// Offset the cast found inside the info_ring_zdlc03 layer to move it down by a slot on the HUD.
 			if (in_pThis->IsTimeTrial && !in_pThis->pLayerController)
-				in_pThis->rcLayers[1]->pBinaryLayer->pAnimations[1].pLinks[0].pTracks[0].pKeyFrame->Value.Float -= 52.0f;
-
-			// Invoke the secondary position animation for the info_ring to move it down by a slot on the HUD.
-			app::HUD::SRUtility::SetAnimation(in_pThis->rcLayers[1], "mode_1_Param", false, -1.0f, false, false);
-		}
-
-		if (in_pThis->ScreenType == 1 && !in_pThis->pLayerController)
-		{
-			// Offset the cast found inside the info_challenge layer to move it down by a slot on the HUD.
-			if (in_pThis->rcLayers[0])
 			{
-				auto* pTransform = static_cast<SurfRide::SRS_TRS3D*>(in_pThis->rcLayers[0]->prcCasts[1]->pBinaryTransform);
+				auto* pTransform = static_cast<SurfRide::SRS_TRS3D*>(in_pThis->pHudGoc->rcProjects[1]->prcScenes[0]->prcLayers[6]->prcCasts[1]->pBinaryTransform);
 				pTransform->Translation.SetY(pTransform->Translation.GetY() - 52.0f);
 			}
 
-			// Offset the cast found inside the info_s_ring layer to move it down by a slot on the HUD.
-			if (in_pThis->rcLayers[5])
-			{
-				auto* pTransform = static_cast<SurfRide::SRS_TRS3D*>(in_pThis->rcLayers[5]->prcCasts[1]->pBinaryTransform);
-				pTransform->Translation.SetY(pTransform->Translation.GetY() - 52.0f);
-			}
-
-			// Offset the cast found inside the info_g_ring layer to move it down by a slot on the HUD.
-			if (in_pThis->rcLayers[6])
-			{
-				auto* pTransform = static_cast<SurfRide::SRS_TRS3D*>(in_pThis->rcLayers[6]->prcCasts[1]->pBinaryTransform);
-				pTransform->Translation.SetY(pTransform->Translation.GetY() - 52.0f);
-			}
+			in_pThis->pLayerController = in_pThis->pHudGoc->CreateLayerController({ in_pThis->pHudGoc->rcProjects[1]->prcScenes[0] }, "info_ring_zdlc03", 20);
+			in_pThis->pLayerController->PlayAnimation("Intro_Anim", app::game::HudPlayPolicy::eHudPlayPolicy_Once, false);
+			in_pThis->pLayerController->SetVisible(true);
 		}
-
-		// Offset the cast found inside the info_ring_zdlc03 layer to move it down by a slot on the HUD.
-		if (in_pThis->IsTimeTrial && !in_pThis->pLayerController)
-		{
-			auto* pTransform = static_cast<SurfRide::SRS_TRS3D*>(in_pThis->pHudGoc->rcProjects[1]->prcScenes[0]->prcLayers[6]->prcCasts[1]->pBinaryTransform);
-			pTransform->Translation.SetY(pTransform->Translation.GetY() - 52.0f);
-		}
-
-		in_pThis->pLayerController = in_pThis->pHudGoc->CreateLayerController({ in_pThis->pHudGoc->rcProjects[1]->prcScenes[0] }, "info_ring_zdlc03", 20);
-		in_pThis->pLayerController->PlayAnimation("Intro_Anim", app::game::HudPlayPolicy::eHudPlayPolicy_Once, false);
-		in_pThis->pLayerController->SetVisible(true);
 	}
 }
 
