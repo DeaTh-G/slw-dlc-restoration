@@ -70,12 +70,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "ÐeäTh"
             VALUE "FileDescription", "A full restoration of the two exclusive DLCs released for Sonic Lost World (Wii U) for the PC release of the game. "
-            VALUE "FileVersion", "2.2.0.0 - BETA 6"
+            VALUE "FileVersion", "2.2.0.0 - BETA 7"
             VALUE "InternalName", "slw-dlc-restoration.dll"
             VALUE "LegalCopyright", "Copyright (C) 2023"
             VALUE "OriginalFilename", "\r\nslw-dlc-restoration.dll"
             VALUE "ProductName", "Sonic Lost World - Wii U DLC Restoration"
-            VALUE "ProductVersion", "2.2.0.0 - BETA 6"
+            VALUE "ProductVersion", "2.2.0.0 - BETA 7"
         END
     END
     BLOCK "VarFileInfo"
