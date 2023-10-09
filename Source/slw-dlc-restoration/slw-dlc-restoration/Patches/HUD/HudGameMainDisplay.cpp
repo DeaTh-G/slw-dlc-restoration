@@ -127,7 +127,7 @@ HOOK(void, __fastcall, InitLayerHook, ASLR(0x00503780), app::HUD::CHudGameMainDi
 			else
 				in_pThis->pHudGoc->SetupProject(&rcProject, "ui_gameplay_zdlc03", packFile);
 
-			if (rcProject)
+			if (rcProject && zeldaHudIndex != 0)
 			{
 				if (auto rcScene = rcProject->GetScene("ui_gameplay_zdlc03"))
 					app::HUD::SRUtility::AllLayerHide(rcScene);
