@@ -3,6 +3,14 @@
 
 typedef app::TTinyFsm<app::GameModeStage, app::GameModeUtil::Event<app::GameModeStage>, false>::TiFsmState_t TiFsmState_t;
 
+HOOK(void, __fastcall, ConstructorHook, ASLR(0x00919D70), app::GameModeStage* in_pThis, void* edx, const app::SGameModeStageCinfo& in_rCreateInfo)
+{
+    originalConstructorHook(in_pThis, edx, in_rCreateInfo);
+
+    if (CONFIGURATION.ZeldaTweaks.LinkSonicPlayType == slw_dlc_restoration::SConfiguration::SZeldaTweaks::ePlayType_Always)
+        in_pThis->CreateInfo.IsSuperSonicUnlocked = false;
+}
+
 HOOK(void, __fastcall, LoadLevelHook, ASLR(0x00917730), app::GameModeStage* in_pThis, void* edx)
 {
     originalLoadLevelHook(in_pThis, edx);
@@ -157,6 +165,7 @@ void slw_dlc_restoration::GameModeStage::InstallHooks()
         INSTALL_HOOK(StateWarpHook);
 
     // The Legend of Zelda Zone DLC Hooks
+    INSTALL_HOOK(ConstructorHook);
     INSTALL_HOOK(ResetStageHook);
     INSTALL_HOOK(StatePlayHook);
     INSTALL_HOOK(DisposeMsgPLSendGameInfoHook);
