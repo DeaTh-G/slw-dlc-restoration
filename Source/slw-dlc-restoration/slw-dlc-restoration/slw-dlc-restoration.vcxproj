@@ -119,7 +119,6 @@
     <ClInclude Include="Patches\Object\enemy\dekunuts\EnemyDekunuts.h" />
     <ClInclude Include="Patches\Object\enemy\piranhaplant\EnemyPiranhaPlant.h" />
     <ClInclude Include="Patches\Object\enemy\stalbaby\EnemyStalBaby.h" />
-    <ClInclude Include="Patches\Object\enemy\stalbaby\EnemyStalBabyInfo.h" />
     <ClInclude Include="Patches\Object\objectObjectReflections.h" />
     <ClInclude Include="Patches\Object\Stage\Common\Ring\ObjDroppedRingCreate.h" />
     <ClInclude Include="Patches\Object\Stage\dlc\ChangeTopViewCollision\ObjChangeTopViewCollision.h" />
@@ -173,7 +172,6 @@
     <ClCompile Include="Patches\Object\enemy\dekunuts\EnemyDekunuts.cpp" />
     <ClCompile Include="Patches\Object\enemy\piranhaplant\EnemyPiranhaPlant.cpp" />
     <ClCompile Include="Patches\Object\enemy\stalbaby\EnemyStalBaby.cpp" />
-    <ClCompile Include="Patches\Object\enemy\stalbaby\EnemyStalBabyInfo.cpp" />
     <ClCompile Include="Patches\Object\objectObjectReflections.cpp" />
     <ClCompile Include="Patches\Object\Stage\Common\Ring\ObjDroppedRingCreate.cpp" />
     <ClCompile Include="Patches\Object\Stage\dlc\ChangeTopViewCollision\ObjChangeTopViewCollision.cpp" />

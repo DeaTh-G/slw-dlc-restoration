@@ -43,14 +43,14 @@ void InitializeConfiguration(ModInfo_t* in_pModInfo, const char* in_pConfigFileN
     CONFIGURATION.IsSonicOmochaoDlcEnabled = pReader->GetBoolean("DLCAvailability", "isSonicOmochaoDlcEnabled", false);
 }
 
-void InitializeMod()
+void InitializeMod(ModInfo_t* in_pModInfo)
 {
     // The nvapi.dll is loaded so that the game is forced to use the dedicated GPU in the system.
     // This is done to avoid graphical issues presented by older integrated GPUs.
     LoadLibraryA("nvapi.dll");
 
     // General Patches/Hooks
-    slw_dlc_restoration::objectObjectReflections::InstallPatches();
+    slw_dlc_restoration::objectObjectReflections::InstallPatches(in_pModInfo);
     slw_dlc_restoration::GameModeStage::InstallPatches();
     slw_dlc_restoration::CGameSequence::InstallPatches();
     slw_dlc_restoration::PrizeData::InstallPatches();
@@ -71,6 +71,7 @@ void InitializeMod()
     slw_dlc_restoration::Player::CPlayer::InstallHooks();
 
     // The Legend of Zelda Zone DLC Patches/Hooks
+    slw_dlc_restoration::Player::VirtualSonicInfo::InstallPatches(in_pModInfo);
     slw_dlc_restoration::WorldAreaMapInfo::InstallHooks();
     slw_dlc_restoration::MinigameCharacterInfo::InstallHooks();
     slw_dlc_restoration::GameOverInfo::InstallHooks();
@@ -89,6 +90,6 @@ extern "C"
     {
         InitializeConfiguration(in_pModInfo, "slw-dlc-restoration.ini");
 
-        InitializeMod();
+        InitializeMod(in_pModInfo);
     }
 }

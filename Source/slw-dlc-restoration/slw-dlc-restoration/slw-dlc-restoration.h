@@ -31,7 +31,6 @@
 #include "Patches/Object/Stage/dlc/GolonRockGenerator/ObjGolonRockGenerator.h"
 #include "Patches/Object/Stage/dlc/ZeldaGoal/ObjZeldaGoal.h"
 #include "Patches/Object/Stage/dlc/Cocco/ObjCocco.h"
-#include "Patches/Object/enemy/stalbaby/EnemyStalBabyInfo.h"
 #include "Patches/Object/enemy/stalbaby/EnemyStalBaby.h"
 #include "Patches/Object/enemy/piranhaplant/EnemyPiranhaPlant.h"
 #include "Patches/Object/enemy/dekunuts/EnemyDekunuts.h"

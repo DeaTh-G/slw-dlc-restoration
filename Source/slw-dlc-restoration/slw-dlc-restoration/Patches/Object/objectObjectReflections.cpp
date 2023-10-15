@@ -1,6 +1,6 @@
 #include "pch.h"
 
-void slw_dlc_restoration::objectObjectReflections::InstallPatches()
+void slw_dlc_restoration::objectObjectReflections::InstallPatches(ModInfo_t* in_pModInfo)
 {
     // Yoshi's Island Zone DLC Patches
     // Use the create function found in slw_dlc_restoration instead of their original game restoration to fix objects for multiplayer.
@@ -60,7 +60,10 @@ void slw_dlc_restoration::objectObjectReflections::InstallPatches()
     }
 
     if (CONFIGURATION.ZeldaTweaks.IsStalbabyFixed)
-        STAL_BABY_CLASS.m_fpCreateInfo = app::CSetObjClass::InfoCreator<slw_dlc_restoration::EnemyStalBabyInfo>;
+    {
+        in_pModInfo->API->BindFile(in_pModInfo->CurrentMod, "+EnemyStalbaby.pac", "dlc/0012/sonic2013_dlc_0012/EnemyStalbabyFix.pac", 1);
+        in_pModInfo->API->BindFile(in_pModInfo->CurrentMod, "+EnemyStalbaby.pac.00", "dlc/0012/sonic2013_dlc_0012/EnemyStalbabyFix.pac.00", 1);
+    }
 
     if (CONFIGURATION.GlobalTweaks.FixMultiplayerBugs || CONFIGURATION.ZeldaTweaks.ScaleObjectsWithPlayer || CONFIGURATION.ZeldaTweaks.UseUnusedGoalAnimation)
         ZELDA_GOAL_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjZeldaGoal>;

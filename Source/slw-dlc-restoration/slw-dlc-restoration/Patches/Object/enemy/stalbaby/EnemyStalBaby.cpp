@@ -54,7 +54,7 @@ bool slw_dlc_restoration::EnemyStalBaby::State::Dead::Step(context_type& in_rObj
 	if (!object.GetComponent<app::fnd::GOCVisualModel>()->GetNodeTransform(0, ms_pHeadNodeName, &transform))
 		return false;
 
-	auto* pInfo = app::ObjUtil::GetObjectInfo<EnemyStalBabyInfo>(*object.GetDocument());
+	auto* pInfo = app::ObjUtil::GetObjectInfo<app::EnemyStalBabyInfo>(*object.GetDocument());
 
 	app::EnemyBlowOffObjectCInfo createInfo{};
 	createInfo.Model = pInfo->HeadModel;

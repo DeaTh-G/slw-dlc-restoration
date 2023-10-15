@@ -12,7 +12,6 @@ HOOK(void, __fastcall, LoadHook, ASLR(0x008F8BA0), app::Player::VirtualSonicInfo
 	// The archive name is referenced from the game to ensure mod compatibility.
 	// In addition another packfile is loaded for the added alt skin added by the mod.
 	in_rLoader.Load(LINKSONIC_PACKFILE_NAME, 0x4001);
-	in_rLoader.Load("Linksonic2p.pac", 0x4001);
 }
 
 HOOK(void, __fastcall, InitializeHook, ASLR(0x008F8C00), app::Player::VirtualSonicInfo* in_pThis, void* edx, app::GameDocument& in_rDocument)
@@ -29,7 +28,6 @@ HOOK(void, __fastcall, InitializeHook, ASLR(0x008F8C00), app::Player::VirtualSon
 			in_pThis->Models[0] = model;
 	}
 
-	packFile = app::ObjUtil::GetPackFile("Linksonic2p.pac");
 	in_pThis->Models[1] = app::ObjUtil::GetModelResource("chr_Linksonic2p", packFile);
 	if (CONFIGURATION.ZeldaTweaks.IsLinkSonicFixed)
 	{
@@ -41,6 +39,16 @@ HOOK(void, __fastcall, InitializeHook, ASLR(0x008F8C00), app::Player::VirtualSon
 	// the looks that the option is going for.
 	in_pThis->AntennaModels[0] = { nullptr };
 	in_pThis->AntennaModels[1] = { nullptr };
+}
+
+void slw_dlc_restoration::Player::VirtualSonicInfo::InstallPatches(ModInfo_t* in_pModInfo)
+{
+	// The Legend of Zelda Zone DLC Patches
+	if (CONFIGURATION.ZeldaTweaks.IsVirtualLinkSonic)
+	{
+		in_pModInfo->API->BindFile(in_pModInfo->CurrentMod, "+Linksonic.pac", "dlc/0012/sonic2013_dlc_0012/Linksonic2p.pac", 1);
+		in_pModInfo->API->BindFile(in_pModInfo->CurrentMod, "+Linksonic.pac.00", "dlc/0012/sonic2013_dlc_0012/Linksonic2p.pac.00", 1);
+	}
 }
 
 void slw_dlc_restoration::Player::VirtualSonicInfo::InstallHooks()

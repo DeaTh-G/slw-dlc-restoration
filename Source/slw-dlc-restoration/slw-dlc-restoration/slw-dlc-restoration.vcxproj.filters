@@ -258,9 +258,6 @@
     <ClInclude Include="Patches\Object\Stage\dlc\TreasureBox\ObjTreasureBox.h">
       <Filter>Source Files\Patches\Object\Stage\dlc\TreasureBox</Filter>
     </ClInclude>
-    <ClInclude Include="Patches\Object\enemy\stalbaby\EnemyStalBabyInfo.h">
-      <Filter>Source Files\Patches\Object\enemy\stalbaby</Filter>
-    </ClInclude>
     <ClInclude Include="Patches\Object\enemy\stalbaby\EnemyStalBaby.h">
       <Filter>Source Files\Patches\Object\enemy\stalbaby</Filter>
     </ClInclude>
@@ -409,9 +406,6 @@
     </ClCompile>
     <ClCompile Include="Patches\Object\Stage\dlc\TreasureBox\ObjTreasureBox.cpp">
       <Filter>Source Files\Patches\Object\Stage\dlc\TreasureBox</Filter>
-    </ClCompile>
-    <ClCompile Include="Patches\Object\enemy\stalbaby\EnemyStalBabyInfo.cpp">
-      <Filter>Source Files\Patches\Object\enemy\stalbaby</Filter>
     </ClCompile>
     <ClCompile Include="Patches\Object\enemy\stalbaby\EnemyStalBaby.cpp">
       <Filter>Source Files\Patches\Object\enemy\stalbaby</Filter>

@@ -1,4 +1,5 @@
 #pragma once
+#include "ModLoader.h"
 
 namespace slw_dlc_restoration
 {
@@ -39,6 +40,6 @@ namespace slw_dlc_restoration
 		inline static app::CSetObjClass ZELDA_RUPEE_CLASS{ app::CSetObjClass::Create<app::ObjZeldaRupee, app::ObjZeldaRupeeInfo>("ZeldaRupee", "OBJECT", "DLC-Zelda", app::paramMap_ObjZeldaRupee) };
 
 	public:
-		static void InstallPatches();
+		static void InstallPatches(ModInfo_t* in_pModInfo);
 	};
 }
