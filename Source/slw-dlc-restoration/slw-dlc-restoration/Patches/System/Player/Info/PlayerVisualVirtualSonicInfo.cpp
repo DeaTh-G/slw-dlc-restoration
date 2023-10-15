@@ -47,7 +47,6 @@ void slw_dlc_restoration::Player::VirtualSonicInfo::InstallPatches(ModInfo_t* in
 	if (CONFIGURATION.ZeldaTweaks.IsVirtualLinkSonic)
 	{
 		in_pModInfo->API->BindFile(in_pModInfo->CurrentMod, "+Linksonic.pac", "dlc/0012/sonic2013_dlc_0012/Linksonic2p.pac", 1);
-		in_pModInfo->API->BindFile(in_pModInfo->CurrentMod, "+Linksonic.pac.00", "dlc/0012/sonic2013_dlc_0012/Linksonic2p.pac.00", 1);
 	}
 }
 
