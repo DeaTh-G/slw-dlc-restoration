@@ -7,12 +7,26 @@ HOOK(void, __fastcall, InitializeHook, ASLR(0x008F8800), app::Player::SonicZelda
 {
 	originalInitializeHook(in_pThis, edx, in_rDocument);
 
-	// Replace Link Sonic's model with a fixed asset created by M&M because the materials are assigned incorrectly on the original.
-	// This replacement only occurs if the fixed variant exists in Linksonic.pac. This means mods overwriting that packfile
-	// don't need to include a replacement model twice.
-	auto packFile = app::ObjUtil::GetPackFile(LINKSONIC_PACKFILE_NAME);
-	if (auto model = app::ObjUtil::GetModelResource("chr_Linksonic_fixed", packFile))
-		in_pThis->Model = model;
+	// Replace the material data used for the second mesh found in the mesh groups 'Sonic_Mouth' and 'Sonic_Mouth_L' if the material name is set to
+	// 'chr_linksonic_leather2' to prevent the inside of Linksonic's mouth using the leather material texture instead of proper textures.
+	// The original fix for this solution was created by M&M (https://gamebanana.com/members/1347950) by creating a new model that has these values set correctly.
+	if (in_pThis->Model->MeshGroupCount > 1 && in_pThis->Model.GetResMeshGroup(1).GetNumResMeshes() > 1 && !strcmp(in_pThis->Model.GetResMeshGroup(1).GetResMesh(1)->m_MaterialName.m_pValue, "chr_linksonic_leather2"))
+	{
+		auto mesh = in_pThis->Model.GetResMeshGroup(1).GetResMesh(1);
+		auto otherMesh = in_pThis->Model.GetResMeshGroup(1).GetResMesh(0);
+		
+		mesh->m_pMaterial = otherMesh->m_pMaterial;
+		mesh->m_MaterialName = otherMesh->m_MaterialName;
+	}
+
+	if (in_pThis->Model->MeshGroupCount > 2 && in_pThis->Model.GetResMeshGroup(2).GetNumResMeshes() > 1 && !strcmp(in_pThis->Model.GetResMeshGroup(2).GetResMesh(1)->m_MaterialName.m_pValue, "chr_linksonic_leather2"))
+	{
+		auto mesh = in_pThis->Model.GetResMeshGroup(2).GetResMesh(1);
+		auto otherMesh = in_pThis->Model.GetResMeshGroup(2).GetResMesh(0);
+
+		mesh->m_pMaterial = otherMesh->m_pMaterial;
+		mesh->m_MaterialName = otherMesh->m_MaterialName;
+	}
 }
 
 void slw_dlc_restoration::Player::SonicZeldaInfo::InstallHooks()
