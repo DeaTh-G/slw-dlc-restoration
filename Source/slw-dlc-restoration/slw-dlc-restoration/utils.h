@@ -49,19 +49,19 @@
 
 #define WRITE_OBJECT_CLASS_CREATE(location, objectCls)\
     { \
-        if (objectCls.m_fpCreateInfo) \
+        if (objectCls.fpCreateInfo) \
         { \
-            WRITE_FUNCTION(location + 47, *(void**)&objectCls.m_fpCreateInfo); \
-            if (objectCls.m_fpCreateObject) \
+            WRITE_FUNCTION(location + 47, *(void**)&objectCls.fpCreateInfo); \
+            if (objectCls.fpCreateObject) \
             { \
-                WRITE_FUNCTION(location + 52, *(void**)&objectCls.m_fpCreateObject); \
+                WRITE_FUNCTION(location + 52, *(void**)&objectCls.fpCreateObject); \
             } \
         } \
         else \
         { \
-            if (objectCls.m_fpCreateObject) \
+            if (objectCls.fpCreateObject) \
             { \
-                WRITE_FUNCTION(location + 49, *(void**)&objectCls.m_fpCreateObject); \
+                WRITE_FUNCTION(location + 49, *(void**)&objectCls.fpCreateObject); \
             } \
         } \
     }

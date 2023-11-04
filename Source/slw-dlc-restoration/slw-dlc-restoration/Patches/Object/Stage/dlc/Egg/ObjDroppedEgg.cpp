@@ -11,7 +11,7 @@ void slw_dlc_restoration::ObjDroppedEgg::Update(const app::fnd::SUpdateInfo& in_
 	if (FSM_STATE() == &app::ObjDroppedEgg::StateWait)
 		ChangeState(static_cast<BaseState>(&ObjDroppedEgg::StateWait));
 
-	DispatchFSM(app::TiFsmBasicEvent<app::ObjDroppedEgg>::CreateUpdate(in_rUpdateInfo.deltaTime));
+	DispatchFSM(app::TiFsmBasicEvent<app::ObjDroppedEgg>::CreateUpdate(in_rUpdateInfo.DeltaTime));
 }
 
 bool slw_dlc_restoration::ObjDroppedEgg::ProcessMessage(app::fnd::Message& in_rMessage)
@@ -31,9 +31,9 @@ bool slw_dlc_restoration::ObjDroppedEgg::ProcMsgHitEventCollision(app::xgame::Ms
 	if (auto* pTransform = GetComponent<app::fnd::GOCTransform>())
 	{
 		slw_dlc_restoration::egg::EggCInfo createInfo{};
-		createInfo.Mtx = { pTransform->m_Frame.m_Unk3.m_Mtx * csl::math::Matrix34(0.0f, -3.0f, 0.0f) };
+		createInfo.Mtx = { pTransform->Frame.Unk3.Mtx * csl::math::Matrix34(0.0f, -3.0f, 0.0f) };
 		createInfo.Type = Type;
-		createInfo.PlayerNo = app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.m_Sender);
+		createInfo.PlayerNo = app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.Sender);
 
 		if (createInfo.PlayerNo >= 0)
 			slw_dlc_restoration::egg::CreateEgg(*GetDocument(), createInfo);
@@ -69,7 +69,7 @@ app::TTinyFsm<app::ObjDroppedEgg>::TiFsmState_t slw_dlc_restoration::ObjDroppedE
 
 			if (auto* pTransform = GetComponent<app::fnd::GOCTransform>())
 			{
-				csl::math::Vector3 distance{ pPlayerInfo->Position - pTransform->m_Transform.m_Position };
+				csl::math::Vector3 distance{ pPlayerInfo->Position - pTransform->Transform.Position };
 				if (distance.squaredNorm() > 1000000.0f)
 					Kill();
 			}

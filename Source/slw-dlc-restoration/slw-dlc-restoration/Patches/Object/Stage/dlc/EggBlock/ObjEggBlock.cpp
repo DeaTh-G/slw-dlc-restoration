@@ -9,7 +9,7 @@ void slw_dlc_restoration::ObjEggBlock::Update(const app::fnd::SUpdateInfo& in_rU
 	{
 	case EggBlockState::eEggBlockState_Idle:
 	{
-		IdleMotor.ElapsedTime += in_rUpdateInfo.deltaTime;
+		IdleMotor.ElapsedTime += in_rUpdateInfo.DeltaTime;
 
 		csl::math::Quaternion rotation{ Eigen::AngleAxisf(angle, csl::math::Vector3::UnitZ()) };
 		Frame.SetLocalRotation(rotation);
@@ -33,7 +33,7 @@ void slw_dlc_restoration::ObjEggBlock::Update(const app::fnd::SUpdateInfo& in_rU
 			InitMotorParam(1.8f, 0.0f, 8.0f, &IdleMotor);
 		}
 
-		DamageMotor.ElapsedTime += in_rUpdateInfo.deltaTime;
+		DamageMotor.ElapsedTime += in_rUpdateInfo.DeltaTime;
 
 		angle = csl::math::Lerp(angle, DamageMotor.Unk5 * scalar, csl::math::Clamp(DamageMotor.ElapsedTime / ((DamageMotor.Unk3 * 0.5f) * 0.1f), 0.0f, 1.0f));
 
@@ -75,7 +75,7 @@ bool slw_dlc_restoration::ObjEggBlock::ProcMsgDamage(app::xgame::MsgDamage& in_r
 	if (State == EggBlockState::eEggBlockState_Damage)
 		return true;
 
-	auto* pShape = in_rMessage.m_SenderShape.Get();
+	auto* pShape = in_rMessage.SenderShape.Get();
 	if (!pShape)
 		return true;
 
@@ -83,11 +83,11 @@ bool slw_dlc_restoration::ObjEggBlock::ProcMsgDamage(app::xgame::MsgDamage& in_r
 	if (!pTransform)
 		return true;
 
-	auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*GetDocument(), app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.m_Sender));
+	auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*GetDocument(), app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.Sender));
 	if (!pPlayerInfo)
 		return true;
 
-	csl::math::Matrix34 objectMtx = pTransform->m_Frame.m_Unk3.m_Mtx;
+	csl::math::Matrix34 objectMtx = pTransform->Frame.Unk3.Mtx;
 	csl::math::Matrix34Inverse(objectMtx, &objectMtx);
 
 	csl::math::Vector3 localPosition{ objectMtx * csl::math::Vector4(pPlayerInfo->Unk15, 1.0f) };
@@ -131,10 +131,10 @@ bool slw_dlc_restoration::ObjEggBlock::ProcMsgDamage(app::xgame::MsgDamage& in_r
 	if (auto* pSound = GetComponent<app::game::GOCSound>())
 		pSound->Play(ms_pHitSoundName, 0.0f);
 
-	in_rMessage.SetReply(pTransform->m_Frame.m_Unk3.GetTranslation(), false);
+	in_rMessage.SetReply(pTransform->Frame.Unk3.GetTranslation(), false);
 
 	State = EggBlockState::eEggBlockState_Damage;
-	HitPlayerNo = app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.m_Sender);
+	HitPlayerNo = app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.Sender);
 
 	return true;
 }
@@ -144,8 +144,8 @@ void slw_dlc_restoration::ObjEggBlock::DoCheckPopEgg()
 	if (PopEggNum <= 1 || PopEggParameter.Unk4 || DamageMotor.ElapsedTime <= DamageMotor.Unk3 * 0.25f)
 		return;
 
-	csl::math::Quaternion frameRot = Frame.m_Unk3.m_Mtx.GetRotation();
-	csl::math::Vector3 framePos = Frame.m_Unk3.m_Mtx.GetTransVector();
+	csl::math::Quaternion frameRot = Frame.Unk3.Mtx.GetRotation();
+	csl::math::Vector3 framePos = Frame.Unk3.Mtx.GetTransVector();
 
 	csl::math::Vector3 directionOffset{ app::math::Vector3Rotate(frameRot, PopEggParameter.Direction) };
 	csl::math::Vector3 verticalOffset{ app::math::Vector3Rotate(frameRot, { 0.0f, 1.0f, 0.0f }) };
@@ -154,7 +154,7 @@ void slw_dlc_restoration::ObjEggBlock::DoCheckPopEgg()
 
 	if (auto* pTransform = GetComponent<app::fnd::GOCTransform>())
 	{
-		csl::math::Quaternion objectRot = pTransform->m_Frame.m_Unk3.GetRotationQuaternion();
+		csl::math::Quaternion objectRot = pTransform->Frame.Unk3.GetRotationQuaternion();
 		float random = floorf(SonicUSA::System::Random::GetInstance()->genrand_float32() * 100.0f);
 
 		size_t limit{};

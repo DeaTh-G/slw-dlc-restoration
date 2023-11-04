@@ -35,16 +35,16 @@ app::TTinyFsm<app::ObjYoshiGoal>::TiFsmState_t slw_dlc_restoration::ObjYoshiGoal
 		if (in_rEvent.getMessage().GetType() != app::xgame::MsgHitEventCollision::MessageID)
 			return FSM_TOP();
 
-		uint playerNo = app::ObjUtil::GetPlayerNo(*GetDocument(), static_cast<app::xgame::MsgHitEventCollision&>(in_rEvent.getMessage()).m_Sender);
+		uint playerNo = app::ObjUtil::GetPlayerNo(*GetDocument(), static_cast<app::xgame::MsgHitEventCollision&>(in_rEvent.getMessage()).Sender);
 		if (playerNo < 0)
 		{
-			in_rEvent.getMessage().m_Handled = true;
+			in_rEvent.getMessage().Handled = true;
 			return{};
 		}
 
 		auto* pParam = GetAdapter()->GetData<app::SYoshiGoalParam>();
 
-		PlayerActorID = static_cast<app::xgame::MsgHitEventCollision&>(in_rEvent.getMessage()).m_Sender;
+		PlayerActorID = static_cast<app::xgame::MsgHitEventCollision&>(in_rEvent.getMessage()).Sender;
 		app::xgame::MsgPLHoldOn msgHold{};
 		msgHold.Unk1 = 1;
 		SendMessageImm(PlayerActorID, msgHold);
@@ -107,16 +107,16 @@ app::TTinyFsm<app::ObjYoshiGoal>::TiFsmState_t slw_dlc_restoration::ObjYoshiGoal
 		if (!pEggManager->IsEndExtrication(app::ObjUtil::GetPlayerNo(*GetDocument(), PlayerActorID)))
 			break;
 
-		if (strcmp(GetDocument()->m_pGameMode->GetName(), "GameModeStageBattle") == 0)
+		if (strcmp(GetDocument()->pGameMode->GetName(), "GameModeStageBattle") == 0)
 		{
 			app::SGoalRingBattleTargetParam* pBattleTargetParam{};
-			for (auto& packs : m_pSetObjectManager->m_pActorManager->m_Packs)
+			for (auto& packs : m_pSetObjectManager->pActorManager->Packs)
 			{
 				for (auto& actor : packs)
 				{
-					if (strcmp(actor.GetObjectResource()->m_Class.GetName(), "GoalRingBattleTarget") == 0)
+					if (strcmp(actor.GetObjectResource()->Class.GetName(), "GoalRingBattleTarget") == 0)
 					{
-						pBattleTargetParam = reinterpret_cast<app::SGoalRingBattleTargetParam*>(&actor.GetObjectResource()->m_pParam);
+						pBattleTargetParam = reinterpret_cast<app::SGoalRingBattleTargetParam*>(&actor.GetObjectResource()->pParam);
 						break;
 					}
 				}

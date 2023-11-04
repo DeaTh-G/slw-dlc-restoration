@@ -11,7 +11,7 @@ slw_dlc_restoration::ObjCocco::ObjCocco(const CInfo& in_rCreateInfo) : app::ObjC
 	FSM_INIT(static_cast<BaseState>(&ObjCocco::StateAttackIn));
 }
 
-void slw_dlc_restoration::ObjCocco::AddCallback(app::GameDocument& in_rDocument)
+void slw_dlc_restoration::ObjCocco::AddCallback(app::GameDocument* in_pDocument)
 {
 	app::fnd::GOComponent::Create<app::fnd::GOCVisualModel>(*this);
 	app::fnd::GOComponent::Create<app::game::GOCAnimationScript>(*this);
@@ -27,7 +27,7 @@ void slw_dlc_restoration::ObjCocco::AddCallback(app::GameDocument& in_rDocument)
 
 	MoveRange = GetSpawner()->MoveRange;
 
-	auto* pInfo = app::ObjUtil::GetObjectInfo<app::ObjCoccoInfo>(in_rDocument);
+	auto* pInfo = app::ObjUtil::GetObjectInfo<app::ObjCoccoInfo>(*in_pDocument);
 
 	if (Type == ActionType::eActionType_Attack)
 		GetComponent<app::fnd::GOCTransform>()->SetLocalTranslationAndRotation(CreateInfo.Position, CreateInfo.Rotation);
@@ -35,9 +35,9 @@ void slw_dlc_restoration::ObjCocco::AddCallback(app::GameDocument& in_rDocument)
 	if (auto* pVisualGoc = GetComponent<app::fnd::GOCVisualModel>())
 	{
 		app::fnd::GOCVisualModel::Description description{};
-		description.m_Model = pInfo->Model;
-		description.m_Skeleton = pInfo->Skeleton;
-		description.field_0C |= 0x400000;
+		description.Model = pInfo->Model;
+		description.Skeleton = pInfo->Skeleton;
+		description.Unk2 |= 0x400000;
 
 		pVisualGoc->Setup(description);
 
@@ -55,13 +55,13 @@ void slw_dlc_restoration::ObjCocco::AddCallback(app::GameDocument& in_rDocument)
 	{
 		pColliderGoc->Setup({ ms_ShapeCount });
 		app::game::ColliSphereShapeCInfo collisionInfo{};
-		collisionInfo.m_ShapeType = app::game::CollisionShapeType::ShapeType::ShapeType_Sphere;
-		collisionInfo.m_MotionType = app::game::PhysicsMotionType::MotionType::MotionType_VALUE2;
-		collisionInfo.m_Unk2 = 1;
-		collisionInfo.m_Radius = ms_CollisionRadius;
+		collisionInfo.ShapeType = app::game::CollisionShapeType::ShapeType::eShapeType_Sphere;
+		collisionInfo.MotionType = app::game::PhysicsMotionType::MotionType::eMotionType_Value2;
+		collisionInfo.Unk2 = 1;
+		collisionInfo.Radius = ms_CollisionRadius;
 		app::ObjUtil::SetupCollisionFilter(app::ObjUtil::eFilter_Default, collisionInfo);
 		if (Type == ActionType::eActionType_Idle)
-			collisionInfo.m_Unk3 = 0x20000;
+			collisionInfo.Unk3 = 0x20000;
 
 		collisionInfo.SetLocalPosition(ms_CollisionOffset);
 		pColliderGoc->CreateShape(collisionInfo);
@@ -114,13 +114,13 @@ void slw_dlc_restoration::ObjCocco::Update(const app::fnd::SUpdateInfo& in_rUpda
 	else if (FSM_STATE() == &app::ObjCocco::StateAttackOut)
 		ChangeState(static_cast<BaseState>(&ObjCocco::StateAttackOut));
 
-	DispatchFSM(TiFsmEvent_t::CreateUpdate(in_rUpdateInfo.deltaTime));
+	DispatchFSM(TiFsmEvent_t::CreateUpdate(in_rUpdateInfo.DeltaTime));
 
 	if (!Flags.test(1) || Type != ActionType::eActionType_Idle)
 		return;
 
 	float time = ElapsedTime;
-	ElapsedTime += in_rUpdateInfo.deltaTime;
+	ElapsedTime += in_rUpdateInfo.DeltaTime;
 	if (ElapsedTime > 7.0f)
 	{
 		SetStatusRetire();
@@ -147,11 +147,11 @@ app::TTinyFsm<app::ObjCocco>::TiFsmState_t slw_dlc_restoration::ObjCocco::StateI
 		{
 			app::xgame::MsgDamage& message = static_cast<app::xgame::MsgDamage&>(in_rEvent.getMessage());
 
-			DamageJump(message.m_Unk3);
-			HealthPoint -= message.m_Damage;
+			DamageJump(message.Unk3);
+			HealthPoint -= message.Damage;
 			PlayerNo = message.PlayerNo;
 
-			message.m_Handled = true;
+			message.Handled = true;
 
 			break;
 		}
@@ -159,11 +159,11 @@ app::TTinyFsm<app::ObjCocco>::TiFsmState_t slw_dlc_restoration::ObjCocco::StateI
 		{
 			app::xgame::MsgKick& message = static_cast<app::xgame::MsgKick&>(in_rEvent.getMessage());
 
-			DamageJump(message.m_Unk3);
+			DamageJump(message.Unk3);
 			HealthPoint--;
 			PlayerNo = message.PlayerNo;
 
-			message.m_Handled = true;
+			message.Handled = true;
 
 			break;
 		}
@@ -211,14 +211,14 @@ app::TTinyFsm<app::ObjCocco>::TiFsmState_t slw_dlc_restoration::ObjCocco::StateA
 			auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*GetDocument(), PlayerNo);
 			if (pPlayerInfo)
 			{
-				if (fabs(pPlayerInfo->Position.z() - GetComponent<app::fnd::GOCTransform>()->m_Frame.m_Unk3.GetTranslation().z() > 100.0f))
+				if (fabs(pPlayerInfo->Position.z() - GetComponent<app::fnd::GOCTransform>()->Frame.Unk3.GetTranslation().z() > 100.0f))
 					Kill();
 			}
 		}
 
 		if (Flags.test(0))
 		{
-			csl::math::Matrix34 transformMtx{ GetComponent<app::fnd::GOCTransform>()->m_Frame.m_Unk3.m_Mtx };
+			csl::math::Matrix34 transformMtx{ GetComponent<app::fnd::GOCTransform>()->Frame.Unk3.Mtx };
 
 			Flags.reset(0);
 
@@ -324,7 +324,7 @@ void slw_dlc_restoration::ObjCocco::SetTargetPlayer()
 {
 	auto* pMoveController = static_cast<slw_dlc_restoration::MoveObjCocco*>(pMovementController);
 
-	csl::math::Matrix34 transformMtx{ GetComponent<app::fnd::GOCTransform>()->m_Frame.m_Unk3.m_Mtx };
+	csl::math::Matrix34 transformMtx{ GetComponent<app::fnd::GOCTransform>()->Frame.Unk3.Mtx };
 	csl::math::Vector3 upVector{ transformMtx.GetColumn(1) };
 	csl::math::Vector3 frontVector{ transformMtx.GetColumn(2) };
 
@@ -372,10 +372,10 @@ void slw_dlc_restoration::ObjCocco::SetTargetPlayer()
 
 bool slw_dlc_restoration::ObjCocco::IsInCamera() const
 {
-	auto* pCamera = GetDocument()->m_pWorld->GetCamera(0);
+	auto* pCamera = GetDocument()->pWorld->GetCamera(0);
 
 	csl::math::Vector3 ndc{};
-	return pCamera->TransformNDC(ndc, GetComponent<app::fnd::GOCTransform>()->m_Frame.m_Unk3.GetTranslation()) && fabs(ndc.x()) < 1.1f && fabs(ndc.y()) < 1.1f;
+	return pCamera->TransformNDC(ndc, GetComponent<app::fnd::GOCTransform>()->Frame.Unk3.GetTranslation()) && fabs(ndc.x()) < 1.1f && fabs(ndc.y()) < 1.1f;
 }
 
 void slw_dlc_restoration::ObjCocco::CreateAttackers()
@@ -387,12 +387,12 @@ void slw_dlc_restoration::ObjCocco::CreateAttackers()
 	csl::math::Matrix34 cameraInvMtx{};
 	if (!strcmp(GetDocument()->GetGameMode()->GetName(), "GameModeStageBattle"))
 	{
-		auto* pPlayer = static_cast<app::Player::CPlayer*>(m_pMessageManager->GetActor(app::ObjUtil::GetPlayerActorID(*GetDocument(), PlayerNo)));
-		csl::math::Matrix34Inverse(pPlayer->m_rpPhysics->m_CameraViewMtx, &cameraInvMtx);
+		auto* pPlayer = static_cast<app::Player::CPlayer*>(pMessageManager->GetActor(app::ObjUtil::GetPlayerActorID(*GetDocument(), PlayerNo)));
+		csl::math::Matrix34Inverse(pPlayer->rpPhysics->CameraViewMtx, &cameraInvMtx);
 	}
 	else
 	{
-		cameraInvMtx = GetDocument()->m_pWorld->GetCamera(0)->GetInvViewMatrix();
+		cameraInvMtx = GetDocument()->pWorld->GetCamera(0)->GetInvViewMatrix();
 	}
 
 	csl::math::Vector3 rightVector{ -cameraInvMtx.GetColumn(0) };
@@ -449,7 +449,7 @@ void slw_dlc_restoration::ObjCocco::CreateAttackers()
 			continue;
 
 		CInfo createInfo{};
-		createInfo.Position = { output.m_HitPoint - downVector * 10.0f };
+		createInfo.Position = { output.HitPoint - downVector * 10.0f };
 		createInfo.Rotation = rotation;
 		createInfo.pSpawner = GetSpawner();
 		createInfo.Unk1 = i;

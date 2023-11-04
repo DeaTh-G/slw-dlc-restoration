@@ -19,7 +19,7 @@ namespace slw_dlc_restoration
 		uint PlayerNo{};
 
 		ObjEgg(const egg::EggCInfo* in_pInfo);
-		void AddCallback(app::GameDocument& in_rDocument) override;
+		void AddCallback(app::GameDocument* in_pDocument) override;
 		void Update(const app::fnd::SUpdateInfo& in_rUpdateInfo) override;
 		TiFsmState_t StateToFirstLocus(const TiFsmEvent_t& in_rEvent);
 		TiFsmState_t StateToIndexLocus(const TiFsmEvent_t& in_rEvent);

@@ -6,7 +6,7 @@ namespace slw_dlc_restoration
 	{
 	public:
 		ObjYoshiJumpBoard(app::yoshi_jump_board::JumpBoardType in_type);
-		void AddCallback(app::GameDocument& in_rDocument) override;
+		void AddCallback(app::GameDocument* in_pDocument) override;
 		static CSetObjectListener* Create_Big();
 		static CSetObjectListener* Create_Small();
 	};

@@ -6,7 +6,7 @@ slw_dlc_restoration::ObjGolonRock::ObjGolonRock(const app::golon_rock::GolonRock
 
 }
 
-void slw_dlc_restoration::ObjGolonRock::AddCallback(app::GameDocument& in_rDocument)
+void slw_dlc_restoration::ObjGolonRock::AddCallback(app::GameDocument* in_pDocument)
 {
 	app::fnd::GOComponent::Create<app::fnd::GOCVisualContainer>(*this);
 	app::fnd::GOComponent::Create<app::game::GOCAnimationSimple>(*this);
@@ -19,7 +19,7 @@ void slw_dlc_restoration::ObjGolonRock::AddCallback(app::GameDocument& in_rDocum
 
 	app::fnd::GOComponent::BeginSetup(*this);
 
-	auto* pInfo = app::ObjUtil::GetObjectInfo<app::ObjGolonRockGeneratorInfo>(in_rDocument);
+	auto* pInfo = app::ObjUtil::GetObjectInfo<app::ObjGolonRockGeneratorInfo>(*in_pDocument);
 
 	if (auto* pTransformGoc = GetComponent<app::fnd::GOCTransform>())
 	{
@@ -36,9 +36,9 @@ void slw_dlc_restoration::ObjGolonRock::AddCallback(app::GameDocument& in_rDocum
 		if (auto* pVisualGoc = app::fnd::GOComponent::CreateSingle<app::fnd::GOCVisualModel>(*this))
 		{
 			app::fnd::GOCVisualModel::Description description{};
-			description.m_Model = pInfo->ModelContainer.Models[0];
-			description.m_Skeleton = pInfo->Skeleton;
-			description.field_0C |= 0x400000;
+			description.Model = pInfo->ModelContainer.Models[0];
+			description.Skeleton = pInfo->Skeleton;
+			description.Unk2 |= 0x400000;
 
 			pVisualGoc->Setup(description);
 			pVisualContainerGoc->Add(pVisualGoc);
@@ -56,8 +56,8 @@ void slw_dlc_restoration::ObjGolonRock::AddCallback(app::GameDocument& in_rDocum
 		if (pRockVisualGoc = app::fnd::GOComponent::CreateSingle<app::fnd::GOCVisualModel>(*this))
 		{
 			app::fnd::GOCVisualModel::Description description{};
-			description.m_Model = pInfo->ModelContainer.Models[1];
-			description.field_0C |= 0x400000;
+			description.Model = pInfo->ModelContainer.Models[1];
+			description.Unk2 |= 0x400000;
 
 			pRockVisualGoc->Setup(description);
 			pVisualContainerGoc->Add(pRockVisualGoc);
@@ -70,21 +70,21 @@ void slw_dlc_restoration::ObjGolonRock::AddCallback(app::GameDocument& in_rDocum
 		pColliderGoc->Setup({ ms_ShapeCount });
 
 		app::game::ColliSphereShapeCInfo hitCollisionInfo{};
-		hitCollisionInfo.m_ShapeType = app::game::CollisionShapeType::ShapeType::ShapeType_Sphere;
-		hitCollisionInfo.m_MotionType = app::game::PhysicsMotionType::MotionType::MotionType_VALUE2;
-		hitCollisionInfo.m_Unk2 |= 1;
-		hitCollisionInfo.m_Radius = ms_HitCollisionSize;
-		hitCollisionInfo.m_ShapeID = 0;
+		hitCollisionInfo.ShapeType = app::game::CollisionShapeType::ShapeType::eShapeType_Sphere;
+		hitCollisionInfo.MotionType = app::game::PhysicsMotionType::MotionType::eMotionType_Value2;
+		hitCollisionInfo.Unk2 |= 1;
+		hitCollisionInfo.Radius = ms_HitCollisionSize;
+		hitCollisionInfo.ShapeID = 0;
 		app::ObjUtil::SetupCollisionFilter(app::ObjUtil::EFilter::eFilter_Default, hitCollisionInfo);
 		pColliderGoc->CreateShape(hitCollisionInfo);
 
 		app::game::ColliSphereShapeCInfo collisionInfo{};
-		collisionInfo.m_ShapeType = app::game::CollisionShapeType::ShapeType::ShapeType_Sphere;
-		collisionInfo.m_MotionType = app::game::PhysicsMotionType::MotionType::MotionType_VALUE0;
-		collisionInfo.m_Unk2 |= 0x100;
-		collisionInfo.m_Unk3 = 3;
-		collisionInfo.m_Radius = ms_CollisionSize;
-		collisionInfo.m_ShapeID = 1;
+		collisionInfo.ShapeType = app::game::CollisionShapeType::ShapeType::eShapeType_Sphere;
+		collisionInfo.MotionType = app::game::PhysicsMotionType::MotionType::eMotionType_Value0;
+		collisionInfo.Unk2 |= 0x100;
+		collisionInfo.Unk3 = 3;
+		collisionInfo.Radius = ms_CollisionSize;
+		collisionInfo.ShapeID = 1;
 		pColliderGoc->CreateShape(collisionInfo);
 	}
 
@@ -93,7 +93,7 @@ void slw_dlc_restoration::ObjGolonRock::AddCallback(app::GameDocument& in_rDocum
 		if (pMovementController = pMovementGoc->SetMoveController<game::MoveObjGolonRock>())
 		{
 			game::MoveObjGolonRock::SetupParam setupParam{};
-			setupParam.Position = GetComponent<app::fnd::GOCTransform>()->m_Transform.m_Position;
+			setupParam.Position = GetComponent<app::fnd::GOCTransform>()->Transform.Position;
 			setupParam.YOffset = 20.0f;
 			setupParam.PopupTime = 0.3f;
 			setupParam.RollWaitTime = 0.4f;

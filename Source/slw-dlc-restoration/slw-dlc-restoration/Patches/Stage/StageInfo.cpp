@@ -9,7 +9,7 @@ HOOK(void, __cdecl, ReadMission_MissionHook, ASLR(0x009131D0), const char* in_pC
 	// To ensure future compatibility with mods, we set these up after the fact instead of using mid-asm hooks
 	// or the replacement of the original game's function.
 	auto* pStageInfo = static_cast<app::StageInfo::CStageInfo*>(in_pCtx);
-	auto* pStageData = *pStageInfo->m_Stages.get(pStageInfo->m_Stages.size() - 1);
+	auto* pStageData = *pStageInfo->Stages.get(pStageInfo->Stages.size() - 1);
 	
 	app::ut::InplaceTempArray<const char*, 10> stageAttrs{};
 	if (in_rScript.GetStringArray("attrs", stageAttrs))
@@ -17,10 +17,10 @@ HOOK(void, __cdecl, ReadMission_MissionHook, ASLR(0x009131D0), const char* in_pC
 		for (size_t i = 0; i < stageAttrs.size(); i++)
 		{
 			if (!strcmp(stageAttrs[i], "yoshiisland"))
-				pStageData->m_StageFlags.set(app::StageInfo::SStageData::STAGE_FLAG_IS_YOSHIISLAND_STAGE, true);
+				pStageData->StageFlags.set(app::StageInfo::SStageData::STAGE_FLAG_IS_YOSHIISLAND_STAGE, true);
 
 			if (!strcmp(stageAttrs[i], "zelda"))
-				pStageData->m_StageFlags.set(app::StageInfo::SStageData::STAGE_FLAG_IS_ZELDA_STAGE, true);
+				pStageData->StageFlags.set(app::StageInfo::SStageData::STAGE_FLAG_IS_ZELDA_STAGE, true);
 		}
 	}
 }

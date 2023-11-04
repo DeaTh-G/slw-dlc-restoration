@@ -18,7 +18,7 @@ namespace slw_dlc_restoration
 
 		ObjCocco();
 		ObjCocco(const CInfo& in_rCreateInfo);
-		void AddCallback(app::GameDocument& in_rDocument) override;
+		void AddCallback(app::GameDocument* in_pDocument) override;
 		void Update(const app::fnd::SUpdateInfo& in_rUpdateInfo) override;
 		TiFsmState_t StateIdle(const TiFsmEvent_t& in_rEvent);
 		TiFsmState_t StateAttackIn(const TiFsmEvent_t& in_rEvent);

@@ -1,31 +1,31 @@
 #include "pch.h"
 #include "ObjTreasureBox.h"
 
-void slw_dlc_restoration::ObjTreasureBox::AddCallback(app::GameDocument& in_rDocument)
+void slw_dlc_restoration::ObjTreasureBox::AddCallback(app::GameDocument* in_pDocument)
 {
-	app::ObjTreasureBox::AddCallback(in_rDocument);
+	app::ObjTreasureBox::AddCallback(in_pDocument);
 	if (!CONFIGURATION.ZeldaTweaks.ScaleObjectsWithPlayer)
 		return;
 
-	auto* pPlayer = static_cast<app::Player::CPlayer*>(m_pMessageManager->GetActor(app::ObjUtil::GetPlayerActorID(in_rDocument, 0)));
-	auto playerScale = pPlayer->GetPlayerGOC<app::Player::CVisualGOC>()->GetHumanVisual()->pGocHolder->GetUnit(0).m_rpModel->m_Transform.m_Scale;
+	auto* pPlayer = static_cast<app::Player::CPlayer*>(pMessageManager->GetActor(app::ObjUtil::GetPlayerActorID(*in_pDocument, 0)));
+	auto playerScale = pPlayer->GetPlayerGOC<app::Player::CVisualGOC>()->GetHumanVisual()->pGocHolder->GetUnit(0).rpModel->Transform.Scale;
 
 	if (auto* pVisualContainerGoc = GetComponent<app::fnd::GOCVisualContainer>())
 	{
-		static_cast<app::fnd::GOCVisualTransformed*>(pVisualContainerGoc->m_Visuals[0])->SetLocalScale(playerScale);
+		static_cast<app::fnd::GOCVisualTransformed*>(pVisualContainerGoc->Visuals[0])->SetLocalScale(playerScale);
 		
-		static_cast<app::fnd::GOCVisualTransformed*>(pVisualContainerGoc->m_Visuals[1])->SetLocalScale({ ms_ItemScale * playerScale.y() });
-		static_cast<app::fnd::GOCVisualTransformed*>(pVisualContainerGoc->m_Visuals[1])->SetLocalTranslation({ ms_PositionOffset.x(), ms_PositionOffset.y() * playerScale.y(), ms_PositionOffset.z() * playerScale.z() });
+		static_cast<app::fnd::GOCVisualTransformed*>(pVisualContainerGoc->Visuals[1])->SetLocalScale({ ms_ItemScale * playerScale.y() });
+		static_cast<app::fnd::GOCVisualTransformed*>(pVisualContainerGoc->Visuals[1])->SetLocalTranslation({ ms_PositionOffset.x(), ms_PositionOffset.y() * playerScale.y(), ms_PositionOffset.z() * playerScale.z() });
 	}
 
 	if (auto* pColliderGoc = GetComponent<app::game::GOCCollider>())
 	{
 		auto* pInteractCollider = static_cast<app::game::ColliBoxShapeBase*>(pColliderGoc->GetShapeById(0));
-		pInteractCollider->m_Size = { ms_InteractCollisionSize * playerScale.y() };
+		pInteractCollider->Size = { ms_InteractCollisionSize * playerScale.y() };
 		pInteractCollider->SetLocalTranslation({ 0.0f, 10.0f * playerScale.y(), 0.0f });
 
 		auto* pCollider = static_cast<app::game::ColliBoxShapeBase*>(pColliderGoc->GetShapeById(1));
-		pCollider->m_Size = { ms_CollisionSize * playerScale.y() };
+		pCollider->Size = { ms_CollisionSize * playerScale.y() };
 		pCollider->SetLocalTranslation({ 0.0f, 8.6f * playerScale.y(), 0.0f });
 	}
 }
@@ -37,7 +37,7 @@ void slw_dlc_restoration::ObjTreasureBox::Update(const app::fnd::SUpdateInfo& in
 	else if (FSM_STATE() == &app::ObjTreasureBox::StateOpen_End)
 		ChangeState(static_cast<BaseState>(&ObjTreasureBox::StateOpen_End));
 
-	DispatchFSM(TiFsmEvent_t::CreateUpdate(in_rUpdateInfo.deltaTime));
+	DispatchFSM(TiFsmEvent_t::CreateUpdate(in_rUpdateInfo.DeltaTime));
 }
 
 bool slw_dlc_restoration::ObjTreasureBox::IsPlayerPhantom(uint in_playerNo)
@@ -59,7 +59,7 @@ void slw_dlc_restoration::ObjTreasureBox::PushCamera()
 
 	if (rpCamera = new app::Camera::TreasureBoxCamera())
 	{
-		rpCamera->SetCameraParameter(CameraPosition, GetComponent<app::fnd::GOCTransform>()->m_Frame.m_Unk3.m_Mtx.GetColumn(1), CameraLookAt);
+		rpCamera->SetCameraParameter(CameraPosition, GetComponent<app::fnd::GOCTransform>()->Frame.Unk3.Mtx.GetColumn(1), CameraLookAt);
 		rpCamera->SetFovy(35.0f);
 	}
 
@@ -100,11 +100,11 @@ slw_dlc_restoration::ObjTreasureBox::TiFsmState_t slw_dlc_restoration::ObjTreasu
 
 		auto& message = static_cast<app::xgame::MsgHitEventCollision&>(in_rEvent.getMessage());
 
-		InteractingPlayerNo = app::ObjUtil::GetPlayerNo(*GetDocument(), message.m_Sender);
+		InteractingPlayerNo = app::ObjUtil::GetPlayerNo(*GetDocument(), message.Sender);
 
 		if (InteractingPlayerNo < 0)
 		{
-			message.m_Handled = true;
+			message.Handled = true;
 			break;
 		}
 
@@ -118,14 +118,14 @@ slw_dlc_restoration::ObjTreasureBox::TiFsmState_t slw_dlc_restoration::ObjTreasu
 		}
 
 		app::xgame::MsgCatchPlayer catchMsg{};
-		catchMsg.m_Unk2 = TransformMtx;
-		catchMsg.m_Unk3 = 19;
-		catchMsg.m_Unk4 = false;
+		catchMsg.Unk2 = TransformMtx;
+		catchMsg.Unk3 = 19;
+		catchMsg.Unk4 = false;
 
-		catchMsg.m_Unk1.set(5);
-		if (!app::ObjUtil::SendMessageImmToPlayer(*this, InteractingPlayerNo, catchMsg) && !catchMsg.m_Unk4)
+		catchMsg.Unk1.set(5);
+		if (!app::ObjUtil::SendMessageImmToPlayer(*this, InteractingPlayerNo, catchMsg) && !catchMsg.Unk4)
 		{
-			message.m_Handled = true;
+			message.Handled = true;
 			break;
 		}
 
@@ -153,14 +153,14 @@ slw_dlc_restoration::ObjTreasureBox::TiFsmState_t slw_dlc_restoration::ObjTreasu
 		auto* pEffectGoc = GetComponent<app::game::GOCEffect>();
 		float originalScaling = pEffectGoc->GlobalScaling;
 		
-		auto* pPlayer = static_cast<app::Player::CPlayer*>(m_pMessageManager->GetActor(app::ObjUtil::GetPlayerActorID(*GetDocument(), 0)));
-		auto playerScale = pPlayer->GetPlayerGOC<app::Player::CVisualGOC>()->GetHumanVisual()->pGocHolder->GetUnit(0).m_rpModel->m_Transform.m_Scale;
+		auto* pPlayer = static_cast<app::Player::CPlayer*>(pMessageManager->GetActor(app::ObjUtil::GetPlayerActorID(*GetDocument(), 0)));
+		auto playerScale = pPlayer->GetPlayerGOC<app::Player::CVisualGOC>()->GetHumanVisual()->pGocHolder->GetUnit(0).rpModel->Transform.Scale;
 		
 		app::game::EffectCreateInfo effectCreateInfo{};
-		effectCreateInfo.m_Position = pEffectGoc->pFrame->m_Unk3.GetTranslation();
-		effectCreateInfo.m_Rotation = pEffectGoc->pFrame->m_Unk3.GetRotationQuaternion();
-		effectCreateInfo.m_pName = ms_pChestOpeningEffectName;
-		effectCreateInfo.m_Unk1 = 1.0f;
+		effectCreateInfo.Position = pEffectGoc->pFrame->Unk3.GetTranslation();
+		effectCreateInfo.Rotation = pEffectGoc->pFrame->Unk3.GetRotationQuaternion();
+		effectCreateInfo.pName = ms_pChestOpeningEffectName;
+		effectCreateInfo.Unk1 = 1.0f;
 		
 		pEffectGoc->GlobalScaling = playerScale.y();
 		pEffectGoc->CreateEffectEx(effectCreateInfo);
@@ -174,7 +174,7 @@ slw_dlc_restoration::ObjTreasureBox::TiFsmState_t slw_dlc_restoration::ObjTreasu
 
 		ChangeState(static_cast<BaseState>(&ObjTreasureBox::StateOpen_ControlCamera));
 
-		message.m_Handled = true;
+		message.Handled = true;
 
 		return {};
 	}
@@ -231,17 +231,17 @@ slw_dlc_restoration::ObjTreasureBox::TiFsmState_t slw_dlc_restoration::ObjTreasu
 			auto* pEffectGoc = GetComponent<app::game::GOCEffect>();
 			float originalScaling = pEffectGoc->GlobalScaling;
 
-			auto* pPlayer = static_cast<app::Player::CPlayer*>(m_pMessageManager->GetActor(app::ObjUtil::GetPlayerActorID(*GetDocument(), 0)));
-			auto playerScale = pPlayer->GetPlayerGOC<app::Player::CVisualGOC>()->GetHumanVisual()->pGocHolder->GetUnit(0).m_rpModel->m_Transform.m_Scale;
+			auto* pPlayer = static_cast<app::Player::CPlayer*>(pMessageManager->GetActor(app::ObjUtil::GetPlayerActorID(*GetDocument(), 0)));
+			auto playerScale = pPlayer->GetPlayerGOC<app::Player::CVisualGOC>()->GetHumanVisual()->pGocHolder->GetUnit(0).rpModel->Transform.Scale;
 
-			GetComponent<app::fnd::GOCVisualContainer>()->m_Visuals[1]->SetVisible(true);
+			GetComponent<app::fnd::GOCVisualContainer>()->Visuals[1]->SetVisible(true);
 			GetComponent<app::game::GOCSound>()->Play(ms_pItemGetSoundName, 0.0f);
 
 			app::game::EffectCreateInfo effectInfo{};
-			effectInfo.m_pName = ms_pItemGetTwinkleEffectName;
-			effectInfo.m_Unk1 = ms_ItemGetTwinkleEffectScale * playerScale.y();
-			effectInfo.m_Position = { ms_TwinklePositionOffset.x(), ms_TwinklePositionOffset.y() * playerScale.y(), ms_TwinklePositionOffset.z() * playerScale.z() };
-			effectInfo.m_Unk3 = true;
+			effectInfo.pName = ms_pItemGetTwinkleEffectName;
+			effectInfo.Unk1 = ms_ItemGetTwinkleEffectScale * playerScale.y();
+			effectInfo.Position = { ms_TwinklePositionOffset.x(), ms_TwinklePositionOffset.y() * playerScale.y(), ms_TwinklePositionOffset.z() * playerScale.z() };
+			effectInfo.Unk3 = true;
 
 			pEffectGoc->GlobalScaling = playerScale.y();
 			pEffectGoc->CreateEffectEx(effectInfo);
@@ -322,8 +322,8 @@ slw_dlc_restoration::ObjTreasureBox::TiFsmState_t slw_dlc_restoration::ObjTreasu
 		}
 
 		auto* pVisualContainerGoc = GetComponent<app::fnd::GOCVisualContainer>();
-		pVisualContainerGoc->m_Visuals[1]->SetVisible(false);
-		pVisualContainerGoc->m_Visuals[0]->SetVisible(false);
+		pVisualContainerGoc->Visuals[1]->SetVisible(false);
+		pVisualContainerGoc->Visuals[0]->SetVisible(false);
 
 		GetComponent<app::game::GOCEffect>()->CreateEffect(ms_pVanishEffectName);
 

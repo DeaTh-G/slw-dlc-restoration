@@ -14,7 +14,7 @@ HOOK(void, __fastcall, SendPlayerInfoHook, ASLR(0x00861A90), app::Player::CSonic
 	if (!pHeartLifePlugin)
 		return;
 
-	for (auto& pMessage : in_pThis->m_pMessageManager->m_Messages)
+	for (auto& pMessage : in_pThis->pMessageManager->Messages)
 	{
 		if (pMessage->GetType() == app::xgame::MsgPLSendGameInfo::MessageID)
 		{
@@ -31,7 +31,7 @@ HOOK(void, __fastcall, AddCallbackHook, ASLR(0x00861B00), app::Player::CSonic* i
 	// The following code ensures that after the Heart System Plugin's flag has been set it does not get created
 	// when the mod's configuration does not desire it to be there.
 	auto* pStateGoc = in_pThis->GetStateGOC();
-	if (!in_pThis->GetLevelInfo()->m_StageFlags.test(19) && !CONFIGURATION.ZeldaTweaks.IsAlwaysHeartLife)
+	if (!in_pThis->GetLevelInfo()->StageFlags.test(19) && !CONFIGURATION.ZeldaTweaks.IsAlwaysHeartLife)
 	{
 		if (pStateGoc->GetStatePlugin<app::Player::PluginStateHeartLife>())
 			pStateGoc->RemoveStatePlugin(17);

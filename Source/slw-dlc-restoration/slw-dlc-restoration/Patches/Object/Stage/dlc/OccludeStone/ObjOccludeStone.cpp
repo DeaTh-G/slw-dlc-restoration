@@ -16,28 +16,28 @@ bool slw_dlc_restoration::ObjOccludeStone::ProcessMessage(app::fnd::Message& in_
 bool slw_dlc_restoration::ObjOccludeStone::ProcMsgDamage(app::xgame::MsgDamage& in_rMessage)
 {
 	bool damageByObject{};
-	if (in_rMessage.DefensePower == 3 && in_rMessage.m_SenderType == 3)
+	if (in_rMessage.DefensePower == 3 && in_rMessage.SenderType == 3)
 		damageByObject = true;
 
-	auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*GetDocument(), app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.m_Sender));
+	auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*GetDocument(), app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.Sender));
 
-	if ((in_rMessage.m_Bonus.m_Unk1 != 3 || !pPlayerInfo || pPlayerInfo->PixieNo != app::Game::EPhantomType::PHANTOM_BOMB) && !damageByObject)
+	if ((in_rMessage.Bonus.Unk1 != 3 || !pPlayerInfo || pPlayerInfo->PixieNo != app::Game::EPhantomType::ePhantom_Bomb) && !damageByObject)
 		return true;
 
 	auto* pInfo = app::ObjUtil::GetObjectInfo<app::ObjOccludeStoneInfo>(*GetDocument());
-	auto& transform = GetComponent<app::fnd::GOCTransform>()->m_Frame.m_Unk3;
+	auto& transform = GetComponent<app::fnd::GOCTransform>()->Frame.Unk3;
 	csl::math::Vector3 direction = app::math::Vector3Rotate(transform.GetRotationQuaternion(), { csl::math::Vector3::UnitY() });
 
 	app::debris::SRandomSpaceDebrisInfo debrisInfo{};
-	debrisInfo.Transform.m_Position = { transform.GetTranslation() + (direction * 45.0f * 0.5f) };
+	debrisInfo.Transform.Position = { transform.GetTranslation() + (direction * 45.0f * 0.5f) };
 	debrisInfo.Transform.SetFlag(1);
-	debrisInfo.Transform.m_Rotation = transform.GetRotationQuaternion();
+	debrisInfo.Transform.Rotation = transform.GetRotationQuaternion();
 	debrisInfo.Transform.SetFlag(1);
 	debrisInfo.Unk1 = 400.0f;
 	debrisInfo.Unk2 = 2.0f;
 	debrisInfo.Unk3 = 0.5f;
 	debrisInfo.Unk4.set(0);
-	debrisInfo.Unk5 = in_rMessage.m_Unk2;
+	debrisInfo.Unk5 = in_rMessage.Unk2;
 	debrisInfo.Unk6 = direction;
 	debrisInfo.Unk7 = 2.0f;
 	debrisInfo.Unk8 = 1.0f;

@@ -8,7 +8,7 @@ slw_dlc_restoration::ObjEgg::ObjEgg(const slw_dlc_restoration::egg::EggCInfo* in
     FSM_INIT(static_cast<BaseState>(&ObjEgg::StateToFirstLocus));
 }
 
-void slw_dlc_restoration::ObjEgg::AddCallback(app::GameDocument& in_rDocument)
+void slw_dlc_restoration::ObjEgg::AddCallback(app::GameDocument* in_pDocument)
 {
     app::fnd::GOComponent::Create<app::fnd::GOCVisualModel>(*this);
     app::fnd::GOComponent::Create<app::game::GOCCollider>(*this);
@@ -19,7 +19,7 @@ void slw_dlc_restoration::ObjEgg::AddCallback(app::GameDocument& in_rDocument)
     app::fnd::GOComponent::BeginSetup(*this);
 
     bool eggSuccess{};
-    if (auto* pEggManager = in_rDocument.GetService<slw_dlc_restoration::EggManager>())
+    if (auto* pEggManager = in_pDocument->GetService<slw_dlc_restoration::EggManager>())
         eggSuccess = pEggManager->AddEgg(this, PlayerNo, &Index);
 
     if (auto* pTransform = GetComponent<app::fnd::GOCTransform>())
@@ -28,14 +28,14 @@ void slw_dlc_restoration::ObjEgg::AddCallback(app::GameDocument& in_rDocument)
         pTransform->SetLocalRotation(pCreateInfo->Mtx.GetRotation());
     }
 
-    auto* pInfo = app::ObjUtil::GetObjectInfo<app::ObjEggInfo>(in_rDocument);
+    auto* pInfo = app::ObjUtil::GetObjectInfo<app::ObjEggInfo>(*in_pDocument);
 
     if (auto* pVisualModel = GetComponent<app::fnd::GOCVisualModel>())
     {
         app::fnd::GOCVisualModel::Description description{};
-        description.m_Model = pInfo->ModelContainer.Models[Type];
-        description.field_0C |= 0x400000u;
-        description.zOffset = -0.2f * Index - 2.0f;
+        description.Model = pInfo->ModelContainer.Models[Type];
+        description.Unk2 |= 0x400000u;
+        description.ZOffset = -0.2f * Index - 2.0f;
 
         pVisualModel->Setup(description);
         pVisualModel->SetLocalScale(ms_Scale);
@@ -49,9 +49,9 @@ void slw_dlc_restoration::ObjEgg::AddCallback(app::GameDocument& in_rDocument)
         pCollider->Setup({ ms_ShapeCount });
 
         app::game::ColliSphereShapeCInfo collisionInfo{};
-        collisionInfo.m_ShapeType = app::game::CollisionShapeType::ShapeType::ShapeType_Sphere;
-        collisionInfo.m_MotionType = app::game::PhysicsMotionType::MotionType::MotionType_VALUE2;
-        collisionInfo.m_Radius = ms_CollisionRadius;
+        collisionInfo.ShapeType = app::game::CollisionShapeType::ShapeType::eShapeType_Sphere;
+        collisionInfo.MotionType = app::game::PhysicsMotionType::MotionType::eMotionType_Value2;
+        collisionInfo.Radius = ms_CollisionRadius;
         app::ObjUtil::SetupCollisionFilter(app::ObjUtil::eFilter_Unk2, collisionInfo);
         pCollider->CreateShape(collisionInfo);
     }
@@ -78,7 +78,7 @@ void slw_dlc_restoration::ObjEgg::AddCallback(app::GameDocument& in_rDocument)
     else
     {
         app::xgame::MsgTakeObject msg{ app::xgame::MsgTakeObject::eType_OneUp };
-        if (app::ObjUtil::SendMessageImmToPlayer(*this, msg) && msg.m_Taken)
+        if (app::ObjUtil::SendMessageImmToPlayer(*this, msg) && msg.Taken)
         {
             if (auto* pEffect = GetComponent<app::game::GOCEffect>())
                 pEffect->CreateEffect(ms_pBirthEffectName);
@@ -96,7 +96,7 @@ void slw_dlc_restoration::ObjEgg::Update(const app::fnd::SUpdateInfo& in_rUpdate
     if (FSM_STATE() == &app::ObjEgg::StateMoveToExtrication)
         ChangeState(static_cast<BaseState>(&ObjEgg::StateMoveToExtrication));
 
-    DispatchFSM(app::TiFsmBasicEvent<app::ObjEgg>::CreateUpdate(in_rUpdateInfo.deltaTime));
+    DispatchFSM(app::TiFsmBasicEvent<app::ObjEgg>::CreateUpdate(in_rUpdateInfo.DeltaTime));
 }
 
 app::TTinyFsm<app::ObjEgg>::TiFsmState_t slw_dlc_restoration::ObjEgg::StateToFirstLocus(const TiFsmEvent_t& in_rEvent)
@@ -108,7 +108,7 @@ app::TTinyFsm<app::ObjEgg>::TiFsmState_t slw_dlc_restoration::ObjEgg::StateToFir
         ElapsedFrames = 0;
         if (auto* pLevelInfo = GetDocument()->GetService<app::CLevelInfo>())
         {
-            if (pLevelInfo->m_StageFlags.test(16))
+            if (pLevelInfo->StageFlags.test(16))
             {
                 Time = 30.0f / 30.0f;
             }
@@ -132,7 +132,7 @@ app::TTinyFsm<app::ObjEgg>::TiFsmState_t slw_dlc_restoration::ObjEgg::StateToFir
 
         auto targetLocus = pEggManager->GetTargetDataFromLocusIndex(0, PlayerNo, nullptr, nullptr);
 
-        auto position = pTransform->m_Frame.m_Unk3.GetTranslation();
+        auto position = pTransform->Frame.Unk3.GetTranslation();
 
         pTransform->SetLocalTranslation({ (targetLocus.Position - position) * csl::math::Clamp(ElapsedFrames / 30.0f, 0.0f, 1.0f) + position });
         UpdateRotation(targetLocus.Rotation, in_rEvent.getFloat());

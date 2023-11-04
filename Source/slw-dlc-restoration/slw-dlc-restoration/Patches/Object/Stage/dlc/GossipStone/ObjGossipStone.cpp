@@ -21,40 +21,40 @@ bool slw_dlc_restoration::ObjGossipStone::ProcessMessage(app::fnd::Message& in_r
 
 bool slw_dlc_restoration::ObjGossipStone::ProcMsgDamage(app::xgame::MsgDamage& in_rMessage)
 {
-	auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*GetDocument(), app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.m_Sender));
+	auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*GetDocument(), app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.Sender));
 	if (!pPlayerInfo)
 		return false;
 
 	if (pPlayerInfo->PixieNo == static_cast<app::Game::EPhantomType>(-1))
 	{
-		if (in_rMessage.m_Unk3.dot(GetComponent<app::fnd::GOCTransform>()->m_Frame.m_Unk3.m_Mtx.GetColumn(1)) >= 0.9f)
+		if (in_rMessage.Unk3.dot(GetComponent<app::fnd::GOCTransform>()->Frame.Unk3.Mtx.GetColumn(1)) >= 0.9f)
 			return false;
 	}
 
 	DispatchFSM(TiFsmEvent_t::CreateMessage(in_rMessage));
 
-	in_rMessage.SetReply(in_rMessage.m_Unk2, false, { -in_rMessage.m_Unk3 });
-	in_rMessage.m_ReplyStatus.set(0);
+	in_rMessage.SetReply(in_rMessage.Unk2, false, { -in_rMessage.Unk3 });
+	in_rMessage.ReplyStatus.set(0);
 
 	if (pPlayerInfo->PixieNo != static_cast<app::Game::EPhantomType>(-1))
-		in_rMessage.m_ReplyStatus.set(5);
+		in_rMessage.ReplyStatus.set(5);
 
 	return true;
 }
 
 bool slw_dlc_restoration::ObjGossipStone::ProcMsgHitEventCollision(app::xgame::MsgHitEventCollision& in_rMessage)
 {
-	if (app::ObjUtil::CheckShapeUserID(in_rMessage.m_pSelf, 0))
+	if (app::ObjUtil::CheckShapeUserID(in_rMessage.pSelf, 0))
 		return OnSnapshot();
 
-	if (!app::ObjUtil::CheckShapeUserID(in_rMessage.m_pSelf, 1))
+	if (!app::ObjUtil::CheckShapeUserID(in_rMessage.pSelf, 1))
 		return false;
 
-	auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*GetDocument(), app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.m_Sender));
+	auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*GetDocument(), app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.Sender));
 	if (!pPlayerInfo || pPlayerInfo->IsOnGround)
 		return false;
 
-	csl::math::Vector3 upVector = GetComponent<app::fnd::GOCTransform>()->m_Frame.m_Unk3.m_Mtx.GetColumn(1);
+	csl::math::Vector3 upVector = GetComponent<app::fnd::GOCTransform>()->Frame.Unk3.Mtx.GetColumn(1);
 	csl::math::Vector3 contactNormal{ -(*in_rMessage.GetContactPointNormal()) };
 
 	csl::math::Vector3 velocity{ contactNormal - csl::math::Vector3(upVector * upVector.dot(contactNormal)) };
@@ -62,7 +62,7 @@ bool slw_dlc_restoration::ObjGossipStone::ProcMsgHitEventCollision(app::xgame::M
 
 	app::xgame::MsgAppeareKnockback msg{};
 	msg.Velocity = { csl::math::Vector3(upVector * upVector.dot(contactNormal)) + csl::math::Vector3(velocity * 30.0f * 2.0f) };
-	SendMessageImm(in_rMessage.m_Sender, msg);
+	SendMessageImm(in_rMessage.Sender, msg);
 
 	DispatchFSM(TiFsmEvent_t::CreateMessage(in_rMessage));
 	return true;
@@ -75,7 +75,7 @@ void slw_dlc_restoration::ObjGossipStone::Update(const app::fnd::SUpdateInfo& in
 	else if (FSM_STATE() == &app::ObjGossipStone::StateShake)
 		ChangeState(static_cast<BaseState>(&ObjGossipStone::StateShake));
 
-	DispatchFSM(TiFsmEvent_t::CreateUpdate(in_rUpdateInfo.deltaTime));
+	DispatchFSM(TiFsmEvent_t::CreateUpdate(in_rUpdateInfo.DeltaTime));
 }
 
 app::TTinyFsm<app::ObjGossipStone>::TiFsmState_t slw_dlc_restoration::ObjGossipStone::StateIdle(const TiFsmEvent_t& in_rEvent)
@@ -88,14 +88,14 @@ app::TTinyFsm<app::ObjGossipStone>::TiFsmState_t slw_dlc_restoration::ObjGossipS
 		if (message.GetType() != app::xgame::MsgDamage::MessageID)
 			break;
 
-		auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*GetDocument(), app::ObjUtil::GetPlayerNo(*GetDocument(), static_cast<app::xgame::MsgDamage&>(message).m_Sender));
+		auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*GetDocument(), app::ObjUtil::GetPlayerNo(*GetDocument(), static_cast<app::xgame::MsgDamage&>(message).Sender));
 
-		if (static_cast<app::xgame::MsgDamage&>(message).m_Bonus.m_Unk1 == 3 && pPlayerInfo && pPlayerInfo->PixieNo == app::Game::EPhantomType::PHANTOM_BOMB)
+		if (static_cast<app::xgame::MsgDamage&>(message).Bonus.Unk1 == 3 && pPlayerInfo && pPlayerInfo->PixieNo == app::Game::EPhantomType::ePhantom_Bomb)
 			ChangeState(&ObjGossipStone::StateCountdown);
 		else
 			ChangeState(static_cast<BaseState>(&ObjGossipStone::StateShake));
 
-		message.m_Handled = true;
+		message.Handled = true;
 		return {};
 	}
 	}
@@ -113,9 +113,9 @@ app::TTinyFsm<app::ObjGossipStone>::TiFsmState_t slw_dlc_restoration::ObjGossipS
 		if (message.GetType() != app::xgame::MsgDamage::MessageID)
 			break;
 
-		auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*GetDocument(), app::ObjUtil::GetPlayerNo(*GetDocument(), static_cast<app::xgame::MsgDamage&>(message).m_Sender));
+		auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*GetDocument(), app::ObjUtil::GetPlayerNo(*GetDocument(), static_cast<app::xgame::MsgDamage&>(message).Sender));
 
-		if (static_cast<app::xgame::MsgDamage&>(message).m_Bonus.m_Unk1 == 3 && pPlayerInfo && pPlayerInfo->PixieNo == app::Game::EPhantomType::PHANTOM_BOMB)
+		if (static_cast<app::xgame::MsgDamage&>(message).Bonus.Unk1 == 3 && pPlayerInfo && pPlayerInfo->PixieNo == app::Game::EPhantomType::ePhantom_Bomb)
 		{
 			IsDamaged = true;
 		}
@@ -128,7 +128,7 @@ app::TTinyFsm<app::ObjGossipStone>::TiFsmState_t slw_dlc_restoration::ObjGossipS
 			}
 		}
 
-		message.m_Handled = true;
+		message.Handled = true;
 		return {};
 	}
 	}

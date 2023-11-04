@@ -10,7 +10,7 @@ namespace slw_dlc_restoration
 	public:
 		int NumPlayers{};
 
-		void AddCallback(app::GameDocument& in_rDocument) override;
+		void AddCallback(app::GameDocument* in_pDocument) override;
 		void Update(const app::fnd::SUpdateInfo& in_rUpdateInfo) override;
 		TiFsmState_t StatePipeIn(const TiFsmEvent_t& in_rEvent);
 	};
@@ -25,7 +25,7 @@ namespace slw_dlc_restoration
 		int NumPlayers{};
 
 		ObjCrayPipeExit();
-		void AddCallback(app::GameDocument& in_rDocument) override;
+		void AddCallback(app::GameDocument* in_pDocument) override;
 		TiFsmState_t StateIdle(const TiFsmEvent_t& in_rEvent);
 		TiFsmState_t StatePipeOut(const TiFsmEvent_t& in_rEvent);
 	};

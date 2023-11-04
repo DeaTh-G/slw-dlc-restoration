@@ -1,15 +1,15 @@
 #include "pch.h"
 #include "ObjZeldaGoal.h"
 
-void slw_dlc_restoration::ObjZeldaGoal::AddCallback(app::GameDocument& in_rDocument)
+void slw_dlc_restoration::ObjZeldaGoal::AddCallback(app::GameDocument* in_pDocument)
 {
-	app::ObjZeldaGoal::AddCallback(in_rDocument);
+	app::ObjZeldaGoal::AddCallback(in_pDocument);
 
 	if (!CONFIGURATION.ZeldaTweaks.ScaleObjectsWithPlayer)
 		return;
 
-	auto* pPlayer = static_cast<app::Player::CPlayer*>(m_pMessageManager->GetActor(app::ObjUtil::GetPlayerActorID(in_rDocument, 0)));
-	auto playerScale = pPlayer->GetPlayerGOC<app::Player::CVisualGOC>()->GetHumanVisual()->pGocHolder->GetUnit(0).m_rpModel->m_Transform.m_Scale;
+	auto* pPlayer = static_cast<app::Player::CPlayer*>(pMessageManager->GetActor(app::ObjUtil::GetPlayerActorID(*in_pDocument, 0)));
+	auto playerScale = pPlayer->GetPlayerGOC<app::Player::CVisualGOC>()->GetHumanVisual()->pGocHolder->GetUnit(0).rpModel->Transform.Scale;
 	
 	GetComponent<app::fnd::GOCVisualModel>()->SetLocalScale(playerScale);
 }
@@ -30,16 +30,16 @@ slw_dlc_restoration::ObjZeldaGoal::TiFsmState_t slw_dlc_restoration::ObjZeldaGoa
 	if (!app::CFadeInOutManager::GetInstance()->IsFinished(3))
 		return {};
 
-	if (strcmp(GetDocument()->m_pGameMode->GetName(), "GameModeStageBattle") == 0)
+	if (strcmp(GetDocument()->pGameMode->GetName(), "GameModeStageBattle") == 0)
 	{
 		app::SGoalRingBattleTargetParam* pBattleTargetParam{};
-		for (auto& packs : m_pSetObjectManager->m_pActorManager->m_Packs)
+		for (auto& packs : m_pSetObjectManager->pActorManager->Packs)
 		{
 			for (auto& actor : packs)
 			{
-				if (strcmp(actor.GetObjectResource()->m_Class.GetName(), "GoalRingBattleTarget") == 0)
+				if (strcmp(actor.GetObjectResource()->Class.GetName(), "GoalRingBattleTarget") == 0)
 				{
-					pBattleTargetParam = reinterpret_cast<app::SGoalRingBattleTargetParam*>(&actor.GetObjectResource()->m_pParam);
+					pBattleTargetParam = reinterpret_cast<app::SGoalRingBattleTargetParam*>(&actor.GetObjectResource()->pParam);
 					break;
 				}
 			}
@@ -68,7 +68,7 @@ slw_dlc_restoration::ObjZeldaGoal::TiFsmState_t slw_dlc_restoration::ObjZeldaGoa
 
 	GetComponent<app::game::GOCAnimationScript>()->ChangeAnimation(ms_pResultAnimationName);
 
-	if (CONFIGURATION.ZeldaTweaks.UseUnusedGoalAnimation || (strcmp(GetDocument()->m_pGameMode->GetName(), "GameModeStageBattle") == 0 && CONFIGURATION.GlobalTweaks.FixMultiplayerBugs))
+	if (CONFIGURATION.ZeldaTweaks.UseUnusedGoalAnimation || (strcmp(GetDocument()->pGameMode->GetName(), "GameModeStageBattle") == 0 && CONFIGURATION.GlobalTweaks.FixMultiplayerBugs))
 		ChangeState(&ObjZeldaGoal::StateEndUp);
 	else
 		ChangeState(&ObjZeldaGoal::StateIdle);

@@ -3,18 +3,18 @@
 
 bool slw_dlc_restoration::Player::CStateBase::ProcMsgTakeObject(app::Player::CStateGOC& in_rStateGoc, app::xgame::MsgTakeObject& in_rMessage)
 {
-	if (app::Player::StateUtil::IsDead(in_rStateGoc) || in_rStateGoc.GetBlackBoard()->m_Unk1[3].test(26))
+	if (app::Player::StateUtil::IsDead(in_rStateGoc) || in_rStateGoc.GetBlackBoard()->Unk1[3].test(26))
 		return true;
 
 	bool isVariantValid = in_rMessage.ItemLevel != -1;
 	auto* pPlugin = in_rStateGoc.GetStatePlugin<app::Player::PluginStateCheckEnableItem>();
 
-	switch (in_rMessage.m_Type)
+	switch (in_rMessage.Type)
 	{
 	case app::xgame::MsgTakeObject::EType::eType_Ring:
 	case app::xgame::MsgTakeObject::EType::eType_DroppedRing:
 	{
-		if (in_rMessage.IsValidUserID() && in_rMessage.m_UserID != 6)
+		if (in_rMessage.IsValidUserID() && in_rMessage.UserID != 6)
 			break;
 
 		if (isVariantValid && pPlugin && pPlugin->IsItemDisable(8))
@@ -26,10 +26,10 @@ bool slw_dlc_restoration::Player::CStateBase::ProcMsgTakeObject(app::Player::CSt
 		if (in_rMessage.ItemLevel == -1)
 		{
 			app::Player::StateUtil::AddRingNum(in_rStateGoc, 1);
-			if (in_rMessage.m_Type == app::xgame::MsgTakeObject::EType::eType_DroppedRing)
+			if (in_rMessage.Type == app::xgame::MsgTakeObject::EType::eType_DroppedRing)
 				app::Player::StateUtil::SendMissionGetRing(in_rStateGoc, 1);
 
-			in_rMessage.m_Taken = true;
+			in_rMessage.Taken = true;
 			break;
 		}
 
@@ -51,7 +51,7 @@ bool slw_dlc_restoration::Player::CStateBase::ProcMsgTakeObject(app::Player::CSt
 		app::xgame::MsgPLSendGameInfo msg{ (app::Game::EUser)in_rStateGoc.GetPlayerNo(), in_rStateGoc.GetPhysics()->GetHorzVelocityLength(), app::Player::StateUtil::GetRingNum(in_rStateGoc), numHearts, maxNumHearts };
 		in_rStateGoc.SendMessageImmToGame(msg);
 
-		in_rMessage.m_Taken = true;
+		in_rMessage.Taken = true;
 		break;
 	}
 	case app::xgame::MsgTakeObject::EType::eType_YoshiOneUp:
@@ -68,15 +68,15 @@ bool slw_dlc_restoration::Player::CStateBase::ProcMsgTakeObject(app::Player::CSt
 		}
 
 		in_rStateGoc.SendMessageImmToGame(msg);
-		in_rMessage.m_Taken = true;
+		in_rMessage.Taken = true;
 		break;
 	}
 	case app::xgame::MsgTakeObject::EType::eType_YoshiCoin:
 	{
-		if (!in_rMessage.IsValidUserID() || in_rMessage.m_UserID == 6)
+		if (!in_rMessage.IsValidUserID() || in_rMessage.UserID == 6)
 		{
 			app::Player::StateUtil::AddRingNum(in_rStateGoc, 1);
-			in_rMessage.m_Taken = true;
+			in_rMessage.Taken = true;
 		}
 
 		break;
@@ -91,7 +91,7 @@ bool slw_dlc_restoration::Player::CStateBase::ProcMsgTakeObject(app::Player::CSt
 
 		in_rStateGoc.SendMessageImmToGame(msg);
 
-		in_rMessage.m_Taken = true;
+		in_rMessage.Taken = true;
 		break;
 	}
 	}
@@ -107,9 +107,9 @@ bool slw_dlc_restoration::Player::CStateBase::ProcMsgPlayerReachGoal(app::Player
 	if (in_rStateGoc.GetLevelInfo()->GetDLCStageIndex() != 3)
 		return false;
 
-	for (auto& pMessage : in_rStateGoc.pPlayer->m_pMessageManager->m_Messages)
+	for (auto& pMessage : in_rStateGoc.pPlayer->pMessageManager->Messages)
 		if (pMessage->GetType() == app::xgame::MsgGoal::MessageID)
-			static_cast<app::xgame::MsgGoal*>(pMessage)->m_PanCamera = false;
+			static_cast<app::xgame::MsgGoal*>(pMessage)->PanCamera = false;
 
 	return true;
 }
@@ -120,7 +120,7 @@ bool slw_dlc_restoration::Player::CStateBase::CheckHitDamage(app::Player::CState
 		return false;
 
 	auto* pBlackboard = in_rStateGoc.GetBlackBoard();
-	if (!pBlackboard->m_Unk1[3].test(21))
+	if (!pBlackboard->Unk1[3].test(21))
 	{
 		if (app::Player::StateUtil::IsBarrier(in_rStateGoc) | app::Player::StateUtil::IsHeartLife(in_rStateGoc) || (!CONFIGURATION.ZeldaTweaks.IsAlwaysHeartLife && in_rStateGoc.GetRingNum() > 0) || app::Player::StateUtil::IsNowPhantom(in_rStateGoc))
 		{
@@ -156,8 +156,8 @@ HOOK(bool, __fastcall, CStateBaseProcessMessageHook, ASLR(0x008981A0), slw_dlc_r
 	// maximum heart count is sent as 0 as part of the original code, while it should be taking the value from PluginStateHeartLife.
 	// Not running the original function in these two cases and running our own implementation gets around this.
 	if (in_rMessage.GetType() != app::xgame::MsgTakeObject::MessageID ||
-		(static_cast<app::xgame::MsgTakeObject&>(in_rMessage).m_Type != app::xgame::MsgTakeObject::EType::eType_Ring &&
-			static_cast<app::xgame::MsgTakeObject&>(in_rMessage).m_Type != app::xgame::MsgTakeObject::EType::eType_DroppedRing))
+		(static_cast<app::xgame::MsgTakeObject&>(in_rMessage).Type != app::xgame::MsgTakeObject::EType::eType_Ring &&
+			static_cast<app::xgame::MsgTakeObject&>(in_rMessage).Type != app::xgame::MsgTakeObject::EType::eType_DroppedRing))
 	{
 		result = originalCStateBaseProcessMessageHook(in_pThis, in_edx, in_rStateGoc, in_rMessage);
 	}

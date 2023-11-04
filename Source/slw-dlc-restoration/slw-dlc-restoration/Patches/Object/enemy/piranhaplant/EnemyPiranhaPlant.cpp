@@ -15,14 +15,14 @@ bool slw_dlc_restoration::EnemyPiranhaPlant::ProcessMessage(app::fnd::Message& i
 
 bool slw_dlc_restoration::EnemyPiranhaPlant::ProcMsgDamage(app::xgame::MsgDamage& in_rMessage)
 {
-	if (in_rMessage.m_SenderType == 3)
+	if (in_rMessage.SenderType == 3)
 	{
 		GetComponent<app::GOCEnemyHsm>()->Dispatch(in_rMessage);
 	}
-	else if (in_rMessage.m_Bonus.m_Unk1 == 3)
+	else if (in_rMessage.Bonus.Unk1 == 3)
 	{
 		auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*GetDocument(), app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.PlayerNo));
-		if (!pPlayerInfo || pPlayerInfo->PixieNo == app::Game::EPhantomType::PHANTOM_BOMB)
+		if (!pPlayerInfo || pPlayerInfo->PixieNo == app::Game::EPhantomType::ePhantom_Bomb)
 			return false;
 
 		GetComponent<app::GOCEnemyHsm>()->Dispatch(in_rMessage);

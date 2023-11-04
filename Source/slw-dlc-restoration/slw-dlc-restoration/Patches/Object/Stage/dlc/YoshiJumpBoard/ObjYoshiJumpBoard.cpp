@@ -6,9 +6,9 @@ slw_dlc_restoration::ObjYoshiJumpBoard::ObjYoshiJumpBoard(app::yoshi_jump_board:
 
 }
 
-void slw_dlc_restoration::ObjYoshiJumpBoard::AddCallback(app::GameDocument& in_rDocument)
+void slw_dlc_restoration::ObjYoshiJumpBoard::AddCallback(app::GameDocument* in_pDocument)
 {
-	app::ObjYoshiJumpBoard::AddCallback(in_rDocument);
+	app::ObjYoshiJumpBoard::AddCallback(in_pDocument);
 
 	if (auto* pShadowSimple = GetComponent<app::game::GOCShadowSimple>())
 		pShadowSimple->SetVisible(false);

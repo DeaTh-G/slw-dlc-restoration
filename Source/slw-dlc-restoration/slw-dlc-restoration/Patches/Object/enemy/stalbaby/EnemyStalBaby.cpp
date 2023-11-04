@@ -23,7 +23,7 @@ bool slw_dlc_restoration::EnemyStalBaby::ProcMsgDamage(app::xgame::MsgDamage& in
 {
 	bool result = app::EnemyStalBaby::ProcMsgDamage(in_rMessage);
 
-	if ((app::EnemyUtil::IsFatalDamage(in_rMessage) || GetComponent<app::GOCEnemyHsm>()->GetCurrentStateID() == 5) || in_rMessage.m_SenderType == 3)
+	if ((app::EnemyUtil::IsFatalDamage(in_rMessage) || GetComponent<app::GOCEnemyHsm>()->GetCurrentStateID() == 5) || in_rMessage.SenderType == 3)
 		KillingPlayerNo = in_rMessage.PlayerNo;
 
 	return result;

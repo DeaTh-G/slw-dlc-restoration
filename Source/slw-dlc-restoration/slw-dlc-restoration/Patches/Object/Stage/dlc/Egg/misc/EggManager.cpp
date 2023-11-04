@@ -8,14 +8,14 @@ slw_dlc_restoration::EggManager::EggManager() : app::EggManager()
 
 void slw_dlc_restoration::EggManager::StartGame(bool a1)
 {
-	NumPlayers = m_pOwnerDocument->GetService<app::CLevelInfo>()->GetNumPlayers();
+	NumPlayers = pOwnerDocument->GetService<app::CLevelInfo>()->GetNumPlayers();
 
 	Loci.clear();
 	Loci.reserve(NumPlayers);
 	for (size_t i = 0; i < Loci.capacity(); i++)
 	{
 		Loci[i].clear();
-		Loci[i].m_pAllocator = csl::fnd::Singleton<app::GameObjectSystem>::GetInstance()->m_pPooledAllocator;
+		Loci[i].pAllocator = csl::fnd::Singleton<app::GameObjectSystem>::GetInstance()->pPooledAllocator;
 		Loci[i].set_capacity(app::egg::GetMaxLocusPositionNum());
 	}
 
@@ -90,7 +90,7 @@ void slw_dlc_restoration::EggManager::UpdateLocusPos(float in_deltaTime)
 {
 	for (size_t i = 0; i < NumPlayers; i++)
 	{
-		auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*m_pOwnerDocument, i);
+		auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*pOwnerDocument, i);
 		if (!pPlayerInfo)
 			continue;
 
@@ -139,7 +139,7 @@ void slw_dlc_restoration::EggManager::UpdateEggSpace()
 	for (size_t i = 0; i < NumPlayers; i++)
 	{
 		SpaceShrinkFlags[i].reset(2);
-		auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*m_pOwnerDocument, i);
+		auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*pOwnerDocument, i);
 		if (pPlayerInfo && pPlayerInfo->IsLandOnMovableGround)
 		{
 			SubSpaceCount(i);
@@ -161,7 +161,7 @@ void slw_dlc_restoration::EggManager::DoCheckReleaseAllEgg()
 {
 	for (size_t i = 0; i < NumPlayers; i++)
 	{
-		auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*m_pOwnerDocument, i);
+		auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*pOwnerDocument, i);
 		if (!pPlayerInfo)
 			continue;
 
@@ -210,7 +210,7 @@ void slw_dlc_restoration::EggManager::DoCheckClearAllEggAndExtrication()
 
 void slw_dlc_restoration::EggManager::Update(const app::fnd::SUpdateInfo& in_rUpdateInfo)
 {
-	UpdateLocusPos(in_rUpdateInfo.deltaTime);
+	UpdateLocusPos(in_rUpdateInfo.DeltaTime);
 	UpdateEggSpace();
 	DoCheckReleaseAllEgg();
 	DoCheckClearAllEggAndExtrication();

@@ -6,19 +6,19 @@ void slw_dlc_restoration::objectObjectReflections::InstallPatches(ModInfo_t* in_
     // Use the create function found in slw_dlc_restoration instead of their original game restoration to fix objects for multiplayer.
     if (CONFIGURATION.GlobalTweaks.FixMultiplayerBugs)
     {
-        PIRANHA_PLANT_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::EnemyPiranhaPlant>;
-        CRAY_PIPE_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjCrayPipe>;
-        CRAY_PIPE_EXIT_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjCrayPipeExit>;
-        EGG_BLOCK_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjEggBlock>;
-        YOSHI_GOAL_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjYoshiGoal>;
+        PIRANHA_PLANT_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::EnemyPiranhaPlant>;
+        CRAY_PIPE_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjCrayPipe>;
+        CRAY_PIPE_EXIT_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjCrayPipeExit>;
+        EGG_BLOCK_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjEggBlock>;
+        YOSHI_GOAL_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjYoshiGoal>;
     }
     
     // Use the create function found in slw_dlc_restoration instead of their original game restoration if configured to do so.
     if (CONFIGURATION.YoshiTweaks.IsConsistentShadows)
     {
-        YOSHI_COIN_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjYoshiCoin>;
-        YOSHI_JUMP_BOARD_BIG_CLASS.m_fpCreateObject = &slw_dlc_restoration::ObjYoshiJumpBoard::Create_Big;
-        YOSHI_JUMP_BOARD_SMALL_CLASS.m_fpCreateObject = &slw_dlc_restoration::ObjYoshiJumpBoard::Create_Small;
+        YOSHI_COIN_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjYoshiCoin>;
+        YOSHI_JUMP_BOARD_BIG_CLASS.fpCreateObject = &slw_dlc_restoration::ObjYoshiJumpBoard::Create_Big;
+        YOSHI_JUMP_BOARD_SMALL_CLASS.fpCreateObject = &slw_dlc_restoration::ObjYoshiJumpBoard::Create_Small;
     }
 
     WRITE_OBJECT_CLASS_CREATE(ASLR(0x00D2A2B0), PIRANHA_PLANT_CLASS);
@@ -38,25 +38,25 @@ void slw_dlc_restoration::objectObjectReflections::InstallPatches(ModInfo_t* in_
     // Use the create function found in slw_dlc_restoration instead of their original game restoration to fix objects for multiplayer.
     if (CONFIGURATION.GlobalTweaks.FixMultiplayerBugs)
     {
-        DEKU_NUTS_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::EnemyDekunuts>;
-        STAL_BABY_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::EnemyStalBaby>;
-        CHANGE_TOP_VIEW_COLLISION_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjChangeTopViewCollision>;
-        GOSSIP_STONE_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjGossipStone>;
-        OCCLUDE_STONE_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjOccludeStone>;
-        GOLON_ROCK_GENERATOR_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjGolonRockGenerator>;
-        COCCO_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjCocco>;
+        DEKU_NUTS_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::EnemyDekunuts>;
+        STAL_BABY_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::EnemyStalBaby>;
+        CHANGE_TOP_VIEW_COLLISION_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjChangeTopViewCollision>;
+        GOSSIP_STONE_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjGossipStone>;
+        OCCLUDE_STONE_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjOccludeStone>;
+        GOLON_ROCK_GENERATOR_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjGolonRockGenerator>;
+        COCCO_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjCocco>;
     }
 
     if (CONFIGURATION.ZeldaTweaks.IsWaterParticleFixed)
-        EVENT_DROWNING_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjEventDrowning>;
+        EVENT_DROWNING_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjEventDrowning>;
 
     if (CONFIGURATION.ZeldaTweaks.FixLoftBirdMemoryLeak)
-        LOFT_BIRD_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjLoftBird>;
+        LOFT_BIRD_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjLoftBird>;
 
     if (CONFIGURATION.GlobalTweaks.FixMultiplayerBugs || CONFIGURATION.ZeldaTweaks.ScaleObjectsWithPlayer ||
         CONFIGURATION.ZeldaTweaks.FixTreasureChestRupeeCount || CONFIGURATION.ZeldaTweaks.DisableChestLetterboxing)
     {
-        TREASURE_BOX_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjTreasureBox>;
+        TREASURE_BOX_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjTreasureBox>;
     }
 
     if (CONFIGURATION.ZeldaTweaks.IsStalbabyFixed)
@@ -65,7 +65,7 @@ void slw_dlc_restoration::objectObjectReflections::InstallPatches(ModInfo_t* in_
     }
 
     if (CONFIGURATION.GlobalTweaks.FixMultiplayerBugs || CONFIGURATION.ZeldaTweaks.ScaleObjectsWithPlayer || CONFIGURATION.ZeldaTweaks.UseUnusedGoalAnimation)
-        ZELDA_GOAL_CLASS.m_fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjZeldaGoal>;
+        ZELDA_GOAL_CLASS.fpCreateObject = app::CSetObjClass::ObjectCreator<slw_dlc_restoration::ObjZeldaGoal>;
 
     WRITE_OBJECT_CLASS_CREATE(ASLR(0x00D28660), ZELDA_WARP_COLLISION_CLASS);
     WRITE_OBJECT_CLASS_CREATE(ASLR(0x00D290D0), DEKU_NUTS_CLASS);

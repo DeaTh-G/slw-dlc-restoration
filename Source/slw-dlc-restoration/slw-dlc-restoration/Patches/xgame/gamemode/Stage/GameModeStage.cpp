@@ -18,7 +18,7 @@ HOOK(void, __fastcall, LoadLevelHook, ASLR(0x00917730), app::GameModeStage* in_p
     // The UI packfile for The Legend of Zelda Zone DLC is loaded upon creation of GameModeStage to ensure that
     // we have access to the *.swif files inside that packfile later on.
     app::fnd::FileLoaderParam param{};
-    param.m_pAllocator = app::game::GlobalAllocator::GetAllocator(1);
+    param.pAllocator = app::game::GlobalAllocator::GetAllocator(1);
     param.SetMultiLanguageAttr(true, 0);
     in_pThis->LoadFile("ui/ui_zdlc03_gamemodestage.pac", param);
     param.SetMultiLanguageAttr(false, 0);
@@ -49,7 +49,7 @@ HOOK(TiFsmState_t&, __fastcall, StatePlayHook, ASLR(0x0091A680), app::GameModeSt
 
             in_pThis->SendToGroup(8, message);
 
-            message.m_Handled = true;
+            message.Handled = true;
             break;
         }
         case app::xgame::MsgDlcZeldaTakeHeartContainer::MessageID:
@@ -62,29 +62,29 @@ HOOK(TiFsmState_t&, __fastcall, StatePlayHook, ASLR(0x0091A680), app::GameModeSt
             in_pThis->SendToGroup(11, message);
             in_pThis->SendToGroup(12, message);
 
-            message.m_Handled = true;
+            message.Handled = true;
             break;
         }
         case app::xgame::MsgDlcZeldaNoticeStopEnemy::MessageID:
         {
             auto& message = static_cast<app::xgame::MsgDlcZeldaNoticeStopEnemy&>(in_rEvent.getMessage());
 
-            in_pThis->m_pDocument->GetService<app::CLevelInfo>()->SetPlayingZeldaEvent(true);
+            in_pThis->pDocument->GetService<app::CLevelInfo>()->SetPlayingZeldaEvent(true);
             in_pThis->SendToGroup(6, message);
             in_pThis->SendToGroup(7, message);
 
-            message.m_Handled = true;
+            message.Handled = true;
             break;
         }
         case app::xgame::MsgDlcZeldaNoticeActiveEnemy::MessageID:
         {
             auto& message = static_cast<app::xgame::MsgDlcZeldaNoticeActiveEnemy&>(in_rEvent.getMessage());
 
-            in_pThis->m_pDocument->GetService<app::CLevelInfo>()->SetPlayingZeldaEvent(false);
+            in_pThis->pDocument->GetService<app::CLevelInfo>()->SetPlayingZeldaEvent(false);
             in_pThis->SendToGroup(6, message);
             in_pThis->SendToGroup(7, message);
 
-            message.m_Handled = true;
+            message.Handled = true;
             break;
         }
         case app::xgame::MsgDlcZeldaHeartAllRecovery::MessageID:
@@ -95,7 +95,7 @@ HOOK(TiFsmState_t&, __fastcall, StatePlayHook, ASLR(0x0091A680), app::GameModeSt
             in_pThis->SendToGroup(11, message);
             in_pThis->SendToGroup(12, message);
 
-            message.m_Handled = true;
+            message.Handled = true;
             break;
         }
         default:
@@ -141,7 +141,7 @@ HOOK(void, __fastcall, DisposeMsgPLSendGameInfoHook, ASLR(0x00915120), app::Game
 
     // On the PC version of the game, GameModeStage no longer stores the values of the Heart System as The Legend of Zelda Zone DLC does not exist.
     // The following code re-adds this functionality to GameModeStage to ensure the functionality of the Heart System like on the Wii U version
-    if (in_pThis->IsPlayer(in_rMessage.m_Sender))
+    if (in_pThis->IsPlayer(in_rMessage.Sender))
     {
         auto* pPlayerInfo = in_pThis->GetPlayerInfo(in_rMessage.PlayerNo);
         pPlayerInfo->NumHearts = in_rMessage.NumHearts;

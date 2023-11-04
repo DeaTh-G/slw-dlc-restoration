@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ObjLoftBird.h"
 
-void slw_dlc_restoration::ObjLoftBird::RemoveCallback(app::GameDocument& in_rDocument)
+void slw_dlc_restoration::ObjLoftBird::RemoveCallback(app::GameDocument* in_pDocument)
 {
 	for (auto& light : PointLights)
 	{

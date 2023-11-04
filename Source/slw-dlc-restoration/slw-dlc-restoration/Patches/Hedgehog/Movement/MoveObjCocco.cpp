@@ -32,7 +32,7 @@ void slw_dlc_restoration::MoveObjCocco::Update(const app::fnd::SUpdateInfo& in_r
 	}
 	case MoveType::eMoveType_RelativeTargetPoint:
 	{
-		if (auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*pMovementGoc->activeObject->GetDocument(), PlayerNo))
+		if (auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*pMovementGoc->pActiveObject->GetDocument(), PlayerNo))
 		{
 			target = { pPlayerInfo->Position + TargetPosition };
 			destination = { target - pContextParam->Position };
@@ -52,7 +52,7 @@ void slw_dlc_restoration::MoveObjCocco::Update(const app::fnd::SUpdateInfo& in_r
 	{
 		target = { pContextParam->Position };
 
-		auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*pMovementGoc->activeObject->GetDocument(), PlayerNo);
+		auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*pMovementGoc->pActiveObject->GetDocument(), PlayerNo);
 		if (!pPlayerInfo)
 		{
 			destination = { TargetPosition };
@@ -88,7 +88,7 @@ void slw_dlc_restoration::MoveObjCocco::Update(const app::fnd::SUpdateInfo& in_r
 	float scalar = fabs(acosf(csl::math::Clamp(destination.dot(leftVector), -1.0f, 1.0f)));
 	if (scalar > 0.000001f)
 	{
-		float angle = MATHF_PI * 4.0f * in_rUpdateInfo.deltaTime;
+		float angle = MATHF_PI * 4.0f * in_rUpdateInfo.DeltaTime;
 		if (angle >= scalar)
 		{
 			if (Type == MoveType::eMoveType_TargetPlayer)
@@ -114,8 +114,8 @@ void slw_dlc_restoration::MoveObjCocco::Update(const app::fnd::SUpdateInfo& in_r
 			downVector = { -upVector * 2.0f };
 	}
 
-	pContextParam->Velocity = { destination * Speed + velocity + downVector * in_rUpdateInfo.deltaTime };
-	pContextParam->Position += csl::math::Vector3(pContextParam->Velocity * in_rUpdateInfo.deltaTime);
+	pContextParam->Velocity = { destination * Speed + velocity + downVector * in_rUpdateInfo.DeltaTime };
+	pContextParam->Position += csl::math::Vector3(pContextParam->Velocity * in_rUpdateInfo.DeltaTime);
 	TargetDirection = destination;
 
 	csl::math::Vector3 normalizedDir{ TargetDirection - upVector * TargetDirection.dot(upVector) };
@@ -139,12 +139,12 @@ void slw_dlc_restoration::MoveObjCocco::Update(const app::fnd::SUpdateInfo& in_r
 		csl::math::Vector3 to{ pContextParam->Position - upVector * 0.5f };
 
 		app::game::PhysicsRaycastOutput output{};
-		if (app::ObjUtil::RaycastNearestCollision(&output, *pMovementGoc->activeObject->GetDocument(), from, to, 0xC996))
+		if (app::ObjUtil::RaycastNearestCollision(&output, *pMovementGoc->pActiveObject->GetDocument(), from, to, 0xC996))
 		{
-			if ((output.m_Attribute & 0x10) == 0)
+			if ((output.Attribute & 0x10) == 0)
 			{
 				pContextParam->Velocity -= csl::math::Vector3(upVector * pContextParam->Velocity.dot(upVector));
-				pContextParam->Position = output.m_HitPoint;
+				pContextParam->Position = output.HitPoint;
 			}
 		}
 		else
@@ -164,11 +164,11 @@ void slw_dlc_restoration::MoveObjCocco::Update(const app::fnd::SUpdateInfo& in_r
 		csl::math::Vector3 from{ pContextParam->Position + offsetPosition * (length + 0.1f) };
 
 		app::game::PhysicsRaycastOutput output{};
-		if (app::ObjUtil::RaycastNearestCollision(&output, *pMovementGoc->activeObject->GetDocument(), from, to, 0xC996)
-			&& (output.m_Attribute & 0x10) == 0)
+		if (app::ObjUtil::RaycastNearestCollision(&output, *pMovementGoc->pActiveObject->GetDocument(), from, to, 0xC996)
+			&& (output.Attribute & 0x10) == 0)
 		{
 			CurrentState = State::eState_Unk0;
-			pContextParam->Position = output.m_HitPoint;
+			pContextParam->Position = output.HitPoint;
 		}
 
 		break;
@@ -219,7 +219,7 @@ void slw_dlc_restoration::MoveObjCocco::SetTargetPlayer(float in_speed, float in
 
 	csl::math::Vector3 direction{ app::math::Vector3Rotate(pContextParam->Rotation, {csl::math::Vector3::UnitY()}) };
 
-	auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*pMovementGoc->activeObject->GetDocument(), in_playerNo);
+	auto* pPlayerInfo = app::ObjUtil::GetPlayerInformation(*pMovementGoc->pActiveObject->GetDocument(), in_playerNo);
 	if (!pPlayerInfo)
 		return;
 

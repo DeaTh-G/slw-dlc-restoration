@@ -19,7 +19,7 @@ bool slw_dlc_restoration::ObjChangeTopViewCollision::ProcMsgHitEventCollision(ap
 	app::xgame::MsgPLChangeAreaTopView msg{};
 	msg.IsTopView = true;
 
-	app::ObjUtil::SendMessageImmToPlayer(*this, app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.m_Sender), msg);
+	app::ObjUtil::SendMessageImmToPlayer(*this, app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.Sender), msg);
 	return true;
 }
 
@@ -28,6 +28,6 @@ bool slw_dlc_restoration::ObjChangeTopViewCollision::ProcMsgLeaveEventCollision(
 	app::xgame::MsgPLChangeAreaTopView msg{};
 	msg.IsTopView = false;
 
-	app::ObjUtil::SendMessageImmToPlayer(*this, app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.m_Sender), msg);
+	app::ObjUtil::SendMessageImmToPlayer(*this, app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.Sender), msg);
 	return true;
 }

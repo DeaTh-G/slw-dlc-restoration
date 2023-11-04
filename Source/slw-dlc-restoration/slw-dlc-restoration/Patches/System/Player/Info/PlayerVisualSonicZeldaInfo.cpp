@@ -10,22 +10,22 @@ HOOK(void, __fastcall, InitializeHook, ASLR(0x008F8800), app::Player::SonicZelda
 	// Replace the material data used for the second mesh found in the mesh groups 'Sonic_Mouth' and 'Sonic_Mouth_L' if the material name is set to
 	// 'chr_linksonic_leather2' to prevent the inside of Linksonic's mouth using the leather material texture instead of proper textures.
 	// The original fix for this solution was created by M&M (https://gamebanana.com/members/1347950) by creating a new model that has these values set correctly.
-	if (in_pThis->Model->MeshGroupCount > 1 && in_pThis->Model.GetResMeshGroup(1).GetNumResMeshes() > 1 && !strcmp(in_pThis->Model.GetResMeshGroup(1).GetResMesh(1)->m_MaterialName.m_pValue, "chr_linksonic_leather2"))
+	if (in_pThis->Model->MeshGroupCount > 1 && in_pThis->Model.GetResMeshGroup(1).GetNumResMeshes() > 1 && !strcmp(in_pThis->Model.GetResMeshGroup(1).GetResMesh(1)->MaterialName.pValue, "chr_linksonic_leather2"))
 	{
 		auto mesh = in_pThis->Model.GetResMeshGroup(1).GetResMesh(1);
 		auto otherMesh = in_pThis->Model.GetResMeshGroup(1).GetResMesh(0);
 		
-		mesh->m_pMaterial = otherMesh->m_pMaterial;
-		mesh->m_MaterialName = otherMesh->m_MaterialName;
+		mesh->pMaterial = otherMesh->pMaterial;
+		mesh->MaterialName = otherMesh->MaterialName;
 	}
 
-	if (in_pThis->Model->MeshGroupCount > 2 && in_pThis->Model.GetResMeshGroup(2).GetNumResMeshes() > 1 && !strcmp(in_pThis->Model.GetResMeshGroup(2).GetResMesh(1)->m_MaterialName.m_pValue, "chr_linksonic_leather2"))
+	if (in_pThis->Model->MeshGroupCount > 2 && in_pThis->Model.GetResMeshGroup(2).GetNumResMeshes() > 1 && !strcmp(in_pThis->Model.GetResMeshGroup(2).GetResMesh(1)->MaterialName.pValue, "chr_linksonic_leather2"))
 	{
 		auto mesh = in_pThis->Model.GetResMeshGroup(2).GetResMesh(1);
 		auto otherMesh = in_pThis->Model.GetResMeshGroup(2).GetResMesh(0);
 
-		mesh->m_pMaterial = otherMesh->m_pMaterial;
-		mesh->m_MaterialName = otherMesh->m_MaterialName;
+		mesh->pMaterial = otherMesh->pMaterial;
+		mesh->MaterialName = otherMesh->MaterialName;
 	}
 }
 

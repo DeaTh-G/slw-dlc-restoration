@@ -6,7 +6,7 @@ namespace slw_dlc_restoration
 	{
 	public:
 		ObjGolonRock(const app::golon_rock::GolonRockCreateInfo& in_rCreateInfo);
-		void AddCallback(app::GameDocument& in_rDocument) override;
+		void AddCallback(app::GameDocument* in_pDocument) override;
 	};
 
 	namespace golon_rock

@@ -8,7 +8,7 @@ HOOK(bool, __fastcall, ProcMsgNotifyObjectEventHook, ASLR(0x005F81D0), app::CSet
 	// mode, this is outside of the scope of this version of DLC Restoration.
 	auto* pLevelInfo = in_pThis->GetDocument()->GetService<app::CLevelInfo>();
 
-	if (!strcmp(in_pThis->GetDocument()->m_pGameMode->GetName(), "GameModeStageBattle") && !strcmp(pLevelInfo->m_Level, "zdlc03"))
+	if (!strcmp(in_pThis->GetDocument()->pGameMode->GetName(), "GameModeStageBattle") && !strcmp(pLevelInfo->Level, "zdlc03"))
 		return false;
 
 	return originalProcMsgNotifyObjectEventHook(in_pThis, edx, in_rMessage);

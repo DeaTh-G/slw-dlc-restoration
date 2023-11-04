@@ -25,22 +25,22 @@ HOOK(void, __fastcall, InitializeHook, ASLR(0x008F8C00), app::Player::VirtualSon
 	in_pThis->Models[1] = app::ObjUtil::GetModelResource("chr_Linksonic2p", packFile);
 	for (size_t i = 0; i < in_pThis->Models.size(); i++)
 	{
-		if (in_pThis->Models[i]->MeshGroupCount > 1 && in_pThis->Models[i].GetResMeshGroup(1).GetNumResMeshes() > 1 && !strcmp(in_pThis->Models[i].GetResMeshGroup(1).GetResMesh(1)->m_MaterialName.m_pValue, "chr_linksonic_leather2"))
+		if (in_pThis->Models[i]->MeshGroupCount > 1 && in_pThis->Models[i].GetResMeshGroup(1).GetNumResMeshes() > 1 && !strcmp(in_pThis->Models[i].GetResMeshGroup(1).GetResMesh(1)->MaterialName.pValue, "chr_linksonic_leather2"))
 		{
 			auto mesh = in_pThis->Models[i].GetResMeshGroup(1).GetResMesh(1);
 			auto otherMesh = in_pThis->Models[i].GetResMeshGroup(1).GetResMesh(0);
 
-			mesh->m_pMaterial = otherMesh->m_pMaterial;
-			mesh->m_MaterialName = otherMesh->m_MaterialName;
+			mesh->pMaterial = otherMesh->pMaterial;
+			mesh->MaterialName = otherMesh->MaterialName;
 		}
 
-		if (in_pThis->Models[i]->MeshGroupCount > 2 && in_pThis->Models[i].GetResMeshGroup(2).GetNumResMeshes() > 1 && !strcmp(in_pThis->Models[i].GetResMeshGroup(2).GetResMesh(1)->m_MaterialName.m_pValue, "chr_linksonic_leather2"))
+		if (in_pThis->Models[i]->MeshGroupCount > 2 && in_pThis->Models[i].GetResMeshGroup(2).GetNumResMeshes() > 1 && !strcmp(in_pThis->Models[i].GetResMeshGroup(2).GetResMesh(1)->MaterialName.pValue, "chr_linksonic_leather2"))
 		{
 			auto mesh = in_pThis->Models[i].GetResMeshGroup(2).GetResMesh(1);
 			auto otherMesh = in_pThis->Models[i].GetResMeshGroup(2).GetResMesh(0);
 
-			mesh->m_pMaterial = otherMesh->m_pMaterial;
-			mesh->m_MaterialName = otherMesh->m_MaterialName;
+			mesh->pMaterial = otherMesh->pMaterial;
+			mesh->MaterialName = otherMesh->MaterialName;
 		}
 	}
 

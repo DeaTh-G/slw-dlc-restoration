@@ -6,7 +6,7 @@ void slw_dlc_restoration::ObjGolonRockGenerator::Update(const app::fnd::SUpdateI
 	if (!Flags.test(1))
 		return;
 
-	ElapsedTime += in_rUpdateInfo.deltaTime;
+	ElapsedTime += in_rUpdateInfo.DeltaTime;
 
 	if (Flags.test(2) || ElapsedTime <= CreateInterval)
 		return;
@@ -14,7 +14,7 @@ void slw_dlc_restoration::ObjGolonRockGenerator::Update(const app::fnd::SUpdateI
 	ElapsedTime = 0.0f;
 
 	app::golon_rock::GolonRockCreateInfo createInfo{};
-	createInfo.TransformMtx = GetComponent<app::fnd::GOCTransform>()->m_Frame.m_Unk3.m_Mtx;
+	createInfo.TransformMtx = GetComponent<app::fnd::GOCTransform>()->Frame.Unk3.Mtx;
 	createInfo.Speed = -Speed;
 	createInfo.IsCheckFall = Flags.test(0);
 

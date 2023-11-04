@@ -3,10 +3,10 @@
 
 HOOK(void, __fastcall, CompleteDLCStageHook, ASLR(0x009122C0), app::CGameSequence* in_pThis, void* edx, app::xgame::DlcStageIndex in_index, uint in_unk1, uint in_unk2)
 {
-    if (CONFIGURATION.GlobalTweaks.IsSHC2021Build && !strcmp(in_pThis->m_pGame->GetGameMode()->GetName(), "GameModeStage"))
+    if (CONFIGURATION.GlobalTweaks.IsSHC2021Build && !strcmp(in_pThis->pGame->GetGameMode()->GetName(), "GameModeStage"))
     {
-        auto* pGameMode = static_cast<app::GameModeStage*>(in_pThis->m_pGame->GetGameMode());
-        if (!strcmp(pGameMode->pLevelInfo->m_Level, "zdlc02"))
+        auto* pGameMode = static_cast<app::GameModeStage*>(in_pThis->pGame->GetGameMode());
+        if (!strcmp(pGameMode->pLevelInfo->Level, "zdlc02"))
         {
             in_pThis->PushMovieEventQueue(327);
             in_pThis->SeqGotoPlayMovie();

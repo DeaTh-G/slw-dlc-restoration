@@ -22,7 +22,7 @@ bool slw_dlc_restoration::EnemyDekunuts::ProcessMessage(app::fnd::Message& in_rM
 
 bool slw_dlc_restoration::EnemyDekunuts::ProcMsgLeaveEventCollision(app::xgame::MsgLeaveEventCollision& in_rMessage)
 {
-	if (app::ObjUtil::CheckShapeUserID(in_rMessage.Self, 0) && PlayerNo == app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.m_Sender))
+	if (app::ObjUtil::CheckShapeUserID(in_rMessage.Self, 0) && PlayerNo == app::ObjUtil::GetPlayerNo(*GetDocument(), in_rMessage.Sender))
 		PlayerNo = static_cast<uint>(-1);
 
 	return app::EnemyDekunuts::ProcMsgLeaveEventCollision(in_rMessage);

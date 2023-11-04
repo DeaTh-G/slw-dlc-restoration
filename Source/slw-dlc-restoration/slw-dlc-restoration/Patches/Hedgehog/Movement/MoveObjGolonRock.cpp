@@ -14,15 +14,15 @@ void slw_dlc_restoration::game::MoveObjGolonRock::Update(const app::fnd::SUpdate
 	{
 	case Mode::eMode_Move:
 	{
-		csl::math::Vector3 rotationDir{ UpdateRotDirPathToPos(in_rUpdateInfo.deltaTime) };
-		pContextParam->Position = { UpdateMovePathPos(in_rUpdateInfo.deltaTime) + rotationDir * OffsetMagnitude };
+		csl::math::Vector3 rotationDir{ UpdateRotDirPathToPos(in_rUpdateInfo.DeltaTime) };
+		pContextParam->Position = { UpdateMovePathPos(in_rUpdateInfo.DeltaTime) + rotationDir * OffsetMagnitude };
 		pContextParam->Rotation = { app::math::Matrix34OrthonormalDirection(PathEvaluator.GetTangent(PathEvaluator.Distance), { -rotationDir }) };
 
-		Direction = { (OffsetMagnitude + YOffset) * Unk3, 0.0f, Speed * in_rUpdateInfo.deltaTime };
+		Direction = { (OffsetMagnitude + YOffset) * Unk3, 0.0f, Speed * in_rUpdateInfo.DeltaTime };
 
-		UpdateLocalRotRad(in_rUpdateInfo.deltaTime);
+		UpdateLocalRotRad(in_rUpdateInfo.DeltaTime);
 
-		if (!IsCheckFall || !CheckFall(rotationDir, in_rUpdateInfo.deltaTime))
+		if (!IsCheckFall || !CheckFall(rotationDir, in_rUpdateInfo.DeltaTime))
 		{
 			if (IsPassOverPlayer() && pOwner && PassPlayerMemFunc)
 				(pOwner->*PassPlayerMemFunc)();
@@ -45,7 +45,7 @@ void slw_dlc_restoration::game::MoveObjGolonRock::Update(const app::fnd::SUpdate
 
 bool slw_dlc_restoration::game::MoveObjGolonRock::IsPassOverPlayer() const
 {
-	auto* pDocument = GetOwnerMovement()->activeObject->GetDocument();
+	auto* pDocument = GetOwnerMovement()->pActiveObject->GetDocument();
 	int numPlayers = pDocument->GetService<app::CLevelInfo>()->GetNumPlayers();
 
 	csl::ut::ObjectMoveArray<bool> arePlayersPassed{ pDocument->GetAllocator() };

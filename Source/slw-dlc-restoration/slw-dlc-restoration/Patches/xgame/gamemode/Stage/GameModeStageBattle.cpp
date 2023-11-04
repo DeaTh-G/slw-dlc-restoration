@@ -9,7 +9,7 @@ HOOK(void, __fastcall, LoadStartingCallbackHook, ASLR(0x0093A6D0), app::GameMode
     
     // The UI packfiles for the DLC loading screens are loaded here as to ensure that they can be displayed when the game
     // is loading those levels in multiplayer.
-    if (in_eventType != app::StageDataListener::EventType::EventType_Start)
+    if (in_eventType != app::StageDataListener::EventType::eEventType_Start)
         return;
 
     app::fnd::FileLoaderParam param{};
@@ -34,7 +34,7 @@ HOOK(void, __fastcall, LoadLevelHook, ASLR(0x00939E50), app::GameModeStageBattle
     // Ensure that the gameplay UI packfile for the Yoshi's Island Zone DLC is loaded.
     // This is done to be able to call the HUD transition *.swif used by the pipes in multiplayer.
     app::fnd::FileLoaderParam param{};
-    param.m_pAllocator = app::game::GlobalAllocator::GetAllocator(1);
+    param.pAllocator = app::game::GlobalAllocator::GetAllocator(1);
     param.SetMultiLanguageAttr(true, 0);
     in_pThis->LoadFile("ui/ui_zdlc02_gamemodestage.pac", param);
     param.SetMultiLanguageAttr(false, 0);
@@ -84,7 +84,7 @@ HOOK(TiFsmState_t&, __fastcall, StatePlayHook, ASLR(0x0093AC70), app::GameModeSt
 
             in_pThis->SendToGroup(8, message);
 
-            message.m_Handled = true;
+            message.Handled = true;
             break;
         }
         case app::xgame::MsgDlcZeldaTakeHeartContainer::MessageID:
@@ -95,29 +95,29 @@ HOOK(TiFsmState_t&, __fastcall, StatePlayHook, ASLR(0x0093AC70), app::GameModeSt
             in_pThis->SendToGroup(11, message);
             in_pThis->SendToGroup(12, message);
 
-            message.m_Handled = true;
+            message.Handled = true;
             break;
         }
         case app::xgame::MsgDlcZeldaNoticeStopEnemy::MessageID:
         {
             auto& message = static_cast<app::xgame::MsgDlcZeldaNoticeStopEnemy&>(in_rEvent.getMessage());
 
-            in_pThis->m_pDocument->GetService<app::CLevelInfo>()->SetPlayingZeldaEvent(true);
+            in_pThis->pDocument->GetService<app::CLevelInfo>()->SetPlayingZeldaEvent(true);
             in_pThis->SendToGroup(6, message);
             in_pThis->SendToGroup(7, message);
 
-            message.m_Handled = true;
+            message.Handled = true;
             break;
         }
         case app::xgame::MsgDlcZeldaNoticeActiveEnemy::MessageID:
         {
             auto& message = static_cast<app::xgame::MsgDlcZeldaNoticeActiveEnemy&>(in_rEvent.getMessage());
 
-            in_pThis->m_pDocument->GetService<app::CLevelInfo>()->SetPlayingZeldaEvent(false);
+            in_pThis->pDocument->GetService<app::CLevelInfo>()->SetPlayingZeldaEvent(false);
             in_pThis->SendToGroup(6, message);
             in_pThis->SendToGroup(7, message);
 
-            message.m_Handled = true;
+            message.Handled = true;
             break;
         }
         case app::xgame::MsgDlcZeldaHeartAllRecovery::MessageID:
@@ -128,7 +128,7 @@ HOOK(TiFsmState_t&, __fastcall, StatePlayHook, ASLR(0x0093AC70), app::GameModeSt
             in_pThis->SendToGroup(11, message);
             in_pThis->SendToGroup(12, message);
 
-            message.m_Handled = true;
+            message.Handled = true;
             break;
         }
         default:

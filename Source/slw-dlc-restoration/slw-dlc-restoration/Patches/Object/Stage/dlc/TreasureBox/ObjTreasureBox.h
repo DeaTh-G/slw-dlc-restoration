@@ -18,7 +18,7 @@ namespace slw_dlc_restoration
 		uint InteractingPlayerNo{ static_cast<uint>(-1) };
 
 	public:
-		void AddCallback(app::GameDocument& in_rDocument) override;
+		void AddCallback(app::GameDocument* in_pDocument) override;
 		void Update(const app::fnd::SUpdateInfo& in_rUpdateInfo) override;
 		bool IsPlayerPhantom(uint in_playerNo);
 		void PushCamera();

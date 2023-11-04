@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "ObjCrayPipe.h"
 
-void slw_dlc_restoration::ObjCrayPipe::AddCallback(app::GameDocument& in_rDocument)
+void slw_dlc_restoration::ObjCrayPipe::AddCallback(app::GameDocument* in_pDocument)
 {
-	app::ObjCrayPipe::AddCallback(in_rDocument);
+	app::ObjCrayPipe::AddCallback(in_pDocument);
 
 	NumPlayers = GetDocument()->GetService<app::CLevelInfo>()->GetNumPlayers();
 }
@@ -13,7 +13,7 @@ void slw_dlc_restoration::ObjCrayPipe::Update(const app::fnd::SUpdateInfo& in_rU
 	if (FSM_STATE() == &app::ObjCrayPipe::StatePipeIn)
 		ChangeState(static_cast<BaseState>(&ObjCrayPipe::StatePipeIn));
 
-	DispatchFSM(app::TiFsmBasicEvent<app::ObjCrayPipe>::CreateUpdate(in_rUpdateInfo.deltaTime));
+	DispatchFSM(app::TiFsmBasicEvent<app::ObjCrayPipe>::CreateUpdate(in_rUpdateInfo.DeltaTime));
 }
 
 app::TTinyFsm<app::ObjCrayPipe>::TiFsmState_t slw_dlc_restoration::ObjCrayPipe::StatePipeIn(const TiFsmEvent_t& in_rEvent)
@@ -58,14 +58,14 @@ app::TTinyFsm<app::ObjCrayPipe>::TiFsmState_t slw_dlc_restoration::ObjCrayPipe::
 		auto pPlayerInfo = app::ObjUtil::GetPlayerInformation(*GetDocument(), PlayerNo);
 		if (!pPlayerInfo)
 		{
-			in_rEvent.getMessage().m_Handled = true;
+			in_rEvent.getMessage().Handled = true;
 			return {};
 		}
 
 		if (IsPlayerMovedSideWays)
 		{
 			csl::math::Vector3 objectPosition{};
-			csl::math::Matrix34 objectMatrix = GetComponent<app::fnd::GOCTransform>()->m_Frame.m_Unk3.m_Mtx;
+			csl::math::Matrix34 objectMatrix = GetComponent<app::fnd::GOCTransform>()->Frame.Unk3.Mtx;
 			csl::math::Vector3 objectYAxis = { objectMatrix.GetColumn(1) };
 
 			if (IsDirectionDown)
@@ -107,7 +107,7 @@ app::TTinyFsm<app::ObjCrayPipe>::TiFsmState_t slw_dlc_restoration::ObjCrayPipe::
 		static_cast<app::xgame::MsgGetExternalMovePosition&>(in_rEvent.getMessage()).pTrsMatrix->SetTransVector(
 			static_cast<csl::math::Matrix34*>(&playerMatrixOffset)->GetTransVector());
 
-		in_rEvent.getMessage().m_Handled = true;
+		in_rEvent.getMessage().Handled = true;
 		return {};
 	}
 	default:
@@ -120,9 +120,9 @@ slw_dlc_restoration::ObjCrayPipeExit::ObjCrayPipeExit() : app::ObjCrayPipeExit()
 	FSM_INIT(static_cast<BaseState>(&ObjCrayPipeExit::StateIdle));
 }
 
-void slw_dlc_restoration::ObjCrayPipeExit::AddCallback(app::GameDocument& in_rDocument)
+void slw_dlc_restoration::ObjCrayPipeExit::AddCallback(app::GameDocument* in_pDocument)
 {
-	app::ObjCrayPipeExit::AddCallback(in_rDocument);
+	app::ObjCrayPipeExit::AddCallback(in_pDocument);
 	NumPlayers = GetDocument()->GetService<app::CLevelInfo>()->GetNumPlayers();
 }
 
@@ -139,16 +139,16 @@ app::TTinyFsm<app::ObjCrayPipeExit>::TiFsmState_t slw_dlc_restoration::ObjCrayPi
 		{
 			if (auto* pTransform = GetComponent<app::fnd::GOCTransform>())
 			{
-				csl::math::Matrix34 objectMatrix = pTransform->m_Frame.m_Unk3.m_Mtx;
+				csl::math::Matrix34 objectMatrix = pTransform->Frame.Unk3.Mtx;
 				float scalar = IsDirectionUp ? -1.0f : 1.0f;
 
 				objectMatrix.SetTransVector({ objectMatrix.GetTransVector() + csl::math::Vector3(0.0f, 20.f * scalar, 0.0f) });
 
 				app::xgame::MsgCatchPlayer msgCatch{};
-				msgCatch.m_Unk2 = objectMatrix;
-				msgCatch.m_Unk3 = 18;
-				if (app::ObjUtil::SendMessageImmToPlayer(*this, i, msgCatch) && msgCatch.m_Unk4)
-					AllPlayersCaught = msgCatch.m_Unk4;
+				msgCatch.Unk2 = objectMatrix;
+				msgCatch.Unk3 = 18;
+				if (app::ObjUtil::SendMessageImmToPlayer(*this, i, msgCatch) && msgCatch.Unk4)
+					AllPlayersCaught = msgCatch.Unk4;
 			}
 		}
 
@@ -167,12 +167,12 @@ app::TTinyFsm<app::ObjCrayPipeExit>::TiFsmState_t slw_dlc_restoration::ObjCrayPi
 
 		if (GetExtUserData(eExtUserDataType_High) == 1)
 		{
-			PlayerNo = app::ObjUtil::GetPlayerNo(*GetDocument(), static_cast<app::xgame::MsgHitEventCollision&>(in_rEvent.getMessage()).m_Sender);
+			PlayerNo = app::ObjUtil::GetPlayerNo(*GetDocument(), static_cast<app::xgame::MsgHitEventCollision&>(in_rEvent.getMessage()).Sender);
 			if (PlayerNo >= 0)
 				IsPlayerFound = true;
 		}
 
-		in_rEvent.getMessage().m_Handled = true;
+		in_rEvent.getMessage().Handled = true;
 
 		return {};
 	}
@@ -246,7 +246,7 @@ app::TTinyFsm<app::ObjCrayPipeExit>::TiFsmState_t slw_dlc_restoration::ObjCrayPi
 
 		if (auto* pTransform = GetComponent<app::fnd::GOCTransform>())
 		{
-			csl::math::Matrix34 objectMatrix = pTransform->m_Frame.m_Unk3.m_Mtx;
+			csl::math::Matrix34 objectMatrix = pTransform->Frame.Unk3.Mtx;
 
 			float scalar = IsDirectionUp ? -1.0f : 1.0f;
 			float offset = IsDirectionUp ? 0.0f : -9.0f;
