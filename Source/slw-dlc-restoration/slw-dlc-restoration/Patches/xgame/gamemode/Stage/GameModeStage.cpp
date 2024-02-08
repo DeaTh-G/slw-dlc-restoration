@@ -140,13 +140,24 @@ HOOK(void, __fastcall, DisposeMsgPLSendGameInfoHook, ASLR(0x00915120), app::Game
     originalDisposeMsgPLSendGameInfoHook(in_pThis, edx, in_rMessage);
 
     // On the PC version of the game, GameModeStage no longer stores the values of the Heart System as The Legend of Zelda Zone DLC does not exist.
-    // The following code re-adds this functionality to GameModeStage to ensure the functionality of the Heart System like on the Wii U version
+    // The following code re-adds this functionality to GameModeStage to ensure the functionality of the Heart System like on the Wii U version.
     if (in_pThis->IsPlayer(in_rMessage.Sender))
     {
         auto* pPlayerInfo = in_pThis->GetPlayerInfo(in_rMessage.PlayerNo);
         pPlayerInfo->NumHearts = in_rMessage.NumHearts;
         pPlayerInfo->MaxNumHearts = in_rMessage.MaxNumHearts;
     }
+}
+
+HOOK(void, __fastcall, SendCockpitInfoHook, ASLR(0x00916730), app::GameModeStage* in_pThis, void* edx)
+{
+    originalSendCockpitInfoHook(in_pThis, edx);
+
+    // On the PC version of the game, GameModeStage no longer gets the updated heart counter in this function in its for loop that sets up the
+    // MsgHudUpdateInfo::SInfo structure. To fix this, the heart count is updated manually later, and the heart counter on the message is updated
+    // on its process message function in the one place its handled, CHudGameMainDisplay::ProcMsgHutUpdateInfo.
+    auto* pPlayerInfo = in_pThis->GetPlayerInfo(0);
+    in_pThis->NumHearts = pPlayerInfo->NumHearts;
 }
 
 void slw_dlc_restoration::GameModeStage::InstallPatches()
@@ -169,6 +180,7 @@ void slw_dlc_restoration::GameModeStage::InstallHooks()
     INSTALL_HOOK(ResetStageHook);
     INSTALL_HOOK(StatePlayHook);
     INSTALL_HOOK(DisposeMsgPLSendGameInfoHook);
+    INSTALL_HOOK(SendCockpitInfoHook);
     if (CONFIGURATION.ZeldaTweaks.IsAlwaysHeartLife)
         INSTALL_HOOK(LoadLevelHook);
 }

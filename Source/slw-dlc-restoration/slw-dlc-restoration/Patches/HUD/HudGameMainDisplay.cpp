@@ -213,6 +213,18 @@ HOOK(bool, __fastcall, ProcessMessageHook, ASLR(0x005060D0), app::fnd::CActor* i
 	}
 }
 
+HOOK(bool, __fastcall, ProcMsgHudUpdateInfoHook, ASLR(0x00501440), app::HUD::CHudGameMainDisplay* in_pThis, void* edx, app::xgame::MsgHudUpdateInfo& in_rMessage)
+{
+	// On the PC version MsgHudUpdateInfo gets sent with the default values for NumHearts and MaxNumHearts as app::GameModeStage::SendCockpitInfo
+	// does not update the information for those values with the ones from player 1. To solve this issue the information for those values
+	// are gathered here and are as they should be.
+	auto* pPlayerInfo = in_pThis->pLevelInfo->GetPlayerInfo(0);
+	in_pThis->Info.NumHearts = pPlayerInfo->NumHearts;
+	in_pThis->Info.MaxNumHearts = pPlayerInfo->MaxNumHearts;
+
+	return originalProcMsgHudUpdateInfoHook(in_pThis, edx, in_rMessage);
+}
+
 HOOK(void, __fastcall, SetInfoHook, ASLR(0x00505DF0), slw_dlc_restoration::HUD::CHudGameMainDisplay* in_pThis, void* edx, void* in_pUnk1, float in_deltaTime)
 {
     originalSetInfoHook(in_pThis, edx, in_pUnk1, in_deltaTime);
@@ -257,4 +269,5 @@ void slw_dlc_restoration::HUD::CHudGameMainDisplay::InstallHooks()
 
 	// The Legend of Zelda Zone DLC Patches
 	INSTALL_HOOK(ProcessMessageHook);
+	INSTALL_HOOK(ProcMsgHudUpdateInfoHook);
 }
