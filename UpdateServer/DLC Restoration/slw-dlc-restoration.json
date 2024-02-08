@@ -6,20 +6,20 @@
       "Elements": [
         {
           "Name": "isConsistentShadows",
-		  "Description": [
-			"Fixes the shadow consistency issues found in the original version of the 'Yoshi's Island Zone' DLC.\n\nYoshis are exempt from this change."
-		  ],
+          "Description": [
+            "Fixes the shadow consistency issues found in the original version of the DLC.\n\nYoshis are exempt from this change."
+          ],
           "DisplayName": "Consistent Shadows",
           "Type": "bool",
           "MinValue": null,
           "MaxValue": null,
           "DefaultValue": false
         },
-		{
+        {
           "Name": "disablePipeTransition",
-		  "Description": [
-			"Changes the pipe transition from the DLC animation to a fade out.\n\nRecommended for playing in aspect ratios other than 16:9."
-		  ],
+          "Description": [
+            "Changes the pipe transition from the DLC animation to a fade out.\n\nRecommended for playing in aspect ratios other than 16:9."
+          ],
           "DisplayName": "Disable Pipe Transition",
           "Type": "bool",
           "MinValue": null,
@@ -33,6 +33,61 @@
       "DisplayName": "The Legend of Zelda Zone Tweaks",
       "Elements": [
         {
+          "Name": "isLinkSonicFixed",
+          "Description": [
+            "Fixes the materials inside Link Sonic's mouth.\n\nThanks to M&M (https://gamebanana.com/members/1347950) for the original implementation of the fix."
+          ],
+          "DisplayName": "Fix Link Sonic Materials",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        },
+        {
+          "Name": "isStalbabyFixed",
+          "Description": [
+            "Fixes the eye texture of the Stalbaby so there's no border around it."
+          ],
+          "DisplayName": "Fix Stalbaby Eye Texture",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        },
+        {
+          "Name": "isWaterParticleFixed",
+          "Description": [
+            "Fixes the splash particle being offset from the lake in the DLC."
+          ],
+          "DisplayName": "Fix Water Splash Particle Placement",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        },
+        {
+          "Name": "useUnusedGoalAnimation",
+          "Description": [
+            "Enables the unused state for the goal object in DLC. The animation makes the Triforce hover above the player once the results play instead of being held by the player."
+          ],
+          "DisplayName": "Use Unused Goal Animation",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        },
+        {
+          "Name": "disableChestLetterboxing",
+          "Description": [
+            "Disables the letterboxing when opening a chest in DLC.\n\nRecommended for playing in aspect ratios other than 16:9."
+          ],
+          "DisplayName": "Disable Chest Letterboxing",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        },
+        {
           "Name": "linkSonicPlayType",
           "Description": [
             "Change where Link Sonic appears in the game."
@@ -44,31 +99,9 @@
           "DefaultValue": 0
         },
         {
-          "Name": "isLinkSonicFixed",
-          "Description": [
-            "Fixes the materials inside Link Sonic's mouth.\n\n(thanks to M&M: https://twitter.com/ActualMandM)."
-          ],
-          "DisplayName": "Fixed Link Sonic Materials",
-          "Type": "bool",
-          "MinValue": null,
-          "MaxValue": null,
-          "DefaultValue": false
-        },
-        {
-          "Name": "isVirtualLinkSonic",
-          "Description": [
-            "Changes the Virtual Sonics in multiplayer mode to Link Sonic with different costumes.\n\n(thanks to GPF: https://twitter.com/GPF_SCT)."
-          ],
-          "DisplayName": "Play as Link Sonic in Multiplayer",
-          "Type": "bool",
-          "MinValue": null,
-          "MaxValue": null,
-          "DefaultValue": false
-        },
-        {
           "Name": "isAlwaysHeartLife",
           "Description": [
-            "Makes the game always use the heart system from 'The Legend of Zelda Zone' DLC.\n\nThis will make rings not scatter on damage as well, so they are just a collectable in this gamemode."
+            "Makes the game always use the heart system from DLC.\n\nThis will make rings not scatter on damage as well, so they are just a collectable in this gamemode."
           ],
           "DisplayName": "Always Play with Heart System",
           "Type": "bool",
@@ -77,33 +110,105 @@
           "DefaultValue": false
         },
         {
-          "Name": "isStalbabyFixed",
+          "Name": "isVirtualLinkSonic",
           "Description": [
-            "Fix's the eye texture of the Stalbaby so there's no border around it."
+            "Changes the Virtual Sonics in multiplayer mode to Link Sonic with different costumes.\n\nThanks to GPF (https://twitter.com/GPF_SCT) for the second player textures."
           ],
-          "DisplayName": "Fix Stalbaby Eye Texture",
+          "DisplayName": "Play as Link Sonic in Multiplayer",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        }
+      ]
+    },
+    {
+      "Name": "DLCAvailability",
+      "DisplayName": "Enabled Downloadable Content",
+      "Elements": [
+        {
+          "Name": "isNightsDlcEnabled",
+          "Description": [
+            "It's Sonic's worst nightmare!\n\nAllows the 'NiGHTMARE Zone DLC' to be disabled."
+          ],
+          "DisplayName": "NiGHTMARE Zone DLC",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": true
+        },
+        {
+          "Name": "isYoshiDlcEnabled",
+          "Description": [
+            "Sonic steps into Yoshi's Island.\n\nAllows the 'Yoshi's Island Zone DLC' to be disabled."
+          ],
+          "DisplayName": "Yoshi's Island Zone DLC",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": true
+        },
+        {
+          "Name": "isZeldaDlcEnabled",
+          "Description": [
+            "A link to a lost world.\n\nAllows the 'The Legend of Zelda Zone DLC' to be disabled."
+          ],
+          "DisplayName": "The Legend of Zelda Zone DLC",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": true
+        },
+        {
+          "Name": "is4StarBombWispDlcEnabled",
+          "Description": [
+            "The ultimate form of destruction.\n\nAllows the '1x 5-Star Bomb Color Power DLC' to be enabled. Gives the player a 4-star Black Bomb Wisp capsules.\n\n(The game only allows items to go up to 4 stars so this DLC is technically named incorrectly.)"
+          ],
+          "DisplayName": "5-Star Bomb Color Power DLC",
           "Type": "bool",
           "MinValue": null,
           "MaxValue": null,
           "DefaultValue": false
         },
         {
-          "Name": "disableChestLetterboxing",
+          "Name": "is25LivesDlcEnabled",
           "Description": [
-            "Disables the letterboxing when opening a chest in 'The Legend of Zelda Zone' DLC.\n\nRecommended for playing in aspect ratios other than 16:9."
+            "A safety net for the risk-taking Sonic player.\n\nAllows the '25 Lives DLC' to be enabled. Gives the player 5 4-star 1-UP capsules."
           ],
-          "DisplayName": "Disable Chest Letterboxing",
+          "DisplayName": "5x 5-Star Life Capsule DLC",
           "Type": "bool",
           "MinValue": null,
           "MaxValue": null,
           "DefaultValue": false
         },
         {
-          "Name": "isRupeeCountInChestFixed",
+          "Name": "isBombWispDlcEnabled",
           "Description": [
-            "Makes the game give the player the correct amount of rupees upon opening chests containing rupees in 'The Legend of Zelda Zone' DLC.\n\n(By default there are no chests containing rupees in the DLC.)"
+            "Devastate your enemies five times over.\n\nAllows the '5 Black Bomb Color Powers DLC' to be enabled. Gives the player 5 1-star Black Bomb Wisp capsules."
           ],
-          "DisplayName": "Fix Rupee Count from Chests",
+          "DisplayName": "5x 1-Star Black Bomb Color Powers DLC",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        },
+        {
+          "Name": "isGoldOmochaoDlcEnabled",
+          "Description": [
+            "A chao-tastic way to help out Sonic.\n\nAllows the 'Rare Omochao RC Gadget DLC' to be enabled. Gives the player a Golden Omochao RC Gadget."
+          ],
+          "DisplayName": "Golden Omochao RC Vehicle DLC",
+          "Type": "bool",
+          "MinValue": null,
+          "MaxValue": null,
+          "DefaultValue": false
+        },
+        {
+          "Name": "isSonicOmochaoDlcEnabled",
+          "Description": [
+            "Help Sonic collect rings.\n\nAllows the 'Rare Sonic Omochao RC Gadget DLC' to be enabled. Gives the player a Sonic themed Omochao RC Gadget."
+          ],
+          "DisplayName": "Sonic Omochao RC Vehicle DLC",
           "Type": "bool",
           "MinValue": null,
           "MaxValue": null,
