@@ -12,7 +12,7 @@
 - The water splash particle for the lake has been re-converted as it was previously the ripple particle that would follow the splash effect.
 - The peelout particle for Link Sonic has been re-converted as it was previously glitching out due to incorrect platform conversion of the file.
 - 'Play as Link Sonic' option now affecs the Game Over screen.
-- 'Fixed Link Sonic Materials' option has been reworked to fix the material issue on Link Sonic's mouth at runtime as opposed to used an extra model file in the archives.
+- 'Fix Link Sonic Materials' option has been reworked to fix the material issue on Link Sonic's mouth at runtime as opposed to used an extra model file in the archives.
 - 'Play as Link Sonic in Multiplayer' option has been reworked and player 2 now reads from 'Linksonic2p.pac' instead of 'Linksonic_red.pac'. This file appends the original 'Linksonic.pac' archive to reduce filesize.
 - 'Always Play with Heart System' has been completely overhauled on the backend as the UI for it is now displayed using runtime logic as opposed to duplicating and combining the archives containing the ui files.
 - 'Fix Stalbaby Eye Texture' no longer duplicates the archive file for the enemy as it now uses HE1ML's append pac sytem. 'EnemyStalbabyFix.pac' appends 'EnemyStalbaby.pac'.
