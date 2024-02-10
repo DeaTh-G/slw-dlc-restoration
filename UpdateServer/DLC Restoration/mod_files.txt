@@ -1,2 +1,14 @@
-add mod.ini
+delete disk/
+add dlc/0011/sonic2013_dlc_0011.cpk
+add dlc/0011/sonic2013_dlc_0011/zdlc02/+zdlc02_misc.pac
+add dlc/0011/sonic2013_dlc_0011/set/zdlc02_obj_00.orc
+add dlc/0012/sonic2013_dlc_0012.cpk
+add dlc/0012/sonic2013_dlc_0012/zdlc03/+zdlc03_misc.pac
+add dlc/0012/sonic2013_dlc_0012/set/zdlc03_obj_00.orc
+add dlc/0012/sonic2013_dlc_0012/EnemyStalbabyFix.pac
+add dlc/0012/sonic2013_dlc_0012/Linksonic2p.pac
 add slw-dlc-restoration.dll
+add slw-dlc-restoration.hmm
+add slw-dlc-restoration.ini
+add slw-dlc-restoration.json
+add mod.ini

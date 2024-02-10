@@ -1,0 +1,3 @@
+[submodule "Depends/LWAPI"]
+	path = Depends/LWAPI
+	url = https://github.com/hedge-dev/LWAPI.git
