@@ -5,7 +5,8 @@
 - DLCs are now looked up the same way as they were on the Wii U version of the game, meaning the DLCs are now shipped in their respective CPKs (these CPKs contain the pure converted data whilst any modifications are done with file redirection outside of them).
 - The DLCs now use HE1ML's append pac feature which allows modifications to be shipped as individual files in 'append archives' to reduce files instead of shipping the entire archive file twice.
 - The 'yoshiisland' and 'zelda' attributes in the 'actstgmission.lua' file are now taken into consideration when loading into a stage for things such as hud or player model modifications, just like on the Wii U.
-- All Downloadable Content can now be toggled on and off from the mod's settings.Added the 5 pre-order DLCs to the mod (turned off by default configure to your need in the mod's settings).
+- All Downloadable Content can now be toggled on and off from the mod's settings.
+- Added the 5 pre-order DLCs to the mod (turned off by default configure to your need in the mod's settings).
 - Cameras triggered by moving through a specific area have been turned off in multiplayer to avoid cameras hijacking Player 1's view.
 
 ## The Legend of Zelda Zone DLC Changes
