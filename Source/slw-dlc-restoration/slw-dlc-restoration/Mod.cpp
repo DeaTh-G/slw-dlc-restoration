@@ -45,9 +45,6 @@ void InitializeConfiguration(ModInfo_t* in_pModInfo, const char* in_pConfigFileN
 
 void InitializeMod(ModInfo_t* in_pModInfo)
 {
-    // The nvapi.dll is loaded so that the game is forced to use the dedicated GPU in the system.
-    // This is done to avoid graphical issues presented by older integrated GPUs.
-    LoadLibraryA("nvapi.dll");
 
     // General Patches/Hooks
     slw_dlc_restoration::objectObjectReflections::InstallPatches(in_pModInfo);

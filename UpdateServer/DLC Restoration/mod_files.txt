@@ -9,6 +9,5 @@ add dlc/0012/sonic2013_dlc_0012/EnemyStalbabyFix.pac
 add dlc/0012/sonic2013_dlc_0012/Linksonic2p.pac
 add slw-dlc-restoration.dll
 add slw-dlc-restoration.hmm
-add slw-dlc-restoration.ini
 add slw-dlc-restoration.json
 add mod.ini
