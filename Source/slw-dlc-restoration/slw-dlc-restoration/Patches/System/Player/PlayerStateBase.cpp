@@ -26,7 +26,7 @@ bool slw_dlc_restoration::Player::CStateBase::ProcMsgTakeObject(app::Player::CSt
 		if (in_rMessage.ItemLevel == -1)
 		{
 			app::Player::StateUtil::AddRingNum(in_rStateGoc, 1);
-			if (in_rMessage.Type == app::xgame::MsgTakeObject::EType::eType_DroppedRing)
+			if (in_rMessage.Type == app::xgame::MsgTakeObject::EType::eType_Ring)
 				app::Player::StateUtil::SendMissionGetRing(in_rStateGoc, 1);
 
 			in_rMessage.Taken = true;
@@ -50,6 +50,7 @@ bool slw_dlc_restoration::Player::CStateBase::ProcMsgTakeObject(app::Player::CSt
 
 		app::xgame::MsgPLSendGameInfo msg{ (app::Game::EUser)in_rStateGoc.GetPlayerNo(), in_rStateGoc.GetPhysics()->GetHorzVelocityLength(), app::Player::StateUtil::GetRingNum(in_rStateGoc), numHearts, maxNumHearts };
 		in_rStateGoc.SendMessageImmToGame(msg);
+		app::Player::StateUtil::SendMissionGetRing(in_rStateGoc, ms_ReleaseBoxRingCount[in_rMessage.ItemLevel]);
 
 		in_rMessage.Taken = true;
 		break;
