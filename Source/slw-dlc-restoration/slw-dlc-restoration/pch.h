@@ -7,6 +7,8 @@
 #ifndef PCH_H
 #define PCH_H
 
+#define _SILENCE_CXX23_DENORM_DEPRECATION_WARNING
+
 // add headers that you want to pre-compile here
 #include "framework.h"
 #include "../../../Depends/LWAPI/Sonic2013/Sonic2013.h"
